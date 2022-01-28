@@ -1,0 +1,24 @@
+{
+  "name": "kedao",
+  "version": "0.0.1",
+  "description": "A React Editor based on draft.js and braft-editor",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/banyudu/kedao.git"
+  },
+  "keywords": [
+    "kedao",
+    "editor",
+    "react"
+  ],
+  "author": "banyudu <banyudu@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/banyudu/kedao/issues"
+  },
+  "homepage": "https://github.com/banyudu/kedao#readme"
+}

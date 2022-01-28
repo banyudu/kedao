@@ -1,0 +1,26 @@
+@import '~scssinc';
+
+.bf-content .bf-hr{
+  position: relative;
+  box-sizing: content-box;
+  height: 15px;
+  padding-top: 15px;
+  text-align: center;
+  &::before{
+    display: block;
+    height: 1px;
+    background-color: rgba(#000, .1);
+    content: '';
+  }
+  &:hover {
+    &::before {
+      background-color: rgba(#000, .3);
+    }
+    .bf-media-toolbar{
+      display: block;
+    }
+  }
+  .bf-media-toolbar{
+    display: none;
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "name": "braft-editor",
-  "version": "2.3.8",
+  "name": "@kedao/editor",
+  "version": "0.0.1",
   "description": "Rich Text Editor Based On Draft.js",
   "main": "dist/index.js",
   "types": "index.d.ts",

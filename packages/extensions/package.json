@@ -6,7 +6,6 @@
   "scripts": {
     "start": "webpack-dev-server --config ./build/webpack.development.js -d --history-api-fallback --no-inline --progress --colors --host 127.0.0.1",
     "build": "rm -rf dist/ && NODE_ENV=production webpack --config ./build/webpack.production.js --progress --colors",
-    "lint": "node_modules/eslint/bin/eslint.js .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -22,22 +21,12 @@
     "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "@kedao/editor": "workspace:*",
-    "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "copy-webpack-plugin": "^4.5.3",
     "cross-env": "^7.0.0",
     "css-loader": "^3.4.2",
-    "draft-js-mention-plugin": "^3.1.5",
     "draft-js-prism": "^1.0.6",
-    "eslint": "^5.4.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^4.0.0",
-    "eslint-plugin-react": "^7.11.1",
-    "eslint-plugin-standard": "^4.0.0",
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.9.0",
@@ -58,6 +47,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "@draft-js-plugins/mention": "^5.1.1",
     "@kedao/convert": "workspace:*",
     "@kedao/utils": "workspace:*"
   },
@@ -67,6 +57,7 @@
     "draft-js-prism": "^1.0.6",
     "html-table-to-json": "^0.4.0",
     "prismjs": "^1.15.0",
+    "@kedao/editor": "workspace:*",
     "react-color": "^2.14.1"
   }
 }

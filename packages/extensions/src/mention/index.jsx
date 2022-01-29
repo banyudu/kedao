@@ -1,11 +1,11 @@
-import 'draft-js-mention-plugin/lib/plugin.css'
+import '@draft-js-plugins/mention/lib/plugin.css'
 import React from 'react'
-import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'
+import createMentionPlugin, { defaultSuggestionsFilter } from '@draft-js-plugins/mention'
 
 /**
- * 基于 draft-js-mention-plugin 的 mention 扩展
+ * 基于 @draft-js-plugins/mention 的 mention 扩展
  * 除了 includeEditors 和 excludeEditors 外
- * 其他属性将会传递给 draft-js-mention-plugin
+ * 其他属性将会传递给 @draft-js-plugins/mention
  * 参考 https://www.draft-js-plugins.com/plugin/mention
  */
 export default (options = {}) => {

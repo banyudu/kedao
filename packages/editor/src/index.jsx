@@ -15,7 +15,7 @@ import {
   compositeBlockExportFn,
 } from 'helpers/extension';
 import { getDecorators } from 'renderers';
-import Editor, { EditorState } from 'editor';
+import KedaoEditor, { EditorState } from 'editor';
 
 EditorState.prototype.setConvertOptions = function setConvertOptions(
   options = {},
@@ -46,7 +46,7 @@ EditorState.createFrom = (content, options = {}) => {
   const customOptions = { ...options };
   customOptions.unitExportFn =
     customOptions.unitExportFn ||
-    Editor.defaultProps.converts.unitExportFn;
+    KedaoEditor.defaultProps.converts.unitExportFn;
   customOptions.styleImportFn = compositeStyleImportFn(
     customOptions.styleImportFn,
     customOptions.editorId,
@@ -131,9 +131,9 @@ EditorState.createFrom = (content, options = {}) => {
   return editorState;
 };
 
-Editor.createEditorState = EditorState.createFrom;
+KedaoEditor.createEditorState = EditorState.createFrom;
 
-export default createExtensibleEditor(Editor);
+export default createExtensibleEditor(KedaoEditor);
 export { EditorState, getDecorators };
 
 // 2.1 version development plan

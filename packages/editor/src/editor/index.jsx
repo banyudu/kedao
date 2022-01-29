@@ -100,7 +100,7 @@ const getConvertOptions = (props) => {
   return convertOptions;
 };
 
-class Editor extends React.Component {
+class KedaoEditor extends React.Component {
   constructor(props) {
     super(props);
 
@@ -637,14 +637,14 @@ class Editor extends React.Component {
   }
 }
 
-Editor.defaultProps = defaultProps;
+KedaoEditor.defaultProps = defaultProps;
 
-Editor.propTypes = {
+KedaoEditor.propTypes = {
   value: PropTypes.any,
   onChange: PropTypes.any,
   defaultValue: PropTypes.any,
 };
 
-export default Editor;
+export default KedaoEditor;
 
 export { EditorState };

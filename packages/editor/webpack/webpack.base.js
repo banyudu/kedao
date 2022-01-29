@@ -12,17 +12,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: [/node_modules/, /dist/],
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              ...JSON.parse(
-                fs.readFileSync(path.resolve(__dirname, '../../.babelrc')),
-              ),
-            },
-          },
-          'eslint-loader',
-        ],
+        use: 'babel-loader',
       },
       {
         test: /\.(png|svg)$/,
@@ -55,7 +45,7 @@ module.exports = {
     modules: ['src', 'node_modules'],
     mainFields: ['browser', 'jsnext:main', 'main'],
     alias: {
-      scssinc: path.join(__dirname, '../../src/assets/scss/_inc.scss'),
+      scssinc: path.join(__dirname, '../src/assets/scss/_inc.scss'),
     },
     extensions: ['.js', '.jsx'],
   },

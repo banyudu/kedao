@@ -8,12 +8,12 @@ const baseConfigs = require('./webpack.base');
 module.exports = merge(baseConfigs, {
   mode: 'production',
   devtool: 'source-map',
-  context: path.join(__dirname, '../../src'),
+  context: path.join(__dirname, '../src'),
   entry: {
     index: './index.jsx',
   },
   output: {
-    path: path.join(__dirname, '../../dist'),
+    path: path.join(__dirname, '../dist'),
     filename: 'index.js',
     publicPath: '/',
     libraryTarget: 'umd',
@@ -24,9 +24,9 @@ module.exports = merge(baseConfigs, {
     'draft-js': 'draft-js',
     'draft-convert': 'draft-convert',
     'draftjs-utils': 'draftjs-utils',
-    '@kedao/finder': '@kedao/finder',
-    '@kedao/utils': '@kedao/utils',
-    '@kedao/convert': '@kedao/convert',
+    'braft-finder': 'braft-finder',
+    'braft-utils': 'braft-utils',
+    'braft-convert': 'braft-convert',
     immutable: 'immutable',
   },
   optimization: {

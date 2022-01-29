@@ -1,6 +1,6 @@
 import './style.scss'
 import React from 'react'
-import { ContentUtils } from 'braft-utils'
+import { ContentUtils } from '@kedao/utils'
 import { handleKeyCommand, handleReturn, handleDroppedFiles, handlePastedFiles, handlePastedText } from './handlers'
 import { getLanguage, tableRenderMap } from './render'
 import DropdownControl from './dropdown'

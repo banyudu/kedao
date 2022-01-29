@@ -1,4 +1,4 @@
-.braft-emoticon-picker {
+.kedao-emoticon-picker {
   box-sizing: border-box;
   width: 210px;
   height: 210px;
@@ -22,7 +22,7 @@
     bottom: 0;
     background-image: linear-gradient(rgba(#21242a, 0), rgba(#21242a, 1));
   }
-  .braft-emoticons-list{
+  .kedao-emoticons-list{
     box-sizing: content-box;
     width: 200px;
     height: 190px;
@@ -45,7 +45,7 @@
   }
 }
 
-.braft-emoticon-in-editor{
+.kedao-emoticon-in-editor{
   position: relative;
   padding: 0 2px;
   letter-spacing: 12px;

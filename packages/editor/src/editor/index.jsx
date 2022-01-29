@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import BraftFinder from 'braft-finder';
-import { ColorUtils, ContentUtils } from 'braft-utils';
+import Finder from '@kedao/finder';
+import { ColorUtils, ContentUtils } from '@kedao/utils';
 import { Editor, EditorState } from 'draft-js';
 import { Map } from 'immutable';
 import mergeClassNames from '@maximusft/mergeclassnames';
@@ -100,7 +100,7 @@ const getConvertOptions = (props) => {
   return convertOptions;
 };
 
-class BraftEditor extends React.Component {
+class Editor extends React.Component {
   constructor(props) {
     super(props);
 
@@ -111,7 +111,7 @@ class BraftEditor extends React.Component {
     this.controlBarInstance = React.createRef();
     this.isFocused = false;
     this.isLiving = false;
-    this.braftFinder = null;
+    this.finder = null;
     this.valueInitialized = !!(this.props.defaultValue || this.props.value);
 
     const defaultEditorState =
@@ -148,7 +148,7 @@ class BraftEditor extends React.Component {
         ...media,
       };
 
-      this.braftFinder = new BraftFinder({
+      this.finder = new Finder({
         items,
         language,
         uploader: uploadFn,
@@ -174,14 +174,14 @@ class BraftEditor extends React.Component {
     if (
       !isControlEnabled(currentProps, 'media') &&
       isControlEnabled(this.editorProps, 'media') &&
-      !this.braftFinder
+      !this.finder
     ) {
       const { uploadFn, validateFn, items } = {
         ...defaultProps.media,
         ...media,
       };
 
-      this.braftFinder = new BraftFinder({
+      this.finder = new Finder({
         items,
         language,
         uploader: uploadFn,
@@ -191,8 +191,8 @@ class BraftEditor extends React.Component {
       this.forceUpdate();
     }
 
-    if (media && media.items && this.braftFinder) {
-      this.braftFinder.setItems(media.items);
+    if (media && media.items && this.finder) {
+      this.finder.setItems(media.items);
     }
 
     let nextEditorState;
@@ -247,7 +247,7 @@ class BraftEditor extends React.Component {
   componentWillUnmount() {
     this.isLiving = false;
     if (this.controlBarInstance) {
-      this.controlBarInstance.closeBraftFinder();
+      this.controlBarInstance.closeFinder();
     }
   }
 
@@ -297,7 +297,7 @@ class BraftEditor extends React.Component {
   };
 
   getFinderInstance = () => {
-    return this.braftFinder;
+    return this.finder;
   };
 
   getValue = () => {
@@ -473,7 +473,7 @@ class BraftEditor extends React.Component {
     controls = controls.filter((item) => excludeControls.indexOf(item) === -1);
     language =
       (typeof language === 'function'
-        ? language(languages, 'braft-editor')
+        ? language(languages, '@kedao/editor')
         : languages[language]) || languages[defaultProps.language];
 
     const externalMedias = {
@@ -496,7 +496,7 @@ class BraftEditor extends React.Component {
     const controlBarProps = {
       editor: this,
       editorState,
-      braftFinder: this.braftFinder,
+      finder: this.finder,
       ref: this.controlBarInstance,
       getContainerNode: () => this.containerNode,
       className: controlBarClassName,
@@ -637,14 +637,14 @@ class BraftEditor extends React.Component {
   }
 }
 
-BraftEditor.defaultProps = defaultProps;
+Editor.defaultProps = defaultProps;
 
-BraftEditor.propTypes = {
+Editor.propTypes = {
   value: PropTypes.any,
   onChange: PropTypes.any,
   defaultValue: PropTypes.any,
 };
 
-export default BraftEditor;
+export default Editor;
 
 export { EditorState };

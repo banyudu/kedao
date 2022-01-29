@@ -1,14 +1,14 @@
 {
   "name": "@kedao/finder",
   "version": "0.0.1",
-  "description": "Media manager for Braft Editor.",
+  "description": "Media manager for Kedao Editor.",
   "main": "./dist/index.js",
   "directories": {
     "example": "example"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/margox/braft-finder.git"
+    "url": "https://github.com/banyudu/kedao.git"
   },
   "scripts": {
     "start": "webpack-dev-server --config ./build/webpack.development.js -d --history-api-fallback --no-inline --progress --colors",
@@ -16,11 +16,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "braft-editor",
-    "braft-finder",
-    "braft-media-manager"
+    "kedao",
+    "editor",
+    "finder",
+    "media-manager"
   ],
-  "author": "Margox",
+  "author": "banyudu",
   "license": "MIT",
   "devDependencies": {
     "ansi-html": "^0.0.7",

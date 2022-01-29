@@ -18,7 +18,7 @@ const getColorPicker = (superProps) => ({ onChange, color, presetColors, ...prop
   color = color || presetColors[0]
 
   return (
-    <div className={`braft-color-picker ${superProps.theme}-theme`}>
+    <div className={`kedao-color-picker ${superProps.theme}-theme`}>
       <SketchPicker color={color} presetColors={presetColors} onChangeComplete={handleChange} {...props}/>
       <footer className="footer">
         <button type="button" className="button control-item button-clear" onClick={clearColor} disabled={!color}>{superProps.clearButtonText}</button>

@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
-import { ContentUtils } from 'braft-utils';
+import { ContentUtils } from '@kedao/utils';
 
 import getEditorControls from 'configs/controls';
 import LinkEditor from 'components/business/LinkEditor';
@@ -168,17 +168,17 @@ export default class ControlBar extends React.Component {
     return this.props.editor;
   }
 
-  openBraftFinder = () => {
-    if (!this.props.braftFinder || !this.props.braftFinder.ReactComponent) {
+  openFinder = () => {
+    if (!this.props.finder || !this.props.finder.ReactComponent) {
       return false;
     }
 
-    if (this.props.hooks('open-braft-finder')() === false) {
+    if (this.props.hooks('open-kedao-finder')() === false) {
       return false;
     }
 
     const mediaProps = this.props.media;
-    const MediaLibrary = this.props.braftFinder.ReactComponent;
+    const MediaLibrary = this.props.finder.ReactComponent;
 
     this.mediaLibiraryModal = showModal({
       title: this.props.language.controls.mediaLibirary,
@@ -189,22 +189,22 @@ export default class ControlBar extends React.Component {
       component: (
         <MediaLibrary
           accepts={mediaProps.accepts}
-          onCancel={this.closeBraftFinder}
+          onCancel={this.closeFinder}
           onInsert={this.insertMedias}
           onChange={mediaProps.onChange}
           externals={mediaProps.externals}
-          onBeforeSelect={this.bindBraftFinderHook('select-medias')}
-          onBeforeDeselect={this.bindBraftFinderHook('deselect-medias')}
-          onBeforeRemove={this.bindBraftFinderHook('remove-medias')}
-          onBeforeInsert={this.bindBraftFinderHook('insert-medias')}
-          onFileSelect={this.bindBraftFinderHook('select-files')}
+          onBeforeSelect={this.bindFinderHook('select-medias')}
+          onBeforeDeselect={this.bindFinderHook('deselect-medias')}
+          onBeforeRemove={this.bindFinderHook('remove-medias')}
+          onBeforeInsert={this.bindFinderHook('insert-medias')}
+          onFileSelect={this.bindFinderHook('select-files')}
         />
       ),
     });
     return true;
   };
 
-  bindBraftFinderHook = (hookName) => (...params) => {
+  bindFinderHook = (hookName) => (...params) => {
     return this.props.hooks(hookName, params[0])(...params);
   };
 
@@ -216,10 +216,10 @@ export default class ControlBar extends React.Component {
     if (this.props.media.onInsert) {
       this.props.media.onInsert(medias);
     }
-    this.closeBraftFinder();
+    this.closeFinder();
   };
 
-  closeBraftFinder = () => {
+  closeFinder = () => {
     if (this.props.media.onCancel) {
       this.props.media.onCancel();
     }
@@ -430,7 +430,7 @@ export default class ControlBar extends React.Component {
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
                 className="control-item media button"
-                onClick={this.openBraftFinder}
+                onClick={this.openFinder}
               >
                 {controlItem.text}
               </button>
@@ -567,7 +567,7 @@ export default class ControlBar extends React.Component {
 
 ControlBar.propTypes = {
   allowInsertLinkText: PropTypes.any,
-  braftFinder: PropTypes.any,
+  finder: PropTypes.any,
   className: PropTypes.any,
   colorPicker: PropTypes.any,
   colorPickerAutoHide: PropTypes.any,

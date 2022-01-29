@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import BraftFinder, { ImageUtils } from "../src";
+import Finder, { ImageUtils } from "../src";
 
 class Demo extends React.Component {
   constructor(props) {
     super(props);
-    this.braftFinder = new BraftFinder({
+    this.finder = new Finder({
       language: "pl"
     });
   }
@@ -19,7 +19,7 @@ class Demo extends React.Component {
   };
 
   render() {
-    const FinderComponent = this.braftFinder.ReactComponent;
+    const FinderComponent = this.finder.ReactComponent;
 
     return (
       <div className="demo">

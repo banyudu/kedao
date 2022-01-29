@@ -4,7 +4,7 @@ import FinderView from 'view'
 import languages from 'languages'
 import * as ImageUtils from 'utils/image'
 
-export default class BraftFinder extends FinderController {
+export default class Finder extends FinderController {
 
   constructor (props) {
     super(props)
@@ -19,7 +19,7 @@ export default class BraftFinder extends FinderController {
     }
 
     const language = (typeof componentProps.language === 'function'
-      ? componentProps.language(languages, 'braft-finder')
+      ? componentProps.language(languages, '@kedao/finder')
       : languages[componentProps.language]) || languages['zh']
 
     return (

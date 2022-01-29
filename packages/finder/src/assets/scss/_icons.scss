@@ -7,9 +7,9 @@ $ttfPath: './assets/icons/icons.ttf?sirizn';
   font-style: normal;
 }
 
-.braft-finder{
+.kedao-finder{
 
-  [class^="braft-icon-"], [class*=" braft-icon-"] {
+  [class^="kedao-icon-"], [class*=" kedao-icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'bf-icons' !important;
     font-style: normal;
@@ -20,64 +20,64 @@ $ttfPath: './assets/icons/icons.ttf?sirizn';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  .braft-icon-code:before {
+  .kedao-icon-code:before {
     content: "\e903";
   }
-  .braft-icon-pause:before {
+  .kedao-icon-pause:before {
     content: "\e034";
   }
-  .braft-icon-play_arrow:before {
+  .kedao-icon-play_arrow:before {
     content: "\e037";
   }
-  .braft-icon-bin:before {
+  .kedao-icon-bin:before {
     content: "\e9ac";
   }
-  .braft-icon-replay:before {
+  .kedao-icon-replay:before {
     content: "\e042";
   }
-  .braft-icon-close:before {
+  .kedao-icon-close:before {
     content: "\e913";
   }
-  .braft-icon-music:before {
+  .kedao-icon-music:before {
     content: "\e90e";
   }
-  .braft-icon-camera:before {
+  .kedao-icon-camera:before {
     content: "\e911";
   }
-  .braft-icon-file-text:before {
+  .kedao-icon-file-text:before {
     content: "\e926";
   }
-  .braft-icon-film:before {
+  .kedao-icon-film:before {
     content: "\e91c";
   }
-  .braft-icon-paste:before {
+  .kedao-icon-paste:before {
     content: "\e92d";
   }
-  .braft-icon-spinner:before {
+  .kedao-icon-spinner:before {
     content: "\e980";
   }
-  .braft-icon-media:before {
+  .kedao-icon-media:before {
     content: "\e90f";
   }
-  .braft-icon-add:before {
+  .kedao-icon-add:before {
     content: "\e918";
   }
-  .braft-icon-done:before {
+  .kedao-icon-done:before {
     content: "\e912";
   }
-  .braft-icon-drop-down:before {
+  .kedao-icon-drop-down:before {
     content: "\e906";
   }
-  .braft-icon-drop-up:before {
+  .kedao-icon-drop-up:before {
     content: "\e909";
   }
-  .braft-icon-help:before {
+  .kedao-icon-help:before {
     content: "\e902";
   }
-  .braft-icon-info:before {
+  .kedao-icon-info:before {
     content: "\e901";
   }
-  .braft-icon-menu:before {
+  .kedao-icon-menu:before {
     content: "\e908";
   }
 }

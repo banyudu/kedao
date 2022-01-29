@@ -18,7 +18,7 @@ export default (options = {}) => {
 
   /**
      * draft-js-plugin 为每个 plugin 的很多地方都注入了 get 和 set
-     * 在 braft-editor 里面 由于 在 useExtension 里面并拿不到 editor 的实例
+     * 在 @kedao/editor 里面 由于 在 useExtension 里面并拿不到 editor 的实例
      * 只能在 prop-interception 的时候 有机会拿到 因此先用一个 对象引用起来 再传递
      */
   const getAndSetState = {

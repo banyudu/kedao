@@ -1,7 +1,7 @@
 {
   "name": "@kedao/convert",
   "version": "0.0.1",
-  "description": "A convert helper for Braft Editor.",
+  "description": "A convert helper for Kedao Editor.",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist/ && BABEL_ENV=production ./node_modules/.bin/babel src --copy-files --source-maps --extensions .es6,.es,.js,.jsx --out-dir dist",
@@ -10,18 +10,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/margox/braft-convert.git"
+    "url": "git+https://github.com/banyudu/kedao.git"
   },
   "keywords": [
     "convert",
-    "braft"
+    "kedao"
   ],
-  "author": "Margox",
+  "author": "banyudu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/margox/braft-convert/issues"
+    "url": "https://github.com/banyudu/kedao/issues"
   },
-  "homepage": "https://github.com/margox/braft-convert#readme",
+  "homepage": "https://github.com/banyudu/kedao#readme",
   "dependencies": {
     "draft-convert": "^2.0.0",
     "draft-js": "^0.10.3"

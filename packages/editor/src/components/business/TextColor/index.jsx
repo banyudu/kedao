@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContentUtils } from 'braft-utils';
+import { ContentUtils } from '@kedao/utils';
 
 import DropDown from 'components/common/DropDown';
 import BuiltinColorPicker from 'components/common/ColorPicker';

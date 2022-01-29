@@ -2,7 +2,7 @@ import React from 'react'
 import Immutable from 'immutable'
 import languages from './languages'
 import * as TableUtils from './utils'
-import BraftEditor from 'braft-editor'
+import Editor from '@kedao/editor'
 
 const getIndexFromEvent = (event, ignoredTarget = '') => {
   if (!isNaN(event)) {
@@ -20,7 +20,7 @@ export const getLanguage = (editor) => {
   const lang = editor.editorProps.language
 
   if (typeof lang === 'function') {
-    return lang(languages, 'braft-table')
+    return lang(languages, '@kedao/table')
   } else {
     return languages[lang] || languages['zh']
   }
@@ -424,7 +424,7 @@ export class Table extends React.Component {
   // 校验一下删除行、列之后的内容还有没有，没有的话则创建一个空的editorState，防止后续取不到值报错
   validateContent = (editorState) => {
     const len = editorState.toRAW(true).blocks.length
-    return len ? editorState : BraftEditor.createEditorState(null)
+    return len ? editorState : Editor.createEditorState(null)
   }
 
   removeRow = () => {

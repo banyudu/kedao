@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { ContentUtils, ColorUtils } from 'braft-utils';
+import { ContentUtils, ColorUtils } from '@kedao/utils';
 import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection';
 import { handleNewLine } from 'draftjs-utils';
@@ -13,7 +13,7 @@ export const keyCommandHandlers = (command, editorState, editor) => {
     return 'handled';
   }
 
-  if (command === 'braft-save') {
+  if (command === 'kedao-save') {
     if (editor.editorProps.onSave) {
       editor.editorProps.onSave(editorState);
     }
@@ -183,21 +183,21 @@ export const dropHandlers = (selectionState, dataTransfer, editor) => {
     return 'handled';
   }
 
-  if (window && window.__BRAFT_DRAGING__IMAGE__) {
+  if (window && window.__KEDAO_DRAGING__IMAGE__) {
     let nextEditorState = EditorState.forceSelection(
       editor.state.editorState,
       selectionState,
     );
     nextEditorState = ContentUtils.insertMedias(nextEditorState, [
-      window.__BRAFT_DRAGING__IMAGE__.mediaData,
+      window.__KEDAO_DRAGING__IMAGE__.mediaData,
     ]);
     nextEditorState = ContentUtils.removeBlock(
       nextEditorState,
-      window.__BRAFT_DRAGING__IMAGE__.block,
+      window.__KEDAO_DRAGING__IMAGE__.block,
       nextEditorState.getSelection(),
     );
 
-    window.__BRAFT_DRAGING__IMAGE__ = null;
+    window.__KEDAO_DRAGING__IMAGE__ = null;
 
     editor.lockOrUnlockEditor(true);
     editor.setValue(nextEditorState);
@@ -219,11 +219,11 @@ export const handleFiles = (files, editor) => {
 
   if (pasteImage) {
     files.slice(0, imagePasteLimit).forEach((file) => {
-      if (file && file.type.indexOf('image') > -1 && editor.braftFinder) {
+      if (file && file.type.indexOf('image') > -1 && editor.finder) {
         const validateResult = validateFn ? validateFn(file) : true;
         if (validateResult instanceof Promise) {
           validateResult.then(() => {
-            editor.braftFinder.uploadImage(file, (image) => {
+            editor.finder.uploadImage(file, (image) => {
               if (editor.isLiving) {
                 editor.setValue(
                   ContentUtils.insertMedias(editor.state.editorState, [image]),
@@ -232,7 +232,7 @@ export const handleFiles = (files, editor) => {
             });
           });
         } else if (validateResult) {
-          editor.braftFinder.uploadImage(file, (image) => {
+          editor.finder.uploadImage(file, (image) => {
             if (editor.isLiving) {
               editor.setValue(
                 ContentUtils.insertMedias(editor.state.editorState, [image]),

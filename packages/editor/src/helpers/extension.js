@@ -418,8 +418,8 @@ const useExtension = (extension) => {
   return true;
 };
 
-export const createExtensibleEditor = (BraftEditor) => {
-  BraftEditor.use = useExtension;
+export const createExtensibleEditor = (editor) => {
+  editor.use = useExtension;
 
-  return BraftEditor;
+  return editor;
 };

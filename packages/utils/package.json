@@ -1,7 +1,7 @@
 {
   "name": "@kedao/utils",
   "version": "0.0.1",
-  "description": "Utils for Braft Editor",
+  "description": "Utils for Kedao Editor",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist/ && BABEL_ENV=production ./node_modules/.bin/babel src --copy-files --extensions .es6,.es,.js,.jsx --out-dir dist",
@@ -9,18 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/margox/braft-utils.git"
+    "url": "https://github.com/banyudu/kedao.git"
   },
   "keywords": [
-    "braft",
+    "kedao",
     "editor",
     "utils"
   ],
-  "author": "Margox",
+  "author": "banyudu",
   "license": "MIT",
   "peerDependencies": {
     "immutable": "~3.7.4",
-    "braft-convert": "^2.1.4",
+    "@kedao/convert": "^2.1.4",
     "draft-js": "^0.10.5",
     "draftjs-utils": "^0.9.4"
   },

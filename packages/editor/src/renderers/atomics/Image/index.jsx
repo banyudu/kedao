@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
-import { ContentUtils } from 'braft-utils';
+import { ContentUtils } from '@kedao/utils';
 
 import { imageControlItems } from 'configs/controls';
 import Switch from 'components/common/Switch';
@@ -143,7 +143,7 @@ class Image extends React.Component {
       return false;
     }
 
-    window.__BRAFT_DRAGING__IMAGE__ = {
+    window.__KEDAO_DRAGING__IMAGE__ = {
       block: this.props.block,
       mediaData: {
         type: 'IMAGE',
@@ -164,7 +164,7 @@ class Image extends React.Component {
   };
 
   handleDragEnd = () => {
-    window.__BRAFT_DRAGING__IMAGE__ = null;
+    window.__KEDAO_DRAGING__IMAGE__ = null;
     return false;
   };
 

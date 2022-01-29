@@ -24,9 +24,9 @@ module.exports = merge(baseConfigs, {
     'draft-js': 'draft-js',
     'draft-convert': 'draft-convert',
     'draftjs-utils': 'draftjs-utils',
-    'braft-finder': 'braft-finder',
-    'braft-utils': 'braft-utils',
-    'braft-convert': 'braft-convert',
+    '@kedao/finder': '@kedao/finder',
+    '@kedao/utils': '@kedao/utils',
+    '@kedao/convert': '@kedao/convert',
     immutable: 'immutable',
   },
   optimization: {

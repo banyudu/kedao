@@ -3,7 +3,7 @@ import { compressImage } from 'utils/image'
 
 const defaultValidator = () => true
 
-export default class BraftFinderController {
+export default class FinderController {
 
   constructor (props = {}) {
 

@@ -4,7 +4,7 @@
   "description": "Rich Text Editor Based On Draft.js",
   "main": "dist/index.js",
   "types": "index.d.ts",
-  "author": "Margox",
+  "author": "banyudu",
   "scripts": {
     "start": "webpack-dev-server --config ./playground/webpack/webpack.config.dev.js -d --history-api-fallback --no-inline --progress --colors --host 0.0.0.0",
     "server": "cross-env NODE_ENV=development node ./playground/server.js",
@@ -12,9 +12,9 @@
     "build-output-css": "node ./playground/webpack/scss-output.js",
     "test": "npm run lint"
   },
-  "repository": "https://github.com/margox/braft",
+  "repository": "https://github.com/banyudu/kedao",
   "keywords": [
-    "braft",
+    "kedao",
     "draft",
     "draft-js",
     "rich",
@@ -82,10 +82,10 @@
   "dependencies": {
     "@babel/runtime": "^7.8.7",
     "@maximusft/mergeclassnames": "github:MaximusFT/mergeClassNames",
-    "braft-convert": "^2.3.0",
-    "braft-extensions": "beta",
-    "braft-finder": "0.0.21",
-    "braft-utils": "^3.0.8",
+    "@kedao/convert": "^2.3.0",
+    "@kedao/extensions": "beta",
+    "@kedao/finder": "0.0.21",
+    "@kedao/utils": "^3.0.8",
     "draft-convert": "^2.1.8",
     "draft-js": "^0.11.5",
     "draft-js-multidecorators": "^1.0.0",

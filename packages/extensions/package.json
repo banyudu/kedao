@@ -1,7 +1,7 @@
 {
   "name": "@kedao/extensions",
   "version": "0.0.1",
-  "description": "Extensions for Braft Editor",
+  "description": "Extensions for Kedao Editor",
   "main": "dist/index.js",
   "scripts": {
     "start": "webpack-dev-server --config ./build/webpack.development.js -d --history-api-fallback --no-inline --progress --colors --host 127.0.0.1",
@@ -12,7 +12,7 @@
   "keywords": [
     "draft-js",
     "draft",
-    "braft",
+    "kedao",
     "extensions"
   ],
   "devDependencies": {
@@ -25,7 +25,7 @@
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "braft-editor": "^2.1.31",
+    "@kedao/editor": "^2.1.31",
     "copy-webpack-plugin": "^4.5.3",
     "cross-env": "^7.0.0",
     "css-loader": "^3.4.2",
@@ -59,10 +59,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "braft-convert": "^2.1.10",
-    "braft-utils": "^3.0.12"
+    "@kedao/convert": "^2.1.10",
+    "@kedao/utils": "^3.0.12"
   },
-  "author": "Margox",
+  "author": "banyudu",
   "license": "ISC",
   "peerDependencies": {
     "draft-js-prism": "^1.0.6",

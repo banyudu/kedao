@@ -1,6 +1,6 @@
 import { Modifier, EditorState, SelectionState, RichUtils, CharacterMetadata, AtomicBlockUtils, convertFromRaw } from 'draft-js'
 import { setBlockData, getSelectionEntity } from 'draftjs-utils'
-import { convertHTMLToRaw } from 'braft-convert'
+import { convertHTMLToRaw } from '@kedao/convert'
 import Immutable from 'immutable'
 
 const strictBlockTypes = ['atomic']

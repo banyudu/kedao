@@ -3,7 +3,7 @@ import React from 'react'
 import { Map } from 'immutable'
 import { EditorState, SelectionState } from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
-import { ContentUtils } from 'braft-utils'
+import { ContentUtils } from '@kedao/utils'
 import Prism from 'prismjs'
 
 class CodeBlockWrapper extends React.Component {
@@ -101,8 +101,8 @@ class CodeBlockWrapper extends React.Component {
   render () {
 
     return (
-      <div className="braft-code-block-wrapper">
-        <div className="braft-code-block-header" contentEditable={false}>
+      <div className="kedao-code-block-wrapper">
+        <div className="kedao-code-block-header" contentEditable={false}>
           <div className="syntax-switcher">
             <span>{this.state.syntaxName}</span>
             <ul className="syntax-list">
@@ -110,7 +110,7 @@ class CodeBlockWrapper extends React.Component {
             </ul>
           </div>
         </div>
-        <pre className={`braft-code-block${this.props.showLineNumber ? ' show-line-number' : ''}`} data-syntax={this.state.syntax}>{this.props.children}</pre>
+        <pre className={`kedao-code-block${this.props.showLineNumber ? ' show-line-number' : ''}`} data-syntax={this.state.syntax}>{this.props.children}</pre>
       </div>
     )
 

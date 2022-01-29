@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ContentUtils } from 'braft-utils';
+import { ContentUtils } from '@kedao/utils';
 
 import Switch from 'components/common/Switch';
 import DropDown from 'components/common/DropDown';

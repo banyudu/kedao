@@ -3,7 +3,7 @@ import {
   convertHTMLToEditorState,
   convertEditorStateToRaw,
   convertEditorStateToHTML,
-} from 'braft-convert';
+} from '@kedao/convert';
 
 import {
   createExtensibleEditor,
@@ -15,7 +15,7 @@ import {
   compositeBlockExportFn,
 } from 'helpers/extension';
 import { getDecorators } from 'renderers';
-import BraftEditor, { EditorState } from 'editor';
+import Editor, { EditorState } from 'editor';
 
 EditorState.prototype.setConvertOptions = function setConvertOptions(
   options = {},
@@ -46,7 +46,7 @@ EditorState.createFrom = (content, options = {}) => {
   const customOptions = { ...options };
   customOptions.unitExportFn =
     customOptions.unitExportFn ||
-    BraftEditor.defaultProps.converts.unitExportFn;
+    Editor.defaultProps.converts.unitExportFn;
   customOptions.styleImportFn = compositeStyleImportFn(
     customOptions.styleImportFn,
     customOptions.editorId,
@@ -131,9 +131,9 @@ EditorState.createFrom = (content, options = {}) => {
   return editorState;
 };
 
-BraftEditor.createEditorState = EditorState.createFrom;
+Editor.createEditorState = EditorState.createFrom;
 
-export default createExtensibleEditor(BraftEditor);
+export default createExtensibleEditor(Editor);
 export { EditorState, getDecorators };
 
 // 2.1 version development plan

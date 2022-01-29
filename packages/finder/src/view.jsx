@@ -8,7 +8,7 @@ const defaultAccepts = {
   audio: 'audio/mp3'
 }
 
-export default class BraftFinderView extends React.Component {
+export default class FinderView extends React.Component {
 
   static defaultProps = {
     accepts: defaultAccepts,
@@ -103,7 +103,7 @@ export default class BraftFinderView extends React.Component {
     const { items, draging, confirmable, fileAccept, external, showExternalForm, allowExternal } = this.state
 
     return (
-      <div className="braft-finder">
+      <div className="kedao-finder">
         <div
           onDragEnter={this.handleDragEnter}
           onDragLeave={this.handleDragLeave}
@@ -119,9 +119,9 @@ export default class BraftFinderView extends React.Component {
           {items.length ? (
             <div className="bf-list-wrap">
               <div className="bf-list-tools">
-                <span onClick={this.selectAllItems} className="bf-select-all"><i className="braft-icon-done"></i> {language.selectAll}</span>
-                <span onClick={this.deselectAllItems} disabled={!confirmable} className="bf-deselect-all"><i className="braft-icon-close"></i> {language.deselect}</span>
-                <span onClick={this.removeSelectedItems} disabled={!confirmable} className="bf-remove-selected"><i className="braft-icon-bin"></i> {language.removeSelected}</span>
+                <span onClick={this.selectAllItems} className="bf-select-all"><i className="kedao-icon-done"></i> {language.selectAll}</span>
+                <span onClick={this.deselectAllItems} disabled={!confirmable} className="bf-deselect-all"><i className="kedao-icon-close"></i> {language.deselect}</span>
+                <span onClick={this.removeSelectedItems} disabled={!confirmable} className="bf-remove-selected"><i className="kedao-icon-bin"></i> {language.removeSelected}</span>
               </div>
               {this.buildItemList()}
             </div>
@@ -154,9 +154,9 @@ export default class BraftFinderView extends React.Component {
                 className="bf-toggle-external-form"
               >
                 {showExternalForm ? (
-                  <span className="bf-bottom-text"><i className="braft-icon-add"></i> {language.addLocalFile}</span>
+                  <span className="bf-bottom-text"><i className="kedao-icon-add"></i> {language.addLocalFile}</span>
                 ) : (
-                  <span className="bf-bottom-text"><i className="braft-icon-add"></i> {language.addExternalSource}</span>
+                  <span className="bf-bottom-text"><i className="kedao-icon-add"></i> {language.addExternalSource}</span>
                 )}
               </span>
             ) : null}
@@ -176,7 +176,7 @@ export default class BraftFinderView extends React.Component {
     return (
       <ul className="bf-list">
         <li className="bf-add-item">
-          <i className="braft-icon-add"></i>
+          <i className="kedao-icon-add"></i>
           <input accept={this.state.fileAccept} onChange={this.reslovePickedFiles} multiple type="file"/>
         </li>
         {this.state.items.map((item, index) => {
@@ -201,7 +201,7 @@ export default class BraftFinderView extends React.Component {
               previewerComponents = (
                 <div className="bf-icon bf-video" title={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-film"></i>
+                  <i className="kedao-icon-film"></i>
                   <span>{item.name || item.url}</span>
                 </div>
               )
@@ -210,7 +210,7 @@ export default class BraftFinderView extends React.Component {
               previewerComponents = (
                 <div className="bf-icon bf-audio" title={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-music"></i>
+                  <i className="kedao-icon-music"></i>
                   <span>{item.name || item.url}</span>
                 </div>
               )
@@ -219,7 +219,7 @@ export default class BraftFinderView extends React.Component {
               previewerComponents = (
                 <div className="bf-icon bf-embed" title={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-code"></i>
+                  <i className="kedao-icon-code"></i>
                   <span>{item.name || this.props.language.embed}</span>
                 </div>
               )
@@ -228,7 +228,7 @@ export default class BraftFinderView extends React.Component {
               previewerComponents = (
                 <a className="bf-icon bf-file" title={item.url} href={item.url}>
                   {progressMarker}
-                  <i className="braft-icon-file-text"></i>
+                  <i className="kedao-icon-file-text"></i>
                   <span>{item.name || item.url}</span>
                 </a>
               )
@@ -249,7 +249,7 @@ export default class BraftFinderView extends React.Component {
               onClick={this.toggleSelectItem}
             >
               {previewerComponents}
-              <span data-id={item.id} onClick={this.removeItem} className="bf-item-remove braft-icon-close"></span>
+              <span data-id={item.id} onClick={this.removeItem} className="bf-item-remove kedao-icon-close"></span>
               <span className="bf-item-title">{item.name}</span>
             </li>
           )

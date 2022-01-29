@@ -1,9 +1,9 @@
-import 'braft-editor/dist/index.css'
+import '@kedao/editor/dist/index.css'
 import './styles.scss'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import BraftEditor from 'braft-editor'
+import Editor from '@kedao/editor'
 import Table from '../src/table'
 import ColorPicker from '../src/color-picker'
 import Markdown from '../src/markdown'
@@ -11,7 +11,7 @@ import HeaderId from '../src/header-id'
 import Mention, { defaultSuggestionsFilter } from '../src/mention'
 
 
-BraftEditor.use(Table({
+Editor.use(Table({
   defaultColumns: 4,
   defaultRows: 5,
   withDropdown: true,
@@ -19,13 +19,13 @@ BraftEditor.use(Table({
   exportAttrString: 'border="1" style="border-collapse: collapse"'
 }))
 
-BraftEditor.use(Markdown())
+Editor.use(Markdown())
 
-BraftEditor.use(ColorPicker())
+Editor.use(ColorPicker())
 
-BraftEditor.use(HeaderId());
+Editor.use(HeaderId());
 const [mentionExtension, MentionSuggestions] = Mention()
-BraftEditor.use(mentionExtension)
+Editor.use(mentionExtension)
 
 /** test mention plugin mock data */
 const mentions = [
@@ -72,7 +72,7 @@ class Demo extends React.Component {
     super(props)
 
     this.state = {
-      editorState: BraftEditor.createEditorState(tableStr3),
+      editorState: Editor.createEditorState(tableStr3),
       suggestions: mentions
     }
   }
@@ -98,7 +98,7 @@ class Demo extends React.Component {
     return (
       <div>
         <div className="demo-editor" id="demo">
-          <BraftEditor
+          <Editor
             extendControls={[{
               key: 'log-html',
               type: 'button',

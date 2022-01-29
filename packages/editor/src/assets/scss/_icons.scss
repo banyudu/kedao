@@ -1,7 +1,7 @@
 $woffPath: '../icons/icons.woff';
 
 @font-face {
-  font-family: 'braft-icons';
+  font-family: 'kedao-icons';
   src: url($woffPath);
   font-weight: normal;
   font-style: normal;
@@ -12,7 +12,7 @@ $woffPath: '../icons/icons.woff';
 
   [class^="bfi-"], [class*=" bfi-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'braft-icons' !important;
+    font-family: 'kedao-icons' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -227,12 +227,12 @@ $woffPath: '../icons/icons.woff';
     content: "\e91f";
   }
   .bfi-text-color .path1:before {
-    font-family: 'braft-icons' !important;
+    font-family: 'kedao-icons' !important;
     content: "\e930";
     opacity: 0.36;
   }
   .bfi-text-color .path2:before {
-    font-family: 'braft-icons' !important;
+    font-family: 'kedao-icons' !important;
     content: "\e931";
     margin-left: -1em;
   }

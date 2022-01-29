@@ -1,5 +1,5 @@
 import React from 'react'
-import { ContentUtils } from 'braft-utils'
+import { ContentUtils } from '@kedao/utils'
 import './styles.scss'
 
 // https://www.iconfinder.com/iconsets/emoji-18
@@ -42,8 +42,8 @@ export default (options) => {
       ref: bindControlRef,
       autoHide: closeOnBlur,
       component: (
-        <div className="braft-emoticon-picker">
-          <div className="braft-emoticons-list">
+        <div className="kedao-emoticon-picker">
+          <div className="kedao-emoticons-list">
             {emoticons.map((item, index) => <img onClick={() => {
               insertEmoticon(props.editor, props.editorState, item)
               closeOnSelect && controlRef && controlRef.hide()
@@ -56,10 +56,10 @@ export default (options) => {
     component: (props) => {
       const entity = props.contentState.getEntity(props.entityKey)
       const { src } = entity.getData()
-      return <span className="braft-emoticon-in-editor"><img src={src}/>{props.children}</span>
+      return <span className="kedao-emoticon-in-editor"><img src={src}/>{props.children}</span>
     },
     importer: (nodeName, node) => {
-      if (nodeName.toLowerCase() === 'span' && node.classList && node.classList.contains('braft-emoticon-wrap')) {
+      if (nodeName.toLowerCase() === 'span' && node.classList && node.classList.contains('kedao-emoticon-wrap')) {
         const imgNode = node.querySelector('img')
         const src = imgNode.getAttribute('src')
         // 移除img节点以避免生成atomic block
@@ -72,7 +72,7 @@ export default (options) => {
     },
     exporter: (entityObject, initialText) => {
       const { src } = entityObject.data
-      return <span className="braft-emoticon-wrap"><img src={src}/>{initialText}</span>
+      return <span className="kedao-emoticon-wrap"><img src={src}/>{initialText}</span>
     }
   }
 

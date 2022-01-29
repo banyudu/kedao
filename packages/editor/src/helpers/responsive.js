@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-import { BaseUtils } from 'braft-utils';
+import { BaseUtils } from '@kedao/utils';
 
 let resizeEventHandlers = [];
 let responsiveHelperInited = false;

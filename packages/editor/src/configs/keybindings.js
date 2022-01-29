@@ -9,7 +9,7 @@ export default (customKeyBindingFn) => (event) => {
     (KeyBindingUtil.hasCommandModifier(event) ||
       KeyBindingUtil.isCtrlKeyCommand(event))
   ) {
-    return 'braft-save';
+    return 'kedao-save';
   }
 
   if (customKeyBindingFn) {

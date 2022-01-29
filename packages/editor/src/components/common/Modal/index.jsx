@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import { BaseUtils } from 'braft-utils';
+import { BaseUtils } from '@kedao/utils';
 import mergeClassNames from '@maximusft/mergeclassnames';
 
 import './style.scss';
@@ -64,7 +64,7 @@ class Modal extends React.Component {
     super(props);
     this.active = false;
     // eslint-disable-next-line new-cap
-    this.componentId = `BRAFT-MODAL-${BaseUtils.UniueIndex()}`;
+    this.componentId = `KEDAO-MODAL-${BaseUtils.UniueIndex()}`;
   }
 
   componentDidMount() {

@@ -18,7 +18,7 @@ export type EditorState = _EditorState & {
 
 export { DraftEditorProps };
 
-export interface BraftEditorProps {
+export interface KedaoEditorProps {
   value?: EditorState;
   defaultValue?: EditorState;
   placeholder?: string;
@@ -84,7 +84,7 @@ export interface BraftEditorProps {
   handleKeyCommand?: Function;
 }
 
-export default class BraftEditor extends React.Component<BraftEditorProps> {
+export default class KedaoEditor extends React.Component<KedaoEditorProps> {
   static createEditorState(
     content: string | any,
     options?: object
@@ -266,7 +266,7 @@ export type ImageControlType =
 
 export type HooksType = {
   ['toggle-link']?: HookFunc,
-  ['open-braft-finder']?: HookFunc,
+  ['open-kedao-finder']?: HookFunc,
   ['toggle-inline-style']?: HookFunc,
   ['change-block-type']?: HookFunc,
   ['exec-editor-command']?: HookFunc,
@@ -294,7 +294,7 @@ export type HookFunc = (any: any) => any;
 
 export type HookType =
   | 'toggle-link'
-  | 'open-braft-finder'
+  | 'open-kedao-finder'
   | 'toggle-inline-style'
   | 'change-block-type'
   | 'exec-editor-command'

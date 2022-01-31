@@ -1,22 +1,22 @@
-const merge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CssProcessor = require('cssnano');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const path = require('path');
-const baseConfigs = require('./webpack.base');
+const merge = require('webpack-merge')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CssProcessor = require('cssnano')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const path = require('path')
+const baseConfigs = require('./webpack.base')
 
 module.exports = merge(baseConfigs, {
   mode: 'production',
   devtool: 'source-map',
   context: path.join(__dirname, '../src'),
   entry: {
-    index: './index.jsx',
+    index: './index.jsx'
   },
   output: {
     path: path.join(__dirname, '../dist'),
     filename: 'index.js',
     publicPath: '/',
-    libraryTarget: 'umd',
+    libraryTarget: 'umd'
   },
   externals: {
     react: 'react',
@@ -27,10 +27,10 @@ module.exports = merge(baseConfigs, {
     'braft-finder': 'braft-finder',
     'braft-utils': 'braft-utils',
     'braft-convert': 'braft-convert',
-    immutable: 'immutable',
+    immutable: 'immutable'
   },
   optimization: {
-    minimize: false,
+    minimize: false
   },
   plugins: [
     new ExtractTextPlugin('index.css'),
@@ -40,11 +40,11 @@ module.exports = merge(baseConfigs, {
       sourceMap: true,
       cssProcessorOptions: {
         discardComments: {
-          removeAll: true,
+          removeAll: true
         },
         zindex: false,
-        safe: true,
-      },
-    }),
-  ],
-});
+        safe: true
+      }
+    })
+  ]
+})

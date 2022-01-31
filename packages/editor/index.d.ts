@@ -2,112 +2,112 @@ import {
   Editor,
   EditorProps as DraftEditorProps,
   EditorState as _EditorState,
-  RawDraftContentState,
+  RawDraftContentState
 } from 'draft-js'
 import * as Immutable from 'immutable'
 import * as React from 'react'
 
 export type EditorState = _EditorState & {
-  [key: string]: any;
-  setConvertOptions(option?: Object): void;
-  toHTML(option?: Object): string;
-  toRAW(noStringify?: boolean): RawDraftContentState | string;
-  toText(): string;
-  isEmpty(): boolean;
-};
+  [key: string]: any
+  setConvertOptions: (option?: Object) => void
+  toHTML: (option?: Object) => string
+  toRAW: (noStringify?: boolean) => RawDraftContentState | string
+  toText: () => string
+  isEmpty: () => boolean
+}
 
-export { DraftEditorProps };
+export { DraftEditorProps }
 
 export interface KedaoEditorProps {
-  value?: EditorState;
-  defaultValue?: EditorState;
-  placeholder?: string;
-  id?: string,
-  editorId?: string,
-  readOnly?: boolean;
+  value?: EditorState
+  defaultValue?: EditorState
+  placeholder?: string
+  id?: string
+  editorId?: string
+  readOnly?: boolean
   language?:
-    | 'zh'
-    | 'zh-hant'
-    | 'en'
-    | 'tr'
-    | 'ru'
-    | 'jpn'
-    | 'kr'
-    | 'pl'
-    | 'fr'
-    | 'vi-vn'
-    | ((languages: any, context: any) => any);
-  controls?: ControlType[];
-  excludeControls?: BuiltInControlType[];
-  extendControls?: ExtendControlType[];
-  componentBelowControlBar?: React.ReactNode;
-  media?: MediaType;
-  imageControls?: ImageControlType[];
-  imageResizable?: boolean;
-  imageEqualRatio?: boolean;
-  headings?: string[];
-  colors?: string[];
-  fontSizes?: number[];
-  fontFamilies?: { name: string; family: string }[];
-  lineHeights?: number[];
-  textAligns?: ('left' | 'center' | 'right' | 'justify')[];
-  letterSpacings?: number[];
-  emojis?: string[];
-  draftProps?: DraftEditorProps;
-  blockRenderMap?: Immutable.Map<any, any> | Function;
-  blockRendererFn?: Function;
-  converts?: object;
-  hooks?: HooksType;
-  textBackgroundColor?: boolean;
-  allowInsertLinkText?: boolean;
-  defaultLinkTarget?: string;
-  stripPastedStyles?: boolean;
-  fixPlaceholder?: boolean;
-  className?: string;
-  style?: React.CSSProperties;
-  controlBarClassName?: string;
-  controlBarStyle?: React.CSSProperties;
-  contentClassName?: string;
-  contentStyle?: React.CSSProperties;
-  onChange?: (editorState: EditorState) => void;
-  onFocus?: Function;
-  onBlur?: Function;
-  onTab?: Function;
-  onDelete?: Function;
-  onSave?: Function;
-  onFullscreen?: Function;
-  handlePastedFiles?: Function;
-  handleDroppedFiles?: Function;
-  handlePastedText?: Function;
-  handleBeforeInput?: Function;
-  handleReturn?: Function;
-  handleKeyCommand?: Function;
+  | 'zh'
+  | 'zh-hant'
+  | 'en'
+  | 'tr'
+  | 'ru'
+  | 'jpn'
+  | 'kr'
+  | 'pl'
+  | 'fr'
+  | 'vi-vn'
+  | ((languages: any, context: any) => any)
+  controls?: ControlType[]
+  excludeControls?: BuiltInControlType[]
+  extendControls?: ExtendControlType[]
+  componentBelowControlBar?: React.ReactNode
+  media?: MediaType
+  imageControls?: ImageControlType[]
+  imageResizable?: boolean
+  imageEqualRatio?: boolean
+  headings?: string[]
+  colors?: string[]
+  fontSizes?: number[]
+  fontFamilies?: Array<{ name: string, family: string }>
+  lineHeights?: number[]
+  textAligns?: Array<'left' | 'center' | 'right' | 'justify'>
+  letterSpacings?: number[]
+  emojis?: string[]
+  draftProps?: DraftEditorProps
+  blockRenderMap?: Immutable.Map<any, any> | Function
+  blockRendererFn?: Function
+  converts?: object
+  hooks?: HooksType
+  textBackgroundColor?: boolean
+  allowInsertLinkText?: boolean
+  defaultLinkTarget?: string
+  stripPastedStyles?: boolean
+  fixPlaceholder?: boolean
+  className?: string
+  style?: React.CSSProperties
+  controlBarClassName?: string
+  controlBarStyle?: React.CSSProperties
+  contentClassName?: string
+  contentStyle?: React.CSSProperties
+  onChange?: (editorState: EditorState) => void
+  onFocus?: Function
+  onBlur?: Function
+  onTab?: Function
+  onDelete?: Function
+  onSave?: Function
+  onFullscreen?: Function
+  handlePastedFiles?: Function
+  handleDroppedFiles?: Function
+  handlePastedText?: Function
+  handleBeforeInput?: Function
+  handleReturn?: Function
+  handleKeyCommand?: Function
 }
 
 export default class KedaoEditor extends React.Component<KedaoEditorProps> {
-  static createEditorState(
+  static createEditorState (
     content: string | any,
-    options?: object
-  ): EditorState;
-  static use(extension: object | object[]): void;
-  undo(): void;
-  redo(): void;
-  clearEditorContent(): void;
-  forceRender(): void;
-  setValue(editorState: EditorState): void;
-  getValue(): EditorState;
-  getFinderInstance(): any;
-  getDraftInstance(): Editor;
+    options?: object,
+  ): EditorState
+  static use (extension: object | object[]): void
+  undo (): void
+  redo (): void
+  clearEditorContent (): void
+  forceRender (): void
+  setValue (editorState: EditorState): void
+  getValue (): EditorState
+  getFinderInstance (): any
+  getDraftInstance (): Editor
 }
 
 export type ControlType =
   | BuiltInControlType
   | {
-  key: BuiltInControlType;
-  title?: string;
-  text?: string | React.ReactNode;
-}
-  | ExtendControlType;
+    key: BuiltInControlType
+    title?: string
+    text?: string | React.ReactNode
+  }
+  | ExtendControlType
 
 export type BuiltInControlType =
   | 'blockquote'
@@ -138,116 +138,108 @@ export type BuiltInControlType =
   | 'text-indent'
   | 'underline'
   | 'undo'
-  | 'table';
+  | 'table'
 
 export type ExtendControlType =
-  'separator'
+  | 'separator'
   | {
-  key: string;
-  type: 'button';
-  title?: string;
-  className?: string;
-  html?: string | null;
-  text?: string | React.ReactNode;
-  onClick?: Function;
-  disabled?: boolean;
-}
+    key: string
+    type: 'button'
+    title?: string
+    className?: string
+    html?: string | null
+    text?: string | React.ReactNode
+    onClick?: Function
+    disabled?: boolean
+  }
   | {
-  key: string;
-  type: 'dropdown';
-  title?: string;
-  className?: string;
-  html?: string | null;
-  text?: string | React.ReactNode;
-  showArrow?: boolean;
-  arrowActive?: boolean;
-  autoHide?: boolean;
-  component: React.ReactNode;
-  disabled?: boolean;
-}
+    key: string
+    type: 'dropdown'
+    title?: string
+    className?: string
+    html?: string | null
+    text?: string | React.ReactNode
+    showArrow?: boolean
+    arrowActive?: boolean
+    autoHide?: boolean
+    component: React.ReactNode
+    disabled?: boolean
+  }
   | {
-  key: string;
-  type: 'modal';
-  title?: string;
-  className?: string;
-  html?: string | null;
-  text?: string | React.ReactNode;
-  onClick?: Function;
-  disabled?: boolean;
-  modal: {
-    id: string;
-    title?: string;
-    className?: string;
-    width?: number;
-    height?: number;
-    showFooter?: boolean;
-    showCancel?: boolean;
-    showConfirm?: boolean;
-    confirmable?: boolean;
-    showClose?: boolean;
-    closeOnBlur?: boolean;
-    closeOnConfirm?: boolean;
-    closeOnCancel?: boolean;
-    cancelText?: string;
-    confirmText?: string;
-    bottomText?: React.ReactNode;
-    onConfirm?: Function;
-    onCancel?: Function;
-    onClose?: Function;
-    onBlur?: Function;
-    children: React.ReactNode;
-  };
-}
-  | {
-  key: string;
-  type: 'component';
-  component: React.ReactNode;
-};
-
-export type MediaType = {
-  items?: any[],
-  uploadFn?: (
-    params: {
-      file: File;
-      progress: (progress: number) => void;
-      libraryId: string;
-      success: (
-        res: {
-          url: string;
-          meta?: {
-            id?: string;
-            title?: string;
-            alt?: string;
-            loop?: boolean;
-            autoPlay?: boolean;
-            controls?: boolean;
-            poster?: string;
-          };
-        }
-      ) => void;
-      error: (
-        err: {
-          msg: string;
-        }
-      ) => void;
+    key: string
+    type: 'modal'
+    title?: string
+    className?: string
+    html?: string | null
+    text?: string | React.ReactNode
+    onClick?: Function
+    disabled?: boolean
+    modal: {
+      id: string
+      title?: string
+      className?: string
+      width?: number
+      height?: number
+      showFooter?: boolean
+      showCancel?: boolean
+      showConfirm?: boolean
+      confirmable?: boolean
+      showClose?: boolean
+      closeOnBlur?: boolean
+      closeOnConfirm?: boolean
+      closeOnCancel?: boolean
+      cancelText?: string
+      confirmText?: string
+      bottomText?: React.ReactNode
+      onConfirm?: Function
+      onCancel?: Function
+      onClose?: Function
+      onBlur?: Function
+      children: React.ReactNode
     }
-  ) => void;
-  validateFn?: (file: File) => boolean | PromiseLike<any>;
+  }
+  | {
+    key: string
+    type: 'component'
+    component: React.ReactNode
+  }
+
+export interface MediaType {
+  items?: any[]
+  uploadFn?: (params: {
+    file: File
+    progress: (progress: number) => void
+    libraryId: string
+    success: (res: {
+      url: string
+      meta?: {
+        id?: string
+        title?: string
+        alt?: string
+        loop?: boolean
+        autoPlay?: boolean
+        controls?: boolean
+        poster?: string
+      }
+    }) => void
+    error: (err: { msg: string }) => void
+  }) => void
+  validateFn?: (file: File) => boolean | PromiseLike<any>
   accepts?: {
-    image?: string | false;
-    video?: string | false;
-    audio?: string | false;
-  };
+    image?: string | false
+    video?: string | false
+    audio?: string | false
+  }
   externals?: {
-    image?: boolean;
-    video?: boolean;
-    audio?: boolean;
-    embed?: boolean;
-  };
-  onInsert?: Function;
-  onChange?: Function;
-  pasteImage?: boolean;
-};
+    image?: boolean
+    video?: boolean
+    audio?: boolean
+    embed?: boolean
+  }
+  onInsert?: Function
+  onChange?: Function
+  pasteImage?: boolean
+}
 
 export type ImageControlType =
   | 'float-left'
@@ -259,38 +251,38 @@ export type ImageControlType =
   | 'size'
   | 'remove'
   | {
-  text?: string;
-  render?: (mediaData: any) => void;
-  onClick?: (block: any) => void;
-};
+    text?: string
+    render?: (mediaData: any) => void
+    onClick?: (block: any) => void
+  }
 
-export type HooksType = {
-  ['toggle-link']?: HookFunc,
-  ['open-kedao-finder']?: HookFunc,
-  ['toggle-inline-style']?: HookFunc,
-  ['change-block-type']?: HookFunc,
-  ['exec-editor-command']?: HookFunc,
-  ['insert-emoji']?: HookFunc,
-  ['toggle-font-family']?: HookFunc,
-  ['toggle-font-size']?: HookFunc,
-  ['toggle-letter-spacing']?: HookFunc,
-  ['toggle-line-height']?: HookFunc,
-  ['toggle-text-alignment']?: HookFunc,
-  ['toggle-text-color']?: HookFunc,
-  ['toggle-text-background-color']?: HookFunc,
-  ['select-medias']?: HookFunc,
-  ['deselect-medias']?: HookFunc,
-  ['remove-medias']?: HookFunc,
-  ['insert-medias']?: HookFunc,
-  ['select-files']?: HookFunc,
-  ['set-image-link-target']?: HookFunc,
-  ['set-image-link']?: HookFunc,
-  ['set-image-size']?: HookFunc,
-  ['set-image-float']?: HookFunc,
-  ['set-image-alignment']?: HookFunc,
-};
+export interface HooksType {
+  ['toggle-link']?: HookFunc
+  ['open-kedao-finder']?: HookFunc
+  ['toggle-inline-style']?: HookFunc
+  ['change-block-type']?: HookFunc
+  ['exec-editor-command']?: HookFunc
+  ['insert-emoji']?: HookFunc
+  ['toggle-font-family']?: HookFunc
+  ['toggle-font-size']?: HookFunc
+  ['toggle-letter-spacing']?: HookFunc
+  ['toggle-line-height']?: HookFunc
+  ['toggle-text-alignment']?: HookFunc
+  ['toggle-text-color']?: HookFunc
+  ['toggle-text-background-color']?: HookFunc
+  ['select-medias']?: HookFunc
+  ['deselect-medias']?: HookFunc
+  ['remove-medias']?: HookFunc
+  ['insert-medias']?: HookFunc
+  ['select-files']?: HookFunc
+  ['set-image-link-target']?: HookFunc
+  ['set-image-link']?: HookFunc
+  ['set-image-size']?: HookFunc
+  ['set-image-float']?: HookFunc
+  ['set-image-alignment']?: HookFunc
+}
 
-export type HookFunc = (any: any) => any;
+export type HookFunc = (any: any) => any
 
 export type HookType =
   | 'toggle-link'
@@ -310,4 +302,4 @@ export type HookType =
   | 'deselect-medias'
   | 'remove-medias'
   | 'insert-medias'
-  | 'select-files';
+  | 'select-files'

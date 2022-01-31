@@ -1,18 +1,17 @@
-const path = require('path');
-const fs = require('fs');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   module: {
     rules: [
       {
         test: /\.(scss|css)$/,
-        use: ExtractTextPlugin.extract(['css-loader', 'sass-loader']),
+        use: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
       },
       {
         test: /\.(js|jsx)$/,
         exclude: [/node_modules/, /dist/],
-        use: 'babel-loader',
+        use: 'babel-loader'
       },
       {
         test: /\.(png|svg)$/,
@@ -21,10 +20,10 @@ module.exports = {
             loader: 'url-loader',
             options: {
               limit: 8192,
-              name: '[name]_[hash:6].[ext]',
-            },
-          },
-        ],
+              name: '[name]_[hash:6].[ext]'
+            }
+          }
+        ]
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -34,19 +33,19 @@ module.exports = {
             options: {
               limit: 20000,
               name: '[name].[ext]',
-              publicPath: './',
-            },
-          },
-        ],
-      },
-    ],
+              publicPath: './'
+            }
+          }
+        ]
+      }
+    ]
   },
   resolve: {
     modules: ['src', 'node_modules'],
     mainFields: ['browser', 'jsnext:main', 'main'],
     alias: {
-      scssinc: path.join(__dirname, '../src/assets/scss/_inc.scss'),
+      scssinc: path.join(__dirname, '../src/assets/scss/_inc.scss')
     },
-    extensions: ['.js', '.jsx'],
-  },
-};
+    extensions: ['.js', '.jsx']
+  }
+}

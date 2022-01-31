@@ -51,7 +51,7 @@ import React from 'react'
 import KedaoEditor from '@kedao/editor'
 import '@kedao/editor/dist/index.css'
 
-export default class EditorDemo extends React.Component {
+export default class EditorDemo extends React.Component<any, any> {
 
   state = {
       editorState: null

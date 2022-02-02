@@ -1,6 +1,6 @@
 {
   "name": "@kedao/convert",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A convert helper for Kedao Editor.",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -14,6 +14,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "rm -rf lib/ && tsc"
   },
   "repository": {

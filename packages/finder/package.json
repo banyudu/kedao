@@ -1,6 +1,6 @@
 {
   "name": "@kedao/finder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Media manager for Kedao Editor.",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "rm -rf lib/ && tsc",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

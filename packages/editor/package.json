@@ -1,6 +1,6 @@
 {
   "name": "@kedao/editor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Rich Text Editor Based On Draft.js",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -14,6 +14,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "rm -rf lib && tsc"
   },
   "repository": "https://github.com/banyudu/kedao",

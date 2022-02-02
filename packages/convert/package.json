@@ -2,9 +2,9 @@
   "name": "@kedao/convert",
   "version": "0.0.1",
   "description": "A convert helper for Kedao Editor.",
-  "main": "lib/index.js",
-  "module": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "files": [
     "lib",
     "src"

@@ -2,9 +2,9 @@
   "name": "@kedao/editor",
   "version": "0.0.1",
   "description": "Rich Text Editor Based On Draft.js",
-  "main": "lib/index.js",
-  "module": "lib/index.js",
-  "types": "index.d.ts",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "author": "banyudu",
   "files": [
     "lib"

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
 import { showModal } from '../../common/Modal'
-
 import './style.scss'
+import { MdClose, MdCode, MdMusicVideo, MdPlayArrow, MdVideocam } from 'react-icons/md'
+import { defaultIconProps } from '../../../configs/props'
 
 const playViaModal = (title, component, language) =>
   showModal({
@@ -13,10 +13,10 @@ const playViaModal = (title, component, language) =>
     showFooter: false
   })
 
-const typeIconsMap = {
-  video: 'bfi-film',
-  audio: 'bfi-music',
-  embed: 'bfi-code'
+const iconMap = {
+  video: <MdVideocam {...defaultIconProps} />,
+  audio: <MdMusicVideo {...defaultIconProps} />,
+  embed: <MdCode {...defaultIconProps} />
 }
 
 const PlayerModal = ({
@@ -32,11 +32,11 @@ const PlayerModal = ({
   return (
     <div className={`bf-player-holder ${type}`}>
       <div className="icon-badge">
-        <i className={typeIconsMap[type]} />
+        {iconMap[type] ?? null}
         <span className="text">{language.media[type]}</span>
       </div>
       <button onMouseDown={onRemove} className="button-remove">
-        <i className="bfi-close" />
+        <MdClose {...defaultIconProps} />
       </button>
       <button
         onMouseDown={() =>
@@ -44,7 +44,7 @@ const PlayerModal = ({
         }
         className="button-play"
       >
-        <i className="bfi-play_arrow" />
+        <MdPlayArrow {...defaultIconProps} />
       </button>
       {name ? <h5 className="bf-name">{name}</h5> : null}
       <h6 className="bf-url">{url}</h6>

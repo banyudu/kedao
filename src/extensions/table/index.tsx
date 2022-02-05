@@ -12,6 +12,8 @@ import { getLanguage, tableRenderMap } from './render'
 import DropdownControl from './dropdown'
 import * as _TableUtils from './utils'
 import { tableImportFn, tableExportFn } from './converts'
+import { MdGridOn } from 'react-icons/md'
+import { defaultIconProps } from '../../configs/props'
 
 ContentUtils.registerStrictBlockType('table-cell')
 
@@ -55,7 +57,7 @@ export default (options) => {
             replace: 'table',
             type: 'dropdown',
             title: language.insertTable,
-            text: <i className="bfi-table"></i>,
+            text: <MdGridOn {...defaultIconProps} />,
             showArrow: false,
             autoHide: true,
             ref: dropdownRef,
@@ -85,7 +87,7 @@ export default (options) => {
             replace: 'table',
             type: 'button',
             title: getLanguage(props.editor).insertTable,
-            text: <i className="bfi-table"></i>,
+            text: <MdGridOn {...defaultIconProps} />,
             onClick: () => {
               props.editor.setValue(
                 TableUtils.insertTable(

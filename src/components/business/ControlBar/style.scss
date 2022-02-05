@@ -96,6 +96,8 @@
 
   .dropdown-handler{
     border-radius: 2px;
+    display: flex;
+    align-items: center;
   }
 
   .control-item{
@@ -130,12 +132,6 @@
         height: 36px;
         font-size: 18px;
         line-height: 36px;
-      }
-      .bfi-undo,
-      .bfi-redo{
-        &::before{
-          font-size: 14px;
-        }
       }
     }
   }

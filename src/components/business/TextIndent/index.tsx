@@ -1,4 +1,6 @@
 import React from 'react'
+import { MdFormatIndentDecrease, MdFormatIndentIncrease } from 'react-icons/md';
+import { defaultIconProps } from '../../../configs/props';
 import { ContentUtils } from '../../../utils'
 
 import ControlGroup from '..//ControlGroup'
@@ -49,7 +51,7 @@ class TextIndent extends React.Component<any, any> {
           }`}
           onClick={this.increaseIndent}
         >
-          <i className="bfi-indent-increase" />
+          <MdFormatIndentIncrease {...defaultIconProps} />
         </button>
         <button
           key={1}
@@ -59,7 +61,7 @@ class TextIndent extends React.Component<any, any> {
           className="control-item button button-indent-decrease"
           onClick={this.decreaseIndent}
         >
-          <i className="bfi-indent-decrease" />
+          <MdFormatIndentDecrease {...defaultIconProps} />
         </button>
       </ControlGroup>
     )

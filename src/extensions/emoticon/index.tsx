@@ -1,4 +1,6 @@
 import React from 'react'
+import { MdInsertEmoticon } from 'react-icons/md'
+import { defaultIconProps } from '../../configs/props'
 import { ContentUtils } from '../../utils'
 import './styles.scss'
 
@@ -46,7 +48,7 @@ export default (options) => {
       key: 'EMOTICON',
       replace: 'emoji',
       type: 'dropdown',
-      text: <i className="bfi-emoji"></i>,
+      text: <MdInsertEmoticon {...defaultIconProps} />,
       showArrow: false,
       ref: bindControlRef,
       autoHide: closeOnBlur,

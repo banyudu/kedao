@@ -288,3 +288,7 @@ export default {
   onSave: null,
   fixPlaceholder: false
 }
+
+export const defaultIconProps = {
+  size: 20
+}

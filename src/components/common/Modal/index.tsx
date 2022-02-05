@@ -2,8 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BaseUtils } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
-
 import './style.scss'
+import { MdClose } from 'react-icons/md'
+import { defaultIconProps } from '../../../configs/props'
 
 export const showModal = (props) => {
   const hostNode = document.createElement('div')
@@ -203,7 +204,7 @@ class Modal extends React.Component<any, any> {
                 onClick={this.close}
                 className="bf-modal-close-button"
               >
-                <i className="bfi-close" />
+                <MdClose {...defaultIconProps} />
               </button>
             )}
           </div>

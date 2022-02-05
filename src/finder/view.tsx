@@ -1,6 +1,8 @@
 import './styles.scss'
 import React from 'react'
 import { UniqueIndex } from './utils/base'
+import { MdAdd, MdAudiotrack, MdClose, MdCode, MdDescription, MdDone, MdMovie, MdRemove } from 'react-icons/md';
+import { defaultIconProps } from '../configs/props';
 
 const defaultAccepts = {
   image: 'image/png,image/jpeg,image/gif,image/webp,image/apng,image/svg',
@@ -148,21 +150,24 @@ export default class FinderView extends React.Component<any, any> {
             <div className="bf-list-wrap">
               <div className="bf-list-tools">
                 <span onClick={this.selectAllItems} className="bf-select-all">
-                  <i className="kedao-icon-done"></i> {language.selectAll}
+                  <MdDone {...defaultIconProps} />
+                  {language.selectAll}
                 </span>
                 <span
                   onClick={this.deselectAllItems}
                   className="bf-deselect-all"
                   { ...{ disabled: !confirmable } }
                 >
-                  <i className="kedao-icon-close"></i> {language.deselect}
+                  <MdClose {...defaultIconProps} />
+                  {language.deselect}
                 </span>
                 <span
                   onClick={this.removeSelectedItems}
                   className="bf-remove-selected"
                   { ...{ disabled: !confirmable } }
                 >
-                  <i className="kedao-icon-bin"></i> {language.removeSelected}
+                  <MdRemove {...defaultIconProps} />
+                  {language.removeSelected}
                 </span>
               </div>
               {this.buildItemList()}
@@ -258,12 +263,14 @@ export default class FinderView extends React.Component<any, any> {
                 {showExternalForm
                   ? (
                   <span className="bf-bottom-text">
-                    <i className="kedao-icon-add"></i> {language.addLocalFile}
+                    <MdAdd {...defaultIconProps} />
+                    {language.addLocalFile}
                   </span>
                     )
                   : (
                   <span className="bf-bottom-text">
-                    <i className="kedao-icon-add"></i>{' '}
+                    <MdAdd {...defaultIconProps} />
+                    {' '}
                     {language.addExternalSource}
                   </span>
                     )}
@@ -295,7 +302,7 @@ export default class FinderView extends React.Component<any, any> {
     return (
       <ul className="bf-list">
         <li className="bf-add-item">
-          <i className="kedao-icon-add"></i>
+          <MdAdd {...defaultIconProps} />
           <input
             accept={this.state.fileAccept}
             onChange={this.reslovePickedFiles}
@@ -332,7 +339,7 @@ export default class FinderView extends React.Component<any, any> {
               previewerComponents = (
                 <div className="bf-icon bf-video" title={item.url}>
                   {progressMarker}
-                  <i className="kedao-icon-film"></i>
+                  <MdMovie {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
                 </div>
               )
@@ -341,7 +348,7 @@ export default class FinderView extends React.Component<any, any> {
               previewerComponents = (
                 <div className="bf-icon bf-audio" title={item.url}>
                   {progressMarker}
-                  <i className="kedao-icon-music"></i>
+                  <MdAudiotrack {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
                 </div>
               )
@@ -350,7 +357,7 @@ export default class FinderView extends React.Component<any, any> {
               previewerComponents = (
                 <div className="bf-icon bf-embed" title={item.url}>
                   {progressMarker}
-                  <i className="kedao-icon-code"></i>
+                  <MdCode {...defaultIconProps} />
                   <span>{item.name || this.props.language.embed}</span>
                 </div>
               )
@@ -359,7 +366,7 @@ export default class FinderView extends React.Component<any, any> {
               previewerComponents = (
                 <a className="bf-icon bf-file" title={item.url} href={item.url}>
                   {progressMarker}
-                  <i className="kedao-icon-file-text"></i>
+                  <MdDescription {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
                 </a>
               )
@@ -380,11 +387,11 @@ export default class FinderView extends React.Component<any, any> {
               onClick={this.toggleSelectItem}
             >
               {previewerComponents}
-              <span
+              <MdClose
+                {...defaultIconProps}
                 data-id={item.id}
                 onClick={this.removeItem}
-                className="bf-item-remove kedao-icon-close"
-              ></span>
+              />
               <span className="bf-item-title">{item.name}</span>
             </li>
           )

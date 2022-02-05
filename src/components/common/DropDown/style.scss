@@ -99,7 +99,9 @@
   }
   .dropdown-handler{
     position: relative;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 36px;
     background-color: transparent;
@@ -128,15 +130,6 @@
         line-height: 36px;
         text-align: center;
       }
-    }
-    .bfi-drop-down{
-      float: right;
-      width: 30px;
-      height: 36px;
-      font-size: 16px;
-      line-height: 36px;
-      text-align: center;
-      pointer-events: none;
     }
   }
   &.active{

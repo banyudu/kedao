@@ -16,6 +16,8 @@
   }
 
   button.dropdown-handler {
+    display: flex;
+    align-items: center;
     span{
       width: 36px;
       padding: 0;

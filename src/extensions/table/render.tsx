@@ -3,6 +3,8 @@ import Immutable from 'immutable'
 import languages from './languages'
 import * as TableUtils from './utils'
 import Editor from '../../editor'
+import { MdAdd, MdDelete } from 'react-icons/md'
+import { defaultIconProps } from '../../configs/props'
 
 const getIndexFromEvent = (event, ignoredTarget = '') => {
   if (!isNaN(event)) {
@@ -823,7 +825,7 @@ export class Table extends React.Component<any, any> {
                 className="bf-insert-col-before"
                 onClick={this.insertColumn}
               >
-                <i className="bfi-add"></i>
+                <MdAdd {...defaultIconProps} />
               </div>
             </div>
             <div className="bf-col-tool-center">
@@ -833,7 +835,7 @@ export class Table extends React.Component<any, any> {
                 className="bf-remove-col"
                 onClick={this.removeColumn}
               >
-                <i className="bfi-bin"></i>
+                <MdDelete {...defaultIconProps} />
               </div>
             </div>
             <div className="bf-col-tool-right">
@@ -843,7 +845,7 @@ export class Table extends React.Component<any, any> {
                 className="bf-insert-col-after"
                 onClick={this.insertColumn}
               >
-                <i className="bfi-add"></i>
+                <MdAdd {...defaultIconProps} />
               </div>
             </div>
           </div>
@@ -879,7 +881,7 @@ export class Table extends React.Component<any, any> {
                 className="bf-insert-row-before"
                 onClick={this.insertRow}
               >
-                <i className="bfi-add"></i>
+                <MdAdd {...defaultIconProps} />
               </div>
             </div>
             <div className="bf-row-tool-center">
@@ -889,7 +891,7 @@ export class Table extends React.Component<any, any> {
                 className="bf-remove-row"
                 onClick={this.removeRow}
               >
-                <i className="bfi-bin"></i>
+                <MdDelete {...defaultIconProps} />
               </div>
             </div>
             <div className="bf-row-tool-down">
@@ -899,7 +901,7 @@ export class Table extends React.Component<any, any> {
                 className="bf-insert-row-after"
                 onClick={this.insertRow}
               >
-                <i className="bfi-add"></i>
+                <MdAdd {...defaultIconProps} />
               </div>
             </div>
           </div>

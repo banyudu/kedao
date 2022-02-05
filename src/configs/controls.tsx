@@ -1,74 +1,105 @@
 import React from 'react'
+import {
+  MdUndo,
+  MdRedo,
+  MdClear,
+  MdFormatBold,
+  MdHorizontalRule,
+  MdFormatItalic,
+  MdFormatUnderlined,
+  MdFormatStrikethrough,
+  MdSuperscript,
+  MdSubscript,
+  MdFormatQuote,
+  MdCode,
+  MdFormatListBulleted,
+  MdFormatListNumbered,
+  MdLibraryMusic,
+  MdInsertEmoticon,
+  MdClearAll,
+  MdFullscreen,
+  MdFullscreenExit,
+  MdFormatAlignLeft,
+  MdFormatAlignRight,
+  MdFormatAlignCenter,
+  MdFormatSize,
+  MdLink,
+  MdRemove
+} from 'react-icons/md'
+
+import { defaultIconProps } from './props'
+
+const iconProps = { ...defaultIconProps }
 
 export default function Controls (lang, editor) {
   return [
     {
       key: 'undo',
       title: lang.controls.undo,
-      text: <i className="bfi-undo" />,
+      text: <MdUndo {...iconProps} />,
       type: 'editor-method',
       command: 'undo'
     },
     {
       key: 'redo',
       title: lang.controls.redo,
-      text: <i className="bfi-redo" />,
+      text: <MdRedo {...iconProps} />,
       type: 'editor-method',
       command: 'redo'
     },
     {
       key: 'remove-styles',
       title: lang.controls.removeStyles,
-      text: <i className="bfi-format_clear" />,
+      text: <MdClear {...iconProps} />,
       type: 'editor-method',
       command: 'removeSelectionInlineStyles'
     },
     {
       key: 'hr',
       title: lang.controls.hr,
-      text: <i className="bfi-hr" />,
+      text: <MdHorizontalRule {...iconProps} />,
       type: 'editor-method',
       command: 'insertHorizontalLine'
     },
     {
       key: 'bold',
       title: lang.controls.bold,
-      text: <i className="bfi-bold" />,
+      text: <MdFormatBold {...iconProps} />,
       type: 'inline-style',
       command: 'bold'
     },
     {
       key: 'italic',
       title: lang.controls.italic,
-      text: <i className="bfi-italic" />,
+      text: <MdFormatItalic {...iconProps} />,
       type: 'inline-style',
       command: 'italic'
     },
     {
       key: 'underline',
       title: lang.controls.underline,
-      text: <i className="bfi-underlined" />,
+      text: <MdFormatUnderlined {...iconProps} />,
       type: 'inline-style',
       command: 'underline'
     },
     {
       key: 'strike-through',
       title: lang.controls.strikeThrough,
-      text: <i className="bfi-strikethrough" />,
+      text: <MdFormatStrikethrough {...iconProps} />,
       type: 'inline-style',
       command: 'strikethrough'
     },
     {
       key: 'superscript',
       title: lang.controls.superScript,
-      text: <i className="bfi-superscript" />,
+      text: <MdSuperscript {...iconProps} />,
       type: 'inline-style',
       command: 'superscript'
     },
     {
       key: 'subscript',
       title: lang.controls.subScript,
-      text: <i className="bfi-subscript" />,
+      text: <MdSubscript {...iconProps} />,
       type: 'inline-style',
       command: 'subscript'
     },
@@ -80,28 +111,28 @@ export default function Controls (lang, editor) {
     {
       key: 'blockquote',
       title: lang.controls.blockQuote,
-      text: <i className="bfi-quote" />,
+      text: <MdFormatQuote {...iconProps} />,
       type: 'block-type',
       command: 'blockquote'
     },
     {
       key: 'code',
       title: lang.controls.code,
-      text: <i className="bfi-code" />,
+      text: <MdCode {...iconProps} />,
       type: 'block-type',
       command: 'code-block'
     },
     {
       key: 'list-ul',
       title: lang.controls.unorderedList,
-      text: <i className="bfi-list" />,
+      text: <MdFormatListBulleted {...iconProps} />,
       type: 'block-type',
       command: 'unordered-list-item'
     },
     {
       key: 'list-ol',
       title: lang.controls.orderedList,
-      text: <i className="bfi-list-numbered" />,
+      text: <MdFormatListNumbered {...iconProps} />,
       type: 'block-type',
       command: 'ordered-list-item'
     },
@@ -148,19 +179,19 @@ export default function Controls (lang, editor) {
     {
       key: 'media',
       title: lang.controls.media,
-      text: <i className="bfi-media" />,
+      text: <MdLibraryMusic {...iconProps} />,
       type: 'media'
     },
     {
       key: 'emoji',
       title: lang.controls.emoji,
-      text: <i className="bfi-emoji" />,
+      text: <MdInsertEmoticon {...iconProps} />,
       type: 'emoji'
     },
     {
       key: 'clear',
       title: lang.controls.clear,
-      text: <i className="bfi-clear_all" />,
+      text: <MdClearAll {...iconProps} />,
       type: 'editor-method',
       command: 'clearEditorContent'
     },
@@ -169,10 +200,7 @@ export default function Controls (lang, editor) {
       title: editor.state.isFullscreen
         ? lang.controls.exitFullscreen
         : lang.controls.fullscreen,
-      text: (
-        <i
-          className={editor.state.isFullscreen ? 'bfi-fullscreen-exit' : 'bfi-fullscreen'} />
-      ),
+      text: editor.state.isFullscreen ? <MdFullscreenExit {...iconProps} /> : <MdFullscreen {...iconProps} />,
       type: 'editor-method',
       command: 'toggleFullscreen'
     },
@@ -197,35 +225,35 @@ export default function Controls (lang, editor) {
 
 export const imageControlItems = {
   'float-left': {
-    text: <span data-float="left">&#xe91e;</span>,
+    text: <MdFormatAlignLeft {...iconProps} />,
     command: 'setImageFloat|left'
   },
   'float-right': {
-    text: <span data-float="right">&#xe914;</span>,
+    text: <MdFormatAlignRight {...iconProps} />,
     command: 'setImageFloat|right'
   },
   'align-left': {
-    text: <span data-align="left">&#xe027;</span>,
+    text: <MdFormatAlignLeft {...iconProps} />,
     command: 'setImageAlignment|left'
   },
   'align-center': {
-    text: <span data-align="center">&#xe028;</span>,
+    text: <MdFormatAlignCenter {...iconProps} />,
     command: 'setImageAlignment|center'
   },
   'align-right': {
-    text: <span data-align="right">&#xe029;</span>,
+    text: <MdFormatAlignRight {...iconProps} />,
     command: 'setImageAlignment|right'
   },
   size: {
-    text: <span>&#xe3c2;</span>,
+    text: <MdFormatSize {...iconProps} />,
     command: 'toggleSizeEditor'
   },
   link: {
-    text: <span>&#xe91a;</span>,
+    text: <MdLink {...iconProps} />,
     command: 'toggleLinkEditor'
   },
   remove: {
-    text: <span>&#xe9ac;</span>,
+    text: <MdRemove {...iconProps} />,
     command: 'removeImage'
   }
 }

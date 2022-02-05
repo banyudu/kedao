@@ -1,10 +1,22 @@
-/* eslint-disable camelcase */
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
-
 import ControlGroup from '../ControlGroup'
+import {
+  MdFormatAlignCenter,
+  MdFormatAlignJustify,
+  MdFormatAlignLeft,
+  MdFormatAlignRight,
+} from 'react-icons/md'
+import { defaultIconProps } from '../../../configs/props'
+
+const iconMap = {
+  left: <MdFormatAlignLeft {...defaultIconProps } />,
+  center: <MdFormatAlignCenter {...defaultIconProps } />,
+  right: <MdFormatAlignRight {...defaultIconProps } />,
+  justify: <MdFormatAlignJustify {...defaultIconProps } />,
+}
 
 class TextAlign extends React.Component<any, any> {
   state = {
@@ -59,7 +71,7 @@ class TextAlign extends React.Component<any, any> {
             )}
             onClick={this.setAlignment}
           >
-            <i className={`bfi-align-${item}`} />
+            {iconMap[item] ?? null}
           </button>
         ))}
       </ControlGroup>

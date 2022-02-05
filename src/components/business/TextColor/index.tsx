@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { ContentUtils } from '../../../utils'
-
 import DropDown from '../../common/DropDown'
 import BuiltinColorPicker from '../../common/ColorPicker'
-
 import './style.scss'
+import { MdFormatColorText } from 'react-icons/md'
+import { defaultIconProps } from '../../../configs/props'
 
 class TextColor extends React.Component<any, any> {
   state = {
@@ -57,7 +57,7 @@ class TextColor extends React.Component<any, any> {
   };
 
   render () {
-    const captionStyle: any = {}
+    const captionStyle: CSSProperties = {}
     let currentColor = null
     const { colorType } = this.state
 
@@ -81,12 +81,7 @@ class TextColor extends React.Component<any, any> {
       }
     })
 
-    const caption = (
-      <i style={captionStyle} className="bfi-text-color">
-        <span className="path1" />
-        <span className="path2" />
-      </i>
-    )
+    const caption = <MdFormatColorText {...defaultIconProps} style={captionStyle} />
 
     const ColorPicker = this.props.colorPicker || BuiltinColorPicker
 

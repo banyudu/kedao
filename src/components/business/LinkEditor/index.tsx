@@ -4,8 +4,9 @@ import { ContentUtils } from '../../../utils'
 import Switch from '../../common/Switch'
 import DropDown from '../../common/DropDown'
 import ControlGroup from '../ControlGroup'
-
+import { MdClose, MdLink, MdLinkOff } from 'react-icons/md'
 import './style.scss'
+import { defaultIconProps } from '../../../configs/props'
 
 class LinkEditor extends React.Component<any, any> {
   constructor (props) {
@@ -137,7 +138,7 @@ class LinkEditor extends React.Component<any, any> {
   render () {
     const { allowInsertLinkText } = this.props
     const { text, href, target, textSelected } = this.state
-    const caption = <i className="bfi-link" />
+    const caption = <MdLink {...defaultIconProps} />
 
     return (
       <ControlGroup>
@@ -191,7 +192,7 @@ class LinkEditor extends React.Component<any, any> {
                 role="presentation"
                 className="primary button-remove-link pull-left"
               >
-                <i className="bfi-close" />
+                <MdClose {...defaultIconProps} />
                 <span>{this.props.language.linkEditor.removeLink}</span>
               </a>
               <button
@@ -219,7 +220,7 @@ class LinkEditor extends React.Component<any, any> {
           onClick={this.handleUnlink}
           disabled={!textSelected || !href}
         >
-          <i className="bfi-link-off" />
+          <MdLinkOff {...defaultIconProps} />
         </button>
       </ControlGroup>
     )

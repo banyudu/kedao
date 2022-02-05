@@ -103,7 +103,7 @@
       border: none;
       color: #fff;
       &:hover{
-        background-color: lighten($COLOR_ACTIVE, 20%); // background-color: $COLOR_ACTIVE - 20;
+        background-color: lighten($COLOR_ACTIVE, 20%);
       }
     }
   }
@@ -282,12 +282,11 @@
       content: '';
       transform: translateX(-5px);
     }
-    a{
+    a {
       display: inline-block;
       min-width: 40px;
       height: 40px;
       color: rgba(#fff, .5);
-      font-family: 'kedao-icons' !important;
       font-size: 18px;
       font-weight: normal;
       line-height: 40px;

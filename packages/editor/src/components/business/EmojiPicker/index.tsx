@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 
 import DropDown from '../../common/DropDown'
 

@@ -8,7 +8,7 @@ import {
   convertFromRaw
 } from 'draft-js'
 import { setBlockData, getSelectionEntity } from 'draftjs-utils'
-import { convertHTMLToRaw } from '@kedao/convert'
+import { convertHTMLToRaw } from '../convert'
 import Immutable from 'immutable'
 
 const strictBlockTypes = ['atomic']

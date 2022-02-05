@@ -2,9 +2,6 @@ lockfileVersion: 5.3
 
 specifiers:
   '@draft-js-plugins/mention': ^5.1.1
-  '@kedao/convert': workspace:*
-  '@kedao/finder': workspace:*
-  '@kedao/utils': workspace:*
   '@types/draft-js': ^0.10.38
   '@types/react': ^16.9.23
   copyfiles: ^2.4.1
@@ -23,8 +20,6 @@ specifiers:
 
 dependencies:
   '@draft-js-plugins/mention': 5.1.1_draft-js@0.11.7
-  '@kedao/convert': link:../convert
-  '@kedao/utils': link:../utils
   draft-convert: 2.1.12_draft-js@0.11.7
   draft-js: 0.11.7
   draft-js-multidecorators: 1.0.0
@@ -36,7 +31,6 @@ dependencies:
   uuid: 8.3.2
 
 devDependencies:
-  '@kedao/finder': link:../finder
   '@types/draft-js': 0.10.45
   '@types/react': 16.14.22
   copyfiles: 2.4.1

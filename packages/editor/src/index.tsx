@@ -3,7 +3,7 @@ import {
   convertHTMLToEditorState,
   convertEditorStateToRaw,
   convertEditorStateToHTML
-} from '@kedao/convert'
+} from './convert'
 
 import {
   createExtensibleEditor,

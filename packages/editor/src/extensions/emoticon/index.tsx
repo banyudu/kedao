@@ -1,5 +1,5 @@
 import React from 'react'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../utils'
 import './styles.scss'
 
 // https://www.iconfinder.com/iconsets/emoji-18

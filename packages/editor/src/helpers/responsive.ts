@@ -1,4 +1,4 @@
-import { BaseUtils } from '@kedao/utils'
+import { BaseUtils } from '../utils'
 
 let resizeEventHandlers = []
 let responsiveHelperInited = false

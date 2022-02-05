@@ -1,5 +1,5 @@
 import { RichUtils } from 'draft-js'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../utils'
 import * as TableUtils from './utils'
 
 // todo

@@ -1,6 +1,6 @@
 import { EditorState, ContentBlock, CharacterMetadata, genKey } from 'draft-js'
 import Immutable from 'immutable'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../utils'
 
 // 简易的值比较方法
 const valueComparison = (value1, value2, operator) => {

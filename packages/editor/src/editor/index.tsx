@@ -1,6 +1,6 @@
 import React from 'react'
-import Finder from '@kedao/finder'
-import { ColorUtils, ContentUtils } from '@kedao/utils'
+import Finder from '../finder'
+import { ColorUtils, ContentUtils } from '../utils'
 import { Editor, EditorState } from 'draft-js'
 import { Map } from 'immutable'
 import mergeClassNames from 'merge-class-names'
@@ -290,7 +290,6 @@ class KedaoEditor extends React.Component<any, any> {
     }
 
     if (!newEditorState.convertOptions) {
-      console.log('setConvertOptions is: ', newEditorState.setConvertOptions)
       newEditorState.setConvertOptions(getConvertOptions(this.editorProps))
     }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 
 import Switch from '../../common/Switch'
 import DropDown from '../../common/DropDown'

@@ -1,6 +1,6 @@
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 
 import getEditorControls from '../../../configs/controls'
 import LinkEditor from '../LinkEditor'

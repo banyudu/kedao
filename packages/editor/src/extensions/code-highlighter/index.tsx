@@ -3,7 +3,7 @@ import React from 'react'
 import { Map } from 'immutable'
 import { EditorState, SelectionState } from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../utils'
 import Prism from 'prismjs'
 
 class CodeBlockWrapper extends React.Component<any, any> {

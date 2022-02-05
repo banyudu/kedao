@@ -1,5 +1,5 @@
 import { EditorState, SelectionState, Modifier } from 'draft-js'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 
 const insertImage = (editorState, matchArr) => {
   const currentContent = editorState.getCurrentContent()

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 
 import './style.scss'
 

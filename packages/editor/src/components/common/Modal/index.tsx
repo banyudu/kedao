@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BaseUtils } from '@kedao/utils'
+import { BaseUtils } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
 
 import './style.scss'

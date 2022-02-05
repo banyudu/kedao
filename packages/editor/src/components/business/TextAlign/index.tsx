@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
 
 import ControlGroup from '../ControlGroup'

@@ -20,7 +20,7 @@ export default class Finder extends FinderController {
 
     const language =
       (typeof componentProps.language === 'function'
-        ? componentProps.language(languages, '@kedao/finder')
+        ? componentProps.language(languages, 'kedao-finder')
         : languages[componentProps.language]) || languages.zh
 
     return (

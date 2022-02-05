@@ -1,6 +1,6 @@
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/common/Switch'
 

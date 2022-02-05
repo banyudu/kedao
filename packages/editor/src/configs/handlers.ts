@@ -1,4 +1,4 @@
-import { ContentUtils, ColorUtils } from '@kedao/utils'
+import { ContentUtils, ColorUtils } from '../utils'
 import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js'
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
 import { handleNewLine } from 'draftjs-utils'

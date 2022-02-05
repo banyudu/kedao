@@ -1,5 +1,5 @@
 import React from 'react'
-import { ContentUtils } from '@kedao/utils'
+import { ContentUtils } from '../../../utils'
 
 import DropDown from '../../common/DropDown'
 import BuiltinColorPicker from '../../common/ColorPicker'

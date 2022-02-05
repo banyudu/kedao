@@ -15,7 +15,7 @@
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "copyfiles": "copyfiles -u 1 src/**/*.{scss,woff,ttf,json} lib/",
+    "copyfiles": "copyfiles -u 1 'src/**/*.{scss,woff,ttf,json}' lib/",
     "build:lib": "rm -rf lib && tsc && npm run copyfiles",
     "build:watch": "tsc -w"
   },
@@ -32,7 +32,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@kedao/finder": "workspace:*",
     "@types/draft-js": "^0.10.38",
     "@types/react": "^16.9.23",
     "copyfiles": "^2.4.1",
@@ -42,8 +41,6 @@
   },
   "dependencies": {
     "@draft-js-plugins/mention": "^5.1.1",
-    "@kedao/convert": "workspace:*",
-    "@kedao/utils": "workspace:*",
     "draft-convert": "^2.1.8",
     "draft-js": "^0.11.5",
     "draft-js-multidecorators": "^1.0.0",

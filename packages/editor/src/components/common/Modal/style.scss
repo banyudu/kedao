@@ -1,4 +1,4 @@
-@import '~scssinc';
+@import '../../../assets/scss/_inc.scss';
 
 .bf-modal{
   position: fixed;
@@ -99,7 +99,7 @@
   background-color: $COLOR_ACTIVE;
   color: #fff;
   &:hover{
-    background-color: $COLOR_ACTIVE - 20;
+    background-color: lighten($COLOR_ACTIVE, 20%); // background-color: $COLOR_ACTIVE - 20;
   }
   &.disabled{
     opacity: .3;

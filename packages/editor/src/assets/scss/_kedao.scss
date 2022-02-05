@@ -1,4 +1,4 @@
-@import '~scssinc';
+@import './_inc.scss';
 
 .bf-content{
   height: 500px;
@@ -103,7 +103,7 @@
       border: none;
       color: #fff;
       &:hover{
-        background-color: $COLOR_ACTIVE - 20;
+        background-color: lighten($COLOR_ACTIVE, 20%); // background-color: $COLOR_ACTIVE - 20;
       }
     }
   }

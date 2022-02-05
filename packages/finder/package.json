@@ -18,7 +18,9 @@
     "url": "https://github.com/banyudu/kedao.git"
   },
   "scripts": {
-    "build": "rm -rf lib/ && tsc",
+    "copyfiles": "copyfiles -u 1 src/**/*.{scss,woff,ttf,json} lib/",
+    "build:lib": "rm -rf lib/ && tsc && npm run copyfiles",
+    "build:watch": "tsc -w",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,8 +33,10 @@
   "author": "banyudu",
   "license": "MIT",
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "copyfiles": "^2.4.1"
+  }
 }

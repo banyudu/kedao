@@ -15,7 +15,8 @@
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "rm -rf lib/ && tsc"
+    "build:lib": "rm -rf lib/ && tsc",
+    "build:watch": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -32,13 +33,9 @@
   },
   "homepage": "https://github.com/banyudu/kedao#readme",
   "dependencies": {
-    "draft-convert": "^2.0.0"
+    "draft-convert": "^2.1.12"
   },
   "devDependencies": {
     "typescript": "^4.5.5"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0",
-    "draft-js": "^0.10.3"
   }
 }

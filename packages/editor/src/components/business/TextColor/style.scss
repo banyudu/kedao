@@ -1,4 +1,4 @@
-@import '~scssinc';
+@import '../../../assets/scss/_inc.scss';
 
 .text-color-dropdown {
 
@@ -27,7 +27,7 @@
   .bf-text-color-picker-wrap{
     overflow: hidden;
   }
-  
+
   .bf-color-switch-buttons{
     height: 36px;
     button{

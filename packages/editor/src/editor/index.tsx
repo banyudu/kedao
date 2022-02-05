@@ -39,7 +39,7 @@ import {
 import ControlBar from '../components/business/ControlBar'
 
 import 'draft-js/dist/Draft.css'
-import 'assets/scss/_base.scss'
+import '../assets/scss/_base.scss'
 
 const buildHooks =
   (hooks) =>
@@ -258,7 +258,7 @@ class KedaoEditor extends React.Component<any, any> {
   componentWillUnmount () {
     this.isLiving = false
     if (this.controlBarInstance) {
-      this.controlBarInstance.closeFinder()
+      this.controlBarInstance.current?.closeFinder()
     }
   }
 
@@ -290,6 +290,7 @@ class KedaoEditor extends React.Component<any, any> {
     }
 
     if (!newEditorState.convertOptions) {
+      console.log('setConvertOptions is: ', newEditorState.setConvertOptions)
       newEditorState.setConvertOptions(getConvertOptions(this.editorProps))
     }
 

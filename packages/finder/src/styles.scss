@@ -1,4 +1,4 @@
-@import "~scssbase";
+@import "./assets/scss/base.scss";
 
 .kedao-finder {
   .bf-uploader {
@@ -59,7 +59,7 @@
       float: right;
       color: $COLOR_DANGER;
       &:hover {
-        color: $COLOR_DANGER - 30;
+        color: lighten($COLOR_DANGER, 30%);
       }
     }
   }
@@ -381,7 +381,7 @@
       color: #fff;
       background-color: $COLOR_ACTIVE;
       &:hover {
-        background-color: $COLOR_ACTIVE - 20;
+        background-color: lighten($COLOR_ACTIVE, 20%); // background-color: $COLOR_ACTIVE - 20;
       }
       &[disabled] {
         opacity: 0.3;
@@ -491,7 +491,7 @@
         filter: grayscale(0.4);
       }
       &:hover {
-        background-color: $COLOR_ACTIVE - 20;
+        background-color: lighten($COLOR_ACTIVE, 20%); // background-color: $COLOR_ACTIVE - 20;
       }
     }
   }

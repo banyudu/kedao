@@ -15,7 +15,9 @@
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "rm -rf lib && tsc"
+    "copyfiles": "copyfiles -u 1 src/**/*.{scss,woff,ttf,json} lib/",
+    "build:lib": "rm -rf lib && tsc && npm run copyfiles",
+    "build:watch": "tsc -w"
   },
   "repository": "https://github.com/banyudu/kedao",
   "keywords": [
@@ -30,17 +32,17 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@kedao/finder": "workspace:*",
     "@types/draft-js": "^0.10.38",
     "@types/react": "^16.9.23",
+    "copyfiles": "^2.4.1",
     "draft-js-prism": "^1.0.6",
-    "node-sass": "^4.13.1",
     "prism-js": "^1.0.0",
     "prismjs": "^1.15.0"
   },
   "dependencies": {
     "@draft-js-plugins/mention": "^5.1.1",
     "@kedao/convert": "workspace:*",
-    "@kedao/finder": "workspace:*",
     "@kedao/utils": "workspace:*",
     "draft-convert": "^2.1.8",
     "draft-js": "^0.11.5",
@@ -53,7 +55,7 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   }
 }

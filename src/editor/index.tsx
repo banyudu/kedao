@@ -1,7 +1,8 @@
 import React from 'react'
 import Finder from '../finder'
 import { ColorUtils, ContentUtils } from '../utils'
-import { Editor, EditorState } from 'draft-js'
+import { Editor } from 'draft-js'
+import KedaoEditorState from './state'
 import { Map } from 'immutable'
 import mergeClassNames from 'merge-class-names'
 
@@ -112,6 +113,9 @@ class KedaoEditor extends React.Component<any, any> {
   containerNode: any
   draftInstance: any
 
+  static defaultProps = defaultProps;
+  static createEditorState = KedaoEditorState.createFrom
+
   constructor (props) {
     super(props)
 
@@ -126,9 +130,9 @@ class KedaoEditor extends React.Component<any, any> {
     this.valueInitialized = !!(this.props.defaultValue || this.props.value)
 
     const defaultEditorState =
-      (this.props.defaultValue || this.props.value) instanceof EditorState
+      (this.props.defaultValue || this.props.value) instanceof KedaoEditorState
         ? this.props.defaultValue || this.props.value
-        : EditorState.createEmpty(this.editorDecorators)
+        : KedaoEditorState.createEmpty(this.editorDecorators)
     defaultEditorState.setConvertOptions(getConvertOptions(this.editorProps))
 
     let tempColors = []
@@ -282,11 +286,11 @@ class KedaoEditor extends React.Component<any, any> {
   }
 
   onChange = (editorState, callback?) => {
-    let newEditorState = { ...editorState }
-    if (!(editorState instanceof EditorState)) {
-      newEditorState = EditorState.set(editorState, {
+    let newEditorState = KedaoEditorState.fromEditorState({ ...editorState })
+    if (!(editorState instanceof KedaoEditorState)) {
+      newEditorState = KedaoEditorState.fromEditorState(KedaoEditorState.set(editorState, {
         decorator: this.editorDecorators
-      })
+      }))
     }
 
     if (!newEditorState.convertOptions) {
@@ -323,12 +327,12 @@ class KedaoEditor extends React.Component<any, any> {
     const selectionState = this.state.editorState.getSelection()
 
     this.setValue(
-      EditorState.set(this.state.editorState, {
+      KedaoEditorState.set(this.state.editorState, {
         decorator: this.editorDecorators
       }),
       () => {
         this.setValue(
-          EditorState.forceSelection(this.state.editorState, selectionState)
+          KedaoEditorState.forceSelection(this.state.editorState, selectionState)
         )
       }
     )
@@ -478,7 +482,7 @@ class KedaoEditor extends React.Component<any, any> {
     controls = controls.filter((item) => excludeControls.indexOf(item) === -1)
     language =
       (typeof language === 'function'
-        ? language(languages, '@kedao/editor')
+        ? language(languages, 'kedao')
         : languages[language]) || languages[defaultProps.language]
 
     const externalMedias = {
@@ -639,8 +643,7 @@ class KedaoEditor extends React.Component<any, any> {
   }
 }
 
-(KedaoEditor as any).defaultProps = defaultProps
 
 export default KedaoEditor
 
-export { EditorState }
+export { KedaoEditorState as EditorState }

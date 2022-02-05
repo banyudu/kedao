@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Editor from '@kedao/editor'
+import Editor from 'kedao'
 
 function App() {
   return (

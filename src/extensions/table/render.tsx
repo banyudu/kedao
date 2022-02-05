@@ -25,7 +25,7 @@ export const getLanguage = (editor) => {
   const lang = editor.editorProps.language
 
   if (typeof lang === 'function') {
-    return lang(languages, '@kedao/table')
+    return lang(languages, 'kedao')
   } else {
     return languages[lang] || languages.zh
   }

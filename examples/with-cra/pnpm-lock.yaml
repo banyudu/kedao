@@ -4,7 +4,6 @@ specifiers:
   '@babel/core': ^7.17.0
   '@babel/plugin-syntax-flow': 7.14.5
   '@babel/plugin-transform-react-jsx': 7.14.9
-  '@kedao/editor': workspace:*
   '@testing-library/dom': 7.21.4
   '@testing-library/jest-dom': ^5.16.1
   '@testing-library/react': ^12.1.2
@@ -14,6 +13,7 @@ specifiers:
   '@types/react': ^17.0.38
   '@types/react-dom': ^17.0.11
   autoprefixer: 10.0.2
+  kedao: workspace:*
   postcss: ^8.4.6
   react: ^17.0.2
   react-dom: ^17.0.2
@@ -23,7 +23,6 @@ specifiers:
   web-vitals: ^2.1.4
 
 dependencies:
-  '@kedao/editor': link:../../editor
   '@testing-library/jest-dom': 5.16.1
   '@testing-library/react': 12.1.2_react-dom@17.0.2+react@17.0.2
   '@testing-library/user-event': 13.5.0_@testing-library+dom@7.21.4
@@ -31,6 +30,7 @@ dependencies:
   '@types/node': 16.11.22
   '@types/react': 17.0.38
   '@types/react-dom': 17.0.11
+  kedao: link:../..
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-scripts: 5.0.0_dff86a9134bdc5c1c5e08de1cd153216

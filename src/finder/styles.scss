@@ -1,4 +1,11 @@
-@import "./assets/scss/_base.scss";
+@import '../assets/scss/inc';
+
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
 
 .kedao-finder {
   .bf-uploader {

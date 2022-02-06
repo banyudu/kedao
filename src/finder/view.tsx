@@ -1,8 +1,17 @@
-import './styles.scss'
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { UniqueIndex } from './utils/base'
-import { MdAdd, MdAudiotrack, MdClose, MdCode, MdDescription, MdDone, MdMovie, MdRemove } from 'react-icons/md'
+import {
+  MdAdd,
+  MdAudiotrack,
+  MdClose,
+  MdCode,
+  MdDescription,
+  MdDone,
+  MdMovie,
+  MdRemove
+} from 'react-icons/md'
 import { defaultIconProps } from '../configs/props'
+import './styles.scss'
 
 const defaultAccepts = {
   image: 'image/png,image/jpeg,image/gif,image/webp,image/apng,image/svg',
@@ -10,65 +19,65 @@ const defaultAccepts = {
   audio: 'audio/mp3'
 }
 
-export default class FinderView extends React.Component<any, any> {
-  controller: any;
-  dragCounter: number;
-  changeListenerId: any;
+const defaultExternals = {
+  image: true,
+  video: true,
+  audio: true,
+  embed: true
+}
 
-  static defaultProps = {
-    accepts: defaultAccepts,
-    externals: {
-      image: true,
-      video: true,
-      audio: true,
-      embed: true
-    }
-  };
+const FinderView = ({
+  accepts = defaultAccepts,
+  externals = defaultExternals,
+  onChange,
+  controller,
+  language,
+  hideProgress,
+  onBeforeDeselect,
+  onDeselect,
+  onBeforeSelect,
+  onSelect,
+  onBeforeRemove,
+  onRemove,
+  onFileSelect,
+  onCancel,
+  onBeforeInsert,
+  onInsert
+}) => {
+  const dragCounter = useRef(0)
+  const initialItems = controller.getItems()
 
-  constructor (props) {
-    super(props)
+  const [draging, setDraging] = useState(false)
+  // const [error, setError] = useState(false)
+  const [confirmable, setConfirmable] = useState(
+    initialItems.find(({ selected }) => selected)
+  )
+  const [external, setExternal] = useState({ url: '', type: 'IMAGE' })
+  const [fileAccept, setFileAccept] = useState('')
+  const [showExternalForm, setShowExternalForm] = useState(false)
+  const [allowExternal, setAllowExternal] = useState(false)
+  const [items, setItems] = useState(initialItems)
 
-    this.dragCounter = 0
-    this.controller = this.props.controller
-    const initialItems = this.controller.getItems()
-
-    this.state = {
-      draging: false,
-      error: false,
-      confirmable: initialItems.find(({ selected }) => selected),
-      external: {
-        url: '',
-        type: 'IMAGE'
-      },
-      fileAccept: '',
-      showExternalForm: false,
-      allowExternal: false,
-      items: initialItems
-    }
-
-    this.changeListenerId = this.controller.onChange((items) => {
-      this.setState({
-        items,
-        confirmable: items.find(({ selected }) => selected)
-      })
-      this.props.onChange?.(items)
+  const changeListenerId = useRef(
+    controller.onChange(items => {
+      setItems(items)
+      setConfirmable(items.find(({ selected }) => selected))
+      onChange?.(items)
     })
-  }
+  )
 
-  mapPropsToState (props) {
-    let { accepts, externals } = props
-
-    accepts = {
+  useEffect(() => {
+    const newAccepts = {
       ...defaultAccepts,
       ...accepts
     }
 
-    const fileAccept = !accepts
+    const fileAccept = !newAccepts
       ? [defaultAccepts.image, defaultAccepts.video, defaultAccepts.audio].join(
           ','
         )
-      : [accepts.image, accepts.video, accepts.audio]
-          .filter((item) => item)
+      : [newAccepts.image, newAccepts.video, newAccepts.audio]
+          .filter(item => item)
           .join(',')
 
     const external = {
@@ -83,241 +92,43 @@ export default class FinderView extends React.Component<any, any> {
               ? 'EMBED'
               : ''
     }
-
-    return {
-      fileAccept: fileAccept,
-      external: external,
-      allowExternal:
-        externals &&
+    setFileAccept(fileAccept)
+    setExternal(external)
+    setAllowExternal(
+      externals &&
         (externals.image ||
           externals.audio ||
           externals.video ||
           externals.embed)
-    }
-  }
-
-  componentDidMount () {
-    this.setState(this.mapPropsToState(this.props))
-  }
-
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    this.setState(this.mapPropsToState(nextProps))
-  }
-
-  componentWillUnmount () {
-    this.controller.offChange(this.changeListenerId)
-  }
-
-  render () {
-    const { language, externals } = this.props
-    const {
-      items,
-      draging,
-      confirmable,
-      fileAccept,
-      external,
-      showExternalForm,
-      allowExternal
-    } = this.state
-
-    return (
-      <div className="kedao-finder">
-        <div
-          onDragEnter={this.handleDragEnter}
-          onDragLeave={this.handleDragLeave}
-          onDrop={this.handleDragDrop}
-          className="bf-uploader"
-        >
-          <div
-            className={
-              'bf-drag-uploader ' +
-              (draging || !items.length ? 'active ' : ' ') +
-              (draging ? 'draging' : '')
-            }
-          >
-            <span className="bf-drag-tip">
-              <input
-                accept={fileAccept}
-                onChange={this.reslovePickedFiles}
-                multiple
-                type="file"
-              />
-              {draging ? language.dropTip : language.dragTip}
-            </span>
-          </div>
-          {items.length
-            ? (
-            <div className="bf-list-wrap">
-              <div className="bf-list-tools">
-                <span onClick={this.selectAllItems} className="bf-select-all">
-                  <MdDone {...defaultIconProps} />
-                  {language.selectAll}
-                </span>
-                <span
-                  onClick={this.deselectAllItems}
-                  className="bf-deselect-all"
-                  { ...{ disabled: !confirmable } }
-                >
-                  <MdClose {...defaultIconProps} />
-                  {language.deselect}
-                </span>
-                <span
-                  onClick={this.removeSelectedItems}
-                  className="bf-remove-selected"
-                  { ...{ disabled: !confirmable } }
-                >
-                  <MdRemove {...defaultIconProps} />
-                  {language.removeSelected}
-                </span>
-              </div>
-              {this.buildItemList()}
-            </div>
-              )
-            : null}
-          {showExternalForm && allowExternal
-            ? (
-            <div className="bf-add-external">
-              <div className="bf-external-form">
-                <div className="bf-external-input">
-                  <div>
-                    <input
-                      onKeyDown={this.confirmAddExternal}
-                      value={external.url}
-                      onChange={this.inputExternal}
-                      placeholder={language.externalInputPlaceHolder}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={this.confirmAddExternal}
-                    disabled={!external.url.trim().length}
-                  >
-                    {language.confirm}
-                  </button>
-                </div>
-                <div
-                  data-type={external.type}
-                  className="bf-switch-external-type"
-                >
-                  {externals.image
-                    ? (
-                    <button
-                      type="button"
-                      onClick={this.switchExternalType}
-                      data-type="IMAGE"
-                    >
-                      {language.image}
-                    </button>
-                      )
-                    : null}
-                  {externals.audio
-                    ? (
-                    <button
-                      type="button"
-                      onClick={this.switchExternalType}
-                      data-type="AUDIO"
-                    >
-                      {language.audio}
-                    </button>
-                      )
-                    : null}
-                  {externals.video
-                    ? (
-                    <button
-                      type="button"
-                      onClick={this.switchExternalType}
-                      data-type="VIDEO"
-                    >
-                      {language.video}
-                    </button>
-                      )
-                    : null}
-                  {externals.embed
-                    ? (
-                    <button
-                      type="button"
-                      onClick={this.switchExternalType}
-                      data-type="EMBED"
-                    >
-                      {language.embed}
-                    </button>
-                      )
-                    : null}
-                </div>
-                <span className="bf-external-tip">
-                  {language.externalInputTip}
-                </span>
-              </div>
-            </div>
-              )
-            : null}
-        </div>
-        <footer className="bf-manager-footer">
-          <div className="pull-left">
-            {allowExternal
-              ? (
-              <span
-                onClick={this.toggleExternalForm}
-                className="bf-toggle-external-form"
-              >
-                {showExternalForm
-                  ? (
-                  <span className="bf-bottom-text">
-                    <MdAdd {...defaultIconProps} />
-                    {language.addLocalFile}
-                  </span>
-                    )
-                  : (
-                  <span className="bf-bottom-text">
-                    <MdAdd {...defaultIconProps} />
-                    {' '}
-                    {language.addExternalSource}
-                  </span>
-                    )}
-              </span>
-                )
-              : null}
-          </div>
-          <div className="pull-right">
-            <button
-              onClick={this.confirmInsert}
-              className="button button-insert"
-              disabled={!confirmable}
-            >
-              {language.insert}
-            </button>
-            <button
-              onClick={this.cancelInsert}
-              className="button button-cancel"
-            >
-              {language.cancel}
-            </button>
-          </div>
-        </footer>
-      </div>
     )
-  }
+  }, [accepts, externals])
 
-  buildItemList () {
+  useEffect(() => {
+    return () => {
+      controller.offChange(changeListenerId.current)
+    }
+  }, [])
+
+  const buildItemList = () => {
     return (
-      <ul className="bf-list">
-        <li className="bf-add-item">
+      <ul className='bf-list'>
+        <li className='bf-add-item'>
           <MdAdd {...defaultIconProps} />
           <input
-            accept={this.state.fileAccept}
-            onChange={this.reslovePickedFiles}
+            accept={fileAccept}
+            onChange={reslovePickedFiles}
             multiple
-            type="file"
+            type='file'
           />
         </li>
-        {this.state.items.map((item, index) => {
+        {items.map((item, index) => {
           let previewerComponents = null
           const progressMarker =
-            item.uploading && !this.props.hideProgress
+            item.uploading && !hideProgress
               ? (
-              <div className="bf-item-uploading">
+              <div className='bf-item-uploading'>
                 <div
-                  className="bf-item-uploading-bar"
+                  className='bf-item-uploading-bar'
                   style={{ width: item.uploadProgress / 1 + '%' }}
                 ></div>
               </div>
@@ -329,7 +140,7 @@ export default class FinderView extends React.Component<any, any> {
           switch (item.type) {
             case 'IMAGE':
               previewerComponents = (
-                <div className="bf-image">
+                <div className='bf-image'>
                   {progressMarker}
                   <img src={item.thumbnail || item.url} />
                 </div>
@@ -337,7 +148,7 @@ export default class FinderView extends React.Component<any, any> {
               break
             case 'VIDEO':
               previewerComponents = (
-                <div className="bf-icon bf-video" title={item.url}>
+                <div className='bf-icon bf-video' title={item.url}>
                   {progressMarker}
                   <MdMovie {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -346,7 +157,7 @@ export default class FinderView extends React.Component<any, any> {
               break
             case 'AUDIO':
               previewerComponents = (
-                <div className="bf-icon bf-audio" title={item.url}>
+                <div className='bf-icon bf-audio' title={item.url}>
                   {progressMarker}
                   <MdAudiotrack {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -355,16 +166,16 @@ export default class FinderView extends React.Component<any, any> {
               break
             case 'EMBED':
               previewerComponents = (
-                <div className="bf-icon bf-embed" title={item.url}>
+                <div className='bf-icon bf-embed' title={item.url}>
                   {progressMarker}
                   <MdCode {...defaultIconProps} />
-                  <span>{item.name || this.props.language.embed}</span>
+                  <span>{item.name || language.embed}</span>
                 </div>
               )
               break
             default:
               previewerComponents = (
-                <a className="bf-icon bf-file" title={item.url} href={item.url}>
+                <a className='bf-icon bf-file' title={item.url} href={item.url}>
                   {progressMarker}
                   <MdDescription {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -384,15 +195,15 @@ export default class FinderView extends React.Component<any, any> {
               title={item.name}
               data-id={item.id}
               className={className.join(' ')}
-              onClick={this.toggleSelectItem}
+              onClick={toggleSelectItem}
             >
               {previewerComponents}
               <MdClose
                 {...defaultIconProps}
                 data-id={item.id}
-                onClick={this.removeItem}
+                onClick={removeItem}
               />
-              <span className="bf-item-title">{item.name}</span>
+              <span className='bf-item-title'>{item.name}</span>
             </li>
           )
         })}
@@ -400,9 +211,9 @@ export default class FinderView extends React.Component<any, any> {
     )
   }
 
-  toggleSelectItem = (event) => {
+  const toggleSelectItem = event => {
     const itemId = event.currentTarget.dataset.id
-    const item = this.controller.getMediaItem(itemId)
+    const item = controller.getMediaItem(itemId)
 
     if (!item) {
       return false
@@ -410,109 +221,98 @@ export default class FinderView extends React.Component<any, any> {
 
     if (item.selected) {
       if (
-        !this.props.onBeforeDeselect ||
-        this.props.onBeforeDeselect([item], this.controller.getItems()) !==
-          false
+        !onBeforeDeselect ||
+        onBeforeDeselect([item], controller.getItems()) !== false
       ) {
-        this.controller.deselectMediaItem(itemId)
-        this.props.onDeselect?.([item], this.controller.getItems())
+        controller.deselectMediaItem(itemId)
+        onDeselect?.([item], controller.getItems())
       }
     } else {
       if (
-        !this.props.onBeforeSelect ||
-        this.props.onBeforeSelect([item], this.controller.getItems()) !== false
+        !onBeforeSelect ||
+        onBeforeSelect([item], controller.getItems()) !== false
       ) {
-        this.controller.selectMediaItem(itemId)
-        this.props.onSelect?.([item], this.controller.getItems())
+        controller.selectMediaItem(itemId)
+        onSelect?.([item], controller.getItems())
       }
     }
-  };
+  }
 
-  removeItem = (event) => {
+  const removeItem = event => {
     const itemId = event.currentTarget.dataset.id
-    const item = this.controller.getMediaItem(itemId)
+    const item = controller.getMediaItem(itemId)
 
     if (!item) {
       return false
     }
 
     if (
-      !this.props.onBeforeRemove ||
-      this.props.onBeforeRemove([item], this.controller.getItems()) !== false
+      !onBeforeRemove ||
+      onBeforeRemove([item], controller.getItems()) !== false
     ) {
-      this.controller.removeMediaItem(itemId)
-      this.props.onRemove?.([item], this.controller.getItems())
+      controller.removeMediaItem(itemId)
+      onRemove?.([item], controller.getItems())
     }
 
     event.stopPropagation()
-  };
+  }
 
-  selectAllItems = () => {
-    const allItems = this.controller.getItems()
+  const selectAllItems = () => {
+    const allItems = controller.getItems()
+
+    if (!onBeforeSelect || onBeforeSelect(allItems, allItems) !== false) {
+      controller.selectAllItems()
+      onSelect?.(allItems, allItems)
+    }
+  }
+
+  const deselectAllItems = () => {
+    const allItems = controller.getItems()
+
+    if (!onBeforeDeselect || onBeforeDeselect(allItems, allItems) !== false) {
+      controller.deselectAllItems()
+      onDeselect?.(allItems, allItems)
+    }
+  }
+
+  const removeSelectedItems = () => {
+    const selectedItems = controller.getSelectedItems()
 
     if (
-      !this.props.onBeforeSelect ||
-      this.props.onBeforeSelect(allItems, allItems) !== false
+      !onBeforeRemove ||
+      onBeforeRemove(selectedItems, controller.getItems()) !== false
     ) {
-      this.controller.selectAllItems()
-      this.props.onSelect?.(allItems, allItems)
+      controller.removeSelectedItems()
+      onRemove?.(selectedItems, controller.getItems())
     }
-  };
+  }
 
-  deselectAllItems = () => {
-    const allItems = this.controller.getItems()
-
-    if (
-      !this.props.onBeforeDeselect ||
-      this.props.onBeforeDeselect(allItems, allItems) !== false
-    ) {
-      this.controller.deselectAllItems()
-      this.props.onDeselect?.(allItems, allItems)
-    }
-  };
-
-  removeSelectedItems = () => {
-    const selectedItems = this.controller.getSelectedItems()
-
-    if (
-      !this.props.onBeforeRemove ||
-      this.props.onBeforeRemove(selectedItems, this.controller.getItems()) !==
-        false
-    ) {
-      this.controller.removeSelectedItems()
-      this.props.onRemove?.(selectedItems, this.controller.getItems())
-    }
-  };
-
-  handleDragLeave = (event) => {
+  const handleDragLeave = event => {
     event.preventDefault()
-    this.dragCounter--
-    this.dragCounter === 0 &&
-      this.setState({
-        draging: false
-      })
-  };
+    dragCounter.current = dragCounter.current - 1
+    dragCounter.current === 0 && setDraging(false)
+  }
 
-  handleDragDrop = (event) => {
+  const handleDragDrop = event => {
     event.preventDefault()
-    this.dragCounter = 0
-    this.setState({ draging: false })
-    this.reslovePickedFiles(event)
-  };
+    dragCounter.current = 0
+    setDraging(false)
+    reslovePickedFiles(event)
+  }
 
-  handleDragEnter = (event) => {
+  const handleDragEnter = event => {
     event.preventDefault()
-    this.dragCounter++
-    this.setState({ draging: true })
-  };
+    dragCounter.current = dragCounter.current + 1
+    setDraging(true)
+  }
 
-  reslovePickedFiles = (event) => {
+  const reslovePickedFiles = event => {
     event.persist()
 
     let { files } = event.type === 'drop' ? event.dataTransfer : event.target
 
-    if (this.props.onFileSelect) {
-      const result = this.props.onFileSelect(files)
+    if (onFileSelect) {
+      const result = onFileSelect(files)
       if (result === false) {
         return false
       } else if (result instanceof FileList || result instanceof Array) {
@@ -520,51 +320,50 @@ export default class FinderView extends React.Component<any, any> {
       }
     }
 
-    const accepts = {
+    const newAccepts = {
       ...defaultAccepts,
-      ...this.props.accepts
+      ...accepts
     }
 
-    this.controller.resolveFiles(
+    controller.resolveFiles(
       {
         files: files,
-        onItemReady: ({ id }) => this.controller.selectMediaItem(id),
+        onItemReady: ({ id }) => controller.selectMediaItem(id),
         onAllReady: () => {
           event.target.value = null
         }
       },
       0,
-      accepts
+      newAccepts
     )
-  };
+  }
 
-  inputExternal = (event) => {
-    this.setState({
-      external: {
-        ...this.state.external,
-        url: event.target.value
-      }
-    })
-  };
+  const inputExternal = event => {
+    setExternal(external => ({
+      ...external,
+      url: event.target.value
+    }))
+  }
 
-  switchExternalType = (event) => {
-    this.setState({
-      external: { ...this.state.external, type: event.target.dataset.type }
-    })
-  };
+  const switchExternalType = event => {
+    setExternal(external => ({
+      ...external,
+      type: event.target.dataset.type
+    }))
+  }
 
-  confirmAddExternal = (event) => {
+  const confirmAddExternal = event => {
     if (
       event.target.nodeName.toLowerCase() === 'button' ||
       event.keyCode === 13
     ) {
-      let { url, type } = this.state.external
-      url = url.split('|')
-      const name = url.length > 1 ? url[0] : this.props.language.unnamedItem
-      url = url.length > 1 ? url[1] : url[0]
+      let { url, type } = external
+      const urlArr = url.split('|')
+      const name = urlArr.length > 1 ? urlArr[0] : language.unnamedItem
+      url = urlArr.length > 1 ? urlArr[1] : urlArr[0]
       const thumbnail = type === 'IMAGE' ? url : null
 
-      this.controller.addItems([
+      controller.addItems([
         {
           thumbnail,
           url,
@@ -577,42 +376,209 @@ export default class FinderView extends React.Component<any, any> {
         }
       ])
 
-      this.setState({
-        showExternalForm: false,
-        external: {
-          url: '',
-          type: 'IMAGE'
-        }
-      })
+      setShowExternalForm(false)
+      setExternal({ url: '', type: 'IMAGE' })
     }
-  };
+  }
 
-  toggleExternalForm = () => {
-    this.setState({
-      showExternalForm: !this.state.showExternalForm
-    })
-  };
+  const toggleExternalForm = () => {
+    setShowExternalForm(v => !v)
+  }
 
-  cancelInsert = () => {
-    this.props.onCancel?.()
-  };
+  const cancelInsert = () => {
+    onCancel?.()
+  }
 
-  confirmInsert = () => {
-    const selectedItems = this.controller.getSelectedItems()
+  const confirmInsert = () => {
+    const selectedItems = controller.getSelectedItems()
 
-    if (this.props.onBeforeInsert) {
-      const filteredItems = this.props.onBeforeInsert(selectedItems)
+    if (onBeforeInsert) {
+      const filteredItems = onBeforeInsert(selectedItems)
 
       if (filteredItems && filteredItems instanceof Array) {
-        this.controller.deselectAllItems()
-        this.props.onInsert?.(filteredItems)
+        controller.deselectAllItems()
+        onInsert?.(filteredItems)
       } else if (filteredItems !== false) {
-        this.controller.deselectAllItems()
-        this.props.onInsert?.(selectedItems)
+        controller.deselectAllItems()
+        onInsert?.(selectedItems)
       }
     } else {
-      this.controller.deselectAllItems()
-      this.props.onInsert?.(selectedItems)
+      controller.deselectAllItems()
+      onInsert?.(selectedItems)
     }
-  };
+  }
+
+  return (
+    <div className='kedao-finder'>
+      <div
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDragDrop}
+        className='bf-uploader'
+      >
+        <div
+          className={
+            'bf-drag-uploader ' +
+            (draging || !items.length ? 'active ' : ' ') +
+            (draging ? 'draging' : '')
+          }
+        >
+          <span className='bf-drag-tip'>
+            <input
+              accept={fileAccept}
+              onChange={reslovePickedFiles}
+              multiple
+              type='file'
+            />
+            {draging ? language.dropTip : language.dragTip}
+          </span>
+        </div>
+        {items.length
+          ? (
+          <div className='bf-list-wrap'>
+            <div className='bf-list-tools'>
+              <span onClick={selectAllItems} className='bf-select-all'>
+                <MdDone {...defaultIconProps} />
+                {language.selectAll}
+              </span>
+              <span
+                onClick={deselectAllItems}
+                className='bf-deselect-all'
+                {...{ disabled: !confirmable }}
+              >
+                <MdClose {...defaultIconProps} />
+                {language.deselect}
+              </span>
+              <span
+                onClick={removeSelectedItems}
+                className='bf-remove-selected'
+                {...{ disabled: !confirmable }}
+              >
+                <MdRemove {...defaultIconProps} />
+                {language.removeSelected}
+              </span>
+            </div>
+            {buildItemList()}
+          </div>
+            )
+          : null}
+        {showExternalForm && allowExternal
+          ? (
+          <div className='bf-add-external'>
+            <div className='bf-external-form'>
+              <div className='bf-external-input'>
+                <div>
+                  <input
+                    onKeyDown={confirmAddExternal}
+                    value={external.url}
+                    onChange={inputExternal}
+                    placeholder={language.externalInputPlaceHolder}
+                  />
+                </div>
+                <button
+                  type='button'
+                  onClick={confirmAddExternal}
+                  disabled={!external.url.trim().length}
+                >
+                  {language.confirm}
+                </button>
+              </div>
+              <div
+                data-type={external.type}
+                className='bf-switch-external-type'
+              >
+                {externals.image
+                  ? (
+                  <button
+                    type='button'
+                    onClick={switchExternalType}
+                    data-type='IMAGE'
+                  >
+                    {language.image}
+                  </button>
+                    )
+                  : null}
+                {externals.audio
+                  ? (
+                  <button
+                    type='button'
+                    onClick={switchExternalType}
+                    data-type='AUDIO'
+                  >
+                    {language.audio}
+                  </button>
+                    )
+                  : null}
+                {externals.video
+                  ? (
+                  <button
+                    type='button'
+                    onClick={switchExternalType}
+                    data-type='VIDEO'
+                  >
+                    {language.video}
+                  </button>
+                    )
+                  : null}
+                {externals.embed
+                  ? (
+                  <button
+                    type='button'
+                    onClick={switchExternalType}
+                    data-type='EMBED'
+                  >
+                    {language.embed}
+                  </button>
+                    )
+                  : null}
+              </div>
+              <span className='bf-external-tip'>
+                {language.externalInputTip}
+              </span>
+            </div>
+          </div>
+            )
+          : null}
+      </div>
+      <footer className='bf-manager-footer'>
+        <div className='pull-left'>
+          {allowExternal
+            ? (
+            <span
+              onClick={toggleExternalForm}
+              className='bf-toggle-external-form'
+            >
+              {showExternalForm
+                ? (
+                <span className='bf-bottom-text'>
+                  <MdAdd {...defaultIconProps} />
+                  {language.addLocalFile}
+                </span>
+                  )
+                : (
+                <span className='bf-bottom-text'>
+                  <MdAdd {...defaultIconProps} /> {language.addExternalSource}
+                </span>
+                  )}
+            </span>
+              )
+            : null}
+        </div>
+        <div className='pull-right'>
+          <button
+            onClick={confirmInsert}
+            className='button button-insert'
+            disabled={!confirmable}
+          >
+            {language.insert}
+          </button>
+          <button onClick={cancelInsert} className='button button-cancel'>
+            {language.cancel}
+          </button>
+        </div>
+      </footer>
+    </div>
+  )
 }
+
+export default FinderView

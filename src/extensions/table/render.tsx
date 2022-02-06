@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Immutable from 'immutable'
 import languages from './languages'
 import * as TableUtils from './utils'
@@ -23,7 +23,7 @@ const getIndexFromEvent = (event, ignoredTarget = '') => {
   return false
 }
 
-export const getLanguage = (editor) => {
+export const getLanguage = editor => {
   const lang = editor.editorProps.language
 
   if (typeof lang === 'function') {
@@ -33,143 +33,141 @@ export const getLanguage = (editor) => {
   }
 }
 
-export class Table extends React.Component<any, any> {
-  language: any;
-  __draggingStartPoint: any;
-  tableKey: any;
-  colLength: number
+export const Table = ({ editor, editorState, children = [], columnResizable }) => {
+  const [tableRows, setTableRows] = useState([])
+  const [colToolHandlers, setColToolHandlers] = useState([])
+  const [rowToolHandlers, setRowToolHandlers] = useState([])
+  const [defaultColWidth, setDefaultColWidth] = useState(0)
+  const [colResizing, setColResizing] = useState(false)
+  const [colResizeOffset, setColResizeOffset] = useState(0)
+  const [selectedCells, setSelectedCells] = useState([])
+  const [selectedRowIndex, setSelectedRowIndex] = useState(-1)
+  const [selectedColumnIndex, setSelectedColumnIndex] = useState(-1)
+  const [dragSelecting, setDragSelecting] = useState(false)
+  const [draggingRectBounding, setDraggingRectBounding] = useState(null)
+  const [cellsMergeable, setCellsMergeable] = useState(false)
+  const [cellSplittable, setCellSplittable] = useState(false)
+  const [contextMenuPosition, setContextMenuPosition] = useState(null)
 
-  constructor (props) {
-    super(props)
-    this.language = getLanguage(props.editor)
+  const languageRef = useRef(getLanguage(editor))
+  const tableRef = useRef(null)
+  const rowRefs = useRef([])
+  const colRefs = useRef([])
+
+  useEffect(() => {
+    rowRefs.current = rowRefs.current.slice(0, tableRows.length)
+  }, [tableRows.length])
+
+  useEffect(() => {
+    colRefs.current = colRefs.current.slice(0, colToolHandlers.length)
+  }, [colToolHandlers.length])
+
+  const colResizeIndexRef = useRef(0)
+  const colResizeStartAtRef = useRef(0)
+
+  const colLengthRef = useRef(0)
+
+  const startCellKeyRef = useRef(null)
+  const endCellKeyRef = useRef(null)
+
+  const dragSelectingRef = useRef(false)
+  const dragSelectedRef = useRef(false)
+  const dragSelectingStartColumnIndexRef = useRef(null)
+  const dragSelectingStartRowIndexRef = useRef(null)
+  const dragSelectingEndColumnIndexRef = useRef(null)
+  const dragSelectingEndRowIndexRef = useRef(null)
+  const draggingRectBoundingUpdatingRef = useRef(false)
+  const draggingStartPointRef = useRef({ x: 0, y: 0 })
+  // const selectedCellsClearedRef = useRef(false);
+
+  const tableKeyRef = useRef(null)
+
+  useEffect(() => {
+    renderCells()
+  }, [
+    selectedColumnIndex,
+    selectedRowIndex,
+    cellSplittable,
+    cellsMergeable,
+    selectedCells
+  ])
+
+  const handleToolbarMouseDown = event => {
+    event.preventDefault()
   }
 
-  state = {
-    tableRows: [],
-    colToolHandlers: [],
-    rowToolHandlers: [],
-    defaultColWidth: 0,
-    colResizing: false,
-    colResizeOffset: 0,
-    selectedCells: [],
-    selectedRowIndex: -1,
-    selectedColumnIndex: -1,
-    setFirstRowAsHead: false,
-    dragSelecting: false,
-    draggingRectBounding: null,
-    cellsMergeable: false,
-    cellSplittable: false,
-    contextMenuPosition: null
-  };
-
-  __tableRef = null;
-  __colRefs = {};
-  __rowRefs = {};
-
-  __colResizeIndex = 0;
-  __colResizeStartAt = 0;
-
-  __startCellKey = null;
-  __endCellKey = null;
-
-  __dragSelecting = false;
-  __dragSelected = false;
-  __dragSelectingStartColumnIndex = null;
-  __dragSelectingStartRowIndex = null;
-  __dragSelectingEndColumnIndex = null;
-  __dragSelectingEndRowIndex = null;
-  __draggingRectBoundingUpdating = false;
-  __selectedCellsCleared = false;
-
-  handleToolbarMouseDown = (event) => {
-    event.preventDefault()
-  };
-
-  handleKeyDown = (event) => {
+  const handleKeyDown = event => {
     if (event.keyCode === 8) {
-      const { selectedColumnIndex, selectedRowIndex } = this.state
-
       if (selectedColumnIndex > -1) {
-        this.removeColumn()
+        removeColumn()
         event.preventDefault()
       } else if (selectedRowIndex > -1) {
-        this.removeRow()
+        removeRow()
         event.preventDefault()
       }
     }
-  };
+  }
 
-  handleMouseUp = (event) => {
+  const handleMouseUp = event => {
     if (event.button !== 0) {
       return false
     }
 
-    if (this.state.colResizing) {
-      const { defaultColWidth, colToolHandlers, colResizeOffset } = this.state
+    if (colResizing) {
       const nextColToolHandlers = [...colToolHandlers]
 
-      nextColToolHandlers[this.__colResizeIndex - 1].width =
-        (nextColToolHandlers[this.__colResizeIndex - 1].width ||
+      nextColToolHandlers[colResizeIndexRef.current - 1].width =
+        (nextColToolHandlers[colResizeIndexRef.current - 1].width ||
           defaultColWidth) + colResizeOffset
-      nextColToolHandlers[this.__colResizeIndex].width =
-        (nextColToolHandlers[this.__colResizeIndex].width || defaultColWidth) -
-        colResizeOffset
+      nextColToolHandlers[colResizeIndexRef.current].width =
+        (nextColToolHandlers[colResizeIndexRef.current].width ||
+          defaultColWidth) - colResizeOffset
 
-      this.__colResizeIndex = 0
-      this.__colResizeStartAt = 0
+      colResizeIndexRef.current = 0
+      colResizeStartAtRef.current = 0
 
-      this.setState(
-        {
-          contextMenuPosition: null,
-          colToolHandlers: nextColToolHandlers,
-          colResizeOffset: 0,
-          colResizing: false
-        },
-        () => {
-          this.renderCells()
-          this.updateCellsData({
-            colgroupData: nextColToolHandlers.map((item) => ({
-              width: item.width
-            }))
-          })
-        }
-      )
+      setContextMenuPosition(null)
+      setColToolHandlers(nextColToolHandlers)
+      setColResizeOffset(0)
+      setColResizing(false)
+
+      renderCells()
+      updateCellsData({
+        colgroupData: nextColToolHandlers.map(item => ({
+          width: item.width
+        }))
+      })
     } else {
-      this.setState({
-        contextMenuPosition: null
-      })
+      setContextMenuPosition(null)
     }
-  };
+  }
 
-  handleMouseMove = (event) => {
-    if (this.state.colResizing) {
-      this.setState({
-        colResizeOffset: this.getResizeOffset(
-          event.clientX - this.__colResizeStartAt
-        )
-      })
+  const handleMouseMove = event => {
+    if (colResizing) {
+      setColResizeOffset(
+        getResizeOffset(event.clientX - colResizeStartAtRef.current)
+      )
     }
-  };
+  }
 
-  handleColResizerMouseDown = (event) => {
-    this.__colResizeIndex = event.currentTarget.dataset.index * 1
-    this.__colResizeStartAt = event.clientX
-    this.setState({ colResizing: true })
-  };
+  const handleColResizerMouseDown = event => {
+    colResizeIndexRef.current = event.currentTarget.dataset.index * 1
+    colResizeStartAtRef.current = event.clientX
+    setColResizing(true)
+  }
 
-  handleCellContexrMenu = (event) => {
-    const { selectedCells } = this.state
+  const handleCellContexrMenu = event => {
     const { cellKey } = event.currentTarget.dataset
 
     if (!~selectedCells.indexOf(cellKey)) {
-      this.selectCell(event)
+      selectCell(event)
     }
 
     const {
       top: tableTop,
       left: tableLeft,
       width: tableWidth
-    } = this.__tableRef.getBoundingClientRect()
+    } = tableRef.current?.getBoundingClientRect()
     const top = event.clientY - tableTop + 15
     let left = event.clientX - tableLeft + 10
 
@@ -177,136 +175,133 @@ export class Table extends React.Component<any, any> {
       left = tableWidth - 150
     }
 
-    this.setState({
-      contextMenuPosition: { top, left }
-    })
+    setContextMenuPosition({ top, left })
 
     event.preventDefault()
-  };
+  }
 
-  handleContextMenuContextMenu = (event) => {
+  const handleContextMenuContextMenu = event => {
     event.preventDefault()
-  };
+  }
 
-  handleCellMouseDown = (event) => {
-    if (this.state.colResizing) {
+  const handleCellMouseDown = event => {
+    if (colResizing) {
       event.preventDefault()
       event.stopPropagation()
       return false
     }
-    this.__dragSelecting = true
-    this.__dragSelectingStartColumnIndex = event.currentTarget.dataset.colIndex
-    this.__dragSelectingStartRowIndex = event.currentTarget.dataset.rowIndex
+    dragSelectingRef.current = true
+    dragSelectingStartColumnIndexRef.current =
+      event.currentTarget.dataset.colIndex
+    dragSelectingStartRowIndexRef.current = event.currentTarget.dataset.rowIndex
 
-    this.__draggingStartPoint = {
+    draggingStartPointRef.current = {
       x: event.clientX,
       y: event.clientY
     }
 
-    this.setState({
-      dragSelecting: true
-    })
-  };
+    setDragSelecting(true)
+  }
 
-  handleCellMouseUp = () => {
-    this.__dragSelecting = false
-    this.__dragSelected = false
-    this.__dragSelectingStartColumnIndex = null
-    this.__dragSelectingStartRowIndex = null
-    this.__dragSelectingEndColumnIndex = null
-    this.__dragSelectingEndRowIndex = null
+  const handleCellMouseUp = () => {
+    dragSelectingRef.current = false
+    dragSelectedRef.current = false
+    dragSelectingStartColumnIndexRef.current = null
+    dragSelectingStartRowIndexRef.current = null
+    dragSelectingEndColumnIndexRef.current = null
+    dragSelectingEndRowIndexRef.current = null
 
-    this.setState({
-      dragSelecting: false,
-      draggingRectBounding: null
-    })
-  };
+    setDragSelecting(false)
+    setDraggingRectBounding(null)
+  }
 
-  handleCellMouseEnter = (event) => {
-    if (this.__dragSelecting) {
-      this.__dragSelectingEndColumnIndex = event.currentTarget.dataset.colIndex
-      this.__dragSelectingEndRowIndex = event.currentTarget.dataset.rowIndex
+  const handleCellMouseEnter = event => {
+    if (dragSelectingRef.current) {
+      dragSelectingEndColumnIndexRef.current =
+        event.currentTarget.dataset.colIndex
+      dragSelectingEndRowIndexRef.current = event.currentTarget.dataset.rowIndex
 
       if (
-        this.__dragSelectingEndColumnIndex !==
-          this.__dragSelectingStartColumnIndex ||
-        this.__dragSelectingEndRowIndex !== this.__dragSelectingStartRowIndex
+        dragSelectingEndColumnIndexRef.current !==
+          dragSelectingStartColumnIndexRef.current ||
+        dragSelectingEndRowIndexRef.current !==
+          dragSelectingStartRowIndexRef.current
       ) {
-        this.__dragSelected = true
+        dragSelectedRef.current = true
         event.preventDefault()
       } else {
-        this.__dragSelected = false
+        dragSelectedRef.current = false
       }
 
-      this.confirmDragSelecting()
+      confirmDragSelecting()
     }
-  };
+  }
 
-  handleTableMouseMove = (event) => {
-    if (this.__dragSelecting && this.__dragSelected) {
-      this.updateDraggingRectBounding(event)
+  const handleTableMouseMove = event => {
+    if (dragSelectingRef.current && dragSelectedRef.current) {
+      updateDraggingRectBounding(event)
       event.preventDefault()
     }
-  };
+  }
 
-  handleTableMouseLeave = (event) => {
+  const handleTableMouseLeave = event => {
     if (
-      this.__dragSelecting &&
+      dragSelectingRef.current &&
       event.currentTarget &&
       event.currentTarget.dataset.role === 'table'
     ) {
-      this.handleCellMouseUp()
+      handleCellMouseUp()
     }
 
     event.preventDefault()
-  };
+  }
 
-  confirmDragSelecting = () => {
+  const confirmDragSelecting = () => {
     if (
-      !this.__dragSelectingStartColumnIndex ||
-      !this.__dragSelectingStartRowIndex ||
-      !this.__dragSelectingEndColumnIndex ||
-      !this.__dragSelectingEndRowIndex
+      !dragSelectingStartColumnIndexRef.current ||
+      !dragSelectingStartRowIndexRef.current ||
+      !dragSelectingEndColumnIndexRef.current ||
+      !dragSelectingEndRowIndexRef.current
     ) {
       return false
     }
 
-    const { cellKeys: selectedCells, spannedCellBlockKeys } =
-      TableUtils.getCellsInsideRect(
-        this.props.editorState,
-        this.tableKey,
-        [
-          this.__dragSelectingStartColumnIndex,
-          this.__dragSelectingStartRowIndex
-        ],
-        [this.__dragSelectingEndColumnIndex, this.__dragSelectingEndRowIndex]
-      ) as any
+    const {
+      cellKeys: selectedCells,
+      spannedCellBlockKeys
+    } = TableUtils.getCellsInsideRect(
+      editorState,
+      tableKeyRef.current,
+      [
+        dragSelectingStartColumnIndexRef.current,
+        dragSelectingStartRowIndexRef.current
+      ],
+      [
+        dragSelectingEndColumnIndexRef.current,
+        dragSelectingEndRowIndexRef.current
+      ]
+    ) as any
 
     if (selectedCells.length < 2) {
       return false
     }
 
-    this.setState(
-      {
-        selectedColumnIndex: -1,
-        selectedRowIndex: -1,
-        cellsMergeable: spannedCellBlockKeys.length === 0,
-        cellSplittable: false,
-        selectedCells: selectedCells
-      },
-      this.renderCells
-    )
-  };
+    setSelectedColumnIndex(-1)
+    setSelectedRowIndex(-1)
+    setCellsMergeable(spannedCellBlockKeys.length === 0)
+    setCellSplittable(false)
+    setSelectedCells(selectedCells)
+  }
 
-  updateDraggingRectBounding = (mouseEvent) => {
-    if (this.__draggingRectBoundingUpdating || !this.__dragSelecting) {
+  const updateDraggingRectBounding = mouseEvent => {
+    if (draggingRectBoundingUpdatingRef.current || !dragSelectingRef.current) {
       return false
     }
 
-    this.__draggingRectBoundingUpdating = true
+    draggingRectBoundingUpdatingRef.current = true
 
-    const tableBounding = this.__tableRef.getBoundingClientRect()
-    const { x: startX, y: startY } = this.__draggingStartPoint
+    const tableBounding = tableRef.current?.getBoundingClientRect()
+    const { x: startX, y: startY } = draggingStartPointRef.current
     const { clientX: currentX, clientY: currentY } = mouseEvent
 
     const draggingRectBounding: any = {}
@@ -328,15 +323,13 @@ export class Table extends React.Component<any, any> {
     draggingRectBounding.width = Math.abs(currentX - startX)
     draggingRectBounding.height = Math.abs(currentY - startY)
 
-    this.setState({ draggingRectBounding }, () => {
-      setTimeout(() => {
-        this.__draggingRectBoundingUpdating = false
-      }, 100)
-    })
-  };
+    setDraggingRectBounding(draggingRectBounding)
+    setTimeout(() => {
+      draggingRectBoundingUpdatingRef.current = false
+    }, 100)
+  }
 
-  selectCell = (event) => {
-    const { selectedCells } = this.state
+  const selectCell = event => {
     const { cellKey } = event.currentTarget.dataset
     const { colSpan, rowSpan } = event.currentTarget
 
@@ -344,299 +337,227 @@ export class Table extends React.Component<any, any> {
     const cellSplittable =
       nextSelectedCells.length && (colSpan > 1 || rowSpan > 1)
 
-    this.setState(
-      {
-        selectedCells: nextSelectedCells,
-        cellSplittable: cellSplittable,
-        cellsMergeable: false,
-        selectedRowIndex: -1,
-        selectedColumnIndex: -1
-      },
-      this.renderCells
-    )
-  };
+    setSelectedCells(nextSelectedCells)
+    setCellSplittable(cellSplittable)
+    setCellsMergeable(false)
+    setSelectedRowIndex(-1)
+    setSelectedColumnIndex(-1)
+  }
 
-  selectColumn = (event) => {
-    const selectedColumnIndex = getIndexFromEvent(event, 'insert-column')
+  const selectColumn = event => {
+    const newSelectedColumnIndex = getIndexFromEvent(event, 'insert-column')
 
-    if (selectedColumnIndex === false) {
+    if (newSelectedColumnIndex === false) {
       return false
     }
 
-    if (this.state.selectedColumnIndex === selectedColumnIndex) {
-      this.setState(
-        {
-          selectedCells: [],
-          cellsMergeable: false,
-          cellSplittable: false,
-          selectedColumnIndex: -1
-        },
-        this.renderCells
-      )
+    if (newSelectedColumnIndex === selectedColumnIndex) {
+      setSelectedCells([])
+      setCellsMergeable(false)
+      setCellSplittable(false)
+      setSelectedColumnIndex(-1)
       return false
     }
 
-    const { cellKeys: selectedCells, spannedCellBlockKeys } =
-      TableUtils.getCellsInsideRect(
-        this.props.editorState,
-        this.tableKey,
-        [selectedColumnIndex, 0],
-        [selectedColumnIndex, this.state.rowToolHandlers.length - 1]
-      ) as any
+    const {
+      cellKeys: selectedCells,
+      spannedCellBlockKeys
+    } = TableUtils.getCellsInsideRect(
+      editorState,
+      tableKeyRef.current,
+      [newSelectedColumnIndex, 0],
+      [newSelectedColumnIndex, rowToolHandlers.length - 1]
+    ) as any
 
-    this.setState(
-      {
-        selectedColumnIndex: selectedColumnIndex,
-        selectedRowIndex: -1,
-        cellSplittable: false,
-        cellsMergeable: spannedCellBlockKeys.length === 0,
-        selectedCells: selectedCells
-      },
-      this.renderCells
-    )
-  };
+    setSelectedColumnIndex(newSelectedColumnIndex)
+    setSelectedRowIndex(-1)
+    setCellSplittable(false)
+    setCellsMergeable(spannedCellBlockKeys.length === 0)
+    setSelectedCells(selectedCells)
+  }
 
-  selectRow = (event) => {
-    const selectedRowIndex = getIndexFromEvent(event, 'insert-row')
+  const selectRow = event => {
+    const newSelectedRowIndex = getIndexFromEvent(event, 'insert-row')
 
-    if (selectedRowIndex === false) {
+    if (newSelectedRowIndex === false) {
       return false
     }
 
-    if (this.state.selectedRowIndex === selectedRowIndex) {
-      this.setState(
-        {
-          selectedCells: [],
-          cellsMergeable: false,
-          cellSplittable: false,
-          selectedRowIndex: -1
-        },
-        this.renderCells
-      )
+    if (newSelectedRowIndex === selectedRowIndex) {
+      setSelectedCells([])
+      setCellsMergeable(false)
+      setCellSplittable(false)
+      setSelectedRowIndex(-1)
       return false
     }
 
-    const { cellKeys: selectedCells, spannedCellBlockKeys } =
-      TableUtils.getCellsInsideRect(
-        this.props.editorState,
-        this.tableKey,
-        [0, selectedRowIndex],
-        [this.state.colToolHandlers.length, selectedRowIndex]
-      ) as any
+    const {
+      cellKeys: selectedCells,
+      spannedCellBlockKeys
+    } = TableUtils.getCellsInsideRect(
+      editorState,
+      tableKeyRef.current,
+      [0, newSelectedRowIndex],
+      [colToolHandlers.length, newSelectedRowIndex]
+    ) as any
 
-    this.setState(
-      {
-        selectedColumnIndex: -1,
-        selectedRowIndex: selectedRowIndex,
-        cellSplittable: false,
-        cellsMergeable: spannedCellBlockKeys.length === 0,
-        selectedCells: selectedCells
-      },
-      this.renderCells
-    )
-  };
+    setSelectedColumnIndex(-1)
+    setSelectedRowIndex(newSelectedRowIndex)
+    setCellSplittable(false)
+    setCellsMergeable(spannedCellBlockKeys.length === 0)
+    setSelectedCells(selectedCells)
+  }
 
-  insertColumn = (event) => {
+  const insertColumn = event => {
     const columnIndex = getIndexFromEvent(event)
 
     if (columnIndex === false) {
       return false
     }
 
-    const nextColToolHandlers = this.state.colToolHandlers.map((item) => ({
+    const nextColToolHandlers = colToolHandlers.map(item => ({
       ...item,
       width: 0
     }))
-    this.setState(
-      {
-        selectedCells: [],
-        selectedRowIndex: -1,
-        selectedColumnIndex: -1,
-        colToolHandlers: nextColToolHandlers
-      },
-      () => {
-        this.props.editor.setValue(
-          TableUtils.insertColumn(
-            this.props.editorState,
-            this.tableKey,
-            this.state.tableRows.length,
-            columnIndex
-            // nextColToolHandlers
-          )
-        )
-      }
-    )
-  };
 
-  removeColumn = () => {
-    const { selectedColumnIndex } = this.state
-    const nextColToolHandlers = this.state.colToolHandlers.map((item) => ({
+    setSelectedCells([])
+    setSelectedRowIndex(-1)
+    setSelectedRowIndex(-1)
+    setColToolHandlers(nextColToolHandlers)
+
+    editor.setValue(
+      TableUtils.insertColumn(
+        editorState,
+        tableKeyRef.current,
+        tableRows.length,
+        columnIndex
+        // nextColToolHandlers
+      )
+    )
+  }
+
+  const removeColumn = () => {
+    const nextColToolHandlers = colToolHandlers.map(item => ({
       ...item,
       width: 0
     }))
 
     if (selectedColumnIndex >= 0) {
-      this.setState(
-        {
-          selectedColumnIndex: -1,
-          colToolHandlers: nextColToolHandlers
-        },
-        () => {
-          this.props.editor.draftInstance.blur()
-          setImmediate(() => {
-            const result = TableUtils.removeColumn(
-              this.props.editorState,
-              this.tableKey,
-              selectedColumnIndex
-              // nextColToolHandlers
-            )
-            this.props.editor.setValue(this.validateContent(result))
-          })
-        }
-      )
+      setSelectedColumnIndex(-1)
+      setColToolHandlers(nextColToolHandlers)
+      editor.draftInstance.blur()
+      setImmediate(() => {
+        const result = TableUtils.removeColumn(
+          editorState,
+          tableKeyRef.current,
+          selectedColumnIndex
+          // nextColToolHandlers
+        )
+        editor.setValue(validateContent(result))
+      })
     }
-  };
+  }
 
-  insertRow = (event) => {
+  const insertRow = event => {
     const rowIndex = getIndexFromEvent(event)
 
     if (rowIndex === false) {
       return false
     }
 
-    this.setState(
-      {
-        selectedCells: [],
-        selectedRowIndex: -1,
-        selectedColumnIndex: -1
-      },
-      () => {
-        this.props.editor.setValue(
-          TableUtils.insertRow(
-            this.props.editorState,
-            this.tableKey,
-            this.colLength,
-            rowIndex
-          )
-        )
-      }
+    setSelectedCells([])
+    setSelectedRowIndex(-1)
+    setSelectedColumnIndex(-1)
+
+    editor.setValue(
+      TableUtils.insertRow(
+        editorState,
+        tableKeyRef.current,
+        colLengthRef.current,
+        rowIndex
+      )
     )
-  };
+  }
 
   // 校验一下删除行、列之后的内容还有没有，没有的话则创建一个空的editorState，防止后续取不到值报错
-  validateContent = (editorState) => {
+  const validateContent = editorState => {
     const len = editorState.toRAW(true).blocks.length
     return len ? editorState : (Editor as any).createEditorState(null)
-  };
+  }
 
-  removeRow = () => {
-    const { selectedRowIndex } = this.state
-
+  const removeRow = () => {
     if (selectedRowIndex >= 0) {
-      this.setState(
-        {
-          selectedRowIndex: -1
-        },
-        () => {
-          this.props.editor.draftInstance.blur()
-          setImmediate(() => {
-            const result = TableUtils.removeRow(
-              this.props.editorState,
-              this.tableKey,
-              selectedRowIndex
-            )
-            this.props.editor.setValue(this.validateContent(result))
-          })
-        }
-      )
+      setSelectedRowIndex(-1)
+      editor.draftInstance.blur()
+      setImmediate(() => {
+        const result = TableUtils.removeRow(
+          editorState,
+          tableKeyRef.current,
+          selectedRowIndex
+        )
+        editor.setValue(validateContent(result))
+      })
     }
-  };
+  }
 
-  mergeCells = () => {
-    const { selectedCells, cellsMergeable } = this.state
-
+  const mergeCells = () => {
     if (cellsMergeable && selectedCells.length > 1) {
-      this.setState(
-        {
-          selectedCells: [selectedCells[0]],
-          cellSplittable: true,
-          cellsMergeable: false,
-          selectedRowIndex: -1,
-          selectedColumnIndex: -1
-        },
-        () => {
-          this.props.editor.setValue(
-            TableUtils.mergeCells(
-              this.props.editorState,
-              this.tableKey,
-              selectedCells
-            )
-          )
-        }
+      setSelectedCells([selectedCells[0]])
+      setCellSplittable(true)
+      setCellsMergeable(false)
+      setSelectedRowIndex(-1)
+      setSelectedColumnIndex(-1)
+
+      editor.setValue(
+        TableUtils.mergeCells(
+          editorState,
+          tableKeyRef.current,
+          selectedCells
+        )
       )
     }
-  };
+  }
 
-  splitCell = () => {
-    const { selectedCells, cellSplittable } = this.state
-
+  const splitCell = () => {
     if (cellSplittable && selectedCells.length === 1) {
-      this.setState(
-        {
-          cellSplittable: false,
-          cellsMergeable: false,
-          selectedRowIndex: -1,
-          selectedColumnIndex: -1
-        },
-        () => {
-          this.props.editor.setValue(
-            TableUtils.splitCell(
-              this.props.editorState,
-              this.tableKey,
-              selectedCells[0]
-            )
-          )
-        }
+      setCellSplittable(false)
+      setCellsMergeable(false)
+      setSelectedRowIndex(-1)
+      setSelectedColumnIndex(-1)
+      editor.setValue(
+        TableUtils.splitCell(editorState, tableKeyRef.current, selectedCells[0])
       )
     }
-  };
-
-  removeTable = () => {
-    this.props.editor.setValue(
-      TableUtils.removeTable(this.props.editorState, this.tableKey)
-    )
-  };
-
-  componentDidMount () {
-    this.renderCells(this.props)
-
-    document.body.addEventListener('keydown', this.handleKeyDown, false)
-    document.body.addEventListener('mousemove', this.handleMouseMove, false)
-    document.body.addEventListener('mouseup', this.handleMouseUp, false)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    this.renderCells(nextProps)
+  const removeTable = () => {
+    editor.setValue(TableUtils.removeTable(editorState, tableKeyRef.current))
   }
 
-  componentWillUnmount () {
-    document.body.removeEventListener('keydown', this.handleKeyDown, false)
-    document.body.removeEventListener('mousemove', this.handleMouseMove, false)
-    document.body.removeEventListener('mouseup', this.handleMouseUp, false)
-  }
+  useEffect(() => {
+    renderCells()
+    document.body.addEventListener('keydown', handleKeyDown, false)
+    document.body.addEventListener('mousemove', handleMouseMove, false)
+    document.body.addEventListener('mouseup', handleMouseUp, false)
 
-  getResizeOffset (offset) {
+    return () => {
+      document.body.removeEventListener('keydown', handleKeyDown, false)
+      document.body.removeEventListener('mousemove', handleMouseMove, false)
+      document.body.removeEventListener('mouseup', handleMouseUp, false)
+    }
+  }, [])
+
+  const getResizeOffset = offset => {
     let leftLimit = 0
     let rightLimit = 0
 
-    const { colToolHandlers, defaultColWidth } = this.state
-
     leftLimit =
       -1 *
-      ((colToolHandlers[this.__colResizeIndex - 1].width || defaultColWidth) -
+      ((colToolHandlers[colResizeIndexRef.current - 1].width ||
+        defaultColWidth) -
         30)
     rightLimit =
-      (colToolHandlers[this.__colResizeIndex].width || defaultColWidth) - 30
+      (colToolHandlers[colResizeIndexRef.current].width || defaultColWidth) - 30
 
     offset = offset < leftLimit ? leftLimit : offset
     offset = offset > rightLimit ? rightLimit : offset
@@ -644,55 +565,51 @@ export class Table extends React.Component<any, any> {
     return offset
   }
 
-  adjustToolbarHandlers () {
+  const adjustToolbarHandlers = () => {
     let needUpdate = false
-    const rowToolHandlers = [...this.state.rowToolHandlers]
+    const newRowToolHandlers = [...rowToolHandlers]
 
-    Object.keys(this.__rowRefs).forEach((index) => {
-      const rowHeight = this.__rowRefs[index]
-        ? this.__rowRefs[index].getBoundingClientRect().height
+    rowRefs.current?.forEach((ref, index) => {
+      const rowHeight = ref
+        ? ref.getBoundingClientRect().height
         : 40
       if (
-        rowToolHandlers[index] &&
-        rowToolHandlers[index].height !== rowHeight
+        newRowToolHandlers[index] &&
+        newRowToolHandlers[index].height !== rowHeight
       ) {
         needUpdate = true
-        rowToolHandlers[index].height = rowHeight
+        newRowToolHandlers[index].height = rowHeight
       }
     })
 
     if (needUpdate) {
-      this.setState({ rowToolHandlers })
+      setRowToolHandlers(newRowToolHandlers)
     }
   }
 
-  updateCellsData (blockData) {
-    this.props.editor.setValue(
+  const updateCellsData = blockData => {
+    editor.setValue(
       TableUtils.updateAllTableBlocks(
-        this.props.editorState,
-        this.tableKey,
+        editorState,
+        tableKeyRef.current,
         blockData
       )
     )
   }
 
-  renderCells (props?) {
-    props = props || this.props
-    this.colLength = 0
+  const renderCells = () => {
+    colLengthRef.current = 0
 
     const tableRows = []
     const colToolHandlers = []
     const rowToolHandlers = []
-    const { editorState, children } = props
-    const tableWidth = this.__tableRef.getBoundingClientRect().width
+    const tableWidth = tableRef.current?.getBoundingClientRect().width
 
-    this.__startCellKey = children[0].key
-    this.__endCellKey = children[children.length - 1].key
+    startCellKeyRef.current = children[0].key
+    endCellKeyRef.current = children[children.length - 1].key
 
     children.forEach((cell, cellIndex) => {
-      const cellBlock = editorState
-        .getCurrentContent()
-        .getBlockForKey(cell.key)
+      const cellBlock = editorState.getCurrentContent().getBlockForKey(cell.key)
       const cellBlockData = cellBlock.getData()
       const tableKey = cellBlockData.get('tableKey')
       const colIndex = cellBlockData.get('colIndex') * 1
@@ -700,7 +617,7 @@ export class Table extends React.Component<any, any> {
       const colSpan = cellBlockData.get('colSpan')
       const rowSpan = cellBlockData.get('rowSpan')
 
-      this.tableKey = tableKey
+      tableKeyRef.current = tableKey
       if (rowIndex === 0) {
         const colgroupData = cellBlockData.get('colgroupData') || []
         const totalColgroupWidth = colgroupData.reduce(
@@ -708,22 +625,26 @@ export class Table extends React.Component<any, any> {
           0
         )
         const colSpan = (cellBlockData.get('colSpan') || 1) * 1
-        for (let ii = this.colLength; ii < this.colLength + colSpan; ii++) {
+        for (
+          let ii = colLengthRef.current;
+          ii < colLengthRef.current + colSpan;
+          ii++
+        ) {
           colToolHandlers[ii] = {
             key: cell.key,
-            width: this.state.colToolHandlers[ii]
-              ? this.state.colToolHandlers[ii].width
+            width: colToolHandlers[ii]
+              ? colToolHandlers[ii].width
               : colgroupData[ii]
                 ? (colgroupData[ii].width / totalColgroupWidth) * tableWidth * 1
                 : 0
           }
         }
 
-        this.colLength += colSpan
+        colLengthRef.current += colSpan
       }
 
       const newCell = React.cloneElement(cell, {
-        'data-active': !!~this.state.selectedCells.indexOf(cell.key),
+        'data-active': !!~selectedCells.indexOf(cell.key),
         'data-row-index': rowIndex,
         'data-col-index': colIndex || (tableRows[rowIndex] || []).length,
         'data-cell-index': cellIndex,
@@ -732,11 +653,11 @@ export class Table extends React.Component<any, any> {
         className: `bf-table-cell ${cell.props.className}`,
         colSpan: colSpan,
         rowSpan: rowSpan,
-        onClick: this.selectCell,
-        onContextMenu: this.handleCellContexrMenu,
-        onMouseDown: this.handleCellMouseDown,
-        onMouseUp: this.handleCellMouseUp,
-        onMouseEnter: this.handleCellMouseEnter
+        onClick: selectCell,
+        onContextMenu: handleCellContexrMenu,
+        onMouseDown: handleCellMouseDown,
+        onMouseUp: handleCellMouseUp,
+        onMouseEnter: handleCellMouseEnter
       })
 
       for (let jj = rowIndex; jj < rowIndex + rowSpan; jj++) {
@@ -751,20 +672,21 @@ export class Table extends React.Component<any, any> {
       }
     })
 
-    const defaultColWidth = tableWidth / this.colLength
-    this.setState(
-      { tableRows, colToolHandlers, rowToolHandlers, defaultColWidth },
-      this.adjustToolbarHandlers
-    )
+    const defaultColWidth = tableWidth / colLengthRef.current
+    setTableRows(tableRows)
+    setColToolHandlers(colToolHandlers)
+    setRowToolHandlers(rowToolHandlers)
+    setDefaultColWidth(defaultColWidth)
+    adjustToolbarHandlers()
   }
 
-  createColGroup () {
+  const createColGroup = () => {
     return (
       <colgroup>
-        {this.state.colToolHandlers.map((item, index) => (
+        {colToolHandlers.map((item, index) => (
           <col
-            ref={(ref) => (this.__colRefs[index] = ref)}
-            width={item.width || this.state.defaultColWidth}
+            ref={ref => (colRefs.current[index] = ref)}
+            width={item.width || defaultColWidth}
             key={index}
           ></col>
         ))}
@@ -772,22 +694,14 @@ export class Table extends React.Component<any, any> {
     )
   }
 
-  createColTools () {
-    const {
-      colResizing,
-      colResizeOffset,
-      colToolHandlers,
-      selectedColumnIndex,
-      defaultColWidth
-    } = this.state
-
+  const createColTools = () => {
     return (
       <div
         data-active={selectedColumnIndex >= 0}
         contentEditable={false}
-        data-key="bf-col-toolbar"
+        data-key='bf-col-toolbar'
         className={`bf-table-col-tools${colResizing ? ' resizing' : ''}`}
-        onMouseDown={this.handleToolbarMouseDown}
+        onMouseDown={handleToolbarMouseDown}
       >
         {colToolHandlers.map((item, index) => (
           <div
@@ -795,55 +709,55 @@ export class Table extends React.Component<any, any> {
             data-key={item.key}
             data-index={index}
             data-active={selectedColumnIndex == index}
-            className="bf-col-tool-handler"
+            className='bf-col-tool-handler'
             style={{ width: item.width || defaultColWidth }}
-            onClick={this.selectColumn}
+            onClick={selectColumn}
           >
-            {this.props.columnResizable && index !== 0
+            {columnResizable && index !== 0
               ? (
               <div
                 data-index={index}
                 data-key={item.key}
                 className={`bf-col-resizer${
-                  colResizing && this.__colResizeIndex === index
+                  colResizing && colResizeIndexRef.current === index
                     ? ' active'
                     : ''
                 }`}
                 style={
-                  colResizing && this.__colResizeIndex === index
+                  colResizing && colResizeIndexRef.current === index
                     ? { transform: `translateX(${colResizeOffset}px)` }
                     : null
                 }
-                onMouseDown={this.handleColResizerMouseDown}
+                onMouseDown={handleColResizerMouseDown}
               ></div>
                 )
               : null}
-            <div className="bf-col-tool-left">
+            <div className='bf-col-tool-left'>
               <div
                 data-index={index}
-                data-role="insert-column"
-                className="bf-insert-col-before"
-                onClick={this.insertColumn}
+                data-role='insert-column'
+                className='bf-insert-col-before'
+                onClick={insertColumn}
               >
                 <MdAdd {...defaultIconProps} />
               </div>
             </div>
-            <div className="bf-col-tool-center">
+            <div className='bf-col-tool-center'>
               <div
                 data-index={index}
-                data-role="remove-col"
-                className="bf-remove-col"
-                onClick={this.removeColumn}
+                data-role='remove-col'
+                className='bf-remove-col'
+                onClick={removeColumn}
               >
                 <MdDelete {...defaultIconProps} />
               </div>
             </div>
-            <div className="bf-col-tool-right">
+            <div className='bf-col-tool-right'>
               <div
                 data-index={index + 1}
-                data-role="insert-column"
-                className="bf-insert-col-after"
-                onClick={this.insertColumn}
+                data-role='insert-column'
+                className='bf-insert-col-after'
+                onClick={insertColumn}
               >
                 <MdAdd {...defaultIconProps} />
               </div>
@@ -854,15 +768,13 @@ export class Table extends React.Component<any, any> {
     )
   }
 
-  createRowTools () {
-    const { rowToolHandlers, selectedRowIndex } = this.state
-
+  const createRowTools = () => {
     return (
       <div
         data-active={selectedRowIndex >= 0}
         contentEditable={false}
-        className="bf-table-row-tools"
-        onMouseDown={this.handleToolbarMouseDown}
+        className='bf-table-row-tools'
+        onMouseDown={handleToolbarMouseDown}
       >
         {rowToolHandlers.map((item, index) => (
           <div
@@ -870,36 +782,36 @@ export class Table extends React.Component<any, any> {
             data-key={item.key}
             data-index={index}
             data-active={selectedRowIndex == index}
-            className="bf-row-tool-handler"
+            className='bf-row-tool-handler'
             style={{ height: item.height }}
-            onClick={this.selectRow}
+            onClick={selectRow}
           >
-            <div className="bf-row-tool-up">
+            <div className='bf-row-tool-up'>
               <div
                 data-index={index}
-                data-role="insert-row"
-                className="bf-insert-row-before"
-                onClick={this.insertRow}
+                data-role='insert-row'
+                className='bf-insert-row-before'
+                onClick={insertRow}
               >
                 <MdAdd {...defaultIconProps} />
               </div>
             </div>
-            <div className="bf-row-tool-center">
+            <div className='bf-row-tool-center'>
               <div
                 data-index={index}
-                data-role="remove-row"
-                className="bf-remove-row"
-                onClick={this.removeRow}
+                data-role='remove-row'
+                className='bf-remove-row'
+                onClick={removeRow}
               >
                 <MdDelete {...defaultIconProps} />
               </div>
             </div>
-            <div className="bf-row-tool-down">
+            <div className='bf-row-tool-down'>
               <div
                 data-index={index + 1}
-                data-role="insert-row"
-                className="bf-insert-row-after"
-                onClick={this.insertRow}
+                data-role='insert-row'
+                className='bf-insert-row-after'
+                onClick={insertRow}
               >
                 <MdAdd {...defaultIconProps} />
               </div>
@@ -910,82 +822,72 @@ export class Table extends React.Component<any, any> {
     )
   }
 
-  createContextMenu () {
-    const { cellsMergeable, cellSplittable, contextMenuPosition } = this.state
-
+  const createContextMenu = () => {
     if (!contextMenuPosition) {
       return null
     }
 
     return (
       <div
-        className="bf-table-context-menu"
-        onContextMenu={this.handleContextMenuContextMenu}
+        className='bf-table-context-menu'
+        onContextMenu={handleContextMenuContextMenu}
         contentEditable={false}
         style={contextMenuPosition}
       >
         <div
-          className="context-menu-item"
-          onMouseDown={this.mergeCells}
+          className='context-menu-item'
+          onMouseDown={mergeCells}
           data-disabled={!cellsMergeable}
         >
-          {this.language.mergeCells}
+          {languageRef.current.mergeCells}
         </div>
         <div
-          className="context-menu-item"
-          onMouseDown={this.splitCell}
+          className='context-menu-item'
+          onMouseDown={splitCell}
           data-disabled={!cellSplittable}
         >
-          {this.language.splitCell}
+          {languageRef.current.splitCell}
         </div>
-        <div className="context-menu-item" onMouseDown={this.removeTable}>
-          {this.language.removeTable}
+        <div className='context-menu-item' onMouseDown={removeTable}>
+          {languageRef.current.removeTable}
         </div>
       </div>
     )
   }
 
-  render () {
-    const { tableRows, dragSelecting, draggingRectBounding } = this.state
-    const { readOnly } = this.props.editor.props
+  const { readOnly } = editor.props
 
-    return (
-      <div className="bf-table-container">
-        <table
-          data-role="table"
-          className={`bf-table${dragSelecting ? ' dragging' : ''}`}
-          ref={(ref) => (this.__tableRef = ref)}
-          // onMouseDown={this.handleTableMouseDown}
-          // onMouseUp={this.hanldeTableMouseUp}
-          onMouseMove={this.handleTableMouseMove}
-          onMouseLeave={this.handleTableMouseLeave}
-        >
-          {this.createColGroup()}
-          <tbody>
-            {tableRows.map((cells, rowIndex) => (
-              <tr
-                ref={(ref) => (this.__rowRefs[rowIndex] = ref)}
-                key={rowIndex}
-              >
-                {cells}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {dragSelecting
-          ? (
-          <div className="dragging-rect" style={draggingRectBounding} />
-            )
-          : null}
-        {!readOnly && this.createContextMenu()}
-        {!readOnly && this.createColTools()}
-        {!readOnly && this.createRowTools()}
-      </div>
-    )
-  }
+  return (
+    <div className='bf-table-container'>
+      <table
+        data-role='table'
+        className={`bf-table${dragSelecting ? ' dragging' : ''}`}
+        ref={tableRef}
+        onMouseMove={handleTableMouseMove}
+        onMouseLeave={handleTableMouseLeave}
+      >
+        {createColGroup()}
+        <tbody>
+          {tableRows.map((cells, rowIndex) => (
+            <tr ref={ref => (rowRefs.current[rowIndex] = ref)} key={rowIndex}>
+              {cells}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {dragSelecting
+        ? (
+        <div className='dragging-rect' style={draggingRectBounding} />
+          )
+        : null}
+      {!readOnly && createContextMenu()}
+      {!readOnly && createColTools()}
+      {!readOnly && createRowTools()}
+    </div>
+  )
 }
 
-export const tableRenderMap = (options) => (props) => {
+export const tableRenderMap = options => props => {
   return Immutable.Map({
     'table-cell': {
       element: 'td',

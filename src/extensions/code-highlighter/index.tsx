@@ -1,66 +1,48 @@
+import React, { useState, useEffect, useMemo } from 'react'
 import './styles.scss'
-import React from 'react'
 import { Map } from 'immutable'
 import { EditorState, SelectionState } from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
 import { ContentUtils } from '../../utils'
 import Prism from 'prismjs'
 
-class CodeBlockWrapper extends React.Component<any, any> {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      syntax: props.syntaxs[0].syntax,
-      syntaxName: props.syntaxs[0].name
-    }
-  }
-
-  codeBlockBlockKey = null;
-  codeBlockBlock = null;
-
-  componentDidMount () {
-    this.codeBlockBlock = this.getCodeBlockBlock(this.props)
-    this.getCodeBlockSyntax(this.props)
-  }
-
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    this.codeBlockBlock = this.getCodeBlockBlock(nextProps)
-    this.getCodeBlockSyntax(nextProps)
-  }
-
-  getCodeBlockBlock (props) {
+const CodeBlockWrapper = ({
+  syntaxs,
+  showLineNumber,
+  editorState,
+  editor,
+  children,
+  ...restProps
+}) => {
+  const [syntax, setSyntax] = useState(syntaxs[0].syntax)
+  const [syntaxName, setSyntaxName] = useState(syntaxs[0].name)
+  const offsetKey = restProps['data-offset-key']
+  const blockKey = offsetKey.split('-')[0]
+  const contentState = editorState.getCurrentContent()
+  const codeBlockBlock = useMemo(() => {
     try {
-      const offsetKey = props['data-offset-key']
-      const blockKey = offsetKey.split('-')[0]
-      const contentState = props.editorState.getCurrentContent()
-
-      this.codeBlockBlockKey = blockKey
-
       return contentState.getBlockForKey(blockKey)
     } catch (error) {
-      console.warn(error)
       return null
     }
-  }
+  }, [blockKey, contentState])
 
-  getCodeBlockSyntax (props) {
-    if (this.codeBlockBlock) {
-      const blockData = this.codeBlockBlock.getData()
-      const syntax = blockData.get('syntax') || props.syntaxs[0].syntax
-      const syntaxName = props.syntaxs.find(
+  useEffect(() => {
+    if (codeBlockBlock) {
+      const blockData = codeBlockBlock.getData()
+      const syntax = blockData.get('syntax') || syntaxs[0].syntax
+      const syntaxName = syntaxs.find(
         (item) => item.syntax === syntax
       ).name
 
-      if (!syntaxName) {
-        return false
+      if (syntaxName) {
+        setSyntax(syntax)
+        setSyntaxName(syntaxName)
       }
-
-      this.setState({ syntax, syntaxName })
     }
-  }
+  }, [codeBlockBlock])
 
-  setCodeBlockSyntax = (event) => {
+  const setCodeBlockSyntax = (event) => {
     const syntax = event.currentTarget.dataset.syntax
 
     if (!syntax) {
@@ -68,7 +50,7 @@ class CodeBlockWrapper extends React.Component<any, any> {
     }
 
     try {
-      const syntaxName = this.props.syntaxs.find(
+      const syntaxName = syntaxs.find(
         (item) => item.syntax === syntax
       ).name
 
@@ -76,52 +58,50 @@ class CodeBlockWrapper extends React.Component<any, any> {
         return false
       }
 
-      const selectionState = SelectionState.createEmpty(this.codeBlockBlockKey)
-      const editorState = EditorState.forceSelection(
-        this.props.editorState,
+      const selectionState = SelectionState.createEmpty(blockKey)
+      const newEditorState = EditorState.forceSelection(
+        editorState,
         selectionState
       )
+      setSyntax(syntax)
+      setSyntaxName(syntaxName)
 
-      this.setState({ syntax, syntaxName }, () => {
-        this.props.editor.setValue(
-          ContentUtils.setSelectionBlockData(editorState, { syntax })
-        )
-      })
+      editor.setValue(
+        ContentUtils.setSelectionBlockData(newEditorState, { syntax })
+      )
     } catch (error) {
       console.warn(error)
     }
-  };
-
-  render () {
-    return (
-      <div className="kedao-code-block-wrapper">
-        <div className="kedao-code-block-header" contentEditable={false}>
-          <div className="syntax-switcher">
-            <span>{this.state.syntaxName}</span>
-            <ul className="syntax-list">
-              {this.props.syntaxs.map((item, index) => (
-                <li
-                  key={index}
-                  data-syntax={item.syntax}
-                  onClick={this.setCodeBlockSyntax}
-                >
-                  {item.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <pre
-          className={`kedao-code-block${
-            this.props.showLineNumber ? ' show-line-number' : ''
-          }`}
-          data-syntax={this.state.syntax}
-        >
-          {this.props.children}
-        </pre>
-      </div>
-    )
   }
+
+  return (
+    <div className="kedao-code-block-wrapper">
+      <div className="kedao-code-block-header" contentEditable={false}>
+        <div className="syntax-switcher">
+          <span>{syntaxName}</span>
+          <ul className="syntax-list">
+            {syntaxs.map((item, index) => (
+              <li
+                key={index}
+                data-syntax={item.syntax}
+                onClick={setCodeBlockSyntax}
+              >
+                {item.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <pre
+        className={`kedao-code-block${
+          showLineNumber ? ' show-line-number' : ''
+        }`}
+        data-syntax={syntax}
+      >
+        {children}
+      </pre>
+    </div>
+  )
 }
 
 const getCodeBlockBlock = (block) => {

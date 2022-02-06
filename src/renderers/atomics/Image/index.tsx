@@ -1,101 +1,98 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/common/Switch'
-
 import './style.scss'
 
-class Image extends React.Component<any, any> {
-  state = {
-    toolbarVisible: false,
-    toolbarOffset: 0,
-    linkEditorVisible: false,
-    sizeEditorVisible: false,
-    tempLink: null,
-    tempWidth: null,
-    tempHeight: null
-  };
+const Image = ({
+  imageEqualRatio,
+  editor,
+  getContainerNode,
+  containerNode,
+  block,
+  hooks,
+  entityKey,
+  mediaData,
+  language,
+  imageControls,
+  imageResizable
+}) => {
+  const [toolbarVisible, setToolbarVisible] = useState(false)
+  const [toolbarOffset, setToolbarOffset] = useState(0)
+  const [linkEditorVisible, setLinkEditorVisible] = useState(false)
+  const [sizeEditorVisible, setSizeEditorVisible] = useState(false)
+  const [tempLink, setTempLink] = useState(null)
+  const [tempWidth, setTempWidth] = useState(null)
+  const [tempHeight, setTempHeight] = useState(null)
 
-  imageElement = React.createRef<HTMLImageElement>();
+  const imageElement = useRef<HTMLImageElement>(null)
+  const mediaEmbederInstance = useRef<HTMLDivElement>(null)
+  const toolbarElement = useRef<HTMLDivElement>(null)
+  const initialLeft = useRef(undefined)
+  const initialTop = useRef(undefined)
+  const initialWidth = useRef(undefined)
+  const initialHeight = useRef(undefined)
+  const reSizeType = useRef(undefined)
+  const zoom = useRef(undefined)
 
-  mediaEmbederInstance = React.createRef<HTMLDivElement>();
-
-  toolbarElement = React.createRef<HTMLDivElement>();
-
-  initialLeft;
-
-  initialTop;
-
-  initialWidth;
-
-  initialHeight;
-
-  reSizeType;
-
-  zoom;
-
-  changeSize = (e) => {
-    const type = this.reSizeType
-    if (!this.initialLeft) {
-      this.initialLeft = e.screenX
-      this.initialTop = e.screenY
+  const changeSize = e => {
+    const type = reSizeType.current
+    if (!initialLeft.current) {
+      initialLeft.current = e.screenX
+      initialTop.current = e.screenY
     }
     if (type === 'rightbottom') {
-      this.initialHeight += e.screenY - this.initialTop
-      this.initialWidth += e.screenX - this.initialLeft
+      initialHeight.current += e.screenY - initialTop.current
+      initialWidth.current += e.screenX - initialLeft.current
     }
     if (type === 'leftbottom') {
-      this.initialHeight += e.screenY - this.initialTop
-      this.initialWidth += -e.screenX + this.initialLeft
+      initialHeight.current += e.screenY - initialTop.current
+      initialWidth.current += -e.screenX + initialLeft.current
     }
 
-    this.initialLeft = e.screenX
-    this.initialTop = e.screenY
-  };
+    initialLeft.current = e.screenX
+    initialTop.current = e.screenY
+  }
 
-  moveImage = (e) => {
-    this.changeSize(e)
-    this.setState({
-      tempWidth: Math.abs(this.initialWidth),
-      tempHeight: Math.abs(this.initialHeight)
-    })
-  };
+  const moveImage = e => {
+    changeSize(e)
+    setTempWidth(Math.abs(initialWidth.current))
+    setTempHeight(Math.abs(initialHeight.current))
+  }
 
-  upImage = () => {
-    const { imageEqualRatio } = this.props
+  const upImage = () => {
     if (imageEqualRatio) {
-      this.confirmImageSizeEqualRatio()
+      confirmImageSizeEqualRatio()
     } else {
-      this.confirmImageSize()
+      confirmImageSize()
     }
-    document.removeEventListener('mousemove', this.moveImage)
-    document.removeEventListener('mouseup', this.upImage)
-  };
+    document.removeEventListener('mousemove', moveImage)
+    document.removeEventListener('mouseup', upImage)
+  }
 
-  repareChangeSize = (type) => (e) => {
-    this.reSizeType = type
-    const imageRect = this.imageElement.current?.getBoundingClientRect()
-    this.initialTop = 0
-    this.initialLeft = 0
-    this.initialWidth = imageRect.width
-    this.initialHeight = imageRect.height
-    this.zoom = imageRect.width / imageRect.height
+  const repareChangeSize = type => e => {
+    reSizeType.current = type
+    const imageRect = imageElement.current?.getBoundingClientRect()
+    initialTop.current = 0
+    initialLeft.current = 0
+    initialWidth.current = imageRect.width
+    initialHeight.current = imageRect.height
+    zoom.current = imageRect.width / imageRect.height
     e.preventDefault()
-    document.addEventListener('mousemove', this.moveImage)
-    document.addEventListener('mouseup', this.upImage)
-  };
-
-  lockEditor () {
-    this.props.editor.lockOrUnlockEditor(true)
+    document.addEventListener('mousemove', moveImage)
+    document.addEventListener('mouseup', upImage)
   }
 
-  unlockEditor () {
-    this.props.editor.lockOrUnlockEditor(false)
+  const lockEditor = () => {
+    editor.lockOrUnlockEditor(true)
   }
 
-  calcToolbarOffset () {
-    const { getContainerNode, containerNode } = this.props
+  const unlockEditor = () => {
+    editor.lockOrUnlockEditor(false)
+  }
+
+  const calcToolbarOffset = () => {
     const container = getContainerNode ? getContainerNode() : containerNode
 
     if (!container) {
@@ -105,8 +102,8 @@ class Image extends React.Component<any, any> {
     const viewRect = container
       .querySelector('.bf-content')
       .getBoundingClientRect()
-    const toolbarRect = this.toolbarElement.current?.getBoundingClientRect()
-    const imageRect = this.imageElement.current?.getBoundingClientRect()
+    const toolbarRect = toolbarElement.current?.getBoundingClientRect()
+    const imageRect = imageElement.current?.getBoundingClientRect()
 
     const right =
       viewRect.right -
@@ -126,96 +123,81 @@ class Image extends React.Component<any, any> {
     }
   }
 
-  preventDragEvent = (event) => {
-    event.stopPropagation()
-    event.preventDefault()
-  };
+  // const preventDragEvent = event => {
+  //   event.stopPropagation()
+  //   event.preventDefault()
+  // }
 
-  handleDragStart = () => {
-    if (
-      this.props.editor.editorProps.readOnly ||
-      this.props.editor.editorProps.disabled
-    ) {
+  const handleDragStart = () => {
+    if (editor.editorProps.readOnly || editor.editorProps.disabled) {
       return false
     }
 
     window.__KEDAO_DRAGING__IMAGE__ = {
-      block: this.props.block,
+      block: block,
       mediaData: {
         type: 'IMAGE',
-        ...this.props.mediaData
+        ...mediaData
       }
     }
 
-    this.setState(
-      {
-        toolbarVisible: false
-      },
-      () => {
-        this.unlockEditor()
-      }
-    )
+    setToolbarVisible(false)
+    unlockEditor()
 
     return true
-  };
+  }
 
-  handleDragEnd = () => {
+  const handleDragEnd = () => {
     window.__KEDAO_DRAGING__IMAGE__ = null
     return false
-  };
+  }
 
-  executeCommand = (command) => {
+  const executeCommand = command => {
+    const allCommands = {
+      setImageFloat,
+      setImageAlignment,
+      toggleSizeEditor,
+      toggleLinkEditor,
+      removeImage
+    }
     if (typeof command === 'string') {
       const [method, param] = command.split('|')
-      if (this[method]) {
-        this[method](param)
+      if (allCommands[method]) {
+        allCommands[method](param)
       }
     } else if (typeof command === 'function') {
-      command(
-        this.props.block,
-        this.props.mediaData,
-        this.props.editor.getValue()
-      )
+      command(block, mediaData, editor.getValue())
     }
-  };
+  }
 
-  removeImage = () => {
-    this.props.editor.setValue(
-      ContentUtils.removeBlock(this.props.editor.getValue(), this.props.block)
-    )
-    this.unlockEditor()
-  };
+  const removeImage = () => {
+    editor.setValue(ContentUtils.removeBlock(editor.getValue(), block))
+    unlockEditor()
+  }
 
-  toggleLinkEditor = () => {
-    this.setState((prevState) => ({
-      linkEditorVisible: !prevState.linkEditorVisible,
-      sizeEditorVisible: false
-    }))
-  };
+  const toggleLinkEditor = () => {
+    setLinkEditorVisible(v => !v)
+    setSizeEditorVisible(false)
+  }
 
-  toggleSizeEditor = () => {
-    this.setState((prevState) => ({
-      linkEditorVisible: false,
-      sizeEditorVisible: !prevState.sizeEditorVisible
-    }))
-  };
+  const toggleSizeEditor = () => {
+    setLinkEditorVisible(false)
+    setSizeEditorVisible(v => !v)
+  }
 
-  handleLinkInputKeyDown = (e) => {
+  const handleLinkInputKeyDown = e => {
     if (e.keyCode === 13) {
-      this.confirmImageLink()
+      confirmImageLink()
     }
-  };
+  }
 
-  setImageLink = (e) => {
-    this.setState({ tempLink: e.currentTarget.value })
-  };
+  const setImageLink = e => {
+    setTempLink(e.currentTarget.value)
+  }
 
-  setImageLinkTarget (linkTarget) {
+  const setImageLinkTarget = linkTarget => {
     let newLinkTarget
-    const hookReturns = this.props.hooks(
-      'set-image-link-target',
-      linkTarget
-    )(linkTarget)
+    const hookReturns = hooks('set-image-link-target', linkTarget)(linkTarget)
 
     if (hookReturns === false) {
       return false
@@ -226,20 +208,16 @@ class Image extends React.Component<any, any> {
     }
 
     newLinkTarget = newLinkTarget === '_blank' ? '' : '_blank'
-    this.props.editor.setValue(
-      ContentUtils.setMediaData(
-        this.props.editor.getValue(),
-        this.props.entityKey,
-        { newLinkTarget }
-      )
+    editor.setValue(
+      ContentUtils.setMediaData(editor.getValue(), entityKey, { newLinkTarget })
     )
-    window.setImmediate(this.props.editor.forceRender)
+    window.setImmediate(editor.forceRender)
     return true
   }
 
-  confirmImageLink = () => {
-    let { tempLink: link } = this.state
-    const hookReturns = this.props.hooks('set-image-link', link)(link)
+  const confirmImageLink = () => {
+    let link = tempLink
+    const hookReturns = hooks('set-image-link', link)(link)
 
     if (hookReturns === false) {
       return false
@@ -250,50 +228,43 @@ class Image extends React.Component<any, any> {
     }
 
     if (link !== null) {
-      this.props.editor.setValue(
-        ContentUtils.setMediaData(
-          this.props.editor.getValue(),
-          this.props.entityKey,
-          { link }
-        )
+      editor.setValue(
+        ContentUtils.setMediaData(editor.getValue(), entityKey, { link })
       )
-      window.setImmediate(this.props.editor.forceRender)
+      window.setImmediate(editor.forceRender)
     }
     return true
-  };
+  }
 
-  handleSizeInputKeyDown = (e) => {
+  const handleSizeInputKeyDown = e => {
     if (e.keyCode === 13) {
-      this.confirmImageSize()
+      confirmImageSize()
     }
-  };
+  }
 
-  setImageWidth = ({ currentTarget }) => {
+  const setImageWidth = ({ currentTarget }) => {
     let { value } = currentTarget
 
     if (value && !isNaN(value)) {
       value += 'px'
     }
 
-    this.setState({
-      tempWidth: value
-    })
-  };
+    setTempWidth(value)
+  }
 
-  setImageHeight = ({ currentTarget }) => {
+  const setImageHeight = ({ currentTarget }) => {
     let { value } = currentTarget
 
     if (value && !isNaN(value)) {
       value += 'px'
     }
 
-    this.setState({
-      tempHeight: value
-    })
-  };
+    setTempHeight(value)
+  }
 
-  confirmImageSize = () => {
-    const { tempWidth: width, tempHeight: height } = this.state
+  const confirmImageSize = () => {
+    const width = tempWidth
+    const height = tempHeight
     let newImageSize: any = {}
 
     if (width !== null) {
@@ -303,10 +274,7 @@ class Image extends React.Component<any, any> {
       newImageSize.height = height
     }
 
-    const hookReturns = this.props.hooks(
-      'set-image-size',
-      newImageSize
-    )(newImageSize)
+    const hookReturns = hooks('set-image-size', newImageSize)(newImageSize)
 
     if (hookReturns === false) {
       return false
@@ -316,34 +284,27 @@ class Image extends React.Component<any, any> {
       newImageSize = hookReturns
     }
 
-    this.props.editor.setValue(
-      ContentUtils.setMediaData(
-        this.props.editor.getValue(),
-        this.props.entityKey,
-        newImageSize
-      )
+    editor.setValue(
+      ContentUtils.setMediaData(editor.getValue(), entityKey, newImageSize)
     )
-    window.setImmediate(this.props.editor.forceRender)
+    window.setImmediate(editor.forceRender)
     return true
-  };
+  }
 
-  confirmImageSizeEqualRatio = () => {
-    const { tempWidth: width, tempHeight: height } = this.state
+  const confirmImageSizeEqualRatio = () => {
+    const width = tempWidth
+    const height = tempHeight
     let equalWidth
     let equalHeight
     let newImageSize: any = {}
     // 宽度过大 图片等比缩放
-    if (width / height > this.zoom) {
-      equalWidth = Math.floor(height * this.zoom)
-      this.setState({
-        tempWidth: equalWidth
-      })
+    if (width / height > zoom.current) {
+      equalWidth = Math.floor(height * zoom.current)
+      setTempWidth(equalWidth)
       equalHeight = height
-    } else if (width / height < this.zoom) {
-      equalHeight = Math.floor(width / this.zoom)
-      this.setState({
-        tempHeight: equalHeight
-      })
+    } else if (width / height < zoom.current) {
+      equalHeight = Math.floor(width / zoom.current)
+      setTempHeight(equalHeight)
       equalWidth = width
     }
     if (equalWidth !== null) {
@@ -353,10 +314,7 @@ class Image extends React.Component<any, any> {
       newImageSize.height = equalHeight
     }
 
-    const hookReturns = this.props.hooks(
-      'set-image-size',
-      newImageSize
-    )(newImageSize)
+    const hookReturns = hooks('set-image-size', newImageSize)(newImageSize)
 
     if (hookReturns === false) {
       return false
@@ -366,20 +324,16 @@ class Image extends React.Component<any, any> {
       newImageSize = hookReturns
     }
 
-    this.props.editor.setValue(
-      ContentUtils.setMediaData(
-        this.props.editor.getValue(),
-        this.props.entityKey,
-        newImageSize
-      )
+    editor.setValue(
+      ContentUtils.setMediaData(editor.getValue(), entityKey, newImageSize)
     )
-    window.setImmediate(this.props.editor.forceRender)
+    window.setImmediate(editor.forceRender)
     return true
-  };
+  }
 
-  setImageFloat = (float) => {
+  const setImageFloat = float => {
     let newFloat = float
-    const hookReturns = this.props.hooks('set-image-float', newFloat)(newFloat)
+    const hookReturns = hooks('set-image-float', newFloat)(newFloat)
 
     if (hookReturns === false) {
       return false
@@ -389,23 +343,16 @@ class Image extends React.Component<any, any> {
       newFloat = hookReturns
     }
 
-    this.props.editor.setValue(
-      ContentUtils.setMediaPosition(
-        this.props.editor.getValue(),
-        this.props.block,
-        { newFloat }
-      )
+    editor.setValue(
+      ContentUtils.setMediaPosition(editor.getValue(), block, { newFloat })
     )
-    this.unlockEditor()
+    unlockEditor()
     return true
-  };
+  }
 
-  setImageAlignment = (alignment) => {
+  const setImageAlignment = alignment => {
     let newAlignment = alignment
-    const hookReturns = this.props.hooks(
-      'set-image-alignment',
-      newAlignment
-    )(newAlignment)
+    const hookReturns = hooks('set-image-alignment', newAlignment)(newAlignment)
 
     if (hookReturns === false) {
       return false
@@ -415,250 +362,217 @@ class Image extends React.Component<any, any> {
       newAlignment = hookReturns
     }
 
-    this.props.editor.setValue(
-      ContentUtils.setMediaPosition(
-        this.props.editor.getValue(),
-        this.props.block,
-        { newAlignment }
-      )
+    editor.setValue(
+      ContentUtils.setMediaPosition(editor.getValue(), block, { newAlignment })
     )
-    this.unlockEditor()
+    unlockEditor()
     return true
-  };
+  }
 
-  showToolbar = (event) => {
-    if (
-      this.props.editor.editorProps.readOnly ||
-      this.props.editor.editorProps.disabled
-    ) {
+  const showToolbar = event => {
+    if (editor.editorProps.readOnly || editor.editorProps.disabled) {
       return false
     }
 
     event.preventDefault()
 
-    if (!this.state.toolbarVisible) {
-      this.setState(
-        {
-          toolbarVisible: true
-        },
-        () => {
-          this.lockEditor()
-          this.setState({ toolbarOffset: this.calcToolbarOffset() })
-        }
-      )
+    if (!toolbarVisible) {
+      setToolbarVisible(true)
+      lockEditor()
+      setToolbarOffset(calcToolbarOffset())
     }
     return true
-  };
+  }
 
-  hideToolbar = (event) => {
+  const hideToolbar = event => {
     event.preventDefault()
 
-    this.setState(
-      {
-        toolbarVisible: false
-      },
-      () => {
-        this.unlockEditor()
-        // this.props.editor.requestFocus()
-      }
-    )
-  };
+    setToolbarVisible(false)
+    unlockEditor()
+  }
 
-  render () {
-    const { mediaData, language, imageControls, imageResizable } = this.props
-    const {
-      toolbarVisible,
-      toolbarOffset,
-      linkEditorVisible,
-      sizeEditorVisible,
-      tempWidth,
-      tempHeight
-    } = this.state
-    const blockData = this.props.block.getData()
+  const blockData = block.getData()
 
-    const float = blockData.get('float')
-    let alignment = blockData.get('alignment')
-    const { url, link, linkTarget, width, height, meta } = mediaData
-    const imageStyles: any = {}
-    let clearFix = false
+  const float = blockData.get('float')
+  let alignment = blockData.get('alignment')
+  const { url, link, linkTarget, width, height, meta } = mediaData
+  const imageStyles: any = {}
+  let clearFix = false
 
-    if (float) {
-      alignment = null
-    } else if (alignment === 'left') {
-      imageStyles.float = 'left'
-      clearFix = true
-    } else if (alignment === 'right') {
-      imageStyles.float = 'right'
-      clearFix = true
-    } else if (alignment === 'center') {
-      imageStyles.textAlign = 'center'
-    } else {
-      imageStyles.float = 'left'
-      clearFix = true
-    }
+  if (float) {
+    alignment = null
+  } else if (alignment === 'left') {
+    imageStyles.float = 'left'
+    clearFix = true
+  } else if (alignment === 'right') {
+    imageStyles.float = 'right'
+    clearFix = true
+  } else if (alignment === 'center') {
+    imageStyles.textAlign = 'center'
+  } else {
+    imageStyles.float = 'left'
+    clearFix = true
+  }
 
-    const renderedControlItems = imageControls.map((item) => {
-      if (typeof item === 'string' && imageControlItems[item]) {
-        return (
-          <a
-            className={item === 'link' && link ? 'active' : ''}
-            role="presentation"
-            key={uuidv4()}
-            onClick={() => this.executeCommand(imageControlItems[item].command)}
-          >
-            {imageControlItems[item].text}
-          </a>
-        )
-      } else if (item && (item.render || item.text)) {
-        return item.render
-          ? (
-              item.render(mediaData, this.props.block)
-            )
-          : (
-          <a
-            key={uuidv4()}
-            role="presentation"
-            onClick={() => item.onClick && this.executeCommand(item.onClick)}
-          >
-            {item.text}
-          </a>
-            )
-      } else {
-        return null
-      }
-    })
-
-    return (
-      <div className="bf-media">
-        <div
-          style={imageStyles}
-          draggable
-          onMouseEnter={this.showToolbar}
-          onMouseMove={this.showToolbar}
-          onMouseLeave={this.hideToolbar}
-          onDragStart={this.handleDragStart}
-          onDragEnd={this.handleDragEnd}
-          ref={this.mediaEmbederInstance}
-          className="bf-image"
+  const renderedControlItems = imageControls.map(item => {
+    if (typeof item === 'string' && imageControlItems[item]) {
+      return (
+        <a
+          className={item === 'link' && link ? 'active' : ''}
+          role='presentation'
+          key={uuidv4()}
+          onClick={() => executeCommand(imageControlItems[item].command)}
         >
-          {toolbarVisible
+          {imageControlItems[item].text}
+        </a>
+      )
+    } else if (item && (item.render || item.text)) {
+      return item.render
+        ? (
+            item.render(mediaData, block)
+          )
+        : (
+        <a
+          key={uuidv4()}
+          role='presentation'
+          onClick={() => item.onClick && executeCommand(item.onClick)}
+        >
+          {item.text}
+        </a>
+          )
+    } else {
+      return null
+    }
+  })
+
+  return (
+    <div className='bf-media'>
+      <div
+        style={imageStyles}
+        draggable
+        onMouseEnter={showToolbar}
+        onMouseMove={showToolbar}
+        onMouseLeave={hideToolbar}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        ref={mediaEmbederInstance}
+        className='bf-image'
+      >
+        {toolbarVisible
+          ? (
+          <div
+            style={{ marginLeft: toolbarOffset }}
+            ref={toolbarElement}
+            data-float={float}
+            data-align={alignment}
+            className='bf-media-toolbar'
+          >
+            {linkEditorVisible
+              ? (
+              <div className='bf-image-link-editor'>
+                <div className='editor-input-group'>
+                  <input
+                    type='text'
+                    placeholder={language.linkEditor.inputWithEnterPlaceHolder}
+                    onKeyDown={handleLinkInputKeyDown}
+                    onChange={setImageLink}
+                    defaultValue={link}
+                  />
+                  <button type='button' onClick={confirmImageLink}>
+                    {language.base.confirm}
+                  </button>
+                </div>
+                <div className='switch-group'>
+                  <Switch
+                    active={linkTarget === '_blank'}
+                    onClick={() => setImageLinkTarget(linkTarget)}
+                  />
+                  <label>{language.linkEditor.openInNewWindow}</label>
+                </div>
+              </div>
+                )
+              : null}
+            {sizeEditorVisible
+              ? (
+              <div className='bf-image-size-editor'>
+                <div className='editor-input-group'>
+                  <input
+                    type='text'
+                    placeholder={language.base.width}
+                    onKeyDown={handleSizeInputKeyDown}
+                    onChange={setImageWidth}
+                    defaultValue={width}
+                  />
+                  <input
+                    type='text'
+                    placeholder={language.base.height}
+                    onKeyDown={handleSizeInputKeyDown}
+                    onChange={setImageHeight}
+                    defaultValue={height}
+                  />
+                  <button type='button' onClick={confirmImageSize}>
+                    {language.base.confirm}
+                  </button>
+                </div>
+              </div>
+                )
+              : null}
+            {renderedControlItems}
+            <i
+              style={{ marginLeft: toolbarOffset * -1 }}
+              className='bf-media-toolbar-arrow'
+            />
+          </div>
+            )
+          : null}
+        <div
+          style={{
+            position: 'relative',
+            width: `${width}px`,
+            height: `${height}px`,
+            display: 'inline-block'
+          }}
+        >
+          <img
+            ref={imageElement}
+            src={url}
+            alt='Alt'
+            width={width}
+            height={height}
+            {...meta}
+          />
+          {toolbarVisible && imageResizable
             ? (
             <div
-              style={{ marginLeft: toolbarOffset }}
-              ref={this.toolbarElement}
-              data-float={float}
-              data-align={alignment}
-              className="bf-media-toolbar"
-            >
-              {linkEditorVisible
-                ? (
-                <div className="bf-image-link-editor">
-                  <div className="editor-input-group">
-                    <input
-                      type="text"
-                      placeholder={
-                        language.linkEditor.inputWithEnterPlaceHolder
-                      }
-                      onKeyDown={this.handleLinkInputKeyDown}
-                      onChange={this.setImageLink}
-                      defaultValue={link}
-                    />
-                    <button type="button" onClick={this.confirmImageLink}>
-                      {language.base.confirm}
-                    </button>
-                  </div>
-                  <div className="switch-group">
-                    <Switch
-                      active={linkTarget === '_blank'}
-                      onClick={() => this.setImageLinkTarget(linkTarget)}
-                    />
-                    <label>{language.linkEditor.openInNewWindow}</label>
-                  </div>
-                </div>
-                  )
-                : null}
-              {sizeEditorVisible
-                ? (
-                <div className="bf-image-size-editor">
-                  <div className="editor-input-group">
-                    <input
-                      type="text"
-                      placeholder={language.base.width}
-                      onKeyDown={this.handleSizeInputKeyDown}
-                      onChange={this.setImageWidth}
-                      defaultValue={width}
-                    />
-                    <input
-                      type="text"
-                      placeholder={language.base.height}
-                      onKeyDown={this.handleSizeInputKeyDown}
-                      onChange={this.setImageHeight}
-                      defaultValue={height}
-                    />
-                    <button type="button" onClick={this.confirmImageSize}>
-                      {language.base.confirm}
-                    </button>
-                  </div>
-                </div>
-                  )
-                : null}
-              {renderedControlItems}
-              <i
-                style={{ marginLeft: toolbarOffset * -1 }}
-                className="bf-media-toolbar-arrow"
-              />
-            </div>
+              role='presentation'
+              className='bf-csize-icon right-bottom'
+              onMouseDown={repareChangeSize('rightbottom')}
+            />
+              )
+            : null}
+          {toolbarVisible && imageResizable
+            ? (
+            <div
+              role='presentation'
+              className='bf-csize-icon left-bottom'
+              onMouseDown={repareChangeSize('leftbottom')}
+            />
               )
             : null}
           <div
-            style={{
-              position: 'relative',
-              width: `${width}px`,
-              height: `${height}px`,
-              display: 'inline-block'
-            }}
-          >
-            <img
-              ref={this.imageElement}
-              src={url}
-              alt="Alt"
-              width={width}
-              height={height}
-              {...meta}
-            />
-            {toolbarVisible && imageResizable
-              ? (
-              <div
-                role="presentation"
-                className="bf-csize-icon right-bottom"
-                onMouseDown={this.repareChangeSize('rightbottom')}
-              />
-                )
-              : null}
-            {toolbarVisible && imageResizable
-              ? (
-              <div
-                role="presentation"
-                className="bf-csize-icon left-bottom"
-                onMouseDown={this.repareChangeSize('leftbottom')}
-              />
-                )
-              : null}
-            <div
-              className={`bf-pre-csize ${this.reSizeType}`}
-              style={{ width: `${tempWidth}px`, height: `${tempHeight}px` }}
-            />
-          </div>
-        </div>
-        {clearFix && (
-          <div
-            className="clearfix"
-            style={{ clear: 'both', height: 0, lineHeight: 0, float: 'none' }}
+            className={`bf-pre-csize ${reSizeType.current}`}
+            style={{ width: `${tempWidth}px`, height: `${tempHeight}px` }}
           />
-        )}
+        </div>
       </div>
-    )
-  }
+      {clearFix && (
+        <div
+          className='clearfix'
+          style={{ clear: 'both', height: 0, lineHeight: 0, float: 'none' }}
+        />
+      )}
+    </div>
+  )
 }
 
 export default Image

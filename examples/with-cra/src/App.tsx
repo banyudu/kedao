@@ -5,9 +5,7 @@ import Editor from 'kedao'
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Editor />
-      </header>
+      <Editor />
     </div>
   );
 }

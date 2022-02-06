@@ -1,57 +1,62 @@
-import React from 'react'
+import React, { useState, useEffect, useRef, forwardRef } from 'react'
 import mergeClassNames from 'merge-class-names'
 import ResponsiveHelper from '../../../helpers/responsive'
 import './style.scss'
 import { MdArrowDropDown } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
 
-class DropDown extends React.Component<any, any> {
-  state = {
-    active: false,
-    offset: 0
-  };
+const DropDown = forwardRef<any, any>(({
+  disabled,
+  autoHide,
+  getContainerNode,
+  caption,
+  htmlCaption,
+  title,
+  showArrow,
+  arrowActive,
+  className,
+  children
+}, ref) => {
+  const [active, setActive] = useState(false)
+  const [offset, setOffset] = useState(0)
+  const responsiveResolveId = useRef(null)
+  const dropDownHandlerElement = useRef<HTMLButtonElement>(null)
+  const dropDownContentElement = useRef<HTMLDivElement>(null)
 
-  componentDidMount () {
+  useEffect(() => {
     if (document) {
-      document.body.addEventListener('click', this.registerClickEvent)
-      this.responsiveResolveId = ResponsiveHelper.resolve(
-        this.fixDropDownPosition
+      document.body.addEventListener('click', registerClickEvent)
+      responsiveResolveId.current = ResponsiveHelper.resolve(
+        fixDropDownPosition
       ) as any
     }
-  }
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps (next) {
-    if (!this.props.disabled && next.disabled) {
-      this.hide()
+    return () => {
+      if (document) {
+        document.body.removeEventListener('click', registerClickEvent)
+        ResponsiveHelper.unresolve(responsiveResolveId.current)
+      }
     }
-  }
+  }, [])
 
-  componentDidUpdate (prevState) {
-    if (!prevState.active && this.state.active) {
-      this.fixDropDownPosition()
+  useEffect(() => {
+    if (disabled) {
+      hide()
     }
-  }
+  }, [disabled])
 
-  componentWillUnmount () {
-    if (document) {
-      document.body.removeEventListener('click', this.registerClickEvent)
-      ResponsiveHelper.unresolve(this.responsiveResolveId)
+  useEffect(() => {
+    if (active) {
+      fixDropDownPosition()
     }
-  }
+  }, [active])
 
-  responsiveResolveId = React.createRef();
+  const fixDropDownPosition = () => {
+    const viewRect = getContainerNode().getBoundingClientRect()
+    const handlerRect = dropDownHandlerElement.current?.getBoundingClientRect()
+    const contentRect = dropDownContentElement.current?.getBoundingClientRect()
 
-  dropDownHandlerElement = React.createRef<HTMLButtonElement>();
-
-  dropDownContentElement = React.createRef<HTMLDivElement>();
-
-  fixDropDownPosition = () => {
-    const viewRect = this.props.getContainerNode().getBoundingClientRect()
-    const handlerRect = this.dropDownHandlerElement.current?.getBoundingClientRect()
-    const contentRect = this.dropDownContentElement.current?.getBoundingClientRect()
-
-    let offset = 0
+    let newOffset = 0
     let right =
       handlerRect.right - handlerRect.width / 2 + contentRect.width / 2
     let left = handlerRect.left + handlerRect.width / 2 - contentRect.width / 2
@@ -60,112 +65,90 @@ class DropDown extends React.Component<any, any> {
     left -= viewRect.left
 
     if (right < 10) {
-      offset = right - 10
+      newOffset = right - 10
     } else if (left < 10) {
-      offset = left * -1 + 10
+      newOffset = left * -1 + 10
     }
 
-    if (offset !== this.state.offset) {
-      this.setState({ offset })
+    if (newOffset !== offset) {
+      setOffset(newOffset)
     }
-  };
+  }
 
-  registerClickEvent = (event) => {
-    const { autoHide } = this.props
-    const { active } = this.state
-
+  const registerClickEvent = event => {
     if (
-      this.dropDownContentElement.current?.contains(event.target) ||
-      this.dropDownHandlerElement.current?.contains(event.target)
+      dropDownContentElement.current?.contains(event.target) ||
+      dropDownHandlerElement.current?.contains(event.target)
     ) {
       return false
     }
 
     if (autoHide && active) {
-      this.hide()
+      hide()
     }
     return true
-  };
+  }
 
-  toggle = () => {
-    this.setState((prevState) => ({
-      active: !prevState.active
-    }))
-  };
+  const toggle = () => {
+    setActive(active => !active)
+  }
 
-  show = () => {
-    this.setState({ active: true })
-  };
+  const hide = () => {
+    setActive(false)
+  }
 
-  hide = () => {
-    this.setState({ active: false })
-  };
-
-  render () {
-    const { active, offset } = this.state
-    const {
-      caption,
-      htmlCaption,
-      title,
-      disabled,
-      showArrow,
-      arrowActive,
-      className,
-      children
-    } = this.props
-
-    return (
-      <div
-        className={mergeClassNames(
-          'bf-dropdown',
-          !disabled && active && 'active',
-          disabled && 'disabled',
-          className
-        )}
-      >
-        {htmlCaption
+  return (
+    <div
+      className={mergeClassNames(
+        'bf-dropdown',
+        !disabled && active && 'active',
+        disabled && 'disabled',
+        className
+      )}
+      ref={ref}
+    >
+      {
+        htmlCaption
           ? (
-          <button
-            type="button"
-            className="dropdown-handler"
-            data-title={title}
-            aria-label="Button"
-            onClick={this.toggle}
-            dangerouslySetInnerHTML={
-              htmlCaption ? { __html: htmlCaption } : null
-            }
-            ref={this.dropDownHandlerElement}
-          />
+            <button
+              type='button'
+              className='dropdown-handler'
+              data-title={title}
+              aria-label='Button'
+              onClick={toggle}
+              dangerouslySetInnerHTML={htmlCaption ? { __html: htmlCaption } : null}
+              ref={dropDownHandlerElement}
+            />
             )
           : (
-          <button
-            type="button"
-            className="dropdown-handler"
-            data-title={title}
-            onClick={this.toggle}
-            ref={this.dropDownHandlerElement}
-          >
-            <span>{caption}</span>
-            {showArrow !== false ? <MdArrowDropDown {...defaultIconProps} /> : null}
-          </button>
+            <button
+              type='button'
+              className='dropdown-handler'
+              data-title={title}
+              onClick={toggle}
+              ref={dropDownHandlerElement}
+            >
+              <span>{caption}</span>
+              {showArrow !== false
+                ? (
+                <MdArrowDropDown {...defaultIconProps} />
+                  )
+                : null}
+            </button>
             )}
-        <div
-          className="dropdown-content"
-          style={{ marginLeft: offset }}
-          ref={this.dropDownContentElement}
-        >
-          <i
-            style={{ marginLeft: offset * -1 }}
-            className={mergeClassNames(
-              'dropdown-arrow',
-              arrowActive && 'active'
-            )}
-          />
-          <div className="dropdown-content-inner">{children}</div>
-        </div>
+      <div
+        className='dropdown-content'
+        style={{ marginLeft: offset }}
+        ref={dropDownContentElement}
+      >
+        <i
+          style={{ marginLeft: offset * -1 }}
+          className={mergeClassNames('dropdown-arrow', arrowActive && 'active')}
+        />
+        <div className='dropdown-content-inner'>{children}</div>
       </div>
-    )
-  }
-}
+    </div>
+  )
+})
 
 export default DropDown

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { ContentUtils } from '../../../utils'
 
 import Switch from '../../common/Switch'
@@ -8,148 +8,140 @@ import { MdClose, MdLink, MdLinkOff } from 'react-icons/md'
 import './style.scss'
 import { defaultIconProps } from '../../../configs/props'
 
-class LinkEditor extends React.Component<any, any> {
-  constructor (props) {
-    super(props)
+const LinkEditor = ({
+  defaultLinkTarget,
+  editorState,
+  editor,
+  hooks,
+  language,
+  getContainerNode,
+  allowInsertLinkText
+}) => {
+  const [text, setText] = useState('')
+  const [href, setHref] = useState('')
+  const [target, setTarget] = useState(defaultLinkTarget || '')
+  const [textSelected, setTextSelected] = useState(false)
 
-    this.state = {
-      text: '',
-      href: '',
-      target: props.defaultLinkTarget || '',
-      textSelected: false
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  useEffect(() => {
     const { href, target } = ContentUtils.getSelectionEntityData(
-      nextProps.editorState,
+      editorState,
       'LINK'
     )
     const textSelected =
-      !ContentUtils.isSelectionCollapsed(this.props.editorState) &&
-      ContentUtils.getSelectionBlockType(this.props.editorState) !== 'atomic'
+      !ContentUtils.isSelectionCollapsed(editorState) &&
+      ContentUtils.getSelectionBlockType(editorState) !== 'atomic'
 
     let selectedText = ''
 
     if (textSelected) {
-      selectedText = ContentUtils.getSelectionText(this.props.editorState)
+      selectedText = ContentUtils.getSelectionText(editorState)
     }
 
-    this.setState({
-      textSelected,
-      text: selectedText,
-      href: href || '',
-      target:
-        typeof target === 'undefined'
-          ? nextProps.defaultLinkTarget || ''
-          : target || ''
-    })
-  }
+    setTextSelected(textSelected)
+    setText(selectedText)
+    setHref(href || '')
+    setTarget(typeof target === 'undefined'
+      ? defaultLinkTarget || ''
+      : target || '')
+  }, [
+    editorState, defaultLinkTarget
+  ])
 
-  dropDownInstance = React.createRef<any>();
+  const dropDownInstance = useRef(null)
 
-  handeKeyDown = (e) => {
+  const handeKeyDown = (e) => {
     if (e.keyCode === 13) {
-      this.handleConfirm()
+      handleConfirm()
       e.preventDefault()
       return false
     }
     return true
-  };
+  }
 
-  handleTnputText = (e) => {
-    this.setState({
-      text: e.currentTarget.value
-    })
-  };
+  const handleTnputText = (e) => {
+    setText(e.currentTarget.value)
+  }
 
-  handleInputLink = (e) => {
-    this.setState({
-      href: e.currentTarget.value
-    })
-  };
+  const handleInputLink = (e) => {
+    setHref(e.currentTarget.value)
+  }
 
-  setTarget = () => {
-    this.setState((prevState) => ({
-      target: prevState.target === '_blank' ? '' : '_blank'
-    }))
-  };
+  const toggleTarget = () => {
+    setTarget(target => target === '_blank' ? '' : '_blank')
+  }
 
-  handleCancel = () => {
-    this.dropDownInstance.current?.hide()
-  };
+  const handleCancel = () => {
+    dropDownInstance.current?.hide()
+  }
 
-  handleUnlink = () => {
-    this.dropDownInstance.current?.hide()
-    this.props.editor.setValue(
-      ContentUtils.toggleSelectionLink(this.props.editorState, false)
+  const handleUnlink = () => {
+    dropDownInstance.current?.hide()
+    editor.setValue(
+      ContentUtils.toggleSelectionLink(editorState, false)
     )
-  };
+  }
 
-  handleConfirm = () => {
-    let { href, target } = this.state
-    const { text, textSelected } = this.state
-    const hookReturns = this.props.hooks('toggle-link', { href, target })({
+  const handleConfirm = () => {
+    const hookReturns = hooks('toggle-link', { href, target })({
       href,
       target
     })
 
-    this.dropDownInstance.current?.hide()
-    this.props.editor.requestFocus()
+    dropDownInstance.current?.hide()
+    editor.requestFocus()
 
     if (hookReturns === false) {
       return false
     }
 
+    let _href = href
+    let _target = target
     if (hookReturns) {
       if (typeof hookReturns.href === 'string') {
-        href = hookReturns.href
+        _href = hookReturns.href
       }
       if (typeof hookReturns.target === 'string') {
-        target = hookReturns.target
+        _target = hookReturns.target
       }
     }
 
     if (textSelected) {
-      if (href) {
-        this.props.editor.setValue(
+      if (_href) {
+        editor.setValue(
           ContentUtils.toggleSelectionLink(
-            this.props.editorState,
-            href,
-            target
+            editorState,
+            _href,
+            _target
           )
         )
       } else {
-        this.props.editor.setValue(
-          ContentUtils.toggleSelectionLink(this.props.editorState, false)
+        editor.setValue(
+          ContentUtils.toggleSelectionLink(editorState, false)
         )
       }
     } else {
-      this.props.editor.setValue(
-        ContentUtils.insertText(this.props.editorState, text || href, null, {
+      editor.setValue(
+        ContentUtils.insertText(editorState, text || href, null, {
           type: 'LINK',
           data: { href, target }
         })
       )
     }
     return true
-  };
+  }
 
-  render () {
-    const { allowInsertLinkText } = this.props
-    const { text, href, target, textSelected } = this.state
-    const caption = <MdLink {...defaultIconProps} />
+  const caption = <MdLink {...defaultIconProps} />
 
-    return (
+  return (
       <ControlGroup>
         <DropDown
           key={0}
           caption={caption}
-          title={this.props.language.controls.link}
+          title={language.controls.link}
           autoHide
-          getContainerNode={this.props.getContainerNode}
+          getContainerNode={getContainerNode}
           showArrow={false}
-          ref={this.dropDownInstance}
+          ref={dropDownInstance}
           className="control-item dropdown link-editor-dropdown"
         >
           <div className="bf-link-editor">
@@ -162,10 +154,10 @@ class LinkEditor extends React.Component<any, any> {
                   spellCheck={false}
                   disabled={textSelected}
                   placeholder={
-                    this.props.language.linkEditor.textInputPlaceHolder
+                    language.linkEditor.textInputPlaceHolder
                   }
-                  onKeyDown={this.handeKeyDown}
-                  onChange={this.handleTnputText}
+                  onKeyDown={handeKeyDown}
+                  onChange={handleTnputText}
                 />
               </div>
                 )
@@ -176,38 +168,38 @@ class LinkEditor extends React.Component<any, any> {
                 value={href}
                 spellCheck={false}
                 placeholder={
-                  this.props.language.linkEditor.linkInputPlaceHolder
+                  language.linkEditor.linkInputPlaceHolder
                 }
-                onKeyDown={this.handeKeyDown}
-                onChange={this.handleInputLink}
+                onKeyDown={handeKeyDown}
+                onChange={handleInputLink}
               />
             </div>
             <div className="switch-group">
-              <Switch active={target === '_blank'} onClick={this.setTarget} />
-              <label>{this.props.language.linkEditor.openInNewWindow}</label>
+              <Switch active={target === '_blank'} onClick={toggleTarget} />
+              <label>{language.linkEditor.openInNewWindow}</label>
             </div>
             <div className="buttons">
               <a
-                onClick={this.handleUnlink}
+                onClick={handleUnlink}
                 role="presentation"
                 className="primary button-remove-link pull-left"
               >
                 <MdClose {...defaultIconProps} />
-                <span>{this.props.language.linkEditor.removeLink}</span>
+                <span>{language.linkEditor.removeLink}</span>
               </a>
               <button
                 type="button"
-                onClick={this.handleConfirm}
+                onClick={handleConfirm}
                 className="primary pull-right"
               >
-                {this.props.language.base.confirm}
+                {language.base.confirm}
               </button>
               <button
                 type="button"
-                onClick={this.handleCancel}
+                onClick={handleCancel}
                 className="default pull-right"
               >
-                {this.props.language.base.cancel}
+                {language.base.cancel}
               </button>
             </div>
           </div>
@@ -215,16 +207,15 @@ class LinkEditor extends React.Component<any, any> {
         <button
           key={1}
           type="button"
-          data-title={this.props.language.controls.unlink}
+          data-title={language.controls.unlink}
           className="control-item button"
-          onClick={this.handleUnlink}
+          onClick={handleUnlink}
           disabled={!textSelected || !href}
         >
           <MdLinkOff {...defaultIconProps} />
         </button>
       </ControlGroup>
-    )
-  }
+  )
 }
 
 export default LinkEditor

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { BaseUtils } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
@@ -59,50 +59,65 @@ export const showModal = (props) => {
   return modalInstance
 }
 
-class Modal extends React.Component<any, any> {
-  active: boolean
-  componentId: string
-  rootElement: any
-  activeId: any
+const Modal = ({
+  title,
+  className,
+  width,
+  height,
+  children,
+  component,
+  confirmable,
+  closeOnConfirm,
+  onConfirm,
+  showFooter,
+  showCancel,
+  showConfirm,
+  onBlur,
+  showClose,
+  cancelText,
+  onClose,
+  confirmText,
+  onCancel,
+  closeOnBlur,
+  bottomText,
+  closeOnCancel,
+  language,
+  visible
+}) => {
+  const active = useRef(false)
+  const activeId = useRef(null)
+  const rootElement = useRef(null)
+  const componentId = useRef(`KEDAO-MODAL-${BaseUtils.UniqueIndex()}`)
 
-  constructor (props) {
-    super(props)
-    this.active = false
-    // eslint-disable-next-line new-cap
-    this.componentId = `KEDAO-MODAL-${BaseUtils.UniqueIndex()}`
-  }
-
-  componentDidMount () {
-    if (this.props.visible) {
-      this.active = true
-      this.renderComponent(this.props)
+  useEffect(() => {
+    if (visible) {
+      active.current = true
+      renderComponent()
     }
-  }
+  }, [])
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps (next) {
-    if (this.props.visible && !next.visible) {
-      this.unrenderComponent()
-    } else if (this.props.visible || next.visible) {
-      this.active = true
-      this.renderComponent(next)
+  useEffect(() => {
+    if (!visible) {
+      unrenderComponent()
+    } else {
+      renderComponent()
     }
-  }
+  }, [visible])
 
-  handleTransitionEnd = () => {
-    if (!this.rootElement || !this.rootElement.classList) {
+  const handleTransitionEnd = () => {
+    if (!rootElement.current?.classList) {
       return false
     }
 
-    if (!this.rootElement.classList.contains('active')) {
-      if (ReactDOM.unmountComponentAtNode(this.rootElement)) {
-        this.rootElement.parentNode.removeChild(this.rootElement)
+    if (!rootElement.current.classList.contains('active')) {
+      if (ReactDOM.unmountComponentAtNode(rootElement.current)) {
+        rootElement.current.parentNode.removeChild(rootElement.current)
       }
     }
     return true
-  };
+  }
 
-  handleMouseDown = (event) => {
+  const handleMouseDown = (event) => {
     const tagName = event.target.tagName.toLowerCase()
 
     if (tagName === 'input' || tagName === 'textarea') {
@@ -111,88 +126,64 @@ class Modal extends React.Component<any, any> {
 
     event.preventDefault()
     return true
-  };
+  }
 
-  handleCancel = () => {
-    if (this.props.closeOnCancel) {
-      this.close()
+  const handleCancel = () => {
+    if (closeOnCancel) {
+      close()
     }
-    if (this.props.onCancel) {
-      this.props.onCancel()
-    }
-  };
+    onCancel?.()
+  }
 
-  handleConfirm = () => {
-    if (this.props.closeOnConfirm) {
-      this.close()
+  const handleConfirm = () => {
+    if (closeOnConfirm) {
+      close()
     }
-    if (this.props.onConfirm) {
-      this.props.onConfirm()
-    }
-  };
-
-  handleMaskClick = () => {
-    if (this.props.closeOnBlur) {
-      this.close()
-    }
-    if (this.props.onBlue) {
-      this.props.onBlue()
-    }
-  };
-
-  close = () => {
-    this.unrenderComponent()
-    if (this.props.onClose) {
-      this.props.onClose()
-    }
-  };
-
-  unrenderComponent () {
-    this.active = false
-    if (this.activeId) {
-      window.clearImmediate(this.activeId)
-    }
-    if (this.rootElement?.classList) {
-      this.rootElement.classList.remove('active')
+    if (onConfirm) {
+      onConfirm()
     }
   }
 
-  renderComponent (props) {
-    if (!this.active) {
+  const handleMaskClick = () => {
+    if (closeOnBlur) {
+      close()
+    }
+    onBlur?.()
+  }
+
+  const close = () => {
+    unrenderComponent()
+    onClose?.()
+  }
+
+  const unrenderComponent = () => {
+    active.current = false
+    if (activeId.current) {
+      window.clearImmediate(activeId.current)
+    }
+    if (rootElement.current?.classList) {
+      rootElement.current.classList.remove('active')
+    }
+  }
+
+  const renderComponent = () => {
+    if (!active) {
       return false
     }
-
-    const {
-      title,
-      className,
-      width,
-      height,
-      children,
-      component,
-      confirmable,
-      showFooter,
-      showCancel,
-      showConfirm,
-      showClose,
-      cancelText,
-      confirmText,
-      bottomText,
-      language
-    } = props
 
     const childComponent = (
       <div
         role="presentation"
-        onMouseDown={this.handleMouseDown}
+        onMouseDown={handleMouseDown}
         className={`bf-modal ${className || ''}`}
       >
         <div
           role="presentation"
           className="bf-modal-mask"
-          onClick={this.handleMaskClick}
+          onClick={handleMaskClick}
         />
         <div
-          onTransitionEnd={this.handleTransitionEnd}
+          onTransitionEnd={handleTransitionEnd}
           style={{ width, height }}
           className="bf-modal-content"
         >
@@ -201,7 +192,7 @@ class Modal extends React.Component<any, any> {
             {showClose && (
               <button
                 type="button"
-                onClick={this.close}
+                onClick={close}
                 className="bf-modal-close-button"
               >
                 <MdClose {...defaultIconProps} />
@@ -217,7 +208,7 @@ class Modal extends React.Component<any, any> {
                 {showCancel && (
                   <button
                     type="button"
-                    onClick={this.handleCancel}
+                    onClick={handleCancel}
                     className="bf-modal-cancel"
                   >
                     {cancelText || language.base.cancel}
@@ -226,7 +217,7 @@ class Modal extends React.Component<any, any> {
                 {showConfirm && (
                   <button
                     type="button"
-                    onClick={this.handleConfirm}
+                    onClick={handleConfirm}
                     className={mergeClassNames(
                       'bf-modal-confirm',
                       !confirmable && 'disabled'
@@ -243,26 +234,24 @@ class Modal extends React.Component<any, any> {
       </div>
     )
 
-    this.rootElement = document.querySelector(`#${this.componentId}`)
+    rootElement.current = document.querySelector(`#${componentId.current}`)
 
-    if (!this.rootElement) {
-      this.rootElement = document.createElement('div')
-      this.rootElement.id = this.componentId
-      this.rootElement.className = 'bf-modal-root'
-      document.body.appendChild(this.rootElement)
+    if (!rootElement.current) {
+      rootElement.current = document.createElement('div')
+      rootElement.current.id = componentId.current
+      rootElement.current.className = 'bf-modal-root'
+      document.body.appendChild(rootElement.current)
     }
 
-    ReactDOM.render(childComponent, this.rootElement)
+    ReactDOM.render(childComponent, rootElement.current)
 
-    this.activeId = window.setImmediate(() => {
-      this.rootElement.classList.add('active')
+    activeId.current = window.setImmediate(() => {
+      rootElement.current.classList.add('active')
     })
     return true
   }
 
-  render () {
-    return null
-  }
+  return null
 }
 
 (Modal as any).defaultProps = {

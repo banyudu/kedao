@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
-
 import getEditorControls from '../../../configs/controls'
 import LinkEditor from '../LinkEditor'
 import HeadingPicker from '../Headings'
@@ -36,7 +35,7 @@ const mergeControls = (
   extensionControls,
   extendControls
 ) => {
-  const customExtendControls = extendControls.map((item) =>
+  const customExtendControls = extendControls.map(item =>
     typeof item === 'function' ? item(commonProps) : item
   )
 
@@ -45,12 +44,12 @@ const mergeControls = (
   }
 
   return builtControls
-    .map((item) => {
+    .map(item => {
       return (
-        customExtendControls.find((subItem) => {
+        customExtendControls.find(subItem => {
           return subItem.replace === (item.key || item)
         }) ||
-        extensionControls.find((subItem) => {
+        extensionControls.find(subItem => {
           return subItem.replace === (item.key || item)
         }) ||
         item
@@ -58,56 +57,79 @@ const mergeControls = (
     })
     .concat(extensionControls.length ? 'separator' : '')
     .concat(
-      extensionControls.filter((item) => {
+      extensionControls.filter(item => {
         return !item.replace
       })
     )
     .concat(
-      customExtendControls.filter((item) => {
+      customExtendControls.filter(item => {
         return typeof item === 'string' || !item.replace
       })
     )
 }
 
-export default class ControlBar extends React.Component<any, any> {
-  componentDidUpdate () {
-    const { language } = this.props
-
-    this.allControls.forEach((item) => {
+const ControlBar = ({
+  language,
+  editorState,
+  hooks,
+  editor,
+  finder,
+  media,
+  allowInsertLinkText,
+  className,
+  colorPicker,
+  colorPickerAutoHide,
+  colorPickerTheme,
+  colors,
+  controls,
+  defaultLinkTarget,
+  editorId,
+  emojis,
+  extendControls,
+  fontFamilies,
+  fontSizes,
+  getContainerNode,
+  headings,
+  letterSpacings,
+  lineHeights,
+  style,
+  textAligns,
+  textBackgroundColor
+}) => {
+  useEffect(() => {
+    allControls.current?.forEach(item => {
       if (item.type === 'modal') {
-        if (item.modal?.id && this.extendedModals[item.modal.id]) {
-          this.extendedModals[item.modal.id].update({
+        if (item.modal?.id && extendedModals.current?.[item.modal.id]) {
+          extendedModals[item.modal.id].update({
             ...item.modal,
             language
           })
         }
       }
     })
-  }
+  }, [])
 
-  allControls = [];
+  const allControls = useRef([])
+  const mediaLibiraryModal = useRef(null)
+  const extendedModals = useRef({})
 
-  mediaLibiraryModal = null;
-
-  extendedModals = {};
-
-  getControlItemClassName (data) {
+  const getControlItemClassName = data => {
     let className = 'control-item button'
     const { type, command } = data
 
     if (
       type === 'inline-style' &&
-      ContentUtils.selectionHasInlineStyle(this.props.editorState, command)
+      ContentUtils.selectionHasInlineStyle(editorState, command)
     ) {
       className += ' active'
     } else if (
       type === 'block-type' &&
-      ContentUtils.getSelectionBlockType(this.props.editorState) === command
+      ContentUtils.getSelectionBlockType(editorState) === command
     ) {
       className += ' active'
     } else if (
       type === 'entity' &&
-      ContentUtils.getSelectionEntityType(this.props.editorState) === command
+      ContentUtils.getSelectionEntityType(editorState) === command
     ) {
       className += ' active'
     }
@@ -115,13 +137,12 @@ export default class ControlBar extends React.Component<any, any> {
     return className
   }
 
-  applyControl (command, type, data: any = {}) {
+  const applyControl = (command, type, data: any = {}) => {
     let hookCommand = command
-    const hookReturns = this.props.hooks(
+    const hookReturns = hooks(
       commandHookMap[type] || type,
       hookCommand
     )(hookCommand)
-    let editorState = this.props.editorState
 
     if (hookReturns === false) {
       return false
@@ -142,17 +163,17 @@ export default class ControlBar extends React.Component<any, any> {
           exclusiveInlineStyle
         )
       }
-      this.props.editor.setValue(
+      editor.setValue(
         ContentUtils.toggleSelectionInlineStyle(editorState, hookCommand)
       )
     }
     if (type === 'block-type') {
-      this.props.editor.setValue(
+      editor.setValue(
         ContentUtils.toggleSelectionBlockType(editorState, hookCommand)
       )
     }
     if (type === 'entity') {
-      this.props.editor.setValue(
+      editor.setValue(
         ContentUtils.toggleSelectionEntity(editorState, {
           type: hookCommand,
           mutability: data.mutability || 'MUTABLE',
@@ -160,75 +181,65 @@ export default class ControlBar extends React.Component<any, any> {
         })
       )
     }
-    if (type === 'editor-method' && this.props.editor[hookCommand]) {
-      this.props.editor[hookCommand]()
+    if (type === 'editor-method' && editor[hookCommand]) {
+      editor[hookCommand]()
     }
-    return this.props.editor
+    return editor
   }
 
-  openFinder = () => {
-    if (!this.props.finder || !this.props.finder.ReactComponent) {
+  const openFinder = () => {
+    if (!finder || !finder.ReactComponent) {
       return false
     }
 
-    if (this.props.hooks('open-kedao-finder')() === false) {
+    if (hooks('open-kedao-finder')() === false) {
       return false
     }
 
-    const mediaProps = this.props.media
-    const MediaLibrary = this.props.finder.ReactComponent
+    const mediaProps = media
+    const MediaLibrary = finder.ReactComponent
 
-    this.mediaLibiraryModal = showModal({
-      title: this.props.language.controls.mediaLibirary,
-      language: this.props.language,
+    mediaLibiraryModal.current = showModal({
+      title: language.controls.mediaLibirary,
+      language: language,
       width: 640,
       showFooter: false,
       onClose: mediaProps.onClose,
       component: (
         <MediaLibrary
           accepts={mediaProps.accepts}
-          onCancel={this.closeFinder}
-          onInsert={this.insertMedias}
+          onCancel={closeFinder}
+          onInsert={insertMedias}
           onChange={mediaProps.onChange}
           externals={mediaProps.externals}
-          onBeforeSelect={this.bindFinderHook('select-medias')}
-          onBeforeDeselect={this.bindFinderHook('deselect-medias')}
-          onBeforeRemove={this.bindFinderHook('remove-medias')}
-          onBeforeInsert={this.bindFinderHook('insert-medias')}
-          onFileSelect={this.bindFinderHook('select-files')}
+          onBeforeSelect={bindFinderHook('select-medias')}
+          onBeforeDeselect={bindFinderHook('deselect-medias')}
+          onBeforeRemove={bindFinderHook('remove-medias')}
+          onBeforeInsert={bindFinderHook('insert-medias')}
+          onFileSelect={bindFinderHook('select-files')}
         />
       )
     })
     return true
-  };
+  }
 
-  bindFinderHook =
-    (hookName) =>
-      (...params) => {
-        return this.props.hooks(hookName, params[0])(...params)
-      };
+  const bindFinderHook = hookName => (...params) => {
+    return hooks(hookName, params[0])(...params)
+  }
 
-  insertMedias = (medias) => {
-    this.props.editor.setValue(
-      ContentUtils.insertMedias(this.props.editorState, medias)
-    )
-    this.props.editor.requestFocus()
-    if (this.props.media.onInsert) {
-      this.props.media.onInsert(medias)
-    }
-    this.closeFinder()
-  };
+  const insertMedias = medias => {
+    editor.setValue(ContentUtils.insertMedias(editorState, medias))
+    editor.requestFocus()
+    media.onInsert?.(medias)
+    closeFinder()
+  }
 
-  closeFinder = () => {
-    if (this.props.media.onCancel) {
-      this.props.media.onCancel()
-    }
-    if (this.mediaLibiraryModal) {
-      this.mediaLibiraryModal.close()
-    }
-  };
+  const closeFinder = () => {
+    media.onCancel?.()
+    mediaLibiraryModal.current?.close()
+  }
 
-  preventDefault (event) {
+  const preventDefault = event => {
     const tagName = event.target.tagName.toLowerCase()
 
     if (tagName === 'input' || tagName === 'label') {
@@ -238,331 +249,299 @@ export default class ControlBar extends React.Component<any, any> {
     }
   }
 
-  render () {
-    const {
-      allowInsertLinkText,
-      className,
-      colorPicker,
-      colorPickerAutoHide,
-      colorPickerTheme,
-      colors,
-      controls,
-      defaultLinkTarget,
-      editor,
-      editorId,
-      editorState,
-      emojis,
-      extendControls,
-      fontFamilies,
-      fontSizes,
-      getContainerNode,
-      headings,
-      hooks,
-      language,
-      letterSpacings,
-      lineHeights,
-      media,
-      style,
-      textAligns,
-      textBackgroundColor
-    } = this.props
-    const currentBlockType = ContentUtils.getSelectionBlockType(editorState)
-    const commonProps = {
-      editor,
-      editorId,
-      editorState,
-      language,
-      getContainerNode,
-      hooks
-    }
+  const currentBlockType = ContentUtils.getSelectionBlockType(editorState)
+  const commonProps = {
+    editor,
+    editorId,
+    editorState,
+    language,
+    getContainerNode,
+    hooks
+  }
 
-    const renderedControls = []
-    const editorControls = getEditorControls(language, editor)
-    const extensionControls = getExtensionControls(editorId)
-    const allControls = mergeControls(
-      commonProps,
-      controls,
-      extensionControls,
-      extendControls
-    )
+  const renderedControls = []
+  const editorControls = getEditorControls(language, editor)
+  const extensionControls = getExtensionControls(editorId)
+  const allControls_ = mergeControls(
+    commonProps,
+    controls,
+    extensionControls,
+    extendControls
+  )
+  allControls.current = allControls_
 
-    this.allControls = allControls
-
-    return (
-      <div
-        className={`bf-controlbar ${className || ''}`}
-        style={style}
-        onMouseDown={this.preventDefault}
-        role="button"
-        tabIndex={0}
-      >
-        {allControls.map((item) => {
-          const itemKey = typeof item === 'string' ? item : item.key
-          if (typeof itemKey !== 'string') {
+  return (
+    <div
+      className={`bf-controlbar ${className || ''}`}
+      style={style}
+      onMouseDown={preventDefault}
+      role='button'
+      tabIndex={0}
+    >
+      {allControls_.map(item => {
+        const itemKey = typeof item === 'string' ? item : item.key
+        if (typeof itemKey !== 'string') {
+          return null
+        }
+        if (renderedControls.includes(itemKey)) {
+          return null
+        }
+        if (itemKey.toLowerCase() === 'separator') {
+          return <span key={uuidv4()} className='separator-line' />
+        }
+        let controlItem: any = editorControls.find(subItem => {
+          return subItem.key.toLowerCase() === itemKey.toLowerCase()
+        })
+        if (typeof item !== 'string') {
+          controlItem = { ...controlItem, ...item }
+        }
+        if (!controlItem) {
+          return null
+        }
+        renderedControls.push(itemKey)
+        if (controlItem.type === 'headings') {
+          return (
+            <HeadingPicker
+              key={uuidv4()}
+              headings={headings}
+              current={currentBlockType}
+              onChange={command => applyControl(command, 'block-type')}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'text-color') {
+          return (
+            <TextColorPicker
+              key={uuidv4()}
+              colors={colors}
+              colorPicker={colorPicker}
+              theme={colorPickerTheme}
+              autoHide={colorPickerAutoHide}
+              enableBackgroundColor={textBackgroundColor}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'font-size') {
+          return (
+            <FontSizePicker
+              key={uuidv4()}
+              fontSizes={fontSizes}
+              defaultCaption={controlItem.title}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'line-height') {
+          return (
+            <LineHeightPicker
+              key={uuidv4()}
+              lineHeights={lineHeights}
+              defaultCaption={controlItem.title}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'letter-spacing') {
+          return (
+            <LetterSpacingPicker
+              key={uuidv4()}
+              letterSpacings={letterSpacings}
+              defaultCaption={controlItem.title}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'text-indent') {
+          return (
+            <TextIndent
+              key={uuidv4()}
+              // defaultCaption={controlItem.title}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'font-family') {
+          return (
+            <FontFamilyPicker
+              key={uuidv4()}
+              fontFamilies={fontFamilies}
+              defaultCaption={controlItem.title}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'emoji') {
+          return (
+            <EmojiPicker
+              key={uuidv4()}
+              emojis={emojis}
+              defaultCaption={controlItem.text}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'link') {
+          return (
+            <LinkEditor
+              key={uuidv4()}
+              defaultLinkTarget={defaultLinkTarget}
+              allowInsertLinkText={allowInsertLinkText}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'text-align') {
+          return (
+            <TextAlign
+              key={uuidv4()}
+              textAligns={textAligns}
+              {...commonProps}
+            />
+          )
+        }
+        if (controlItem.type === 'media') {
+          if (!media.image && !media.video && !media.audio) {
             return null
           }
-          if (renderedControls.includes(itemKey)) {
-            return null
-          }
-          if (itemKey.toLowerCase() === 'separator') {
-            return <span key={uuidv4()} className="separator-line" />
-          }
-          let controlItem: any = editorControls.find((subItem) => {
-            return subItem.key.toLowerCase() === itemKey.toLowerCase()
-          })
-          if (typeof item !== 'string') {
-            controlItem = { ...controlItem, ...item }
-          }
-          if (!controlItem) {
-            return null
-          }
-          renderedControls.push(itemKey)
-          if (controlItem.type === 'headings') {
-            return (
-              <HeadingPicker
-                key={uuidv4()}
-                headings={headings}
-                current={currentBlockType}
-                onChange={(command) => this.applyControl(command, 'block-type')}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'text-color') {
-            return (
-              <TextColorPicker
-                key={uuidv4()}
-                colors={colors}
-                colorPicker={colorPicker}
-                theme={colorPickerTheme}
-                autoHide={colorPickerAutoHide}
-                enableBackgroundColor={textBackgroundColor}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'font-size') {
-            return (
-              <FontSizePicker
-                key={uuidv4()}
-                fontSizes={fontSizes}
-                defaultCaption={controlItem.title}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'line-height') {
-            return (
-              <LineHeightPicker
-                key={uuidv4()}
-                lineHeights={lineHeights}
-                defaultCaption={controlItem.title}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'letter-spacing') {
-            return (
-              <LetterSpacingPicker
-                key={uuidv4()}
-                letterSpacings={letterSpacings}
-                defaultCaption={controlItem.title}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'text-indent') {
-            return (
-              <TextIndent
-                key={uuidv4()}
-                defaultCaption={controlItem.title}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'font-family') {
-            return (
-              <FontFamilyPicker
-                key={uuidv4()}
-                fontFamilies={fontFamilies}
-                defaultCaption={controlItem.title}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'emoji') {
-            return (
-              <EmojiPicker
-                key={uuidv4()}
-                emojis={emojis}
-                defaultCaption={controlItem.text}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'link') {
-            return (
-              <LinkEditor
-                key={uuidv4()}
-                defaultLinkTarget={defaultLinkTarget}
-                allowInsertLinkText={allowInsertLinkText}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'text-align') {
-            return (
-              <TextAlign
-                key={uuidv4()}
-                textAligns={textAligns}
-                {...commonProps}
-              />
-            )
-          }
-          if (controlItem.type === 'media') {
-            if (!media.image && !media.video && !media.audio) {
-              return null
-            }
-            return (
-              <button
-                type="button"
-                key={uuidv4()}
-                data-title={controlItem.title}
-                disabled={controlItem.disabled}
-                className="control-item media button"
-                onClick={this.openFinder}
-              >
-                {controlItem.text}
-              </button>
-            )
-          }
-          if (controlItem.type === 'dropdown') {
-            return (
-              <DropDown
-                key={uuidv4()}
-                className={`control-item extend-control-item dropdown ${
-                  controlItem.className || ''
-                }`}
-                caption={controlItem.text}
-                htmlCaption={controlItem.html}
-                showArrow={controlItem.showArrow}
-                title={controlItem.title}
-                arrowActive={controlItem.arrowActive}
-                theme={controlItem.theme}
-                autoHide={controlItem.autoHide}
-                disabled={controlItem.disabled}
-                ref={controlItem.ref}
-                {...commonProps}
-              >
-                {controlItem.component}
-              </DropDown>
-            )
-          }
-          if (controlItem.type === 'modal') {
-            return (
-              <button
-                type="button"
-                key={uuidv4()}
-                data-title={controlItem.title}
-                disabled={controlItem.disabled}
-                className={`control-item extend-control-item button ${
-                  controlItem.className || ''
-                }`}
-                dangerouslySetInnerHTML={
-                  controlItem.html ? { __html: controlItem.html } : null
-                }
-                onClick={(event) => {
-                  if (controlItem.modal?.id) {
-                    if (this.extendedModals[controlItem.modal.id]) {
-                      this.extendedModals[controlItem.modal.id].active = true
-                      this.extendedModals[controlItem.modal.id].update({
-                        ...controlItem.modal,
-                        language
-                      })
-                    } else {
-                      this.extendedModals[controlItem.modal.id] = showModal({
-                        ...controlItem.modal,
-                        language
-                      })
-                      if (controlItem.modal.onCreate) {
-                        controlItem.modal.onCreate(
-                          this.extendedModals[controlItem.modal.id]
-                        )
-                      }
+          return (
+            <button
+              type='button'
+              key={uuidv4()}
+              data-title={controlItem.title}
+              disabled={controlItem.disabled}
+              className='control-item media button'
+              onClick={openFinder}
+            >
+              {controlItem.text}
+            </button>
+          )
+        }
+        if (controlItem.type === 'dropdown') {
+          return (
+            <DropDown
+              key={uuidv4()}
+              className={`control-item extend-control-item dropdown ${controlItem.className ||
+                ''}`}
+              caption={controlItem.text}
+              htmlCaption={controlItem.html}
+              showArrow={controlItem.showArrow}
+              title={controlItem.title}
+              arrowActive={controlItem.arrowActive}
+              // theme={controlItem.theme}
+              autoHide={controlItem.autoHide}
+              disabled={controlItem.disabled}
+              ref={controlItem.ref}
+              {...commonProps}
+            >
+              {controlItem.component}
+            </DropDown>
+          )
+        }
+        if (controlItem.type === 'modal') {
+          return (
+            <button
+              type='button'
+              key={uuidv4()}
+              data-title={controlItem.title}
+              disabled={controlItem.disabled}
+              className={`control-item extend-control-item button ${controlItem.className ||
+                ''}`}
+              dangerouslySetInnerHTML={
+                controlItem.html ? { __html: controlItem.html } : null
+              }
+              onClick={event => {
+                if (controlItem.modal?.id) {
+                  if (extendedModals.current?.[controlItem.modal.id]) {
+                    extendedModals.current[controlItem.modal.id].active = true
+                    extendedModals.current[controlItem.modal.id].update({
+                      ...controlItem.modal,
+                      language
+                    })
+                  } else {
+                    extendedModals.current[controlItem.modal.id] = showModal({
+                      ...controlItem.modal,
+                      language
+                    })
+                    if (controlItem.modal.onCreate) {
+                      controlItem.modal.onCreate(
+                        extendedModals.current[controlItem.modal.id]
+                      )
                     }
                   }
-                  if (controlItem.onClick) {
-                    controlItem.onClick(event)
-                  }
-                }}
-              >
-                {!controlItem.html ? controlItem.text : null}
-              </button>
-            )
-          }
-          if (controlItem.type === 'component') {
-            return (
-              <div
-                key={uuidv4()}
-                className={`component-wrapper ${controlItem.className || ''}`}
-              >
-                {controlItem.component}
-              </div>
-            )
-          }
-          if (controlItem.type === 'button') {
-            return (
-              <button
-                type="button"
-                key={uuidv4()}
-                data-title={controlItem.title}
-                disabled={controlItem.disabled}
-                className={`control-item button ${controlItem.className || ''}`}
-                dangerouslySetInnerHTML={
-                  controlItem.html ? { __html: controlItem.html } : null
                 }
-                onClick={(event) =>
-                  controlItem.onClick?.(event)
+                if (controlItem.onClick) {
+                  controlItem.onClick(event)
                 }
-              >
-                {!controlItem.html ? controlItem.text : null}
-              </button>
-            )
-          }
-          if (controlItem) {
-            let disabled = false
+              }}
+            >
+              {!controlItem.html ? controlItem.text : null}
+            </button>
+          )
+        }
+        if (controlItem.type === 'component') {
+          return (
+            <div
+              key={uuidv4()}
+              className={`component-wrapper ${controlItem.className || ''}`}
+            >
+              {controlItem.component}
+            </div>
+          )
+        }
+        if (controlItem.type === 'button') {
+          return (
+            <button
+              type='button'
+              key={uuidv4()}
+              data-title={controlItem.title}
+              disabled={controlItem.disabled}
+              className={`control-item button ${controlItem.className || ''}`}
+              dangerouslySetInnerHTML={
+                controlItem.html ? { __html: controlItem.html } : null
+              }
+              onClick={event => controlItem.onClick?.(event)}
+            >
+              {!controlItem.html ? controlItem.text : null}
+            </button>
+          )
+        }
+        if (controlItem) {
+          let disabled = false
 
-            if (controlItem.command === 'undo') {
-              disabled = editorState.getUndoStack().size === 0
-            } else if (controlItem.command === 'redo') {
-              disabled = editorState.getRedoStack().size === 0
-            }
-
-            return (
-              <button
-                type="button"
-                key={uuidv4()}
-                disabled={disabled}
-                data-title={controlItem.title}
-                className={this.getControlItemClassName({
-                  type: controlItem.type,
-                  command: controlItem.command
-                })}
-                onClick={() =>
-                  this.applyControl(
-                    controlItem.command,
-                    controlItem.type,
-                    controlItem.data
-                  )
-                }
-              >
-                {controlItem.text}
-              </button>
-            )
+          if (controlItem.command === 'undo') {
+            disabled = editorState.getUndoStack().size === 0
+          } else if (controlItem.command === 'redo') {
+            disabled = editorState.getRedoStack().size === 0
           }
-          return null
-        })}
-      </div>
-    )
-  }
+
+          return (
+            <button
+              type='button'
+              key={uuidv4()}
+              disabled={disabled}
+              data-title={controlItem.title}
+              className={getControlItemClassName({
+                type: controlItem.type,
+                command: controlItem.command
+              })}
+              onClick={() =>
+                applyControl(
+                  controlItem.command,
+                  controlItem.type,
+                  controlItem.data
+                )
+              }
+            >
+              {controlItem.text}
+            </button>
+          )
+        }
+        return null
+      })}
+    </div>
+  )
 }
+
+export default ControlBar

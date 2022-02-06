@@ -16,24 +16,12 @@ Object.keys(headerTagTypeMap).forEach((key) => {
   headerTypeTagMap[headerTagTypeMap[key]] = key
 })
 
-const getHeaderTag = (TagName, editorState) =>
-  class props extends React.Component<any, any> {
-    constructor (props) {
-      super(props)
-
-      const blockKey = props['data-offset-key'].split('-')[0]
-      const block = editorState.getCurrentContent().getBlockForKey(blockKey)
-      const headerId = block.getData().get('id') || blockKey
-
-      this.state = {
-        id: headerId
-      }
-    }
-
-    render () {
-      return <TagName id={this.state.id} {...this.props} />
-    }
-  }
+const getHeaderTag = (TagName, editorState) => props => {
+  const blockKey = props['data-offset-key'].split('-')[0]
+  const block = editorState.getCurrentContent().getBlockForKey(blockKey)
+  const headerId = block.getData().get('id') || blockKey
+  return <TagName id={headerId} {...props} />
+}
 
 const getHeaderRenderMap = ({ editorState }) => {
   return Map({

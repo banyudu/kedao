@@ -2,8 +2,8 @@ import React from 'react'
 import mergeClassNames from 'merge-class-names'
 import ResponsiveHelper from '../../../helpers/responsive'
 import './style.scss'
-import { MdArrowDropDown } from 'react-icons/md';
-import { defaultIconProps } from '../../../configs/props';
+import { MdArrowDropDown } from 'react-icons/md'
+import { defaultIconProps } from '../../../configs/props'
 
 class DropDown extends React.Component<any, any> {
   state = {

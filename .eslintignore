@@ -1,6 +1,5 @@
 **/node_modules
-**/playground
 **/dist
+**/build
 **/lib
-.eslintrc.js
 **/*.js

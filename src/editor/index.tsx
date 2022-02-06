@@ -643,7 +643,6 @@ class KedaoEditor extends React.Component<any, any> {
   }
 }
 
-
 export default KedaoEditor
 
 export { KedaoEditorState as EditorState }

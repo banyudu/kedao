@@ -15,11 +15,15 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
-    "lint:fix": "eslint --fix . --ext .js,.jsx,.ts,.tsx",
+    "lint:js": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
+    "lint:style": "stylelint src/**/*.{css,scss}",
+    "lint:fix-js": "eslint --fix . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix-style": "stylelint --fix src/**/*.{css,scss}",
     "prepublishOnly": "npm run build",
     "copyfiles": "copyfiles -u 1 'src/**/*.{scss,woff,ttf,json}' lib/",
     "build": "rm -rf lib && tsc && npm run copyfiles",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "prepare": "husky install"
   },
   "repository": "https://github.com/banyudu/kedao",
   "keywords": [
@@ -49,10 +53,15 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.0.0",
     "eslint-plugin-react": "^7.28.0",
-    "lint-staged": "^12.3.2",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.3",
+    "postcss": "^8.4.6",
     "prettier": "^2.5.1",
     "prism-js": "^1.0.0",
     "prismjs": "^1.15.0",
+    "stylelint": "^14.3.0",
+    "stylelint-config-standard": "^24.0.0",
+    "stylelint-config-standard-scss": "^3.0.0",
     "typescript": "^4.5.5"
   },
   "dependencies": {
@@ -71,5 +80,10 @@
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{css,scss}": "stylelint --fix",
+    "*.{js,css,md}": "prettier --write"
   }
 }

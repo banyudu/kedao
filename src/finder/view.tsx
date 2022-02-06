@@ -1,8 +1,8 @@
 import './styles.scss'
 import React from 'react'
 import { UniqueIndex } from './utils/base'
-import { MdAdd, MdAudiotrack, MdClose, MdCode, MdDescription, MdDone, MdMovie, MdRemove } from 'react-icons/md';
-import { defaultIconProps } from '../configs/props';
+import { MdAdd, MdAudiotrack, MdClose, MdCode, MdDescription, MdDone, MdMovie, MdRemove } from 'react-icons/md'
+import { defaultIconProps } from '../configs/props'
 
 const defaultAccepts = {
   image: 'image/png,image/jpeg,image/gif,image/webp,image/apng,image/svg',

@@ -1,6 +1,6 @@
 import React from 'react'
-import { MdFormatIndentDecrease, MdFormatIndentIncrease } from 'react-icons/md';
-import { defaultIconProps } from '../../../configs/props';
+import { MdFormatIndentDecrease, MdFormatIndentIncrease } from 'react-icons/md'
+import { defaultIconProps } from '../../../configs/props'
 import { ContentUtils } from '../../../utils'
 
 import ControlGroup from '..//ControlGroup'

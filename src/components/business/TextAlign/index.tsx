@@ -7,7 +7,7 @@ import {
   MdFormatAlignCenter,
   MdFormatAlignJustify,
   MdFormatAlignLeft,
-  MdFormatAlignRight,
+  MdFormatAlignRight
 } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
 
@@ -15,7 +15,7 @@ const iconMap = {
   left: <MdFormatAlignLeft {...defaultIconProps } />,
   center: <MdFormatAlignCenter {...defaultIconProps } />,
   right: <MdFormatAlignRight {...defaultIconProps } />,
-  justify: <MdFormatAlignJustify {...defaultIconProps } />,
+  justify: <MdFormatAlignJustify {...defaultIconProps } />
 }
 
 class TextAlign extends React.Component<any, any> {

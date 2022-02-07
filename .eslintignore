@@ -1,5 +1,6 @@
-**/node_modules
-**/dist
-**/build
-**/lib
+node_modules
+dist
+scripts
+build
+lib
 **/*.js

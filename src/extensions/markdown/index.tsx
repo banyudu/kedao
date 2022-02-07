@@ -1,3 +1,4 @@
+import { CallbackEditor } from '../../types'
 /**
  * This extension is a transformation from draft-js-markdown-shortcuts-plugin (github repo: https://github.com/ngs/draft-js-markdown-shortcuts-plugin)
  * Thanks very much for the contributors of draft-js-markdown-shortcuts-plugin!!!
@@ -107,7 +108,7 @@ export default (options) => {
         editorProps = {
           ...editorProps,
           ...{
-            handleReturn (ev, editorState, editor) {
+            handleReturn (ev, editorState, editor: CallbackEditor) {
               const newEditorState = checkReturnForState(
                 editorState,
                 ev,
@@ -119,7 +120,7 @@ export default (options) => {
               }
               return 'not-handled'
             },
-            handleBeforeInput (character, editorState, editor) {
+            handleBeforeInput (character, editorState, editor: CallbackEditor) {
               if (character.match(/[A-z0-9_*~`]/)) {
                 return 'not-handled'
               }
@@ -133,7 +134,7 @@ export default (options) => {
               }
               return 'not-handled'
             },
-            handlePastedText (text, html, editorState, editor) {
+            handlePastedText (text, html, editorState, editor: CallbackEditor) {
               if (html) {
                 return 'not-handled'
               }

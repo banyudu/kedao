@@ -3,6 +3,7 @@ import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js'
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
 import { handleNewLine } from 'draftjs-utils'
 import { CallbackEditor } from '../types'
+import defaultProps from './props'
 
 export const keyCommandHandlers = (command, editorState: EditorState, editor: CallbackEditor) => {
   if (
@@ -76,10 +77,9 @@ export const keyCommandHandlers = (command, editorState: EditorState, editor: Ca
   return 'not-handled'
 }
 
-export const returnHandlers = (event, editorState, editor) => {
+export const returnHandlers = (event, editorState, editor: CallbackEditor) => {
   if (
-    editor.editorProps.handleReturn &&
-    editor.editorProps.handleReturn(event, editorState, editor) === 'handled'
+    editor.editorProps.handleReturn?.(event, editorState, editor) === 'handled'
   ) {
     return 'handled'
   }
@@ -141,10 +141,9 @@ export const returnHandlers = (event, editorState, editor) => {
   return 'not-handled'
 }
 
-export const beforeInputHandlers = (chars, editorState, editor) => {
+export const beforeInputHandlers = (chars, editorState, editor: CallbackEditor) => {
   if (
-    editor.editorProps.handleBeforeInput &&
-    editor.editorProps.handleBeforeInput(chars, editorState, editor) ===
+    editor.editorProps.handleBeforeInput?.(chars, editorState, editor) ===
       'handled'
   ) {
     return 'handled'
@@ -153,8 +152,8 @@ export const beforeInputHandlers = (chars, editorState, editor) => {
   return 'not-handled'
 }
 
-export const compositionStartHandler = (_, editor) => {
-  const { editorState } = editor.state
+export const compositionStartHandler = (_, editor: CallbackEditor) => {
+  const { editorState } = editor
   const selectedBlocks = ContentUtils.getSelectedBlocks(editorState)
 
   if (selectedBlocks && selectedBlocks.length > 1) {
@@ -172,14 +171,14 @@ export const compositionStartHandler = (_, editor) => {
   }
 }
 
-export const dropHandlers = (selectionState, dataTransfer, editor) => {
+export const dropHandlers = (selectionState, dataTransfer, editor: CallbackEditor) => {
   if (editor.editorProps.readOnly || editor.editorProps.disabled) {
     return 'handled'
   }
 
   if (window?.__KEDAO_DRAGING__IMAGE__) {
     let nextEditorState: any = EditorState.forceSelection(
-      editor.state.editorState,
+      editor.editorState,
       selectionState
     )
     nextEditorState = ContentUtils.insertMedias(nextEditorState, [
@@ -205,9 +204,9 @@ export const dropHandlers = (selectionState, dataTransfer, editor) => {
   return 'not-handled'
 }
 
-export const handleFiles = (files, editor) => {
+export const handleFiles = (files, editor: CallbackEditor) => {
   const { pasteImage, validateFn, imagePasteLimit }: any = {
-    ...editor.constructor.defaultProps.media,
+    ...defaultProps.media,
     ...editor.editorProps.media
   }
 
@@ -220,7 +219,7 @@ export const handleFiles = (files, editor) => {
             editor.finder.uploadImage(file, (image) => {
               if (editor.isLiving) {
                 editor.setValue(
-                  ContentUtils.insertMedias(editor.state.editorState, [image])
+                  ContentUtils.insertMedias(editor.editorState, [image])
                 )
               }
             })
@@ -229,7 +228,7 @@ export const handleFiles = (files, editor) => {
           editor.finder.uploadImage(file, (image) => {
             if (editor.isLiving) {
               editor.setValue(
-                ContentUtils.insertMedias(editor.state.editorState, [image])
+                ContentUtils.insertMedias(editor.editorState, [image])
               )
             }
           })
@@ -245,10 +244,9 @@ export const handleFiles = (files, editor) => {
   return 'not-handled'
 }
 
-export const droppedFilesHandlers = (selectionState, files, editor) => {
+export const droppedFilesHandlers = (selectionState, files, editor: CallbackEditor) => {
   if (
-    editor.editorProps.handleDroppedFiles &&
-    editor.editorProps.handleDroppedFiles(selectionState, files, editor) ===
+    editor.editorProps.handleDroppedFiles?.(selectionState, files, editor) ===
       'handled'
   ) {
     return 'handled'
@@ -257,10 +255,9 @@ export const droppedFilesHandlers = (selectionState, files, editor) => {
   return handleFiles(files, editor)
 }
 
-export const pastedFilesHandlers = (files, editor) => {
+export const pastedFilesHandlers = (files, editor: CallbackEditor) => {
   if (
-    editor.editorProps.handlePastedFiles &&
-    editor.editorProps.handlePastedFiles(files, editor) === 'handled'
+    editor.editorProps.handlePastedFiles?.(files, editor) === 'handled'
   ) {
     return 'handled'
   }
@@ -268,8 +265,8 @@ export const pastedFilesHandlers = (files, editor) => {
   return handleFiles(files, editor)
 }
 
-export const copyHandlers = (event, editor) => {
-  const blockMap = getFragmentFromSelection(editor.state.editorState)
+export const copyHandlers = (event, editor: CallbackEditor) => {
+  const blockMap = getFragmentFromSelection(editor.editorState)
 
   if (blockMap?.toArray) {
     try {
@@ -283,7 +280,7 @@ export const copyHandlers = (event, editor) => {
         event.originalEvent.clipboardData
 
       tempEditorState.setConvertOptions(
-        editor.state.editorState.convertOptions
+        (editor.editorState as any).convertOptions
       )
 
       clipboardData.setData('text/html', tempEditorState.toHTML())
@@ -296,10 +293,9 @@ export const copyHandlers = (event, editor) => {
   }
 }
 
-export const pastedTextHandlers = (text, html, editorState, editor) => {
+export const pastedTextHandlers = (text, html, editorState, editor: CallbackEditor) => {
   if (
-    editor.editorProps.handlePastedText &&
-    editor.editorProps.handlePastedText(text, html, editorState, editor) ===
+    editor.editorProps.handlePastedText?.(text, html, editorState, editor) ===
       'handled'
   ) {
     return 'handled'
@@ -311,12 +307,11 @@ export const pastedTextHandlers = (text, html, editorState, editor) => {
 
   const tempColors = ColorUtils.detectColorsFromHTMLString(html)
 
-  editor.setState(
-    {
-      tempColors: [...editor.state.tempColors, ...tempColors]
-        .filter((item) => editor.editorProps.colors.indexOf(item) === -1)
-        .filter((item, index, array) => array.indexOf(item) === index)
-    },
+  editor.setTempColors(
+    [...editor.tempColors, ...tempColors]
+      .filter((item) => !editor.editorProps.colors.includes(item))
+      .filter((item, index, array) => array.indexOf(item) === index)
+    ,
     () => {
       editor.setValue(ContentUtils.insertHTML(editorState, html, 'paste'))
     }

@@ -1,8 +1,7 @@
-import { createExtensibleEditor } from './helpers/extension'
 import { getDecorators } from './renderers'
 import KedaoEditor, { EditorState } from './editor'
 
-export default createExtensibleEditor(KedaoEditor)
+export default KedaoEditor
 export { EditorState, getDecorators }
 
 // 2.1 version development plan

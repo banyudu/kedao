@@ -1,3 +1,4 @@
+import { CallbackEditor } from '../../types'
 import '@draft-js-plugins/mention/lib/plugin.css'
 import React from 'react'
 import createMentionPlugin, {
@@ -36,7 +37,7 @@ export default (options: any = {}) => {
     [
       {
         type: 'prop-interception',
-        interceptor: (editorProps, editor) => {
+        interceptor: (editorProps, editor: CallbackEditor) => {
           // hack
           // 没有地方可以有 init 的时机，属性拦截器这里会把编辑器的实例传过来
           // 所以在这里初始化插件
@@ -50,12 +51,12 @@ export default (options: any = {}) => {
           // 如果有更好的办法请告知
           const hackOnChange = editor.onChange
           if (hackOnChange) {
-            editor.onChange = (editorState, callback) => {
+            editor.setOnChange((editorState, callback) => {
               hackOnChange.call(editor, editorState, callback)
               if (draftEditorPlugin.onChange) {
                 draftEditorPlugin.onChange(editorState, getAndSetState)
               }
-            }
+            })
           }
 
           // 应该是 draft-js 和 draft-js-mention-plugin 之间的磨合除了问题
@@ -106,7 +107,7 @@ export default (options: any = {}) => {
                 ? ret
                 : draftEditorPlugin.keyBindingFn(event, getAndSetState)
             },
-            handleReturn: (event, editorState, editor) => {
+            handleReturn: (event, editorState, editor: CallbackEditor) => {
               const originHandler = editorProps.handleReturn
               // 这里 mention 要优于其他的插件处理 回车 事件
               // 因为在 mention 弹出 suggestion 时 有「确认选择」的功能

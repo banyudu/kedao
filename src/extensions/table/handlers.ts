@@ -1,3 +1,4 @@
+import { CallbackEditor } from '../../types'
 import { RichUtils } from 'draft-js'
 import { ContentUtils } from '../../utils'
 import * as TableUtils from './utils'
@@ -9,7 +10,7 @@ import * as TableUtils from './utils'
 // 在最后一个单元格中按Shift + 回车跳出表格
 
 export const handleKeyCommand =
-  (oringeHandler) => (command, editorState, editor) => {
+  (oringeHandler) => (command, editorState, editor: CallbackEditor) => {
     if (
       oringeHandler &&
       oringeHandler(command, editorState, editor) === 'handled'
@@ -62,7 +63,7 @@ export const handleKeyCommand =
     }
   }
 
-export const handleReturn = (oringeHandler) => (event, editorState, editor) => {
+export const handleReturn = (oringeHandler) => (event, editorState, editor: CallbackEditor) => {
   if (
     oringeHandler &&
     oringeHandler(event, editorState, editor) === 'handled'
@@ -85,7 +86,7 @@ export const handleReturn = (oringeHandler) => (event, editorState, editor) => {
 }
 
 export const handleDroppedFiles =
-  (oringeHandler) => (selectionState, files, editor) => {
+  (oringeHandler) => (selectionState, files, editor: CallbackEditor) => {
     if (
       oringeHandler &&
       oringeHandler(selectionState, files, editor) === 'handled'
@@ -95,7 +96,7 @@ export const handleDroppedFiles =
 
     if (
       !ContentUtils.selectionContainsBlockType(
-        editor.state.editorState,
+        editor.editorState,
         'table-cell'
       )
     ) {
@@ -103,7 +104,7 @@ export const handleDroppedFiles =
     }
 
     const currentBlock = ContentUtils.getSelectionBlock(
-      editor.state.editorState
+      editor.editorState
     )
 
     if (currentBlock.getType() === 'table-cell') {
@@ -111,21 +112,21 @@ export const handleDroppedFiles =
     }
   }
 
-export const handlePastedFiles = (oringeHandler) => (files, editor) => {
+export const handlePastedFiles = (oringeHandler) => (files, editor: CallbackEditor) => {
   if (oringeHandler && oringeHandler(files, editor) === 'handled') {
     return 'handled'
   }
 
   if (
     !ContentUtils.selectionContainsBlockType(
-      editor.state.editorState,
+      editor.editorState,
       'table-cell'
     )
   ) {
     return 'not-handled'
   }
 
-  const currentBlock = ContentUtils.getSelectionBlock(editor.state.editorState)
+  const currentBlock = ContentUtils.getSelectionBlock(editor.editorState)
 
   if (currentBlock.getType() === 'table-cell') {
     return 'handled'
@@ -133,7 +134,7 @@ export const handlePastedFiles = (oringeHandler) => (files, editor) => {
 }
 
 export const handlePastedText =
-  (oringeHandler) => (text, html, editorState, editor) => {
+  (oringeHandler) => (text, html, editorState, editor: CallbackEditor) => {
     if (
       oringeHandler &&
       oringeHandler(text, html, editorState, editor) === 'handled'
@@ -142,7 +143,7 @@ export const handlePastedText =
     }
 
     const selectedBlocks = ContentUtils.getSelectedBlocks(
-      editor.state.editorState
+      editor.editorState
     )
 
     if (!selectedBlocks.find((block) => block.getType() === 'table-cell')) {
@@ -150,7 +151,7 @@ export const handlePastedText =
     }
 
     if (selectedBlocks.length === 1) {
-      editor.setValue(ContentUtils.insertText(editor.state.editorState, text))
+      editor.setValue(ContentUtils.insertText(editor.editorState, text))
     }
 
     return 'handled'

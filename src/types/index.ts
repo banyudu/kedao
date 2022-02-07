@@ -8,7 +8,11 @@ export { EditorState }
 export interface CallbackEditor {
   isFullscreen: boolean
   setValue: (v: EditorState) => void
+  getValue: () => EditorState
   requestFocus: () => void
+  onChange: (editorState: EditorState, callback?) => void
+  setOnChange: (onChange: (editorState: EditorState, callback?) => void) => void
+  lockOrUnlockEditor: (lock: boolean) => void
   editorProps: {
     codeTabIndents: number
     controls: ControlItem[]
@@ -16,7 +20,23 @@ export interface CallbackEditor {
     handleKeyCommand: (command: KeyCommand, editorState: EditorState, editor: CallbackEditor) => string
     onSave: (state: EditorState) => void
     onDelete: (state: EditorState) => boolean
+    handleReturn: (event, editorState: EditorState, editor: CallbackEditor) => string
+    handleBeforeInput: (chars, editorState: EditorState, editor: CallbackEditor) => string
+    readOnly: boolean
+    disabled: boolean
+    media: any
+    handlePastedText: (text, html, editorState, editor: CallbackEditor) => string
+    stripPastedStyles: any
+    colors: string[]
+    handleDroppedFiles: (selectionState, files, editor: CallbackEditor) => string
+    handlePastedFiles: (files, editor: CallbackEditor) => string
+    language: any
   }
+  editorState: EditorState
+  finder: Finder
+  isLiving: boolean
+  tempColors: string[]
+  setTempColors: (colors: string[], callback: () => void) => void
 }
 
 export type KeyCommand = string
@@ -102,6 +122,7 @@ export type Hooks = (name: string, _?) => Function
 
 export interface Finder {
   ReactComponent: React.ComponentType<any>
+  uploadImage: (file: File, callback: (url: string) => void) => void
 }
 
 export interface MediaProps {

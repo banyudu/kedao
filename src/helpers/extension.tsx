@@ -201,7 +201,7 @@ export const compositeBlockExportFn =
     return result
   }
 
-const useExtension = (extension) => {
+export const useExtension = (extension) => {
   if (extension instanceof Array) {
     extension.forEach(useExtension)
     return false
@@ -405,10 +405,4 @@ const useExtension = (extension) => {
     })
   }
   return true
-}
-
-export const createExtensibleEditor = (editor) => {
-  editor.use = useExtension
-
-  return editor
 }

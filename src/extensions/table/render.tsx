@@ -1,3 +1,4 @@
+import { CallbackEditor } from '../../types'
 import React, { useRef, useState, useEffect } from 'react'
 import Immutable from 'immutable'
 import languages from './languages'
@@ -23,7 +24,7 @@ const getIndexFromEvent = (event, ignoredTarget = '') => {
   return false
 }
 
-export const getLanguage = editor => {
+export const getLanguage = (editor: CallbackEditor) => {
   const lang = editor.editorProps.language
 
   if (typeof lang === 'function') {

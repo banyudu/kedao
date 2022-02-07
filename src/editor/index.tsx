@@ -35,7 +35,8 @@ import {
   compositeEntityExportFn,
   compositeBlockImportFn,
   compositeBlockExportFn,
-  getPropInterceptors
+  getPropInterceptors,
+  useExtension
 } from '../helpers/extension'
 import ControlBar from '../components/business/ControlBar'
 
@@ -116,6 +117,7 @@ class KedaoEditor extends React.Component<any, any> {
 
   static defaultProps = defaultProps;
   static createEditorState = KedaoEditorState.createFrom
+  static use = useExtension
 
   constructor (props) {
     super(props)
@@ -277,13 +279,13 @@ class KedaoEditor extends React.Component<any, any> {
       return restProps
     }
 
-    let porpsMap = Map(restProps)
+    let propsMap = Map(restProps)
 
     propInterceptors.forEach((interceptor) => {
-      porpsMap = porpsMap.merge(Map(interceptor(porpsMap.toJS(), this) || {}))
+      propsMap = propsMap.merge(Map(interceptor(propsMap.toJS(), this) || {}))
     })
 
-    return porpsMap.toJS()
+    return propsMap.toJS()
   }
 
   onChange = (editorState, callback?) => {
@@ -370,25 +372,25 @@ class KedaoEditor extends React.Component<any, any> {
     keyCommandHandlers(command, editorState, this.getCallbackEditor());
 
   handleReturn = (event, editorState) =>
-    returnHandlers(event, editorState, this);
+    returnHandlers(event, editorState, this.getCallbackEditor());
 
   handleBeforeInput = (chars, editorState) =>
-    beforeInputHandlers(chars, editorState, this);
+    beforeInputHandlers(chars, editorState, this.getCallbackEditor());
 
   handleDrop = (selectionState, dataTransfer) =>
-    dropHandlers(selectionState, dataTransfer, this);
+    dropHandlers(selectionState, dataTransfer, this.getCallbackEditor());
 
   handleDroppedFiles = (selectionState, files) =>
-    droppedFilesHandlers(selectionState, files, this);
+    droppedFilesHandlers(selectionState, files, this.getCallbackEditor());
 
-  handlePastedFiles = (files) => pastedFilesHandlers(files, this);
+  handlePastedFiles = (files) => pastedFilesHandlers(files, this.getCallbackEditor());
 
-  handleCopyContent = (event) => copyHandlers(event, this);
+  handleCopyContent = (event) => copyHandlers(event, this.getCallbackEditor());
 
   handlePastedText = (text, html, editorState) =>
-    pastedTextHandlers(text, html, editorState, this);
+    pastedTextHandlers(text, html, editorState, this.getCallbackEditor());
 
-  handleCompositionStart = (event) => compositionStartHandler(event, this);
+  handleCompositionStart = (event) => compositionStartHandler(event, this.getCallbackEditor());
 
   undo = () => {
     this.setValue(ContentUtils.undo(this.state.editorState))
@@ -430,7 +432,7 @@ class KedaoEditor extends React.Component<any, any> {
     )
   };
 
-  lockOrUnlockEditor (editorLocked) {
+  lockOrUnlockEditor = (editorLocked) => {
     this.setState({ editorLocked })
   }
 
@@ -441,9 +443,22 @@ class KedaoEditor extends React.Component<any, any> {
   getCallbackEditor = () => {
     const callbackEditor: CallbackEditor = {
       isFullscreen: this.state.isFullscreen,
+      editorState: this.state.editorState,
       setValue: this.setValue,
+      getValue: this.getValue,
       requestFocus: this.requestFocus,
-      editorProps: this.editorProps
+      editorProps: this.editorProps,
+      lockOrUnlockEditor: this.lockOrUnlockEditor,
+      finder: this.finder,
+      isLiving: this.isLiving,
+      tempColors: this.state.tempColors,
+      setTempColors: (tempColors, callback) => {
+        this.setState({ tempColors }, callback)
+      },
+      onChange: this.onChange,
+      setOnChange: (onChange) => {
+        this.onChange = onChange
+      }
     }
     return callbackEditor
   }

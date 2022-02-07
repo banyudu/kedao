@@ -7,7 +7,7 @@ const getColorPicker =
     function ColorPicker ({ onChange, color, presetColors, ...props }) {
       const handleChange = (colorObject) => {
         if (colorObject.hex === color) {
-          return false
+          return
         }
         onChange(colorObject.hex, false)
         superProps.onChange?.(colorObject.hex)

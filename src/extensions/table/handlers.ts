@@ -61,6 +61,8 @@ export const handleKeyCommand =
     } else if (command === 'tab') {
       return 'handled'
     }
+
+    return null
   }
 
 export const handleReturn = (oringeHandler) => (event, editorState, editor: CallbackEditor) => {
@@ -110,6 +112,7 @@ export const handleDroppedFiles =
     if (currentBlock.getType() === 'table-cell') {
       return 'handled'
     }
+    return null
   }
 
 export const handlePastedFiles = (oringeHandler) => (files, editor: CallbackEditor) => {
@@ -131,6 +134,8 @@ export const handlePastedFiles = (oringeHandler) => (files, editor: CallbackEdit
   if (currentBlock.getType() === 'table-cell') {
     return 'handled'
   }
+
+  return null
 }
 
 export const handlePastedText =

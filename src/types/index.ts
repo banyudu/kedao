@@ -1,6 +1,7 @@
-import { EditorState } from 'draft-js'
+import { EditorState, EditorProps } from 'draft-js'
+import * as React from 'react'
 
-export { EditorState }
+export { EditorState, EditorProps }
 
 /**
  * editor 提供给组件的回调函数集合
@@ -137,14 +138,6 @@ export interface MediaProps {
   video: boolean
 }
 
-export interface ControlItem {
-  key: string
-  title: string
-  text: JSX.Element
-  type: string
-  command: string
-}
-
 export interface CommonPickerProps {
   hooks: Hooks
   editor: CallbackEditor
@@ -153,3 +146,174 @@ export interface CommonPickerProps {
   language: Language
   getContainerNode: () => HTMLElement
 }
+
+export type BuiltInControlNames =
+  | 'blockquote'
+  | 'bold'
+  | 'code'
+  | 'clear'
+  | 'emoji'
+  | 'font-family'
+  | 'font-size'
+  | 'fullscreen'
+  | 'headings'
+  | 'hr'
+  | 'italic'
+  | 'letter-spacing'
+  | 'line-height'
+  | 'link'
+  | 'list-ol'
+  | 'list-ul'
+  | 'media'
+  | 'redo'
+  | 'remove-styles'
+  | 'separator'
+  | 'strike-through'
+  | 'superscript'
+  | 'subscript'
+  | 'text-align'
+  | 'text-color'
+  | 'text-indent'
+  | 'underline'
+  | 'undo'
+  | 'table'
+
+interface BaseControlItem {
+  key: string
+  title?: string
+  text?: string | React.ReactNode
+  disabled?: boolean
+  command?: KeyCommand
+}
+
+export interface BuiltInControlItem extends BaseControlItem {
+  type: BuiltInControlNames
+  key: BuiltInControlNames
+}
+
+interface BaseExtendControlItem extends BaseControlItem {
+  key: string
+  className?: string
+  html?: string | null
+}
+
+export interface ButtonControlItem extends BaseExtendControlItem {
+  type: 'button'
+  onClick?: (e: any) => void
+}
+
+export interface DropDownControlItem extends BaseExtendControlItem {
+  type: 'dropdown'
+  showArrow?: boolean
+  arrowActive?: boolean
+  autoHide?: boolean
+  component?: React.ReactNode
+}
+
+export interface ModalControlItem extends BaseExtendControlItem {
+  type: 'modal'
+  onClick?: (e: any) => void
+  modal?: {
+    id: string
+    title?: string
+    className?: string
+    width?: number
+    height?: number
+    showFooter?: boolean
+    showCancel?: boolean
+    showConfirm?: boolean
+    confirmable?: boolean
+    showClose?: boolean
+    closeOnBlur?: boolean
+    closeOnConfirm?: boolean
+    closeOnCancel?: boolean
+    cancelText?: string
+    confirmText?: string
+    bottomText?: React.ReactNode
+    onConfirm?: () => void
+    onCancel?: () => void
+    onClose?: () => void
+    onBlur?: () => void
+    onCreate?: (v: any) => void
+    children: React.ReactNode
+  }
+}
+
+interface ComponentControlItem extends BaseExtendControlItem {
+  type: 'component'
+  component?: React.ReactNode
+}
+
+interface BlockControlItem extends BaseControlItem {
+  type: 'block-type'
+}
+
+interface InlineStyleControlItem extends BaseControlItem {
+  type: 'inline-style'
+}
+
+interface EditorMethodControlItem extends BaseControlItem {
+  type: 'editor-method'
+}
+
+export type ControlItem =
+  | BuiltInControlItem
+  | BlockControlItem
+  | InlineStyleControlItem
+  | EditorMethodControlItem
+  | ButtonControlItem
+  | DropDownControlItem
+  | ModalControlItem
+  | ComponentControlItem
+
+export interface MediaType {
+  items?: any[]
+  uploadFn?: (params: {
+    file: File
+    progress: (progress: number) => void
+    libraryId: string
+    success: (res: {
+      url: string
+      meta?: {
+        id?: string
+        title?: string
+        alt?: string
+        loop?: boolean
+        autoPlay?: boolean
+        controls?: boolean
+        poster?: string
+      }
+    }) => void
+    error: (err: { msg: string }) => void
+  }) => void
+  validateFn?: (file: File) => boolean | PromiseLike<any>
+  accepts?: {
+    image?: string | false
+    video?: string | false
+    audio?: string | false
+  }
+  externals?: {
+    image?: boolean
+    video?: boolean
+    audio?: boolean
+    embed?: boolean
+  }
+  onInsert?: Function
+  onChange?: Function
+  pasteImage?: boolean
+}
+
+export type ImageControlItem =
+  | 'float-left'
+  | 'float-right'
+  | 'align-left'
+  | 'align-center'
+  | 'align-right'
+  | 'link'
+  | 'size'
+  | 'remove'
+  | {
+    text?: string
+    render?: (mediaData: any) => void
+    onClick?: (block: any) => void
+  }

@@ -26,13 +26,13 @@ import {
   MdLink,
   MdRemove
 } from 'react-icons/md'
-import { CallbackEditor, Language } from '../types'
+import { CallbackEditor, ControlItem, Language } from '../types'
 
 import { defaultIconProps } from './props'
 
 const iconProps = { ...defaultIconProps }
 
-export default function Controls (lang: Language, editor: CallbackEditor) {
+export default function Controls (lang: Language, editor: CallbackEditor): ControlItem[] {
   return [
     {
       key: 'undo',

@@ -8,14 +8,14 @@ import { defaultIconProps } from '../../../configs/props'
 export interface DropDownProps {
   disabled?: boolean
   autoHide: boolean
-  caption: JSX.Element
+  caption: React.ReactNode
   htmlCaption?: string
   title: string
   showArrow?: boolean
   arrowActive?: boolean
   className?: string
   getContainerNode: () => HTMLElement
-  children: JSX.Element
+  children: React.ReactNode
 }
 
 const DropDown = forwardRef<any, DropDownProps>(({

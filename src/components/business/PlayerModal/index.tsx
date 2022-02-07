@@ -1,11 +1,11 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { showModal } from '../../common/Modal'
 import './style.scss'
 import { MdClose, MdCode, MdMusicVideo, MdPlayArrow, MdVideocam } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
+import { Language } from '../../../types'
 
-const playViaModal = (title, component, language) =>
+const playViaModal = (title: string, component: React.ReactNode, language: Language) =>
   showModal({
     title,
     component,
@@ -58,17 +58,6 @@ const PlayerModal = ({
         : null}
     </div>
   )
-}
-
-PlayerModal.propTypes = {
-  title: PropTypes.any,
-  type: PropTypes.any,
-  language: PropTypes.any,
-  name: PropTypes.any,
-  url: PropTypes.any,
-  poster: PropTypes.any,
-  children: PropTypes.any,
-  onRemove: PropTypes.any
 }
 
 export default PlayerModal

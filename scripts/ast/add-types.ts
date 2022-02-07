@@ -16,6 +16,10 @@ const importConfigMap: Record<string, ImportConfig> = {
   editor: {
     filePath: 'src/types/index.ts',
     typeName: 'CallbackEditor'
+  },
+  editorId: {
+    filePath: null,
+    typeName: 'string'
   }
 }
 
@@ -38,7 +42,9 @@ const importConfigMap: Record<string, ImportConfig> = {
         const config = importConfigMap[param.getName()]
         if (config && param.getType().getText() === 'any') {
           param.setType(config.alias ?? config.typeName)
-          toImport.add(config)
+          if (config.filePath) {
+            toImport.add(config)
+          }
         }
       }
     }

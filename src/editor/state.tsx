@@ -39,11 +39,11 @@ export default class KedaoEditorState extends EditorState {
     return this.getCurrentContent().getPlainText()
   }
 
-  isEmpty () {
+  override isEmpty () {
     return !this.getCurrentContent().hasText()
   }
 
-  static createEmpty (decorator?: DraftDecoratorType): KedaoEditorState {
+  static override createEmpty (decorator?: DraftDecoratorType): KedaoEditorState {
     const emptyState = super.createEmpty(decorator)
     return KedaoEditorState.fromEditorState(emptyState)
   }

@@ -1,12 +1,38 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, FC } from 'react'
 import ReactDOM from 'react-dom'
 import { BaseUtils } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
 import './style.scss'
 import { MdClose } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
+import { Language } from '../../../types'
 
-export const showModal = (props) => {
+interface ModalProps {
+  title?: string
+  className?: string
+  width?: number
+  height?: number
+  component?: React.ReactNode
+  confirmable?: boolean
+  closeOnConfirm?: boolean
+  onConfirm?: () => void
+  showFooter?: boolean
+  showCancel?: boolean
+  showConfirm?: boolean
+  onBlur?: () => void
+  showClose?: boolean
+  cancelText?: string
+  onClose?: () => void
+  confirmText?: string
+  onCancel?: () => void
+  closeOnBlur?: boolean
+  bottomText?: React.ReactNode
+  closeOnCancel?: boolean
+  language: Language
+  visible?: boolean
+}
+
+export const showModal = (props: ModalProps) => {
   const hostNode = document.createElement('div')
   const newProps = {
     visible: true,
@@ -25,22 +51,16 @@ export const showModal = (props) => {
   }
 
   const onConfirm = () => {
-    if (newProps.onConfirm) {
-      newProps.onConfirm()
-    }
+    newProps.onConfirm?.()
   }
 
   const onCancel = () => {
-    if (newProps.onCancel) {
-      newProps.onCancel()
-    }
+    newProps.onCancel?.()
   }
 
   const onClose = () => {
     close()
-    if (newProps.onClose) {
-      newProps.onClose()
-    }
+    newProps.onClose?.()
   }
 
   // eslint-disable-next-line react/no-render-return-value
@@ -59,7 +79,7 @@ export const showModal = (props) => {
   return modalInstance
 }
 
-const Modal = ({
+const Modal: FC<ModalProps> = ({
   title,
   className,
   width,
@@ -69,16 +89,16 @@ const Modal = ({
   confirmable,
   closeOnConfirm,
   onConfirm,
-  showFooter,
-  showCancel,
-  showConfirm,
+  showFooter = true,
+  showCancel = true,
+  showConfirm = true,
   onBlur,
-  showClose,
+  showClose = true,
   cancelText,
   onClose,
   confirmText,
   onCancel,
-  closeOnBlur,
+  closeOnBlur = true,
   bottomText,
   closeOnCancel,
   language,
@@ -252,14 +272,6 @@ const Modal = ({
   }
 
   return null
-}
-
-(Modal as any).defaultProps = {
-  closeOnBlur: true,
-  showCancel: true,
-  showClose: true,
-  showConfirm: true,
-  showFooter: true
 }
 
 export default Modal

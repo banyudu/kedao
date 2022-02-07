@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ContentUtils } from '../../../utils'
-
 import PlayerModal from '../../../components/business/PlayerModal'
 
 import './style.scss'

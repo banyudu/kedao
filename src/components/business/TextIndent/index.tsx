@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FC } from 'react'
 import { MdFormatIndentDecrease, MdFormatIndentIncrease } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
+import { CommonPickerProps } from '../../../types'
 import { ContentUtils } from '../../../utils'
-
 import ControlGroup from '..//ControlGroup'
 
-const TextIndent = ({ editorState, language, editor }) => {
+const TextIndent: FC<CommonPickerProps> = ({ editorState, language, editor }) => {
   const [currentIndent, setCurrentIndent] = useState(0)
 
   useEffect(() => {

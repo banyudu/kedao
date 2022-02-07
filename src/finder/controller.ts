@@ -58,7 +58,7 @@ export default class FinderController {
   selectMediaItem = (id) => {
     const item = this.getMediaItem(id)
     if (item && (item.uploading || item.error)) {
-      return false
+      return
     }
     this.setMediaItemState(id, {
       selected: true
@@ -120,13 +120,13 @@ export default class FinderController {
   };
 
   uploadItems = (ignoreError = false) => {
-    this.items.forEach((item, index) => {
+    this.items.forEach((item) => {
       if (item.uploading || item.url) {
-        return false
+        return
       }
 
       if (!ignoreError && item.error) {
-        return false
+        return
       }
 
       if (item.type === 'IMAGE') {
@@ -134,7 +134,7 @@ export default class FinderController {
         this.uploadFn = this.uploadFn || this.createInlineImage
       } else if (!this.uploadFn) {
         this.setMediaItemState(item.id, { error: 1 })
-        return false
+        return
       }
 
       this.setMediaItemState(item.id, {

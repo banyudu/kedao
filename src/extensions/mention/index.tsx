@@ -1,4 +1,4 @@
-import { CallbackEditor } from '../../types'
+import { CallbackEditor, EditorState } from '../../types'
 import '@draft-js-plugins/mention/lib/plugin.css'
 import React from 'react'
 import createMentionPlugin, {
@@ -25,10 +25,10 @@ export default (options: any = {}) => {
    * 只能在 prop-interception 的时候 有机会拿到 因此先用一个 对象引用起来 再传递
    */
   const getAndSetState = {
-    getEditorState: () => {
+    getEditorState: (): EditorState | never => {
       throw new Error("can't use get state")
     },
-    setEditorState: (state) => {
+    setEditorState: (state): void | never => {
       throw new Error(`can't use set state ${state}`)
     }
   }

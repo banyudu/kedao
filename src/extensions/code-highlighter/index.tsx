@@ -46,7 +46,7 @@ const CodeBlockWrapper = ({
     const syntax = event.currentTarget.dataset.syntax
 
     if (!syntax) {
-      return false
+      return
     }
 
     try {
@@ -55,7 +55,7 @@ const CodeBlockWrapper = ({
       ).name
 
       if (!syntaxName) {
-        return false
+        return
       }
 
       const selectionState = SelectionState.createEmpty(blockKey)

@@ -216,7 +216,7 @@ const FinderView = ({
     const item = controller.getMediaItem(itemId)
 
     if (!item) {
-      return false
+      return
     }
 
     if (item.selected) {
@@ -243,7 +243,7 @@ const FinderView = ({
     const item = controller.getMediaItem(itemId)
 
     if (!item) {
-      return false
+      return
     }
 
     if (
@@ -314,7 +314,7 @@ const FinderView = ({
     if (onFileSelect) {
       const result = onFileSelect(files)
       if (result === false) {
-        return false
+        return
       } else if (result instanceof FileList || result instanceof Array) {
         files = result
       }

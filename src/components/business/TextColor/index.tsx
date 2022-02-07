@@ -37,7 +37,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
     setColorType(currentTarget.dataset.type)
   }
 
-  const toggleColor = (color, closePicker) => {
+  const toggleColor = (color: string, closePicker: boolean) => {
     if (color) {
       let newColor = color
       const hookReturns = hooks(`toggle-text-${colorType}`, newColor)(newColor)
@@ -71,7 +71,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   const captionStyle: CSSProperties = {}
   let currentColor = null
 
-  const selectionStyles = editorState.getCurrentInlineStyle().toJS()
+  const selectionStyles = editorState.getCurrentInlineStyle().toJS() as string[]
 
   selectionStyles.forEach(style => {
     if (style.indexOf('COLOR-') === 0) {

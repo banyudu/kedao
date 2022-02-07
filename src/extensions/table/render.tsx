@@ -111,7 +111,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
 
   const handleMouseUp = event => {
     if (event.button !== 0) {
-      return false
+      return
     }
 
     if (colResizing) {
@@ -189,7 +189,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
     if (colResizing) {
       event.preventDefault()
       event.stopPropagation()
-      return false
+      return
     }
     dragSelectingRef.current = true
     dragSelectingStartColumnIndexRef.current =
@@ -264,7 +264,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
       !dragSelectingEndColumnIndexRef.current ||
       !dragSelectingEndRowIndexRef.current
     ) {
-      return false
+      return
     }
 
     const {
@@ -284,7 +284,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
     ) as any
 
     if (selectedCells.length < 2) {
-      return false
+      return
     }
 
     setSelectedColumnIndex(-1)
@@ -296,7 +296,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
 
   const updateDraggingRectBounding = mouseEvent => {
     if (draggingRectBoundingUpdatingRef.current || !dragSelectingRef.current) {
-      return false
+      return
     }
 
     draggingRectBoundingUpdatingRef.current = true
@@ -349,7 +349,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
     const newSelectedColumnIndex = getIndexFromEvent(event, 'insert-column')
 
     if (newSelectedColumnIndex === false) {
-      return false
+      return
     }
 
     if (newSelectedColumnIndex === selectedColumnIndex) {
@@ -357,7 +357,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
       setCellsMergeable(false)
       setCellSplittable(false)
       setSelectedColumnIndex(-1)
-      return false
+      return
     }
 
     const {
@@ -381,7 +381,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
     const newSelectedRowIndex = getIndexFromEvent(event, 'insert-row')
 
     if (newSelectedRowIndex === false) {
-      return false
+      return
     }
 
     if (newSelectedRowIndex === selectedRowIndex) {
@@ -389,7 +389,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
       setCellsMergeable(false)
       setCellSplittable(false)
       setSelectedRowIndex(-1)
-      return false
+      return
     }
 
     const {
@@ -413,7 +413,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
     const columnIndex = getIndexFromEvent(event)
 
     if (columnIndex === false) {
-      return false
+      return
     }
 
     const nextColToolHandlers = colToolHandlers.map(item => ({
@@ -463,7 +463,7 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
     const rowIndex = getIndexFromEvent(event)
 
     if (rowIndex === false) {
-      return false
+      return
     }
 
     setSelectedCells([])

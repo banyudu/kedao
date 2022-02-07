@@ -20,7 +20,7 @@ const inlineStyleExporters = []
 const blockImporters = []
 const blockExporters = []
 
-const filterByEditorId = (items, editorId) => {
+const filterByEditorId = (items, editorId: string) => {
   if (!editorId) {
     return items
       .filter((item) => !item.includeEditors)
@@ -46,23 +46,23 @@ const filterByEditorId = (items, editorId) => {
     .filter((item) => item)
 }
 
-export const getPropInterceptors = (editorId) =>
+export const getPropInterceptors = (editorId: string) =>
   filterByEditorId(propInterceptors, editorId)
 
-export const getExtensionControls = (editorId) =>
+export const getExtensionControls = (editorId: string) =>
   filterByEditorId(extensionControls, editorId)
 
-export const getExtensionDecorators = (editorId) =>
+export const getExtensionDecorators = (editorId: string) =>
   // filterByEditorId(extensionDecorators, editorId, 'decorators')
   filterByEditorId(extensionDecorators, editorId)
 
-export const getExtensionBlockRenderMaps = (editorId) =>
+export const getExtensionBlockRenderMaps = (editorId: string) =>
   filterByEditorId(extensionBlockRenderMaps, editorId)
 
-export const getExtensionBlockRendererFns = (editorId) =>
+export const getExtensionBlockRendererFns = (editorId: string) =>
   filterByEditorId(extensionBlockRendererFns, editorId)
 
-export const getExtensionInlineStyleMap = (editorId) => {
+export const getExtensionInlineStyleMap = (editorId: string) => {
   const inlineStyleMap = {}
 
   filterByEditorId(extensionInlineStyleMaps, editorId).forEach((item) => {
@@ -72,11 +72,11 @@ export const getExtensionInlineStyleMap = (editorId) => {
   return inlineStyleMap
 }
 
-export const getExtensionInlineStyleFns = (editorId) =>
+export const getExtensionInlineStyleFns = (editorId: string) =>
   filterByEditorId(extensionInlineStyleFns, editorId)
 
 export const compositeStyleImportFn =
-  (styleImportFn, editorId) => (nodeName, node, style) => {
+  (styleImportFn, editorId: string) => (nodeName, node, style) => {
     filterByEditorId(inlineStyleImporters, editorId).forEach(
       (styleImporter) => {
         if (styleImporter.importer?.(nodeName, node)) {
@@ -88,7 +88,7 @@ export const compositeStyleImportFn =
     return styleImportFn ? styleImportFn(nodeName, node, style) : style
   }
 
-export const compositeStyleExportFn = (styleExportFn, editorId) => (style) => {
+export const compositeStyleExportFn = (styleExportFn, editorId: string) => (style) => {
   style = style.toUpperCase()
   let result = styleExportFn ? styleExportFn(style) : undefined
 
@@ -108,7 +108,7 @@ export const compositeStyleExportFn = (styleExportFn, editorId) => (style) => {
 }
 
 export const compositeEntityImportFn =
-  (entityImportFn, editorId) => (nodeName, node, createEntity, source) => {
+  (entityImportFn, editorId: string) => (nodeName, node, createEntity, source) => {
     let result = entityImportFn
       ? entityImportFn(nodeName, node, createEntity, source)
       : null
@@ -135,7 +135,7 @@ export const compositeEntityImportFn =
   }
 
 export const compositeEntityExportFn =
-  (entityExportFn, editorId) => (entity, originalText) => {
+  (entityExportFn, editorId: string) => (entity, originalText) => {
     let result = entityExportFn
       ? entityExportFn(entity, originalText)
       : undefined
@@ -160,7 +160,7 @@ export const compositeEntityExportFn =
   }
 
 export const compositeBlockImportFn =
-  (blockImportFn, editorId) => (nodeName, node, source) => {
+  (blockImportFn, editorId: string) => (nodeName, node, source) => {
     let result = blockImportFn ? blockImportFn(nodeName, node, source) : null
 
     if (result) {
@@ -181,7 +181,7 @@ export const compositeBlockImportFn =
   }
 
 export const compositeBlockExportFn =
-  (blockExportFn, editorId) => (contentState, block) => {
+  (blockExportFn, editorId: string) => (contentState, block) => {
     let result = blockExportFn ? blockExportFn(contentState, block) : null
 
     if (result) {

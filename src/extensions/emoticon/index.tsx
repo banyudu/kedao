@@ -96,6 +96,7 @@ export default (options) => {
           data: { src }
         }
       }
+      return null
     },
     exporter: (entityObject, initialText) => {
       const { src } = entityObject.data

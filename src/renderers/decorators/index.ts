@@ -44,7 +44,7 @@ const createStrategy = (type) => (block, callback, contentState) => {
   }, callback)
 }
 
-export default (editorId) => {
+export default (editorId: string) => {
   const extensionDecorators = getExtensionDecorators(editorId)
 
   const entityDecorators = [

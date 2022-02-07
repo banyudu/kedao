@@ -16,6 +16,8 @@ const valueComparison = (value1, value2, operator) => {
       return value1 > value2
     case '<':
       return value1 < value2
+    default:
+      return false
   }
 }
 

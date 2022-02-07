@@ -15,8 +15,20 @@ import TextIndent from '../TextIndent'
 import DropDown from '../../../components/common/DropDown'
 import { showModal } from '../../../components/common/Modal'
 import { getExtensionControls } from '../../../helpers/extension'
-import type { Finder, MediaProps, ControlItem, CommonPickerProps } from '../../../types'
+import type { Finder, MediaProps, ControlItem, CommonPickerProps, ModalControlItem, ButtonControlItem, DropDownControlItem } from '../../../types'
 import './style.scss'
+
+const isModalControl = (control: ControlItem): control is ModalControlItem => {
+  return control.type === 'modal'
+}
+
+const isButtonControl = (control: ControlItem): control is ButtonControlItem => {
+  return control.type === 'button'
+}
+
+const isDropDownControl = (control: ControlItem): control is DropDownControlItem => {
+  return control.type === 'dropdown'
+}
 
 const commandHookMap = {
   'inline-style': 'toggle-inline-style',
@@ -137,7 +149,7 @@ const ControlBar: FC<ControlBarProps> = ({
   const mediaLibiraryModal = useRef(null)
   const extendedModals = useRef({})
 
-  const getControlItemClassName = data => {
+  const getControlTypeClassName = data => {
     let className = 'control-item button'
     const { type, command } = data
 
@@ -313,7 +325,7 @@ const ControlBar: FC<ControlBarProps> = ({
         if (itemKey.toLowerCase() === 'separator') {
           return <span key={uuidv4()} className='separator-line' />
         }
-        let controlItem: any = editorControls.find(subItem => {
+        let controlItem: ControlItem = editorControls.find(subItem => {
           return subItem.key.toLowerCase() === itemKey.toLowerCase()
         })
         if (typeof item !== 'string') {
@@ -442,7 +454,7 @@ const ControlBar: FC<ControlBarProps> = ({
             </button>
           )
         }
-        if (controlItem.type === 'dropdown') {
+        if (isDropDownControl(controlItem)) {
           return (
             <DropDown
               key={uuidv4()}
@@ -456,14 +468,14 @@ const ControlBar: FC<ControlBarProps> = ({
               // theme={controlItem.theme}
               autoHide={controlItem.autoHide}
               disabled={controlItem.disabled}
-              ref={controlItem.ref}
+              ref={(controlItem as any).ref}
               {...commonProps}
             >
               {controlItem.component}
             </DropDown>
           )
         }
-        if (controlItem.type === 'modal') {
+        if (isModalControl(controlItem)) {
           return (
             <button
               type='button'
@@ -476,28 +488,25 @@ const ControlBar: FC<ControlBarProps> = ({
                 controlItem.html ? { __html: controlItem.html } : null
               }
               onClick={event => {
-                if (controlItem.modal?.id) {
-                  if (extendedModals.current?.[controlItem.modal.id]) {
-                    extendedModals.current[controlItem.modal.id].active = true
-                    extendedModals.current[controlItem.modal.id].update({
-                      ...controlItem.modal,
+                const { modal, onClick } = controlItem as ModalControlItem
+                if (modal?.id) {
+                  if (extendedModals.current?.[modal.id]) {
+                    extendedModals.current[modal.id].active = true
+                    extendedModals.current[modal.id].update({
+                      ...modal,
                       language
                     })
                   } else {
-                    extendedModals.current[controlItem.modal.id] = showModal({
-                      ...controlItem.modal,
+                    extendedModals.current[modal.id] = showModal({
+                      ...modal,
                       language
                     })
-                    if (controlItem.modal.onCreate) {
-                      controlItem.modal.onCreate(
-                        extendedModals.current[controlItem.modal.id]
-                      )
-                    }
+                    modal.onCreate?.(
+                      extendedModals.current[modal.id]
+                    )
                   }
                 }
-                if (controlItem.onClick) {
-                  controlItem.onClick(event)
-                }
+                onClick?.(event)
               }}
             >
               {!controlItem.html ? controlItem.text : null}
@@ -514,7 +523,7 @@ const ControlBar: FC<ControlBarProps> = ({
             </div>
           )
         }
-        if (controlItem.type === 'button') {
+        if (isButtonControl(controlItem)) {
           return (
             <button
               type='button'
@@ -525,7 +534,7 @@ const ControlBar: FC<ControlBarProps> = ({
               dangerouslySetInnerHTML={
                 controlItem.html ? { __html: controlItem.html } : null
               }
-              onClick={event => controlItem.onClick?.(event)}
+              onClick={event => (controlItem as ButtonControlItem).onClick?.(event)}
             >
               {!controlItem.html ? controlItem.text : null}
             </button>
@@ -546,7 +555,7 @@ const ControlBar: FC<ControlBarProps> = ({
               key={uuidv4()}
               disabled={disabled}
               data-title={controlItem.title}
-              className={getControlItemClassName({
+              className={getControlTypeClassName({
                 type: controlItem.type,
                 command: controlItem.command
               })}
@@ -554,7 +563,7 @@ const ControlBar: FC<ControlBarProps> = ({
                 applyControl(
                   controlItem.command,
                   controlItem.type,
-                  controlItem.data
+                  (controlItem as any).data
                 )
               }
             >

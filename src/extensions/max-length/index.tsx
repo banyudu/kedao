@@ -66,6 +66,7 @@ export default (options) => {
           editorProps.onReachMaxLength?.(maxLength)
           return 'handled'
         }
+        return null
       }
 
       editorProps.handlePastedText = (pastedText, _, editorState) => {
@@ -83,6 +84,7 @@ export default (options) => {
           editorProps.onReachMaxLength?.(maxLength)
           return 'handled'
         }
+        return null
       }
 
       return editorProps

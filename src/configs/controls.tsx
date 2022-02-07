@@ -26,12 +26,13 @@ import {
   MdLink,
   MdRemove
 } from 'react-icons/md'
+import { CallbackEditor, Language } from '../types'
 
 import { defaultIconProps } from './props'
 
 const iconProps = { ...defaultIconProps }
 
-export default function Controls (lang, editor) {
+export default function Controls (lang: Language, editor: CallbackEditor) {
   return [
     {
       key: 'undo',
@@ -197,10 +198,10 @@ export default function Controls (lang, editor) {
     },
     {
       key: 'fullscreen',
-      title: editor.state.isFullscreen
+      title: editor.isFullscreen
         ? lang.controls.exitFullscreen
         : lang.controls.fullscreen,
-      text: editor.state.isFullscreen ? <MdFullscreenExit {...iconProps} /> : <MdFullscreen {...iconProps} />,
+      text: editor.isFullscreen ? <MdFullscreenExit {...iconProps} /> : <MdFullscreen {...iconProps} />,
       type: 'editor-method',
       command: 'toggleFullscreen'
     },

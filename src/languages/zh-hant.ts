@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: '刪除',
     cancel: '取消',
     confirm: '確定',
-    inert: '插入',
+    insert: '插入',
     width: '宽度',
     height: '高度'
   },
@@ -74,3 +76,5 @@ export default {
     embed: '嵌入式媒體'
   }
 }
+
+export default lang

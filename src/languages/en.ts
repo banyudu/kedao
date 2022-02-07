@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Remove',
     cancel: 'Cancel',
     confirm: 'Confirm',
-    inert: 'Insert',
+    insert: 'Insert',
     width: 'Width',
     height: 'Height'
   },
@@ -39,6 +41,7 @@ export default {
     headings: 'Headings',
     header: 'Header',
     normal: 'Normal',
+    border: 'Border',
     orderedList: 'Ordered List',
     unorderedList: 'Unordered List',
     blockQuote: 'Quote',
@@ -73,3 +76,5 @@ export default {
     embed: 'Embed'
   }
 }
+
+export default lang

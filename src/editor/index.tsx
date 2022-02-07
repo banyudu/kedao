@@ -41,6 +41,7 @@ import ControlBar from '../components/business/ControlBar'
 
 import 'draft-js/dist/Draft.css'
 import '../assets/scss/_kedao.scss'
+import { CallbackEditor } from '../types'
 
 const buildHooks =
   (hooks) =>
@@ -339,7 +340,7 @@ class KedaoEditor extends React.Component<any, any> {
   };
 
   onTab = (event) => {
-    if (keyCommandHandlers('tab', this.state.editorState, this) === 'handled') {
+    if (keyCommandHandlers('tab', this.state.editorState, this.getCallbackEditor()) === 'handled') {
       event.preventDefault()
     }
     if (this.editorProps.onTab) {
@@ -366,7 +367,7 @@ class KedaoEditor extends React.Component<any, any> {
   };
 
   handleKeyCommand = (command, editorState) =>
-    keyCommandHandlers(command, editorState, this);
+    keyCommandHandlers(command, editorState, this.getCallbackEditor());
 
   handleReturn = (event, editorState) =>
     returnHandlers(event, editorState, this);
@@ -437,6 +438,16 @@ class KedaoEditor extends React.Component<any, any> {
     this.containerNode = containerNode
   };
 
+  getCallbackEditor = () => {
+    const callbackEditor: CallbackEditor = {
+      isFullscreen: this.state.isFullscreen,
+      setValue: this.setValue,
+      requestFocus: this.requestFocus,
+      editorProps: this.editorProps
+    }
+    return callbackEditor
+  }
+
   render () {
     let { editorId, controls, media, language, hooks, placeholder } =
       this.editorProps
@@ -502,8 +513,10 @@ class KedaoEditor extends React.Component<any, any> {
       media.audio = false
     }
 
+    const callbackEditor = this.getCallbackEditor()
+
     const controlBarProps = {
-      editor: this,
+      editor: callbackEditor,
       editorState,
       finder: this.finder,
       ref: this.controlBarInstance,
@@ -535,7 +548,7 @@ class KedaoEditor extends React.Component<any, any> {
     const { unitExportFn } = editorState.convertOptions
 
     const commonProps = {
-      editor: this,
+      editor: callbackEditor,
       editorId,
       hooks,
       editorState,

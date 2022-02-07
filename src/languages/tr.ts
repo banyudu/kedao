@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Kaldır',
     cancel: 'İptal',
     confirm: 'Onayla',
-    inert: 'Ekle',
+    insert: 'Ekle',
     width: 'Genişlik',
     height: 'Yükseklik'
   },
@@ -22,6 +24,7 @@ export default {
     textIndent: 'Çentik aralığı',
     increaseIndent: 'Çentiği genişlet',
     decreaseIndent: 'Çentiği daralt',
+    border: 'sınır',
     italic: 'Eğik',
     underline: 'Altı çizili',
     strikeThrough: 'Üstü çizili',
@@ -73,3 +76,5 @@ export default {
     embed: 'Gömülü nesne'
   }
 }
+
+export default lang

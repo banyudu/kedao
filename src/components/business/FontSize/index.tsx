@@ -1,40 +1,32 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { CommonPickerProps } from '../../../types'
 import { ContentUtils } from '../../../utils'
-
-import DropDown from '../../common/DropDown'
-
+import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
-const toggleFontSize = (event, props) => {
-  let fontSize = event.currentTarget.dataset.size
-  const hookReturns = props.hooks('toggle-font-size', fontSize)(fontSize)
-
-  if (hookReturns === false) {
-    return false
-  }
-
-  if (!isNaN(fontSize)) {
-    fontSize = hookReturns
-  }
-
-  props.editor.setValue(
-    ContentUtils.toggleSelectionFontSize(props.editorState, fontSize)
-  )
-  props.editor.requestFocus()
-  return true
+export interface FontSizePickerProps extends CommonPickerProps {
+  defaultCaption: DropDownProps['caption']
+  fontSizes: number[]
 }
 
-const FontSize = (props) => {
+const FontSizePicker: FC<FontSizePickerProps> = ({
+  fontSizes,
+  defaultCaption,
+  getContainerNode,
+  language,
+  hooks,
+  editor,
+  editorState
+}) => {
   let caption = null
   let currentFontSize = null
-  let dropDownInstance = null
+  const dropDownInstance = useRef(null)
 
-  props.fontSizes.find((item) => {
+  fontSizes.find((item) => {
     if (
       ContentUtils.selectionHasInlineStyle(
-        props.editorState,
+        editorState,
         `FONTSIZE-${item}`
       )
     ) {
@@ -45,18 +37,36 @@ const FontSize = (props) => {
     return false
   })
 
+  const toggleFontSize = (event) => {
+    let fontSize = event.currentTarget.dataset.size
+    const hookReturns = hooks('toggle-font-size', fontSize)(fontSize)
+
+    if (hookReturns === false) {
+      return false
+    }
+
+    if (!isNaN(fontSize)) {
+      fontSize = hookReturns
+    }
+
+    editor.setValue(
+      ContentUtils.toggleSelectionFontSize(editorState, fontSize)
+    )
+    editor.requestFocus()
+    return true
+  }
+
   return (
     <DropDown
       autoHide
-      caption={caption || props.defaultCaption}
-      getContainerNode={props.getContainerNode}
-      title={props.language.controls.fontSize}
-      // eslint-disable-next-line no-return-assign
-      ref={(instance) => (dropDownInstance = instance)}
+      caption={caption || defaultCaption}
+      getContainerNode={getContainerNode}
+      title={language.controls.fontSize}
+      ref={dropDownInstance}
       className="control-item dropdown bf-font-size-dropdown"
     >
       <ul className="bf-font-sizes">
-        {props.fontSizes.map((item) => {
+        {fontSizes.map((item) => {
           return (
             <li
               key={uuidv4()}
@@ -64,8 +74,8 @@ const FontSize = (props) => {
               className={item === currentFontSize ? 'active' : null}
               data-size={item}
               onClick={(event) => {
-                toggleFontSize(event, props)
-                dropDownInstance.hide()
+                toggleFontSize(event)
+                dropDownInstance.current?.hide()
               }}
             >
               {item}
@@ -77,12 +87,4 @@ const FontSize = (props) => {
   )
 }
 
-FontSize.propTypes = {
-  fontSizes: PropTypes.any,
-  editorState: PropTypes.any,
-  defaultCaption: PropTypes.any,
-  getContainerNode: PropTypes.any,
-  language: PropTypes.any
-}
-
-export default FontSize
+export default FontSizePicker

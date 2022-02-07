@@ -1,4 +1,6 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Удалить',
     cancel: 'Отмена',
@@ -32,6 +34,7 @@ export default {
     alignRight: 'По правому краю',
     alignJustify: 'По ширине',
     floatLeft: 'Обтекание слева',
+    border: 'граница',
     floatRight: 'Обтекание справа',
     superScript: 'Надстрочный индекс',
     subScript: 'Подстрочный индекс',
@@ -73,3 +76,5 @@ export default {
     embed: 'Встроенное'
   }
 }
+
+export default lang

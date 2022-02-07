@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Verwijder',
     cancel: 'Annuleer',
     confirm: 'Bevestig',
-    inert: 'Invoegen',
+    insert: 'Invoegen',
     width: 'Breedte',
     height: 'Hoogte'
   },
@@ -22,6 +24,7 @@ export default {
     textIndent: 'Tekst inspringen',
     increaseIndent: 'Inspringing vergroten',
     decreaseIndent: 'Inspringing verkleinen',
+    border: 'grens',
     italic: 'Cursief',
     underline: 'Onderstreept',
     strikeThrough: 'Doorstreept',
@@ -73,3 +76,5 @@ export default {
     embed: 'Embed'
   }
 }
+
+export default lang

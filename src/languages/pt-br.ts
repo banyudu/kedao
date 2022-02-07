@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Remover',
     cancel: 'Cancelar',
     confirm: 'Confirmar',
-    inert: 'Inserir',
+    insert: 'Inserir',
     width: 'Largura',
     height: 'Altura'
   },
@@ -22,6 +24,7 @@ export default {
     textIndent: 'Identação de Texto',
     increaseIndent: 'Aumentar Identação',
     decreaseIndent: 'Diminuir Identção',
+    border: 'fronteira',
     italic: 'Itálico',
     underline: 'Sublinhado',
     strikeThrough: 'Riscado',
@@ -73,3 +76,5 @@ export default {
     embed: 'Mídia Incorporada'
   }
 }
+
+export default lang

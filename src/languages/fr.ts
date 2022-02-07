@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Supprimer',
     cancel: 'Annuler',
     confirm: 'Confirmer',
-    inert: 'Insérer',
+    insert: 'Insérer',
     width: 'Largeur',
     height: 'Hauteur'
   },
@@ -14,6 +16,7 @@ export default {
     fontSize: 'Taille de police',
     color: 'Couleur',
     textColor: 'Texte',
+    border: 'frontière',
     tempColors: 'Couleurs temporaire',
     backgroundColor: "Couleur d'arrière plan",
     bold: 'Gras',
@@ -73,3 +76,5 @@ export default {
     embed: 'Intégré'
   }
 }
+
+export default lang

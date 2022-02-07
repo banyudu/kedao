@@ -66,7 +66,7 @@ export const selectNextBlock = (editorState, block) => {
   return nextBlock ? selectBlock(editorState, nextBlock) : editorState
 }
 
-export const removeBlock = (editorState, block, lastSelection = null) => {
+export const removeBlock = (editorState: EditorState, block, lastSelection = null) => {
   let nextContentState
   const blockKey = block.getKey()
 
@@ -97,13 +97,13 @@ export const removeBlock = (editorState, block, lastSelection = null) => {
   )
 }
 
-export const getSelectionBlock = (editorState) => {
+export const getSelectionBlock = (editorState: EditorState) => {
   return editorState
     .getCurrentContent()
     .getBlockForKey(editorState.getSelection().getAnchorKey())
 }
 
-export const updateEachCharacterOfSelection = (editorState, callback) => {
+export const updateEachCharacterOfSelection = (editorState: EditorState, callback) => {
   const selectionState = editorState.getSelection()
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap()
@@ -165,7 +165,7 @@ export const updateEachCharacterOfSelection = (editorState, callback) => {
       blockMap: nextContentBlocks,
       selectionBefore: selectionState,
       selectionAfter: selectionState
-    }),
+    }) as any,
     'update-selection-character-list' as any
   )
 }
@@ -213,16 +213,16 @@ export const setSelectionBlockData = (
   return setBlockData(editorState, newBlockData)
 }
 
-export const getSelectionBlockData = (editorState, name?: string) => {
+export const getSelectionBlockData = (editorState: EditorState, name?: string): any => {
   const blockData = getSelectionBlock(editorState).getData()
   return name ? blockData.get(name) : blockData
 }
 
-export const getSelectionBlockType = (editorState) => {
+export const getSelectionBlockType = (editorState: EditorState) => {
   return getSelectionBlock(editorState).getType()
 }
 
-export const getSelectionText = (editorState) => {
+export const getSelectionText = (editorState: EditorState) => {
   const selectionState = editorState.getSelection()
   const contentState = editorState.getCurrentContent()
 
@@ -619,7 +619,7 @@ export const insertHorizontalLine = (editorState) => {
   return insertAtomicBlock(editorState, 'HR')
 }
 
-export const insertMedias = (editorState, medias = []) => {
+export const insertMedias = (editorState: EditorState, medias = []): EditorState => {
   if (!medias.length) {
     return editorState
   }
@@ -640,7 +640,7 @@ export const insertMedias = (editorState, medias = []) => {
   }, editorState)
 }
 
-export const setMediaData = (editorState, entityKey, data) => {
+export const setMediaData = (editorState: EditorState, entityKey, data): EditorState => {
   return EditorState.push(
     editorState,
     editorState.getCurrentContent().mergeEntityData(entityKey, data),
@@ -648,7 +648,7 @@ export const setMediaData = (editorState, entityKey, data) => {
   )
 }
 
-export const removeMedia = (editorState, mediaBlock) => {
+export const removeMedia = (editorState: EditorState, mediaBlock) => {
   return removeBlock(editorState, mediaBlock)
 }
 

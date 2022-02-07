@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Fjarlægja',
     cancel: 'Hætta við',
     confirm: 'Staðfesta',
-    inert: 'Bæta við',
+    insert: 'Bæta við',
     width: 'Breidd',
     height: 'Hæð'
   },
@@ -18,6 +20,7 @@ export default {
     backgroundColor: 'Bakgrunnur',
     bold: 'Feitletrað',
     lineHeight: 'Línuhæð',
+    border: 'landamæri',
     letterSpacing: 'Stafabil',
     textIndent: 'Innfelling texta',
     increaseIndent: 'Bæta við innfellingu',
@@ -73,3 +76,5 @@ export default {
     embed: 'Infella'
   }
 }
+
+export default lang

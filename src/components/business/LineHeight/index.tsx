@@ -1,40 +1,24 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
-
-import DropDown from '../../common/DropDown'
-
+import DropDown, { DropDownProps } from '../../common/DropDown'
+import { CommonPickerProps } from '../../../types'
 import './style.scss'
 
-const toggleLineHeight = (event, props) => {
-  let lineHeight = event.currentTarget.dataset.size
-  const hookReturns = props.hooks('toggle-line-height', lineHeight)(lineHeight)
-
-  if (hookReturns === false) {
-    return false
-  }
-
-  if (!isNaN(hookReturns)) {
-    lineHeight = hookReturns
-  }
-
-  props.editor.setValue(
-    ContentUtils.toggleSelectionLineHeight(props.editorState, lineHeight)
-  )
-  props.editor.requestFocus()
-  return true
+export interface LineHeightPickerProps extends CommonPickerProps {
+  lineHeights: number[]
+  defaultCaption: DropDownProps['caption']
 }
 
-const LineHeight = (props) => {
+const LineHeightPicker: FC<LineHeightPickerProps> = ({ lineHeights, defaultCaption, getContainerNode, language, editor, editorState, hooks }) => {
   let caption = null
   let currentLineHeight = null
   const dropDownInstance = React.createRef<any>()
 
-  props.lineHeights.find((item) => {
+  lineHeights.find((item) => {
     if (
       ContentUtils.selectionHasInlineStyle(
-        props.editorState,
+        editorState,
         `LINEHEIGHT-${item}`
       )
     ) {
@@ -45,17 +29,36 @@ const LineHeight = (props) => {
     return false
   })
 
+  const toggleLineHeight = (event) => {
+    let lineHeight = event.currentTarget.dataset.size
+    const hookReturns = hooks('toggle-line-height', lineHeight)(lineHeight)
+
+    if (hookReturns === false) {
+      return false
+    }
+
+    if (!isNaN(hookReturns)) {
+      lineHeight = hookReturns
+    }
+
+    editor.setValue(
+      ContentUtils.toggleSelectionLineHeight(editorState, lineHeight)
+    )
+    editor.requestFocus()
+    return true
+  }
+
   return (
     <DropDown
       autoHide
-      caption={caption || props.defaultCaption}
-      getContainerNode={props.getContainerNode}
-      title={props.language.controls.lineHeight}
+      caption={caption || defaultCaption}
+      getContainerNode={getContainerNode}
+      title={language.controls.lineHeight}
       ref={dropDownInstance}
       className="control-item dropdown bf-line-height-dropdown"
     >
       <ul className="bf-line-heights">
-        {props.lineHeights.map((item) => {
+        {lineHeights.map((item) => {
           return (
             <li
               key={uuidv4()}
@@ -63,7 +66,7 @@ const LineHeight = (props) => {
               className={item === currentLineHeight ? 'active' : null}
               data-size={item}
               onClick={(event) => {
-                toggleLineHeight(event, props)
+                toggleLineHeight(event)
                 dropDownInstance.current?.hide()
               }}
             >
@@ -76,15 +79,4 @@ const LineHeight = (props) => {
   )
 }
 
-LineHeight.propTypes = {
-  headings: PropTypes.any,
-  lineHeights: PropTypes.any,
-  current: PropTypes.any,
-  onChange: PropTypes.any,
-  editorState: PropTypes.any,
-  defaultCaption: PropTypes.any,
-  getContainerNode: PropTypes.any,
-  language: PropTypes.any
-}
-
-export default LineHeight
+export default LineHeightPicker

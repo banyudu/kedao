@@ -5,7 +5,20 @@ import './style.scss'
 import { MdArrowDropDown } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
 
-const DropDown = forwardRef<any, any>(({
+export interface DropDownProps {
+  disabled?: boolean
+  autoHide: boolean
+  caption: JSX.Element
+  htmlCaption?: string
+  title: string
+  showArrow?: boolean
+  arrowActive?: boolean
+  className?: string
+  getContainerNode: () => HTMLElement
+  children: JSX.Element
+}
+
+const DropDown = forwardRef<any, DropDownProps>(({
   disabled,
   autoHide,
   getContainerNode,
@@ -129,7 +142,7 @@ const DropDown = forwardRef<any, any>(({
               ref={dropDownHandlerElement}
             >
               <span>{caption}</span>
-              {showArrow !== false
+              {showArrow
                 ? (
                 <MdArrowDropDown {...defaultIconProps} />
                   )

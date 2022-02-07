@@ -2,37 +2,32 @@ import { ContentUtils, ColorUtils } from '../utils'
 import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js'
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
 import { handleNewLine } from 'draftjs-utils'
+import { CallbackEditor } from '../types'
 
-export const keyCommandHandlers = (command, editorState, editor) => {
+export const keyCommandHandlers = (command, editorState: EditorState, editor: CallbackEditor) => {
   if (
-    editor.editorProps.handleKeyCommand &&
-    editor.editorProps.handleKeyCommand(command, editorState, editor) ===
+    editor.editorProps.handleKeyCommand?.(command, editorState, editor) ===
       'handled'
   ) {
     return 'handled'
   }
 
   if (command === 'kedao-save') {
-    if (editor.editorProps.onSave) {
-      editor.editorProps.onSave(editorState)
-    }
+    editor.editorProps.onSave?.(editorState)
     return 'handled'
   }
 
   const { controls, excludeControls } = editor.editorProps
   const allowIndent =
-    (controls.indexOf('text-indent') !== 0 ||
+    (controls.indexOf('text-indent' as any) !== 0 ||
       controls.find((item) => item.key === 'text-indent')) &&
-    excludeControls.indexOf('text-indent') === -1
+    !excludeControls.includes('text-indent')
   const cursorStart = editorState.getSelection().getStartOffset()
   const cursorEnd = editorState.getSelection().getEndOffset()
   const cursorIsAtFirst = cursorStart === 0 && cursorEnd === 0
 
   if (command === 'backspace') {
-    if (
-      editor.editorProps.onDelete &&
-      editor.editorProps.onDelete(editorState) === false
-    ) {
+    if (!editor.editorProps.onDelete?.(editorState)) {
       return 'handled'
     }
 

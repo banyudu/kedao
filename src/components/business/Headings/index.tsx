@@ -1,45 +1,55 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-
 import { getHeadings } from '../../../configs/maps'
+import { CommonPickerProps } from '../../../types'
 import DropDown from '../../common/DropDown'
-
 import './style.scss'
 
-const Headings = (props) => {
+export interface HeadingsPickerProps extends CommonPickerProps {
+  headings: string[]
+  current: any
+  onChange: (command: string, type: string) => void
+}
+
+const HeadingsPicker: FC<HeadingsPickerProps> = ({
+  language,
+  headings,
+  current,
+  getContainerNode,
+  onChange
+}) => {
   const dropDownInstance = React.createRef<any>()
 
-  const headings = getHeadings(props.language).filter(
-    (item) => props.headings.indexOf(item.key) !== -1
+  const innerHeadings = getHeadings(language).filter(
+    (item) => headings.includes(item.key)
   )
-  const currentHeadingIndex = headings.findIndex(
-    (item) => item.command === props.current
+  const currentHeadingIndex = innerHeadings.findIndex(
+    (item) => item.command === current
   )
-  const caption = headings[currentHeadingIndex]
-    ? headings[currentHeadingIndex].title
-    : props.language.controls.normal
+  const caption = innerHeadings[currentHeadingIndex]
+    ? innerHeadings[currentHeadingIndex].title
+    : language.controls.normal
 
   return (
     <DropDown
       caption={caption}
       autoHide
-      getContainerNode={props.getContainerNode}
-      title={props.language.controls.headings}
+      getContainerNode={getContainerNode}
+      title={language.controls.headings}
       arrowActive={currentHeadingIndex === 0}
       ref={dropDownInstance}
       className="control-item dropdown headings-dropdown"
     >
       <ul className="menu">
-        {headings.map((item) => {
-          const isActive = props.current === item.command
+        {innerHeadings.map((item) => {
+          const isActive = current === item.command
           return (
             <li
               key={uuidv4()}
               role="presentation"
               className={`menu-item${isActive ? ' active' : ''}`}
               onClick={() => {
-                props.onChange(item.command, item.type)
+                onChange(item.command, item.type)
                 dropDownInstance.current?.hide()
               }}
             >
@@ -52,14 +62,4 @@ const Headings = (props) => {
   )
 }
 
-Headings.propTypes = {
-  headings: PropTypes.any,
-  current: PropTypes.any,
-  onChange: PropTypes.any,
-  editorState: PropTypes.any,
-  defaultCaption: PropTypes.any,
-  getContainerNode: PropTypes.any,
-  language: PropTypes.any
-}
-
-export default Headings
+export default HeadingsPicker

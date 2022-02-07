@@ -1,17 +1,28 @@
-import React, { CSSProperties, useRef, useState } from 'react'
+import React, { CSSProperties, useRef, useState, FC } from 'react'
 import { ContentUtils } from '../../../utils'
-import DropDown from '../../common/DropDown'
+import DropDown, { DropDownProps } from '../../common/DropDown'
 import BuiltinColorPicker from '../../common/ColorPicker'
 import './style.scss'
 import { MdFormatColorText } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
+import { CallbackEditor, Hooks, EditorState, Language } from '../../../types'
 
-const TextColor = ({
+export interface TextColorPickerProps extends Pick<DropDownProps, 'getContainerNode' | 'autoHide'> {
+  hooks: Hooks
+  editor: CallbackEditor
+  editorState: EditorState
+  colorPicker: React.ComponentType<any>
+  enableBackgroundColor: boolean
+  colors: string[]
+  language: Language
+}
+
+const TextColorPicker: FC<TextColorPickerProps> = ({
   hooks,
   editor,
   editorState,
   colorPicker,
-  theme,
+  // theme,
   getContainerNode,
   enableBackgroundColor,
   colors,
@@ -90,7 +101,7 @@ const TextColor = ({
       title={language.controls.color}
       showArrow={false}
       autoHide={autoHide}
-      theme={theme}
+      // theme={theme}
       getContainerNode={getContainerNode}
       ref={dropDownInstance}
       className='control-item dropdown text-color-dropdown'
@@ -129,4 +140,4 @@ const TextColor = ({
   )
 }
 
-export default TextColor
+export default TextColorPicker

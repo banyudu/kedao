@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
@@ -10,6 +10,7 @@ import {
   MdFormatAlignRight
 } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
+import { CommonPickerProps } from '../../../types'
 
 const iconMap = {
   left: <MdFormatAlignLeft {...defaultIconProps} />,
@@ -18,7 +19,11 @@ const iconMap = {
   justify: <MdFormatAlignJustify {...defaultIconProps} />
 }
 
-const TextAlign = ({ editorState, textAligns, editor, language, hooks }) => {
+export interface TextAlignProps extends CommonPickerProps {
+  textAligns: string[]
+}
+
+const TextAlign: FC<TextAlignProps> = ({ editorState, textAligns, editor, language, hooks }) => {
   const [currentAlignment, setCurrentAlignment] = useState(undefined)
 
   useEffect(() => {
@@ -31,7 +36,7 @@ const TextAlign = ({ editorState, textAligns, editor, language, hooks }) => {
     let { alignment } = event.currentTarget.dataset
     const hookReturns = hooks('toggle-text-alignment', alignment)(alignment)
 
-    if (textAligns.indexOf(hookReturns) > -1) {
+    if (textAligns.includes(hookReturns)) {
       alignment = hookReturns
     }
 

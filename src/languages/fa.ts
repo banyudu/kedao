@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'حذف',
     cancel: 'لغو',
     confirm: 'تایید',
-    inert: 'درج',
+    insert: 'درج',
     width: 'عرض',
     height: 'ارتفاع'
   },
@@ -17,6 +19,7 @@ export default {
     tempColors: 'رنگ',
     backgroundColor: 'پس زمینه',
     bold: 'ضخیم',
+    border: 'الحدود',
     lineHeight: 'ارتفاع سطز',
     letterSpacing: 'فاصله کاراکتری',
     textIndent: 'تورفتگی',
@@ -73,3 +76,5 @@ export default {
     embed: 'جانبی'
   }
 }
+
+export default lang

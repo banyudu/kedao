@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Usuń',
     cancel: 'Anuluj',
     confirm: 'Potwierdź',
-    inert: 'Wstaw',
+    insert: 'Wstaw',
     width: 'Szerokość',
     height: 'Wysokość'
   },
@@ -18,6 +20,7 @@ export default {
     backgroundColor: 'Tło',
     bold: 'Pogrubienie',
     lineHeight: 'Wysokość linii',
+    border: 'granica',
     letterSpacing: 'Odstęp znaków',
     textIndent: 'Wcięcie tekstu',
     increaseIndent: 'Zwiększ wcięcie',
@@ -48,7 +51,9 @@ export default {
     hr: 'Linia pozioma',
     media: 'Media',
     mediaLibirary: 'Biblioteka mediów',
-    emoji: 'Emoji'
+    emoji: 'Emoji',
+    fullscreen: 'Pełny ekran',
+    exitFullscreen: 'Wyłączyć tryb pełnoekranowy'
   },
   linkEditor: {
     textInputPlaceHolder: 'Wpisz tekst linku',
@@ -71,3 +76,5 @@ export default {
     embed: 'Obiekt osadzony'
   }
 }
+
+export default lang

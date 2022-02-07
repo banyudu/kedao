@@ -1,21 +1,21 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, FC, CSSProperties } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
 import getEditorControls from '../../../configs/controls'
-import LinkEditor from '../LinkEditor'
-import HeadingPicker from '../Headings'
-import TextColorPicker from '../TextColor'
-import FontSizePicker from '../FontSize'
-import LineHeightPicker from '../LineHeight'
-import FontFamilyPicker from '../FontFamily'
-import TextAlign from '../TextAlign'
-import EmojiPicker from '../EmojiPicker'
-import LetterSpacingPicker from '../LetterSpacing'
+import LinkEditor, { LinkEditorProps } from '../LinkEditor'
+import HeadingPicker, { HeadingsPickerProps } from '../Headings'
+import TextColorPicker, { TextColorPickerProps } from '../TextColor'
+import FontSizePicker, { FontSizePickerProps } from '../FontSize'
+import LineHeightPicker, { LineHeightPickerProps } from '../LineHeight'
+import FontFamilyPicker, { FontFamilyPickerProps } from '../FontFamily'
+import TextAlign, { TextAlignProps } from '../TextAlign'
+import EmojiPicker, { EmojiPickerProps } from '../EmojiPicker'
+import LetterSpacingPicker, { LetterSpacingPickerProps } from '../LetterSpacing'
 import TextIndent from '../TextIndent'
 import DropDown from '../../../components/common/DropDown'
 import { showModal } from '../../../components/common/Modal'
 import { getExtensionControls } from '../../../helpers/extension'
-
+import type { Finder, MediaProps, ControlItem, CommonPickerProps } from '../../../types'
 import './style.scss'
 
 const commandHookMap = {
@@ -68,7 +68,31 @@ const mergeControls = (
     )
 }
 
-const ControlBar = ({
+interface ControlBarProps extends
+  CommonPickerProps,
+  Pick<TextColorPickerProps, 'colorPicker'>,
+  Pick<EmojiPickerProps, 'emojis'>,
+  Pick<FontFamilyPickerProps, 'fontFamilies'>,
+  Pick<FontSizePickerProps, 'fontSizes'>,
+  Pick<HeadingsPickerProps, 'headings'>,
+  Pick<LetterSpacingPickerProps, 'letterSpacings'>,
+  Pick<LineHeightPickerProps, 'lineHeights'>,
+  Pick<TextAlignProps, 'textAligns'>,
+  Pick<LinkEditorProps, 'defaultLinkTarget'> {
+  finder: Finder
+  className: string
+  style: CSSProperties
+  colors: string[]
+  allowInsertLinkText: boolean
+  media: MediaProps
+  colorPickerAutoHide: TextColorPickerProps['autoHide']
+  controls: ControlItem[]
+  editorId: string
+  extendControls: ControlItem[]
+  textBackgroundColor: boolean
+}
+
+const ControlBar: FC<ControlBarProps> = ({
   language,
   editorState,
   hooks,
@@ -79,7 +103,7 @@ const ControlBar = ({
   className,
   colorPicker,
   colorPickerAutoHide,
-  colorPickerTheme,
+  // colorPickerTheme,
   colors,
   controls,
   defaultLinkTarget,
@@ -316,7 +340,7 @@ const ControlBar = ({
               key={uuidv4()}
               colors={colors}
               colorPicker={colorPicker}
-              theme={colorPickerTheme}
+              // theme={colorPickerTheme}
               autoHide={colorPickerAutoHide}
               enableBackgroundColor={textBackgroundColor}
               {...commonProps}

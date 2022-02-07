@@ -1,43 +1,32 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useRef, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { CommonPickerProps } from '../../../types'
 import { ContentUtils } from '../../../utils'
-
-import DropDown from '../../common/DropDown'
-
+import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
-const toggleLetterSpacing = (event, props) => {
-  let letterSpacing = event.currentTarget.dataset.size
-  const hookReturns = props.hooks(
-    'toggle-letter-spacing',
-    letterSpacing
-  )(letterSpacing)
-
-  if (hookReturns === false) {
-    return false
-  }
-
-  if (!isNaN(hookReturns)) {
-    letterSpacing = hookReturns
-  }
-
-  props.editor.setValue(
-    ContentUtils.toggleSelectionLetterSpacing(props.editorState, letterSpacing)
-  )
-  props.editor.requestFocus()
-  return true
+export interface LetterSpacingPickerProps extends CommonPickerProps {
+  letterSpacings: number[]
+  defaultCaption: DropDownProps['caption']
 }
 
-const LetterSpacing = (props) => {
+const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
+  letterSpacings,
+  hooks,
+  editorState,
+  editor,
+  getContainerNode,
+  language,
+  defaultCaption
+}) => {
   let caption = null
   let currentLetterSpacing = null
-  let dropDownInstance = null
+  const dropDownInstance = useRef(null)
 
-  props.letterSpacings.find((item) => {
+  letterSpacings.find((item) => {
     if (
       ContentUtils.selectionHasInlineStyle(
-        props.editorState,
+        editorState,
         `LETTERSPACING-${item}`
       )
     ) {
@@ -48,18 +37,39 @@ const LetterSpacing = (props) => {
     return false
   })
 
+  const toggleLetterSpacing = (event) => {
+    let letterSpacing = event.currentTarget.dataset.size
+    const hookReturns = hooks(
+      'toggle-letter-spacing',
+      letterSpacing
+    )(letterSpacing)
+
+    if (hookReturns === false) {
+      return false
+    }
+
+    if (!isNaN(hookReturns)) {
+      letterSpacing = hookReturns
+    }
+
+    editor.setValue(
+      ContentUtils.toggleSelectionLetterSpacing(editorState, letterSpacing)
+    )
+    editor.requestFocus()
+    return true
+  }
+
   return (
     <DropDown
       autoHide
-      caption={caption || props.defaultCaption}
-      getContainerNode={props.getContainerNode}
-      title={props.language.controls.letterSpacing}
-      // eslint-disable-next-line no-return-assign
-      ref={(instance) => (dropDownInstance = instance)}
+      caption={caption || defaultCaption}
+      getContainerNode={getContainerNode}
+      title={language.controls.letterSpacing}
+      ref={dropDownInstance}
       className="control-item dropdown bf-letter-spacing-dropdown"
     >
       <ul className="bf-letter-spacings">
-        {props.letterSpacings.map((item) => {
+        {letterSpacings.map((item) => {
           return (
             <li
               key={uuidv4()}
@@ -67,8 +77,8 @@ const LetterSpacing = (props) => {
               className={item === currentLetterSpacing ? 'active' : null}
               data-size={item}
               onClick={(event) => {
-                toggleLetterSpacing(event, props)
-                dropDownInstance.hide()
+                toggleLetterSpacing(event)
+                dropDownInstance.current?.hide()
               }}
             >
               {item}
@@ -80,15 +90,4 @@ const LetterSpacing = (props) => {
   )
 }
 
-LetterSpacing.propTypes = {
-  headings: PropTypes.any,
-  letterSpacings: PropTypes.any,
-  current: PropTypes.any,
-  onChange: PropTypes.any,
-  editorState: PropTypes.any,
-  defaultCaption: PropTypes.any,
-  getContainerNode: PropTypes.any,
-  language: PropTypes.any
-}
-
-export default LetterSpacing
+export default LetterSpacingPicker

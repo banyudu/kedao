@@ -1,14 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, FC } from 'react'
 import { ContentUtils } from '../../../utils'
-
 import Switch from '../../common/Switch'
 import DropDown from '../../common/DropDown'
 import ControlGroup from '../ControlGroup'
 import { MdClose, MdLink, MdLinkOff } from 'react-icons/md'
 import './style.scss'
 import { defaultIconProps } from '../../../configs/props'
+import { CommonPickerProps } from '../../../types'
 
-const LinkEditor = ({
+export interface LinkEditorProps extends CommonPickerProps {
+  defaultLinkTarget: string
+  allowInsertLinkText: boolean
+}
+
+const LinkEditor: FC<LinkEditorProps> = ({
   defaultLinkTarget,
   editorState,
   editor,

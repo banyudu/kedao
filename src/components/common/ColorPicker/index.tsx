@@ -1,15 +1,19 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-
 import './style.scss'
 
-const ColorPicker = (props) => (
+export interface ColorPickerProps {
+  presetColors: string[]
+  color: string
+  onChange: (color: string, closePicker: boolean) => void
+}
+
+const ColorPicker: FC<ColorPickerProps> = ({ presetColors, color, onChange }) => (
   <div className="bf-colors-wrap">
     <ul className="bf-colors">
-      {props.presetColors.map((item) => {
+      {presetColors.map((item) => {
         const className =
-          props.color && item.toLowerCase() === props.color.toLowerCase()
+          color && item.toLowerCase() === color.toLowerCase()
             ? 'color-item active'
             : 'color-item'
         return (
@@ -21,7 +25,7 @@ const ColorPicker = (props) => (
             style={{ color: item }}
             data-color={item.replace('#', '')}
             onClick={(e) => {
-              props.onChange(e.currentTarget.dataset.color, true)
+              onChange(e.currentTarget.dataset.color, true)
             }}
           />
         )
@@ -29,18 +33,5 @@ const ColorPicker = (props) => (
     </ul>
   </div>
 )
-
-ColorPicker.propTypes = {
-  onChange: PropTypes.any,
-  color: PropTypes.any,
-  presetColors: PropTypes.any,
-  hooks: PropTypes.any,
-  editorState: PropTypes.any,
-  colorPicker: PropTypes.any,
-  autoHide: PropTypes.any,
-  theme: PropTypes.any,
-  getContainerNode: PropTypes.any,
-  enableBackgroundColor: PropTypes.any
-}
 
 export default ColorPicker

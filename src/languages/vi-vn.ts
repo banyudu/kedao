@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: 'Xóa bỏ',
     cancel: 'Hủy bỏ',
     confirm: 'Xác nhận',
-    inert: 'Chèn vào',
+    insert: 'Chèn vào',
     width: 'Độ rộng',
     height: 'Độ cao'
   },
@@ -74,3 +76,5 @@ export default {
     embed: 'Media nhúng'
   }
 }
+
+export default lang

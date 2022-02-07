@@ -1,43 +1,33 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { CommonPickerProps, Language } from '../../../types'
 import { ContentUtils } from '../../../utils'
-
-import DropDown from '../../common/DropDown'
-
+import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
-const toggleFontFamily = (event, props) => {
-  let fontFamilyName = event.currentTarget.dataset.name
-  const hookReturns = props.hooks('toggle-font-family', fontFamilyName)(
-    fontFamilyName,
-    props.fontFamilies
-  )
-
-  if (hookReturns === false) {
-    return false
-  }
-
-  if (typeof hookReturns === 'string') {
-    fontFamilyName = hookReturns
-  }
-
-  props.editor.setValue(
-    ContentUtils.toggleSelectionFontFamily(props.editorState, fontFamilyName)
-  )
-  props.editor.requestFocus()
-  return true
+export interface FontFamilyPickerProps extends CommonPickerProps, Pick<DropDownProps, 'getContainerNode'> {
+  fontFamilies: any[]
+  defaultCaption: DropDownProps['caption']
+  language: Language
 }
 
-const FontFamily = (props) => {
+const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
+  fontFamilies,
+  editorState,
+  editor,
+  hooks,
+  defaultCaption,
+  getContainerNode,
+  language
+}) => {
   let caption = null
   let currentIndex = null
   let dropDownInstance = null
 
-  props.fontFamilies.find((item, index) => {
+  fontFamilies.find((item, index) => {
     if (
       ContentUtils.selectionHasInlineStyle(
-        props.editorState,
+        editorState,
         `FONTFAMILY-${item.name}`
       )
     ) {
@@ -48,11 +38,33 @@ const FontFamily = (props) => {
     return false
   })
 
+  const toggleFontFamily = (event) => {
+    let fontFamilyName = event.currentTarget.dataset.name
+    const hookReturns = hooks('toggle-font-family', fontFamilyName)(
+      fontFamilyName,
+      fontFamilies
+    )
+
+    if (hookReturns === false) {
+      return false
+    }
+
+    if (typeof hookReturns === 'string') {
+      fontFamilyName = hookReturns
+    }
+
+    editor.setValue(
+      ContentUtils.toggleSelectionFontFamily(editorState, fontFamilyName)
+    )
+    editor.requestFocus()
+    return true
+  }
+
   return (
     <DropDown
-      caption={caption || props.defaultCaption}
-      getContainerNode={props.getContainerNode}
-      title={props.language.controls.fontFamily}
+      caption={caption || defaultCaption}
+      getContainerNode={getContainerNode}
+      title={language.controls.fontFamily}
       autoHide
       arrowActive={currentIndex === 0}
       // eslint-disable-next-line no-return-assign
@@ -60,7 +72,7 @@ const FontFamily = (props) => {
       className="control-item dropdown font-family-dropdown"
     >
       <ul className="menu">
-        {props.fontFamilies.map((item, index) => {
+        {fontFamilies.map((item, index) => {
           return (
             <li
               key={uuidv4()}
@@ -68,7 +80,7 @@ const FontFamily = (props) => {
               className={`menu-item ${index === currentIndex ? 'active' : ''}`}
               data-name={item.name}
               onClick={(event) => {
-                toggleFontFamily(event, props)
+                toggleFontFamily(event)
                 dropDownInstance.hide()
               }}
             >
@@ -81,12 +93,4 @@ const FontFamily = (props) => {
   )
 }
 
-FontFamily.propTypes = {
-  fontFamilies: PropTypes.any,
-  editorState: PropTypes.any,
-  defaultCaption: PropTypes.any,
-  getContainerNode: PropTypes.any,
-  language: PropTypes.any
-}
-
-export default FontFamily
+export default FontFamilyPicker

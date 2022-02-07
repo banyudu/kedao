@@ -1,9 +1,11 @@
-export default {
+import { Language } from '../types'
+
+const lang: Language = {
   base: {
     remove: '삭제',
     cancel: '취소',
     confirm: '결정',
-    inert: '삽입',
+    insert: '삽입',
     width: '너비',
     height: '높이'
   },
@@ -74,3 +76,5 @@ export default {
     embed: '임베디드미디어'
   }
 }
+
+export default lang

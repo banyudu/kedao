@@ -1,11 +1,23 @@
-import React, { useState, useRef } from 'react'
+import React, { FC, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/common/Switch'
 import './style.scss'
+import { CommonPickerProps, ImageControlItem } from '../../../types'
+import { ContentBlock } from 'draft-js'
 
-const Image = ({
+interface ImageProps extends CommonPickerProps {
+  imageEqualRatio: boolean
+  entityKey: string
+  containerNode: HTMLElement
+  block: ContentBlock
+  mediaData: any
+  imageResizable: boolean
+  imageControls: ImageControlItem[]
+}
+
+const Image: FC<ImageProps> = ({
   imageEqualRatio,
   editor,
   getContainerNode,
@@ -415,17 +427,19 @@ const Image = ({
   }
 
   const renderedControlItems = imageControls.map(item => {
-    if (typeof item === 'string' && imageControlItems[item]) {
-      return (
-        <a
-          className={item === 'link' && link ? 'active' : ''}
-          role='presentation'
-          key={uuidv4()}
-          onClick={() => executeCommand(imageControlItems[item].command)}
-        >
-          {imageControlItems[item].text}
-        </a>
-      )
+    if (typeof item === 'string') {
+      if (imageControlItems[item]) {
+        return (
+          <a
+            className={item === 'link' && link ? 'active' : ''}
+            role='presentation'
+            key={uuidv4()}
+            onClick={() => executeCommand(imageControlItems[item].command)}
+          >
+            {imageControlItems[item].text}
+          </a>
+        )
+      }
     } else if (item && (item.render || item.text)) {
       return item.render
         ? (
@@ -440,9 +454,8 @@ const Image = ({
           {item.text}
         </a>
           )
-    } else {
-      return null
     }
+    return null
   })
 
   return (

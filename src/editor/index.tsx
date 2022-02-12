@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { FC, useEffect, useState, useRef } from 'react'
 import Finder from '../finder'
-import { ColorUtils, ContentUtils } from '../utils'
+// import { ColorUtils, ContentUtils } from '../utils'
+import { ColorUtils } from '../utils'
 import { Editor, EditorProps, EditorState } from 'draft-js'
 import { Map } from 'immutable'
 import mergeClassNames from 'merge-class-names'
@@ -34,8 +35,8 @@ import {
   compositeEntityExportFn,
   compositeBlockImportFn,
   compositeBlockExportFn,
-  getPropInterceptors,
-  useExtension
+  getPropInterceptors
+  // useExtension
 } from '../helpers/extension'
 import ControlBar from '../components/business/ControlBar'
 
@@ -118,7 +119,7 @@ export const createStateFromContent = (content, options: ConvertOptions = {}) =>
   }
   if (typeof content === 'number') {
     editorState = convertHTMLToEditorState(
-      content.toLocaleString().replace(/,/g, ''),
+      Number(content).toLocaleString().replace(/,/g, ''),
       getDecorators(customOptions.editorId),
       customOptions,
       'create'
@@ -277,175 +278,19 @@ const getConvertOptions = ({
   return convertOptions
 }
 
-class KedaoEditor extends React.Component<KedaoEditorProps, any> {
-  editorProps: any
-  editorDecorators: any
-  controlBarInstance: any
-  isFocused: boolean
-  isLiving: boolean
-  finder: any
-  valueInitialized: boolean
-  containerNode: any
-  draftInstance: any
-  convertOptions: ConvertOptions
+const KedaoEditor: FC<KedaoEditorProps> = (props) => {
+  const { defaultValue, value, onChange } = props
+  const draftInstanceRef = useRef(null)
+  const [editorLocked, setEditorLocked] = useState(null)
 
-  static defaultProps = defaultProps
-  static use = useExtension
-
-  constructor (props) {
-    super(props)
-
-    this.editorProps = this.getEditorProps(props)
-    this.editorDecorators = getDecorators(
-      this.editorProps.editorId || this.editorProps.id
-    )
-    this.controlBarInstance = React.createRef()
-    this.isFocused = false
-    this.isLiving = false
-    this.finder = null
-    this.valueInitialized = !!(this.props.defaultValue || this.props.value)
-
-    const defaultEditorState =
-      (this.props.defaultValue || this.props.value) instanceof EditorState
-        ? this.props.defaultValue || this.props.value
-        : EditorState.createEmpty(this.editorDecorators)
-    this.convertOptions = getConvertOptions(this.editorProps)
-
-    let tempColors = []
-
-    if (defaultEditorState instanceof EditorState) {
-      const colors = ColorUtils.detectColorsFromDraftState(
-        convertEditorStateToRaw(defaultEditorState)
-      )
-      tempColors = filterColors(colors, this.editorProps.colors)
-    }
-
-    this.state = {
-      tempColors,
-      editorState: defaultEditorState,
-      isFullscreen: false
-    }
-    this.containerNode = null
-  }
-
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount () {
-    if (isControlEnabled(this.editorProps, 'media')) {
-      const { language, media } = this.editorProps
-      const { uploadFn, validateFn, items }: any = {
-        ...defaultProps.media,
-        ...media
-      }
-
-      this.finder = new Finder({
-        items,
-        language,
-        uploader: uploadFn,
-        validator: validateFn
-      })
-
-      this.forceUpdate()
-    }
-  }
-
-  componentDidMount () {
-    this.isLiving = true
-  }
-
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps (props) {
-    this.editorProps = this.getEditorProps(props)
-
-    const { value: editorState } = props
-    const { media, language } = this.editorProps
-    const currentProps: KedaoEditorProps = this.getEditorProps()
-
-    if (
-      !isControlEnabled(currentProps, 'media') &&
-      isControlEnabled(this.editorProps, 'media') &&
-      !this.finder
-    ) {
-      const { uploadFn, validateFn, items }: any = {
-        ...defaultProps.media,
-        ...media
-      }
-
-      this.finder = new Finder({
-        items,
-        language,
-        uploader: uploadFn,
-        validator: validateFn
-      })
-
-      this.forceUpdate()
-    }
-
-    if (media?.items && this.finder) {
-      this.finder.setItems(media.items)
-    }
-
-    let nextEditorState
-
-    if (
-      !this.valueInitialized &&
-      typeof this.props.defaultValue === 'undefined' &&
-      (props.defaultValue instanceof EditorState)
-    ) {
-      nextEditorState = props.defaultValue
-    } else if (editorState instanceof EditorState) {
-      nextEditorState = editorState
-    }
-
-    if (nextEditorState) {
-      if (nextEditorState && nextEditorState !== this.state.editorState) {
-        const tempColors = ColorUtils.detectColorsFromDraftState(
-          convertEditorStateToRaw(nextEditorState)
-        )
-        this.convertOptions = getConvertOptions(this.editorProps)
-
-        this.setState(
-          prevState => ({
-            tempColors: filterColors(
-              [...prevState.tempColors, ...tempColors],
-              currentProps.colors
-            ),
-            editorState: nextEditorState
-          }),
-          () => {
-            if (this.props.onChange) {
-              this.props.onChange(nextEditorState)
-            }
-          }
-        )
-      } else {
-        this.setState({
-          editorState: nextEditorState
-        })
-      }
-    }
-  }
-
-  componentDidUpdate (_prevProps, prevState) {
-    if (prevState.editorState !== this.state.editorState) {
-      this.convertOptions = getConvertOptions(this.editorProps)
-    }
-  }
-
-  componentWillUnmount () {
-    this.isLiving = false
-    if (this.controlBarInstance) {
-      this.controlBarInstance.current?.closeFinder()
-    }
-  }
-
-  getEditorProps (props = this.props) {
+  const getEditorProps = (): EditorProps => {
     const { value, defaultValue, onChange, ...restProps } = props // eslint-disable-line no-unused-vars
     const propInterceptors = getPropInterceptors(
       restProps.editorId || restProps.id
     )
 
     if (propInterceptors.length === 0) {
-      return restProps
+      return restProps as any
     }
 
     let propsMap = Map(restProps)
@@ -454,54 +299,175 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
       propsMap = propsMap.merge(Map(interceptor(propsMap.toJS(), this) || {}))
     })
 
-    return propsMap.toJS()
+    return propsMap.toJS() as any
   }
 
-  onChange = (editorState: EditorState, callback?) => {
+  const editorPropsRef = useRef<any>(getEditorProps())
+  const editorDecoratorsRef = useRef(getDecorators(
+    editorPropsRef.current.editorId || editorPropsRef.current.id
+  ))
+  const controlBarInstanceRef = useRef(null)
+  const isFocusedRef = useRef(false)
+  const isLivingRef = useRef(false)
+  const finderRef = useRef(null)
+  const valueInitialized = !!(defaultValue || value)
+
+  const defaultEditorState =
+    (defaultValue || value) instanceof EditorState
+      ? defaultValue || value
+      : EditorState.createEmpty(editorDecoratorsRef.current)
+  const convertOptionsRef = useRef(getConvertOptions(editorPropsRef.current))
+
+  let _tempColors = []
+
+  if (defaultEditorState instanceof EditorState) {
+    const colors = ColorUtils.detectColorsFromDraftState(
+      convertEditorStateToRaw(defaultEditorState)
+    )
+    _tempColors = filterColors(colors, editorPropsRef.current.colors)
+  }
+
+  const [tempColors, setTempColors] = useState(_tempColors)
+  const [editorState, setEditorState] = useState(defaultEditorState)
+  // const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isFullscreen] = useState(false)
+
+  const [randomFlag, setRandomFlag] = useState(Math.random())
+
+  const forceUpdate = () => setRandomFlag(Math.random())
+  const finderInitFlag = useRef(false)
+
+  const containerNodeRef = useRef(null)
+
+  // eslint-disable-next-line camelcase
+  if (!finderInitFlag.current) {
+    if (isControlEnabled(editorPropsRef.current, 'media')) {
+      const { language, media } = editorPropsRef.current
+      const { uploadFn, validateFn, items }: any = {
+        ...defaultProps.media,
+        ...media
+      }
+
+      finderRef.current = new Finder({
+        items,
+        language,
+        uploader: uploadFn,
+        validator: validateFn
+      })
+
+      forceUpdate()
+    }
+    finderInitFlag.current = true
+  }
+
+  useEffect(() => {
+    isLivingRef.current = true
+
+    return () => {
+      isLivingRef.current = false
+      controlBarInstanceRef.current?.closeFinder()
+    }
+  }, [])
+
+  // eslint-disable-next-line camelcase
+  useEffect(() => {
+    editorPropsRef.current = getEditorProps()
+
+    const editorState = value
+    const { media, language } = editorPropsRef.current
+    const currentProps: KedaoEditorProps = getEditorProps()
+
+    if (
+      !isControlEnabled(currentProps, 'media') &&
+      isControlEnabled(editorPropsRef.current, 'media') &&
+      !finderRef.current
+    ) {
+      const { uploadFn, validateFn, items }: any = {
+        ...defaultProps.media,
+        ...media
+      }
+
+      finderRef.current = new Finder({
+        items,
+        language,
+        uploader: uploadFn,
+        validator: validateFn
+      })
+
+      forceUpdate()
+    }
+
+    if (media?.items && finderRef.current) {
+      finderRef.current.setItems(media.items)
+    }
+
+    let nextEditorState
+
+    if (!valueInitialized && (defaultValue instanceof EditorState)) {
+      nextEditorState = props.defaultValue
+    } else if (editorState instanceof EditorState) {
+      nextEditorState = editorState
+    }
+
+    if (nextEditorState) {
+      if (nextEditorState && nextEditorState !== editorState) {
+        const tempColors = ColorUtils.detectColorsFromDraftState(
+          convertEditorStateToRaw(nextEditorState)
+        )
+        convertOptionsRef.current = getConvertOptions(editorPropsRef.current)
+
+        setTempColors(oldColors => filterColors(
+          [...oldColors, ...tempColors],
+          currentProps.colors
+        ))
+        setEditorState(nextEditorState)
+        onChange?.(nextEditorState)
+      } else {
+        setEditorState(nextEditorState)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    convertOptionsRef.current = getConvertOptions(editorPropsRef.current)
+  }, [editorState])
+
+  let handleChange = (editorState: EditorState, callback?) => {
     let newEditorState = editorState
     if (!(editorState instanceof EditorState)) {
       newEditorState = EditorState.set(editorState, {
-        decorator: this.editorDecorators
+        decorator: editorDecoratorsRef.current
       })
     }
 
-    if (!this.convertOptions) {
-      this.convertOptions = getConvertOptions(this.editorProps)
+    if (!convertOptionsRef.current) {
+      convertOptionsRef.current = getConvertOptions(editorPropsRef.current)
     }
 
-    this.setState({ editorState: newEditorState }, () => {
-      this.props.onChange?.(newEditorState)
-      callback?.(newEditorState)
-    })
+    setEditorState(newEditorState)
+    onChange?.(newEditorState)
+    callback?.(newEditorState)
   }
 
-  getDraftInstance = () => {
-    return this.draftInstance
+  const getValue = () => {
+    return editorState
   }
 
-  getFinderInstance = () => {
-    return this.finder
+  const setValue = (editorState: EditorState, callback?) => {
+    return handleChange(editorState, callback)
   }
 
-  getValue = () => {
-    return this.state.editorState
-  }
+  const forceRender = () => {
+    const selectionState = editorState.getSelection()
 
-  setValue = (editorState: EditorState, callback?) => {
-    return this.onChange(editorState, callback)
-  }
-
-  forceRender = () => {
-    const selectionState = this.state.editorState.getSelection()
-
-    this.setValue(
-      EditorState.set(this.state.editorState, {
-        decorator: this.editorDecorators
+    setValue(
+      EditorState.set(editorState, {
+        decorator: editorDecoratorsRef.current
       }),
       () => {
-        this.setValue(
+        setValue(
           EditorState.forceSelection(
-            this.state.editorState,
+            editorState,
             selectionState
           )
         )
@@ -509,352 +475,338 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     )
   }
 
-  onTab = event => {
+  const onTab = event => {
     if (
       keyCommandHandlers(
         'tab',
-        this.state.editorState,
-        this.getCallbackEditor()
+        editorState,
+        getCallbackEditor()
       ) === 'handled'
     ) {
       event.preventDefault()
     }
-    this.editorProps.onTab?.(event)
+    editorPropsRef.current.onTab?.(event)
   }
 
-  onFocus = () => {
-    this.isFocused = true
-    this.editorProps.onFocus?.(this.state.editorState)
+  const onFocus = () => {
+    isFocusedRef.current = true
+    editorPropsRef.current.onFocus?.(editorState)
   }
 
-  onBlur = () => {
-    this.isFocused = false
-    this.editorProps.onBlur?.(this.state.editorState)
+  const onBlur = () => {
+    isFocusedRef.current = false
+    editorPropsRef.current.onBlur?.(editorState)
   }
 
-  requestFocus = () => {
-    setTimeout(() => this.draftInstance.focus(), 0)
+  const requestFocus = () => {
+    setTimeout(() => draftInstanceRef.current?.focus(), 0)
   }
 
-  handleKeyCommand = (command, editorState: EditorState) =>
-    keyCommandHandlers(command, editorState, this.getCallbackEditor())
+  const handleKeyCommand = (command, editorState: EditorState) =>
+    keyCommandHandlers(command, editorState, getCallbackEditor())
 
-  handleReturn = (event, editorState: EditorState) =>
-    returnHandlers(event, editorState, this.getCallbackEditor())
+  const handleReturn = (event, editorState: EditorState) =>
+    returnHandlers(event, editorState, getCallbackEditor())
 
-  handleBeforeInput = (chars, editorState: EditorState) =>
-    beforeInputHandlers(chars, editorState, this.getCallbackEditor())
+  const handleBeforeInput = (chars, editorState: EditorState) =>
+    beforeInputHandlers(chars, editorState, getCallbackEditor())
 
-  handleDrop = (selectionState, dataTransfer) =>
-    dropHandlers(selectionState, dataTransfer, this.getCallbackEditor())
+  const handleDrop = (selectionState, dataTransfer) =>
+    dropHandlers(selectionState, dataTransfer, getCallbackEditor())
 
-  handleDroppedFiles = (selectionState, files) =>
-    droppedFilesHandlers(selectionState, files, this.getCallbackEditor())
+  const handleDroppedFiles = (selectionState, files) =>
+    droppedFilesHandlers(selectionState, files, getCallbackEditor())
 
-  handlePastedFiles = files =>
-    pastedFilesHandlers(files, this.getCallbackEditor())
+  const handlePastedFiles = files =>
+    pastedFilesHandlers(files, getCallbackEditor())
 
-  handleCopyContent = event => copyHandlers(event, this.getCallbackEditor())
+  const handleCopyContent = event => copyHandlers(event, getCallbackEditor())
 
-  handlePastedText = (text, html, editorState: EditorState) =>
-    pastedTextHandlers(text, html, editorState, this.getCallbackEditor())
+  const handlePastedText = (text, html, editorState: EditorState) =>
+    pastedTextHandlers(text, html, editorState, getCallbackEditor())
 
-  handleCompositionStart = event =>
-    compositionStartHandler(event, this.getCallbackEditor())
+  const handleCompositionStart = event =>
+    compositionStartHandler(event, getCallbackEditor())
 
-  undo = () => {
-    this.setValue(ContentUtils.undo(this.state.editorState))
+  // const undo = () => {
+  //   setValue(ContentUtils.undo(editorState))
+  // }
+
+  // const redo = () => {
+  //   setValue(ContentUtils.redo(editorState))
+  // }
+
+  // const removeSelectionInlineStyles = () => {
+  //   setValue(
+  //     ContentUtils.removeSelectionInlineStyles(editorState)
+  //   )
+  // }
+
+  // const insertHorizontalLine = () => {
+  //   setValue(ContentUtils.insertHorizontalLine(editorState))
+  // }
+
+  // const clearEditorContent = () => {
+  //   setValue(ContentUtils.clear(editorState), (editorState: EditorState) => {
+  //     setValue(ContentUtils.toggleSelectionIndent(editorState, 0))
+  //   })
+  // }
+
+  // const toggleFullscreen = fullscreen => {
+  //   setIsFullscreen(v => typeof fullscreen !== 'undefined'
+  //     ? fullscreen
+  //     : !v)
+  //   editorPropsRef.current.onFullscreen?.(isFullscreen)
+  // }
+
+  const lockOrUnlockEditor = editorLocked => {
+    setEditorLocked(editorLocked)
   }
 
-  redo = () => {
-    this.setValue(ContentUtils.redo(this.state.editorState))
-  }
-
-  removeSelectionInlineStyles = () => {
-    this.setValue(
-      ContentUtils.removeSelectionInlineStyles(this.state.editorState)
-    )
-  }
-
-  insertHorizontalLine = () => {
-    this.setValue(ContentUtils.insertHorizontalLine(this.state.editorState))
-  }
-
-  clearEditorContent = () => {
-    this.setValue(ContentUtils.clear(this.state.editorState), (editorState: EditorState) => {
-      this.setValue(ContentUtils.toggleSelectionIndent(editorState, 0))
-    })
-  }
-
-  toggleFullscreen = fullscreen => {
-    this.setState(
-      prevState => ({
-        isFullscreen:
-          typeof fullscreen !== 'undefined'
-            ? fullscreen
-            : !prevState.isFullscreen
-      }),
-      () => {
-        if (this.editorProps.onFullscreen) {
-          this.editorProps.onFullscreen(this.state.isFullscreen)
-        }
-      }
-    )
-  }
-
-  lockOrUnlockEditor = editorLocked => {
-    this.setState({ editorLocked })
-  }
-
-  setEditorContainerNode = containerNode => {
-    this.containerNode = containerNode
-  }
-
-  getCallbackEditor = () => {
+  const getCallbackEditor = () => {
     const callbackEditor: CallbackEditor = {
-      isFullscreen: this.state.isFullscreen,
-      editorState: this.state.editorState,
-      setValue: this.setValue,
-      getValue: this.getValue,
-      requestFocus: this.requestFocus,
-      editorProps: this.editorProps,
-      lockOrUnlockEditor: this.lockOrUnlockEditor,
-      finder: this.finder,
-      isLiving: this.isLiving,
-      tempColors: this.state.tempColors,
+      isFullscreen: isFullscreen,
+      editorState: editorState,
+      setValue,
+      getValue,
+      requestFocus,
+      editorProps: editorPropsRef.current,
+      lockOrUnlockEditor,
+      finder: finderRef.current,
+      isLiving: isLivingRef.current,
+      tempColors,
       setTempColors: (tempColors, callback) => {
-        this.setState({ tempColors }, callback)
+        setTempColors(tempColors)
+        callback()
       },
-      onChange: this.onChange,
+      onChange: handleChange,
       setOnChange: onChange => {
-        this.onChange = onChange
+        handleChange = onChange
       },
-      convertOptions: this.convertOptions,
+      convertOptions: convertOptionsRef.current,
       blur: () => {
-        this.draftInstance.blur()
+        draftInstanceRef.current?.blur()
       },
-      readOnly: this.props.readOnly
+      readOnly: props.readOnly,
+      forceRender
     }
     return callbackEditor
   }
 
-  render () {
-    let {
-      editorId,
-      controls,
-      media,
-      language,
-      hooks,
-      placeholder
-    } = this.editorProps
-    const {
-      id,
-      excludeControls,
-      extendControls,
-      readOnly,
-      disabled,
-      colors,
-      colorPicker,
-      colorPickerTheme,
-      colorPickerAutoHide,
-      fontSizes,
-      fontFamilies,
-      emojis,
-      fixPlaceholder,
-      headings,
-      imageControls,
-      imageResizable,
-      imageEqualRatio,
-      lineHeights,
-      letterSpacings,
-      textAligns,
-      textBackgroundColor,
-      allowInsertLinkText,
-      defaultLinkTarget,
-      extendAtomics,
-      className,
-      style,
-      controlBarClassName,
-      controlBarStyle,
-      contentClassName,
-      contentStyle,
-      stripPastedStyles,
-      componentBelowControlBar
-    } = this.editorProps
+  let {
+    editorId,
+    controls,
+    media,
+    language,
+    hooks,
+    placeholder
+  } = editorPropsRef.current
+  const {
+    id,
+    excludeControls,
+    extendControls,
+    readOnly,
+    disabled,
+    colors,
+    colorPicker,
+    colorPickerTheme,
+    colorPickerAutoHide,
+    fontSizes,
+    fontFamilies,
+    emojis,
+    fixPlaceholder,
+    headings,
+    imageControls,
+    imageResizable,
+    imageEqualRatio,
+    lineHeights,
+    letterSpacings,
+    textAligns,
+    textBackgroundColor,
+    allowInsertLinkText,
+    defaultLinkTarget,
+    extendAtomics,
+    className,
+    style,
+    controlBarClassName,
+    controlBarStyle,
+    contentClassName,
+    contentStyle,
+    stripPastedStyles,
+    componentBelowControlBar
+  } = editorPropsRef.current
 
-    const { isFullscreen, editorState } = this.state
-
-    editorId = editorId || id
-    hooks = buildHooks(hooks)
-    controls = controls.filter(item => excludeControls.indexOf(item) === -1)
-    language =
+  editorId = editorId || id
+  hooks = buildHooks(hooks)
+  controls = controls.filter(item => excludeControls.indexOf(item) === -1)
+  language =
       (typeof language === 'function'
         ? language(languages, 'kedao')
         : languages[language]) || languages[defaultProps.language]
 
-    const externalMedias = {
-      ...defaultProps.media.externals,
-      ...media?.externals
-    }
+  const externalMedias = {
+    ...defaultProps.media.externals,
+    ...media?.externals
+  }
 
-    const accepts = {
-      ...defaultProps.media.accepts,
-      ...media?.accepts
-    }
+  const accepts = {
+    ...defaultProps.media.accepts,
+    ...media?.accepts
+  }
 
-    media = { ...defaultProps.media, ...media, externalMedias, accepts }
+  media = { ...defaultProps.media, ...media, externalMedias, accepts }
 
-    if (!media.uploadFn) {
-      media.video = false
-      media.audio = false
-    }
+  if (!media.uploadFn) {
+    media.video = false
+    media.audio = false
+  }
 
-    const callbackEditor = this.getCallbackEditor()
+  const callbackEditor = getCallbackEditor()
 
-    const controlBarProps = {
-      editor: callbackEditor,
-      editorState,
-      finder: this.finder,
-      ref: this.controlBarInstance,
-      getContainerNode: () => this.containerNode,
-      className: controlBarClassName,
-      style: controlBarStyle,
-      colors: [...colors, ...this.state.tempColors],
-      colorPicker,
-      colorPickerTheme,
-      colorPickerAutoHide,
-      hooks,
-      editorId,
-      media,
-      controls,
-      language,
-      extendControls,
-      headings,
-      fontSizes,
-      fontFamilies,
-      emojis,
-      lineHeights,
-      letterSpacings,
-      textAligns,
-      textBackgroundColor,
-      allowInsertLinkText,
-      defaultLinkTarget
-    }
+  const controlBarProps = {
+    editor: callbackEditor,
+    editorState,
+    finder: finderRef.current,
+    ref: controlBarInstanceRef,
+    getContainerNode: () => containerNodeRef.current,
+    className: controlBarClassName,
+    style: controlBarStyle,
+    colors: [...colors, ...tempColors],
+    colorPicker,
+    colorPickerTheme,
+    colorPickerAutoHide,
+    hooks,
+    editorId,
+    media,
+    controls,
+    language,
+    extendControls,
+    headings,
+    fontSizes,
+    fontFamilies,
+    emojis,
+    lineHeights,
+    letterSpacings,
+    textAligns,
+    textBackgroundColor,
+    allowInsertLinkText,
+    defaultLinkTarget
+  }
 
-    const { unitExportFn } = this.convertOptions
+  const { unitExportFn } = convertOptionsRef.current
 
-    const commonProps = {
-      editor: callbackEditor,
-      editorId,
-      hooks,
-      editorState,
-      containerNode: this.containerNode,
-      imageControls,
-      imageResizable,
-      language,
-      extendAtomics,
-      imageEqualRatio
-    }
+  const commonProps = {
+    editor: callbackEditor,
+    editorId,
+    hooks,
+    editorState,
+    containerNode: containerNodeRef,
+    imageControls,
+    imageResizable,
+    language,
+    extendAtomics,
+    imageEqualRatio
+  }
 
-    const blockRendererFn = getBlockRendererFn(
-      commonProps,
-      this.editorProps.blockRendererFn
-    )
-    const blockRenderMap = getBlockRenderMap(
-      commonProps,
-      this.editorProps.blockRenderMap
-    )
-    const blockStyleFn = getBlockStyleFn(this.editorProps.blockStyleFn)
-    const customStyleMap = getCustomStyleMap(
-      commonProps,
-      this.editorProps.customStyleMap
-    )
-    const customStyleFn = getCustomStyleFn(commonProps, {
-      fontFamilies,
-      unitExportFn,
-      customStyleFn: this.editorProps.customStyleFn
-    })
+  const blockRendererFn = getBlockRendererFn(
+    commonProps,
+    editorPropsRef.current.blockRendererFn
+  )
+  const blockRenderMap = getBlockRenderMap(
+    commonProps,
+    editorPropsRef.current.blockRenderMap
+  )
+  const blockStyleFn = getBlockStyleFn(editorPropsRef.current.blockStyleFn)
+  const customStyleMap = getCustomStyleMap(
+    commonProps,
+    editorPropsRef.current.customStyleMap
+  )
+  const customStyleFn = getCustomStyleFn(commonProps, {
+    fontFamilies,
+    unitExportFn,
+    customStyleFn: editorPropsRef.current.customStyleFn
+  })
 
-    const keyBindingFn = getKeyBindingFn(this.editorProps.keyBindingFn)
+  const keyBindingFn = getKeyBindingFn(editorPropsRef.current.keyBindingFn)
 
-    const mixedProps: any = {}
+  const mixedProps: any = {}
 
-    if (
-      this.state.editorLocked ||
-      this.editorProps.disabled ||
-      this.editorProps.readOnly ||
-      this.editorProps.draftProps.readOnly
-    ) {
-      mixedProps.readOnly = true
-    }
+  if (
+    editorLocked ||
+      editorPropsRef.current.disabled ||
+      editorPropsRef.current.readOnly ||
+      editorPropsRef.current.draftProps.readOnly
+  ) {
+    mixedProps.readOnly = true
+  }
 
-    if (
-      placeholder &&
+  if (
+    placeholder &&
       fixPlaceholder &&
       !editorState.getCurrentContent().hasText() &&
       editorState
         .getCurrentContent()
         .getFirstBlock()
         .getType() !== 'unstyled'
-    ) {
-      placeholder = ''
-    }
-
-    const draftProps = {
-      ref: instance => {
-        this.draftInstance = instance
-      },
-      editorState,
-      handleKeyCommand: this.handleKeyCommand,
-      handleReturn: this.handleReturn,
-      handleBeforeInput: this.handleBeforeInput,
-      handleDrop: this.handleDrop,
-      handleDroppedFiles: this.handleDroppedFiles,
-      handlePastedText: this.handlePastedText,
-      handlePastedFiles: this.handlePastedFiles,
-      onChange: this.onChange,
-      onTab: this.onTab,
-      onFocus: this.onFocus,
-      onBlur: this.onBlur,
-      blockRenderMap,
-      blockRendererFn,
-      blockStyleFn,
-      customStyleMap,
-      customStyleFn,
-      keyBindingFn,
-      placeholder,
-      stripPastedStyles,
-      ...this.editorProps.draftProps,
-      ...mixedProps
-    }
-
-    return (
-      <div
-        style={style}
-        ref={this.setEditorContainerNode}
-        className={mergeClassNames(
-          'bf-container',
-          className,
-          disabled && 'disabled',
-          readOnly && 'read-only',
-          isFullscreen && 'fullscreen'
-        )}
-      >
-        <ControlBar {...controlBarProps} />
-        {componentBelowControlBar}
-        <div
-          onCompositionStart={this.handleCompositionStart}
-          className={`bf-content ${contentClassName}`}
-          onCopy={this.handleCopyContent}
-          style={contentStyle}
-        >
-          <Editor {...draftProps} />
-        </div>
-      </div>
-    )
+  ) {
+    placeholder = ''
   }
+
+  const draftProps = {
+    ref: draftInstanceRef,
+    editorState,
+    handleKeyCommand,
+    handleReturn,
+    handleBeforeInput,
+    handleDrop,
+    handleDroppedFiles,
+    handlePastedText,
+    handlePastedFiles,
+    onChange: handleChange,
+    onTab,
+    onFocus,
+    onBlur,
+    blockRenderMap,
+    blockRendererFn,
+    blockStyleFn,
+    customStyleMap,
+    customStyleFn,
+    keyBindingFn,
+    placeholder,
+    stripPastedStyles,
+    ...editorPropsRef.current.draftProps,
+    ...mixedProps
+  }
+
+  return (
+    <div
+      key={randomFlag}
+      style={style}
+      ref={containerNodeRef}
+      className={mergeClassNames(
+        'bf-container',
+        className,
+        disabled && 'disabled',
+        readOnly && 'read-only',
+        isFullscreen && 'fullscreen'
+      )}
+    >
+      <ControlBar {...controlBarProps} />
+      {componentBelowControlBar}
+      <div
+        onCompositionStart={handleCompositionStart}
+        className={`bf-content ${contentClassName}`}
+        onCopy={handleCopyContent}
+        style={contentStyle}
+      >
+        <Editor {...draftProps} />
+      </div>
+    </div>
+  )
 }
 
+(KedaoEditor as any).defaultProps = defaultProps
+// KedaoEditor.use = useExtension
 export default KedaoEditor
 
 export { EditorState }

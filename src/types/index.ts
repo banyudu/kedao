@@ -1,4 +1,4 @@
-import { EditorState, EditorProps, ContentState } from 'draft-js'
+import { EditorState, EditorProps, ContentState, ContentBlock } from 'draft-js'
 import * as React from 'react'
 
 export { EditorState, EditorProps }
@@ -41,6 +41,7 @@ export interface CallbackEditor {
   convertOptions: ConvertOptions
   blur: () => void
   readOnly: boolean
+  forceRender: () => void
 }
 
 export interface ConvertOptions {
@@ -331,6 +332,6 @@ export type ImageControlItem =
   | 'remove'
   | {
     text?: string
-    render?: (mediaData: any) => void
-    onClick?: (block: any) => void
+    render?: (mediaData: any, block?: ContentBlock) => void
+    onClick?: (block: ContentBlock) => void
   }

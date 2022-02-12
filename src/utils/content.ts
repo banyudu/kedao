@@ -5,7 +5,8 @@ import {
   RichUtils,
   CharacterMetadata,
   AtomicBlockUtils,
-  convertFromRaw
+  convertFromRaw,
+  ContentBlock
 } from 'draft-js'
 import { setBlockData, getSelectionEntity } from 'draftjs-utils'
 import { convertHTMLToRaw } from '../convert'
@@ -51,7 +52,7 @@ export const selectNextBlock = (editorState: EditorState, block) => {
   return nextBlock ? selectBlock(editorState, nextBlock) : editorState
 }
 
-export const removeBlock = (editorState: EditorState, block, lastSelection = null) => {
+export const removeBlock = (editorState: EditorState, block: ContentBlock, lastSelection = null) => {
   let nextContentState
   const blockKey = block.getKey()
 

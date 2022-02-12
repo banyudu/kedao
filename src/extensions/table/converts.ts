@@ -1,3 +1,4 @@
+import { ContentState } from 'draft-js'
 import { rebuildTableNode } from './utils'
 
 const parseColgoupData = (colgroupNode) => {
@@ -77,7 +78,7 @@ export const tableImportFn = (nodeName, node) => {
   return null
 }
 
-export const tableExportFn = (exportAttrString) => (contentState, block) => {
+export const tableExportFn = (exportAttrString) => (contentState: ContentState, block) => {
   if (block.type.toLowerCase() !== 'table-cell') {
     return null
   }

@@ -1,6 +1,7 @@
 // -extended support for block-style and atomic types
 
 import React from 'react'
+import { ContentState } from 'draft-js'
 
 const extensionControls = []
 const extensionDecorators = []
@@ -181,7 +182,7 @@ export const compositeBlockImportFn =
   }
 
 export const compositeBlockExportFn =
-  (blockExportFn, editorId: string) => (contentState, block) => {
+  (blockExportFn, editorId: string) => (contentState: ContentState, block) => {
     let result = blockExportFn ? blockExportFn(contentState, block) : null
 
     if (result) {

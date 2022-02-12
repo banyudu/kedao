@@ -33,7 +33,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
       'LINK'
     )
     const textSelected =
-      !ContentUtils.isSelectionCollapsed(editorState) &&
+      !editorState.getSelection().isCollapsed() &&
       ContentUtils.getSelectionBlockType(editorState) !== 'atomic'
 
     let selectedText = ''

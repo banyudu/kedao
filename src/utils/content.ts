@@ -14,27 +14,11 @@ import { ConvertOptions } from '../types'
 
 const strictBlockTypes = ['atomic']
 
-export const registerStrictBlockType = (blockType) => {
+export const registerStrictBlockType = (blockType: string) => {
   !strictBlockTypes.includes(blockType) && strictBlockTypes.push(blockType)
 }
 
-export const isEditorState = (editorState: EditorState) => {
-  return editorState instanceof EditorState
-}
-
-export const createEmptyEditorState = (editorDecorators) => {
-  return EditorState.createEmpty(editorDecorators)
-}
-
-export const createEditorState = (contentState, editorDecorators) => {
-  return EditorState.createWithContent(contentState, editorDecorators)
-}
-
-export const isSelectionCollapsed = (editorState: EditorState) => {
-  return editorState.getSelection().isCollapsed()
-}
-
-export const selectionContainsBlockType = (editorState: EditorState, blockType) => {
+export const selectionContainsBlockType = (editorState: EditorState, blockType: string) => {
   return getSelectedBlocks(editorState).find(
     (block) => block.getType() === blockType
   )
@@ -242,7 +226,7 @@ export const getSelectionText = (editorState: EditorState) => {
   return currentContentBlock.getText().slice(start, end)
 }
 
-export const toggleSelectionBlockType = (editorState: EditorState, blockType) => {
+export const toggleSelectionBlockType = (editorState: EditorState, blockType: string) => {
   if (selectionContainsStrictBlock(editorState)) {
     return editorState
   }

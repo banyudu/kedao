@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import './styles.scss'
 import { Map } from 'immutable'
-import { EditorState, SelectionState } from 'draft-js'
+import { EditorState, SelectionState, ContentState } from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
 import { ContentUtils } from '../../utils'
 import Prism from 'prismjs'
@@ -179,7 +179,7 @@ export default (options: any = {}) => {
 
         return null
       },
-      exporter: (contentState, block) => {
+      exporter: (contentState: ContentState, block) => {
         if (block.type.toLowerCase() !== 'code-block') {
           return null
         }

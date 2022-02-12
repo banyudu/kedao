@@ -1,3 +1,5 @@
+import { RawDraftContentState } from 'draft-js'
+
 const _namedColors = {
   aliceblue: '#f0f8ff',
   antiquewhite: '#faebd7',
@@ -181,7 +183,7 @@ export const detectColorsFromHTMLString = (html) => {
         .filter((color) => color)
 }
 
-export const detectColorsFromDraftState = (draftState) => {
+export const detectColorsFromDraftState = (draftState: RawDraftContentState) => {
   const result = []
 
   if (!draftState || !draftState.blocks || !draftState.blocks.length) {
@@ -191,7 +193,7 @@ export const detectColorsFromDraftState = (draftState) => {
   draftState.blocks.forEach((block) => {
     if (block?.inlineStyleRanges?.length) {
       block.inlineStyleRanges.forEach((inlineStyle) => {
-        if (inlineStyle.style && inlineStyle.style.indexOf('COLOR-') >= 0) {
+        if (inlineStyle.style?.includes('COLOR-')) {
           result.push('#' + inlineStyle.style.split('COLOR-')[1])
         }
       })

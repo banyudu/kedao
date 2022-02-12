@@ -1,5 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { CSSProperties } from 'react'
+import { ContentState } from 'draft-js'
 
 export const namedColors = {
   aliceblue: '#f0f8ff',
@@ -236,7 +237,7 @@ export const blocks = {
 const blockTypes = Object.keys(blocks)
 const blockNames = blockTypes.map((key) => blocks[key])
 
-const convertAtomicBlock = (block, contentState, blockNodeAttributes) => {
+const convertAtomicBlock = (block, contentState: ContentState, blockNodeAttributes) => {
   if (!block || !block.key) {
     return <p />
   }

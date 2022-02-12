@@ -224,7 +224,7 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
 
     let tempColors = []
 
-    if (ContentUtils.isEditorState(defaultEditorState)) {
+    if (defaultEditorState instanceof EditorState) {
       const colors = ColorUtils.detectColorsFromDraftState(
         (defaultEditorState as any).toRAW(true)
       );
@@ -302,10 +302,10 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     if (
       !this.valueInitialized &&
       typeof this.props.defaultValue === 'undefined' &&
-      ContentUtils.isEditorState(props.defaultValue)
+      (props.defaultValue instanceof EditorState)
     ) {
       nextEditorState = props.defaultValue
-    } else if (ContentUtils.isEditorState(editorState)) {
+    } else if (editorState instanceof EditorState) {
       nextEditorState = editorState
     }
 

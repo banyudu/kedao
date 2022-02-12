@@ -70,9 +70,9 @@ export function getFunctions (file: SourceFile): Array<MethodDeclaration | Funct
   return functions
 }
 
-export function getImportDeclaration (sourceFile: SourceFile, includeFile: SourceFile, createIfNotExists: boolean = false): ImportDeclaration | undefined {
+export function getImportDeclarationFromFile (sourceFile: SourceFile, file: SourceFile, createIfNotExists: boolean = false): ImportDeclaration | undefined {
   const arr = sourceFile.getImportDeclarations().filter(
-    item => item.getModuleSpecifierSourceFile() === includeFile
+    item => item.getModuleSpecifierSourceFile() === file
   ) ?? []
   let result
   if (arr.length > 0) {
@@ -80,7 +80,7 @@ export function getImportDeclaration (sourceFile: SourceFile, includeFile: Sourc
   }
 
   if (result === undefined && createIfNotExists) {
-    let relativePath = path.relative(path.dirname(sourceFile.getFilePath().toString()), includeFile.getFilePath().toString())
+    let relativePath = path.relative(path.dirname(sourceFile.getFilePath().toString()), file.getFilePath().toString())
     relativePath = relativePath.substring(0, relativePath.length - path.extname(relativePath).length)
 
     // 去除后缀名
@@ -98,6 +98,21 @@ export function getImportDeclaration (sourceFile: SourceFile, includeFile: Sourc
       relativePath = './' + relativePath
     }
     result = sourceFile.insertImportDeclaration(0, { moduleSpecifier: relativePath, namedImports: [] })
+  }
+  return result as ImportDeclaration
+}
+
+export function getImportDeclaration (sourceFile: SourceFile, module: string, createIfNotExists: boolean = false): ImportDeclaration | undefined {
+  const arr = sourceFile.getImportDeclarations().filter(
+    item => item.getModuleSpecifier().getLiteralValue() === module
+  ) ?? []
+  let result
+  if (arr.length > 0) {
+    result = arr[0]
+  }
+
+  if (result === undefined && createIfNotExists) {
+    result = sourceFile.insertImportDeclaration(0, { moduleSpecifier: module, namedImports: [] })
   }
   return result as ImportDeclaration
 }

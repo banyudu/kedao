@@ -4,10 +4,11 @@
  * Add TreeWalker type to function paramsters if name == 'visitor' and untyped or is any type
  */
 
-import { getProject, getFunctions, getImportDeclaration } from './utils'
+import { getProject, getFunctions, getImportDeclarationFromFile, getImportDeclaration } from './utils'
 
 interface ImportConfig {
-  filePath: string
+  filePath?: string
+  module?: string
   typeName: string
   alias?: string
 }
@@ -18,12 +19,22 @@ const importConfigMap: Record<string, ImportConfig> = {
     typeName: 'CallbackEditor'
   },
   editorId: {
-    filePath: null,
     typeName: 'string'
   },
   editorState: {
-    filePath: 'src/types/index.ts',
+    module: 'draft-js',
     typeName: 'EditorState'
+  },
+  contentState: {
+    module: 'draft-js',
+    typeName: 'ContentState'
+  },
+  blockType: {
+    typeName: 'string'
+  },
+  draftState: {
+    typeName: 'RawDraftContentState',
+    module: 'draft-js'
   }
 }
 
@@ -46,30 +57,32 @@ const importConfigMap: Record<string, ImportConfig> = {
         const config = importConfigMap[param.getName()]
         if (config && param.getType().getText() === 'any') {
           param.setType(config.alias ?? config.typeName)
-          if (config.filePath) {
+          if (config.filePath || config.module) {
             toImport.add(config)
           }
         }
       }
     }
 
-    const toImportFileMap: Record<string, ImportConfig[]> = Array.from(toImport).reduce((map: Record<string, ImportConfig[]>, config) => {
-      map[config.filePath] = map[config.filePath] ?? []
-      map[config.filePath].push(config)
+    const pathToImportFileMap: Record<string, ImportConfig[]> = Array.from(toImport).reduce((map: Record<string, ImportConfig[]>, config) => {
+      if (config.filePath) {
+        map[config.filePath] = map[config.filePath] ?? []
+        map[config.filePath].push(config)
+      }
       return map
     }, {})
 
-    Object.keys(toImportFileMap).forEach(filePath => {
+    Object.keys(pathToImportFileMap).forEach(filePath => {
       if (!filePath) {
         return
       }
 
       // 获取import语句
       const fileToImport = project.getSourceFile(file => file.getFilePath().includes(filePath))
-      const decl = getImportDeclaration(file, fileToImport, true)
+      const decl = getImportDeclarationFromFile(file, fileToImport, true)
 
       // 遍历需要添加的import
-      const configs = toImportFileMap[filePath]
+      const configs = pathToImportFileMap[filePath]
 
       configs.forEach(config => {
         const typeName = config.typeName
@@ -78,6 +91,17 @@ const importConfigMap: Record<string, ImportConfig> = {
           decl.addNamedImport(typeName === alias ? typeName : { name: typeName, alias })
         }
       })
+    })
+
+    toImport.forEach(config => {
+      if (!config.filePath && config.module) {
+        const decl = getImportDeclaration(file, config.module, true)
+        const typeName = config.typeName
+        const alias = config.alias ?? config.typeName
+        if (!decl.getNamedImports().find(item => item.getNameNode().getText() === alias)) {
+          decl.addNamedImport(typeName === alias ? typeName : { name: typeName, alias })
+        }
+      }
     })
   }
   await project.save()

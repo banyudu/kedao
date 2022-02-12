@@ -1,4 +1,4 @@
-import { CompositeDecorator } from 'draft-js'
+import { CompositeDecorator, ContentState } from 'draft-js'
 import CombineDecorators from 'draft-js-multidecorators'
 import Immutable from 'immutable'
 
@@ -9,7 +9,7 @@ const KEY_SEPARATOR = '-'
 
 CombineDecorators.prototype.getDecorations = function getDecorations (
   block,
-  contentState
+  contentState: ContentState
 ) {
   const decorations = Array(block.getText().length).fill(null)
 
@@ -35,7 +35,7 @@ const builtinDecorators = [
   }
 ]
 
-const createStrategy = (type) => (block, callback, contentState) => {
+const createStrategy = (type) => (block, callback, contentState: ContentState) => {
   block.findEntityRanges((character) => {
     const entityKey = character.getEntity()
     return (

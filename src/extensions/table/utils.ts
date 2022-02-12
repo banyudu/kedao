@@ -85,12 +85,12 @@ const createRowBlocks = (tableKey, rowIndex, rowLength, firstCellText = '') => {
 
 // 将表格block更新到contentState
 const updateTableBlocks = (
-  contentState,
+  contentState: ContentState,
   selection,
   focusKey,
   tableBlocks,
   tableKey
-) => {
+): ContentState => {
   const contentBlocks = contentState.getBlockMap().toSeq()
 
   const blocksBefore = contentBlocks.takeUntil((block) => {
@@ -120,7 +120,7 @@ const updateTableBlocks = (
       hasFocus: false,
       isBackward: false
     })
-  })
+  }) as ContentState
 }
 
 // 使用简易值比较函数筛选符合条件的block

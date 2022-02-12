@@ -1,6 +1,7 @@
+import { EditorState } from '../../../types'
 import { RichUtils } from 'draft-js'
 
-const leaveList = (editorState) => {
+const leaveList = (editorState: EditorState) => {
   const contentState = editorState.getCurrentContent()
   const selection = editorState.getSelection()
   const key = selection.getStartKey()

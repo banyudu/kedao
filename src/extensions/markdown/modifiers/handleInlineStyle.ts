@@ -1,3 +1,4 @@
+import { EditorState } from '../../../types'
 import changeCurrentInlineStyle from './changeCurrentInlineStyle'
 
 const inlineMatchers = {
@@ -9,7 +10,7 @@ const inlineMatchers = {
     /(?:^|\s|\n|[^A-z0-9_*~`])(~{2})((?!\1).*?)(\1)($|\s|\n|[^A-z0-9_*~`])/g
 }
 
-const handleInlineStyle = (editorState, character) => {
+const handleInlineStyle = (editorState: EditorState, character) => {
   const key = editorState.getSelection().getStartKey()
   const text = editorState.getCurrentContent().getBlockForKey(key).getText()
   const line = `${text}${character}`

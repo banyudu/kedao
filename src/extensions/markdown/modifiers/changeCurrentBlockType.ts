@@ -1,7 +1,7 @@
 import { EditorState } from 'draft-js'
 
 const changeCurrentBlockType = (
-  editorState,
+  editorState: EditorState,
   type,
   text,
   blockMetadata = {}
@@ -18,10 +18,10 @@ const changeCurrentBlockType = (
     focusOffset: 0
   })
   const newContentState = currentContent.merge({
-    blockMap: blockMap.set(key, newBlock),
+    blockMap: blockMap.set(key, newBlock as any),
     selectionAfter: newSelection
   })
-  return EditorState.push(editorState, newContentState, 'change-block-type')
+  return EditorState.push(editorState, newContentState as any, 'change-block-type')
 }
 
 export default changeCurrentBlockType

@@ -1,4 +1,6 @@
-const getSelectedTextLength = (editorState) => {
+import { EditorState } from '../../types'
+
+const getSelectedTextLength = (editorState: EditorState) => {
   const currentSelection = editorState.getSelection()
   const isCollapsed = currentSelection.isCollapsed()
 
@@ -54,12 +56,12 @@ export default (options) => {
     interceptor: (editorProps) => {
       const maxLength = editorProps.maxLength || defaultValue
 
-      editorProps.handleBeforeInput = (_, editorState) => {
+      editorProps.handleBeforeInput = (_, editorState: EditorState) => {
         if (maxLength === Infinity) {
           return 'not-handled'
         }
 
-        const currentContentLength = editorState.toText().length
+        const currentContentLength = editorState.getCurrentContent().getPlainText().length
         const selectedTextLength = getSelectedTextLength(editorState)
 
         if (currentContentLength - selectedTextLength > maxLength - 1) {
@@ -69,12 +71,12 @@ export default (options) => {
         return null
       }
 
-      editorProps.handlePastedText = (pastedText, _, editorState) => {
+      editorProps.handlePastedText = (pastedText, _, editorState: EditorState) => {
         if (maxLength === Infinity) {
           return 'not-handled'
         }
 
-        const currentContentLength = editorState.toText().length
+        const currentContentLength = editorState.getCurrentContent().getPlainText().length
         const selectedTextLength = getSelectedTextLength(editorState)
 
         if (

@@ -1,4 +1,4 @@
-import { CallbackEditor } from '../../types'
+import { CallbackEditor, EditorState } from '../../types'
 /**
  * This extension is a transformation from draft-js-markdown-shortcuts-plugin (github repo: https://github.com/ngs/draft-js-markdown-shortcuts-plugin)
  * Thanks very much for the contributors of draft-js-markdown-shortcuts-plugin!!!
@@ -15,7 +15,7 @@ import insertText from './modifiers/insertText'
 import changeCurrentBlockType from './modifiers/changeCurrentBlockType'
 import { replaceText } from './utils'
 
-function checkCharacterForState (editorState, character) {
+function checkCharacterForState (editorState: EditorState, character) {
   let newEditorState = handleBlockType(editorState, character)
   const contentState = editorState.getCurrentContent()
   const selection = editorState.getSelection()
@@ -35,7 +35,7 @@ function checkCharacterForState (editorState, character) {
 }
 
 function checkReturnForState (
-  editorState,
+  editorState: EditorState,
   ev,
   insertEmptyBlockOnReturnWithModifierKey
 ) {
@@ -108,7 +108,7 @@ export default (options) => {
         editorProps = {
           ...editorProps,
           ...{
-            handleReturn (ev, editorState, editor: CallbackEditor) {
+            handleReturn (ev, editorState: EditorState, editor: CallbackEditor) {
               const newEditorState = checkReturnForState(
                 editorState,
                 ev,
@@ -120,7 +120,7 @@ export default (options) => {
               }
               return 'not-handled'
             },
-            handleBeforeInput (character, editorState, editor: CallbackEditor) {
+            handleBeforeInput (character, editorState: EditorState, editor: CallbackEditor) {
               if (character.match(/[A-z0-9_*~`]/)) {
                 return 'not-handled'
               }
@@ -134,7 +134,7 @@ export default (options) => {
               }
               return 'not-handled'
             },
-            handlePastedText (text, html, editorState, editor: CallbackEditor) {
+            handlePastedText (text, html, editorState: EditorState, editor: CallbackEditor) {
               if (html) {
                 return 'not-handled'
               }

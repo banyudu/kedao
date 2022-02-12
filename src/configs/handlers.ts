@@ -4,6 +4,7 @@ import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
 import { handleNewLine } from 'draftjs-utils'
 import { CallbackEditor } from '../types'
 import defaultProps from './props'
+import { convertEditorStateToHTML } from '../convert'
 
 export const keyCommandHandlers = (command, editorState: EditorState, editor: CallbackEditor) => {
   if (
@@ -77,7 +78,7 @@ export const keyCommandHandlers = (command, editorState: EditorState, editor: Ca
   return 'not-handled'
 }
 
-export const returnHandlers = (event, editorState, editor: CallbackEditor) => {
+export const returnHandlers = (event, editorState: EditorState, editor: CallbackEditor) => {
   if (
     editor.editorProps.handleReturn?.(event, editorState, editor) === 'handled'
   ) {
@@ -141,7 +142,7 @@ export const returnHandlers = (event, editorState, editor: CallbackEditor) => {
   return 'not-handled'
 }
 
-export const beforeInputHandlers = (chars, editorState, editor: CallbackEditor) => {
+export const beforeInputHandlers = (chars, editorState: EditorState, editor: CallbackEditor) => {
   if (
     editor.editorProps.handleBeforeInput?.(chars, editorState, editor) ===
       'handled'
@@ -273,18 +274,17 @@ export const copyHandlers = (event, editor: CallbackEditor) => {
       const tempContentState = ContentState.createFromBlockArray(
         blockMap.toArray()
       )
-      const tempEditorState: any = EditorState.createWithContent(tempContentState)
+      const tempEditorState = EditorState.createWithContent(tempContentState)
       const clipboardData =
         event.clipboardData ||
         (window as any).clipboardData ||
         event.originalEvent.clipboardData
 
-      tempEditorState.setConvertOptions(
-        (editor.editorState as any).convertOptions
-      )
+      const html = convertEditorStateToHTML(tempEditorState, editor.convertOptions)
+      const text = tempEditorState.getCurrentContent().getPlainText()
 
-      clipboardData.setData('text/html', tempEditorState.toHTML())
-      clipboardData.setData('text/plain', tempEditorState.toText())
+      clipboardData.setData('text/html', html)
+      clipboardData.setData('text/plain', text)
 
       event.preventDefault()
     } catch (error) {
@@ -293,7 +293,7 @@ export const copyHandlers = (event, editor: CallbackEditor) => {
   }
 }
 
-export const pastedTextHandlers = (text, html, editorState, editor: CallbackEditor) => {
+export const pastedTextHandlers = (text, html, editorState: EditorState, editor: CallbackEditor) => {
   if (
     editor.editorProps.handlePastedText?.(text, html, editorState, editor) ===
       'handled'
@@ -313,7 +313,7 @@ export const pastedTextHandlers = (text, html, editorState, editor: CallbackEdit
       .filter((item, index, array) => array.indexOf(item) === index)
     ,
     () => {
-      editor.setValue(ContentUtils.insertHTML(editorState, html, 'paste'))
+      editor.setValue(ContentUtils.insertHTML(editorState, editor.convertOptions, html, 'paste'))
     }
   )
 

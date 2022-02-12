@@ -52,7 +52,8 @@ import {
   ModalControlItem,
   MediaType,
   Hooks,
-  ImageControlItem
+  ImageControlItem,
+  ConvertOptions
 } from '../types'
 
 export interface KedaoEditorProps {
@@ -151,7 +152,7 @@ const getConvertOptions = ({
   id,
   converts,
   fontFamilies
-}) => {
+}): ConvertOptions => {
   const realEditorId = editorId || id
   const convertOptions = {
     ...defaultProps.converts,
@@ -371,8 +372,8 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     return propsMap.toJS()
   }
 
-  onChange = (editorState, callback?) => {
-    let newEditorState = KedaoEditorState.fromEditorState({ ...editorState })
+  onChange = (editorState: EditorState, callback?) => {
+    let newEditorState = KedaoEditorState.fromEditorState({ ...editorState } as any)
     if (!(editorState instanceof KedaoEditorState)) {
       newEditorState = KedaoEditorState.fromEditorState(
         KedaoEditorState.set(editorState, {
@@ -407,7 +408,7 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     return this.state.editorState
   }
 
-  setValue = (editorState, callback?) => {
+  setValue = (editorState: EditorState, callback?) => {
     return this.onChange(editorState, callback)
   }
 
@@ -462,13 +463,13 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     setTimeout(() => this.draftInstance.focus(), 0)
   }
 
-  handleKeyCommand = (command, editorState) =>
+  handleKeyCommand = (command, editorState: EditorState) =>
     keyCommandHandlers(command, editorState, this.getCallbackEditor())
 
-  handleReturn = (event, editorState) =>
+  handleReturn = (event, editorState: EditorState) =>
     returnHandlers(event, editorState, this.getCallbackEditor())
 
-  handleBeforeInput = (chars, editorState) =>
+  handleBeforeInput = (chars, editorState: EditorState) =>
     beforeInputHandlers(chars, editorState, this.getCallbackEditor())
 
   handleDrop = (selectionState, dataTransfer) =>
@@ -482,7 +483,7 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
 
   handleCopyContent = event => copyHandlers(event, this.getCallbackEditor())
 
-  handlePastedText = (text, html, editorState) =>
+  handlePastedText = (text, html, editorState: EditorState) =>
     pastedTextHandlers(text, html, editorState, this.getCallbackEditor())
 
   handleCompositionStart = event =>
@@ -507,7 +508,7 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
   }
 
   clearEditorContent = () => {
-    this.setValue(ContentUtils.clear(this.state.editorState), editorState => {
+    this.setValue(ContentUtils.clear(this.state.editorState), (editorState: EditorState) => {
       this.setValue(ContentUtils.toggleSelectionIndent(editorState, 0))
     })
   }
@@ -554,7 +555,8 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
       onChange: this.onChange,
       setOnChange: onChange => {
         this.onChange = onChange
-      }
+      },
+      convertOptions: this.state.editorState.convertOptions
     }
     return callbackEditor
   }

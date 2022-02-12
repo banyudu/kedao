@@ -1,4 +1,4 @@
-import { EditorState, ContentBlock, CharacterMetadata, genKey } from 'draft-js'
+import { EditorState, ContentBlock, CharacterMetadata, genKey, ContentState } from 'draft-js'
 import Immutable from 'immutable'
 import { ContentUtils } from '../../utils'
 
@@ -207,7 +207,7 @@ export const rebuildTableNode = (tableNode) => {
   })
 }
 
-export const updateAllTableBlocks = (editorState, tableKey, blockData) => {
+export const updateAllTableBlocks = (editorState: EditorState, tableKey, blockData) => {
   const selectionState = editorState.getSelection()
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap()
@@ -217,7 +217,7 @@ export const updateAllTableBlocks = (editorState, tableKey, blockData) => {
   const nextContentState = updateTableBlocks(
     contentState,
     editorState.getSelection(),
-    selectionState.focusKey,
+    selectionState.getFocusKey(),
     nextTableBlocks,
     tableKey
   )
@@ -237,7 +237,7 @@ export const getCellCountForInsert = (tableBlocks, rowIndex) => {
 
 // 获取指定范围内的单元格block
 export const getCellsInsideRect = (
-  editorState,
+  editorState: EditorState,
   tableKey,
   startLocation,
   endLocation
@@ -360,7 +360,7 @@ export const insertCells = (tableBlocks, cells = []) => {
 }
 
 // 插入表格
-export const insertTable = (editorState, columns = 3, rows = 3) => {
+export const insertTable = (editorState: EditorState, columns = 3, rows = 3) => {
   if (ContentUtils.selectionContainsStrictBlock(editorState)) {
     return editorState
   }
@@ -419,14 +419,14 @@ export const insertTable = (editorState, columns = 3, rows = 3) => {
       focusKey: firstCellKey,
       focusOffset: selectionState.getStartOffset(),
       isBackward: false
-    })
+    } as any)
   })
 
-  return EditorState.push(editorState, nextContentState, 'insert-table' as any)
+  return EditorState.push(editorState, nextContentState as any, 'insert-table' as any)
 }
 
 // 删除整个表格
-export const removeTable = (editorState, tableKey) => {
+export const removeTable = (editorState: EditorState, tableKey) => {
   if (!tableKey) {
     return editorState
   }
@@ -464,13 +464,13 @@ export const removeTable = (editorState, tableKey) => {
       focusOffset: selectionState.getStartOffset(),
       isBackward: false
     })
-  })
+  }) as ContentState
 
   return EditorState.push(editorState, nextContentState, 'remove-table' as any)
 }
 
 // 插入一列单元格到表格中
-export const insertColumn = (editorState, tableKey, cellCounts, colIndex) => {
+export const insertColumn = (editorState: EditorState, tableKey, cellCounts, colIndex) => {
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap()
   const tableBlocks = findBlocks(contentBlocks, 'tableKey', tableKey)
@@ -553,7 +553,7 @@ export const insertColumn = (editorState, tableKey, cellCounts, colIndex) => {
 }
 
 // 从表格中移除指定的某一列单元格
-export const removeColumn = (editorState, tableKey, colIndex) => {
+export const removeColumn = (editorState: EditorState, tableKey, colIndex) => {
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap().toSeq()
   const tableBlocks = findBlocks(contentBlocks, 'tableKey', tableKey)
@@ -624,7 +624,7 @@ export const removeColumn = (editorState, tableKey, colIndex) => {
 
 // 插入一行单元格到表格中
 export const insertRow = (
-  editorState,
+  editorState: EditorState,
   tableKey,
   cellCounts,
   rowIndex,
@@ -693,7 +693,7 @@ export const insertRow = (
 }
 
 // 从表格中移除指定的某一行单元格
-export const removeRow = (editorState, tableKey, rowIndex, addonBlockData = {}) => {
+export const removeRow = (editorState: EditorState, tableKey, rowIndex, addonBlockData = {}) => {
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap().toSeq()
   const tableBlocks = findBlocks(contentBlocks, 'tableKey', tableKey)
@@ -775,7 +775,7 @@ export const removeRow = (editorState, tableKey, rowIndex, addonBlockData = {}) 
 }
 
 // 合并单元格
-export const mergeCells = (editorState, tableKey, cellKeys) => {
+export const mergeCells = (editorState: EditorState, tableKey, cellKeys) => {
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap()
 
@@ -830,7 +830,7 @@ export const mergeCells = (editorState, tableKey, cellKeys) => {
 }
 
 // 拆分单元格
-export const splitCell = (editorState, tableKey, cellKey) => {
+export const splitCell = (editorState: EditorState, tableKey, cellKey) => {
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap()
 

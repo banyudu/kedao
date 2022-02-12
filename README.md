@@ -46,49 +46,4 @@ npm install kedao --save
 
 The editor supports **value** and **onChange** properties, which are similar to the native input components in React. In general, you can use this editor in the form of a typical **controlled component**:
 
-```jsx
-import React from "react";
-import KedaoEditor from "kedao";
-
-export default class EditorDemo extends React.Component<any, any> {
-  state = {
-    editorState: null,
-  };
-
-  async componentDidMount() {
-    // Assume here to get the editor content in html format from the server
-    const htmlContent = await fetchEditorContent();
-    // Use KedaoEditor.createEditorState to convert html strings to editorState data needed by the editor
-    this.setState({
-      editorState: KedaoEditor.createEditorState(htmlContent),
-    });
-  }
-
-  submitContent = async () => {
-    // Pressing ctrl + s when the editor has focus will execute this method
-    // Before the editor content is submitted to the server, you can directly call editorState.toHTML () to get the HTML content
-    const htmlContent = this.state.editorState.toHTML();
-    const result = await saveEditorContent(htmlContent);
-  };
-
-  handleEditorChange = (editorState) => {
-    this.setState({ editorState });
-  };
-
-  render() {
-    const { editorState } = this.state;
-
-    return (
-      <div className="my-component">
-        <KedaoEditor
-          value={editorState}
-          onChange={this.handleEditorChange}
-          onSave={this.submitContent}
-        />
-      </div>
-    );
-  }
-}
-```
-
 Of course, this editor also supports the **defaultValue** property, so you can also use this editor as a **uncontrolled component**.

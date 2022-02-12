@@ -1,6 +1,7 @@
+import { EditorState } from '../../../types'
 import insertImage from './insertImage'
 
-const handleImage = (editorState, character) => {
+const handleImage = (editorState: EditorState, character) => {
   const re = /!\[([^\]]*)]\(([^)"]+)(?: "([^"]+)")?\)/g
   const key = editorState.getSelection().getStartKey()
   const text = editorState.getCurrentContent().getBlockForKey(key).getText()

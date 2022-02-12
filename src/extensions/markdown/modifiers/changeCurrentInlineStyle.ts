@@ -1,6 +1,6 @@
 import { EditorState, SelectionState, Modifier } from 'draft-js'
 
-const changeCurrentInlineStyle = (editorState, matchArr, style) => {
+const changeCurrentInlineStyle = (editorState: EditorState, matchArr, style) => {
   const currentContent = editorState.getCurrentContent()
   const selection = editorState.getSelection()
   const key = selection.getStartKey()
@@ -18,7 +18,7 @@ const changeCurrentInlineStyle = (editorState, matchArr, style) => {
     currentContent,
     wordSelection,
     matchArr[2],
-    newStyle
+    newStyle as any
   )
   newContentState = Modifier.insertText(
     newContentState,

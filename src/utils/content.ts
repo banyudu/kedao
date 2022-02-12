@@ -10,6 +10,7 @@ import {
 import { setBlockData, getSelectionEntity } from 'draftjs-utils'
 import { convertHTMLToRaw } from '../convert'
 import Immutable from 'immutable'
+import { ConvertOptions } from '../types'
 
 const strictBlockTypes = ['atomic']
 
@@ -17,7 +18,7 @@ export const registerStrictBlockType = (blockType) => {
   !strictBlockTypes.includes(blockType) && strictBlockTypes.push(blockType)
 }
 
-export const isEditorState = (editorState) => {
+export const isEditorState = (editorState: EditorState) => {
   return editorState instanceof EditorState
 }
 
@@ -29,23 +30,23 @@ export const createEditorState = (contentState, editorDecorators) => {
   return EditorState.createWithContent(contentState, editorDecorators)
 }
 
-export const isSelectionCollapsed = (editorState) => {
+export const isSelectionCollapsed = (editorState: EditorState) => {
   return editorState.getSelection().isCollapsed()
 }
 
-export const selectionContainsBlockType = (editorState, blockType) => {
+export const selectionContainsBlockType = (editorState: EditorState, blockType) => {
   return getSelectedBlocks(editorState).find(
     (block) => block.getType() === blockType
   )
 }
 
-export const selectionContainsStrictBlock = (editorState) => {
+export const selectionContainsStrictBlock = (editorState: EditorState) => {
   return getSelectedBlocks(editorState).find(
     (block) => ~strictBlockTypes.indexOf(block.getType())
   )
 }
 
-export const selectBlock = (editorState, block) => {
+export const selectBlock = (editorState: EditorState, block) => {
   const blockKey = block.getKey()
 
   return EditorState.forceSelection(
@@ -59,7 +60,7 @@ export const selectBlock = (editorState, block) => {
   )
 }
 
-export const selectNextBlock = (editorState, block) => {
+export const selectNextBlock = (editorState: EditorState, block) => {
   const nextBlock = editorState
     .getCurrentContent()
     .getBlockAfter(block.getKey())
@@ -170,7 +171,7 @@ export const updateEachCharacterOfSelection = (editorState: EditorState, callbac
   )
 }
 
-export const getSelectedBlocks = (editorState) => {
+export const getSelectedBlocks = (editorState: EditorState) => {
   const selectionState = editorState.getSelection()
   const contentState = editorState.getCurrentContent()
 
@@ -194,7 +195,7 @@ export const getSelectedBlocks = (editorState) => {
 }
 
 export const setSelectionBlockData = (
-  editorState,
+  editorState: EditorState,
   blockData,
   override = false
 ) => {
@@ -241,7 +242,7 @@ export const getSelectionText = (editorState: EditorState) => {
   return currentContentBlock.getText().slice(start, end)
 }
 
-export const toggleSelectionBlockType = (editorState, blockType) => {
+export const toggleSelectionBlockType = (editorState: EditorState, blockType) => {
   if (selectionContainsStrictBlock(editorState)) {
     return editorState
   }
@@ -249,23 +250,23 @@ export const toggleSelectionBlockType = (editorState, blockType) => {
   return RichUtils.toggleBlockType(editorState, blockType)
 }
 
-export const getSelectionEntityType = (editorState) => {
+export const getSelectionEntityType = (editorState: EditorState) => {
   const entityKey = getSelectionEntity(editorState)
 
   if (entityKey) {
     const entity = editorState.getCurrentContent().getEntity(entityKey)
-    return entity ? entity.get('type') : null
+    return entity ? entity.getType() : null
   }
 
   return null
 }
 
-export const getSelectionEntityData = (editorState, type) => {
+export const getSelectionEntityData = (editorState: EditorState, type) => {
   const entityKey = getSelectionEntity(editorState)
 
   if (entityKey) {
     const entity = editorState.getCurrentContent().getEntity(entityKey)
-    if (entity && entity.get('type') === type) {
+    if (entity && entity.getType() === type) {
       return entity.getData()
     } else {
       return {}
@@ -275,7 +276,7 @@ export const getSelectionEntityData = (editorState, type) => {
   }
 }
 
-export const toggleSelectionEntity = (editorState, entity) => {
+export const toggleSelectionEntity = (editorState: EditorState, entity) => {
   const contentState = editorState.getCurrentContent()
   const selectionState = editorState.getSelection()
 
@@ -321,7 +322,7 @@ export const toggleSelectionEntity = (editorState, entity) => {
   }
 }
 
-export const toggleSelectionLink = (editorState, href, target?) => {
+export const toggleSelectionLink = (editorState: EditorState, href, target?) => {
   const contentState = editorState.getCurrentContent()
   const selectionState = editorState.getSelection()
 
@@ -384,16 +385,16 @@ export const toggleSelectionLink = (editorState, href, target?) => {
   }
 }
 
-export const getSelectionInlineStyle = (editorState) => {
+export const getSelectionInlineStyle = (editorState: EditorState) => {
   return editorState.getCurrentInlineStyle()
 }
 
-export const selectionHasInlineStyle = (editorState, style) => {
+export const selectionHasInlineStyle = (editorState: EditorState, style) => {
   return getSelectionInlineStyle(editorState).has(style.toUpperCase())
 }
 
 export const toggleSelectionInlineStyle = (
-  editorState,
+  editorState: EditorState,
   style: string,
   prefix = ''
 ) => {
@@ -426,7 +427,7 @@ export const toggleSelectionInlineStyle = (
   return RichUtils.toggleInlineStyle(nextEditorState, style)
 }
 
-export const removeSelectionInlineStyles = (editorState) => {
+export const removeSelectionInlineStyles = (editorState: EditorState) => {
   return updateEachCharacterOfSelection(editorState, (characterMetadata) => {
     return characterMetadata.merge({
       style: Immutable.OrderedSet([])
@@ -434,7 +435,7 @@ export const removeSelectionInlineStyles = (editorState) => {
   })
 }
 
-export const toggleSelectionAlignment = (editorState, alignment) => {
+export const toggleSelectionAlignment = (editorState: EditorState, alignment) => {
   return setSelectionBlockData(editorState, {
     textAlign:
       getSelectionBlockData(editorState, 'textAlign') !== alignment
@@ -444,7 +445,7 @@ export const toggleSelectionAlignment = (editorState, alignment) => {
 }
 
 export const toggleSelectionIndent = (
-  editorState,
+  editorState: EditorState,
   textIndent,
   maxIndent = 6
 ) => {
@@ -455,18 +456,18 @@ export const toggleSelectionIndent = (
     })
 }
 
-export const increaseSelectionIndent = (editorState, maxIndent = 6) => {
+export const increaseSelectionIndent = (editorState: EditorState, maxIndent = 6) => {
   const currentIndent: number =
     getSelectionBlockData(editorState, 'textIndent') || 0
   return toggleSelectionIndent(editorState, currentIndent + 1, maxIndent)
 }
 
-export const decreaseSelectionIndent = (editorState, maxIndent?) => {
+export const decreaseSelectionIndent = (editorState: EditorState, maxIndent?) => {
   const currentIndent = getSelectionBlockData(editorState, 'textIndent') || 0
   return toggleSelectionIndent(editorState, currentIndent - 1, maxIndent)
 }
 
-export const toggleSelectionColor = (editorState, color) => {
+export const toggleSelectionColor = (editorState: EditorState, color) => {
   return toggleSelectionInlineStyle(
     editorState,
     color.replace('#', ''),
@@ -474,7 +475,7 @@ export const toggleSelectionColor = (editorState, color) => {
   )
 }
 
-export const toggleSelectionBackgroundColor = (editorState, color) => {
+export const toggleSelectionBackgroundColor = (editorState: EditorState, color) => {
   return toggleSelectionInlineStyle(
     editorState,
     color.replace('#', ''),
@@ -482,19 +483,19 @@ export const toggleSelectionBackgroundColor = (editorState, color) => {
   )
 }
 
-export const toggleSelectionFontSize = (editorState, fontSize) => {
+export const toggleSelectionFontSize = (editorState: EditorState, fontSize) => {
   return toggleSelectionInlineStyle(editorState, fontSize, 'FONTSIZE-')
 }
 
-export const toggleSelectionLineHeight = (editorState, lineHeight) => {
+export const toggleSelectionLineHeight = (editorState: EditorState, lineHeight) => {
   return toggleSelectionInlineStyle(editorState, lineHeight, 'LINEHEIGHT-')
 }
 
-export const toggleSelectionFontFamily = (editorState, fontFamily) => {
+export const toggleSelectionFontFamily = (editorState: EditorState, fontFamily) => {
   return toggleSelectionInlineStyle(editorState, fontFamily, 'FONTFAMILY-')
 }
 
-export const toggleSelectionLetterSpacing = (editorState, letterSpacing) => {
+export const toggleSelectionLetterSpacing = (editorState: EditorState, letterSpacing) => {
   return toggleSelectionInlineStyle(
     editorState,
     letterSpacing,
@@ -502,7 +503,7 @@ export const toggleSelectionLetterSpacing = (editorState, letterSpacing) => {
   )
 }
 
-export const insertText = (editorState, text, inlineStyle?, entity?) => {
+export const insertText = (editorState: EditorState, text, inlineStyle?, entity?) => {
   const selectionState = editorState.getSelection()
   const currentSelectedBlockType = getSelectionBlockType(editorState)
 
@@ -550,14 +551,13 @@ export const insertText = (editorState, text, inlineStyle?, entity?) => {
   }
 }
 
-export const insertHTML = (editorState, htmlString, source) => {
+export const insertHTML = (editorState: EditorState, options: ConvertOptions, htmlString: string, source) => {
   if (!htmlString) {
     return editorState
   }
 
   const selectionState = editorState.getSelection()
   const contentState = editorState.getCurrentContent()
-  const options = editorState.convertOptions || {}
 
   try {
     const { blockMap } = convertFromRaw(
@@ -576,7 +576,7 @@ export const insertHTML = (editorState, htmlString, source) => {
 }
 
 export const insertAtomicBlock = (
-  editorState,
+  editorState: EditorState,
   type,
   immutable = true,
   data = {}
@@ -615,7 +615,7 @@ export const insertAtomicBlock = (
   return newEditorState
 }
 
-export const insertHorizontalLine = (editorState) => {
+export const insertHorizontalLine = (editorState: EditorState) => {
   return insertAtomicBlock(editorState, 'HR')
 }
 
@@ -624,7 +624,7 @@ export const insertMedias = (editorState: EditorState, medias = []): EditorState
     return editorState
   }
 
-  return medias.reduce((editorState, media) => {
+  return medias.reduce((editorState: EditorState, media) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { url, link, link_target, name, type, width, height, meta } = media
     return insertAtomicBlock(editorState, type, true, {
@@ -652,7 +652,7 @@ export const removeMedia = (editorState: EditorState, mediaBlock) => {
   return removeBlock(editorState, mediaBlock)
 }
 
-export const setMediaPosition = (editorState, mediaBlock, position) => {
+export const setMediaPosition = (editorState: EditorState, mediaBlock, position) => {
   const newPosition: Record<string, any> = {}
   const { float, alignment } = position
 
@@ -672,7 +672,7 @@ export const setMediaPosition = (editorState, mediaBlock, position) => {
   )
 }
 
-export const clear = (editorState) => {
+export const clear = (editorState: EditorState) => {
   const contentState = editorState.getCurrentContent()
 
   const firstBlock = contentState.getFirstBlock()
@@ -696,14 +696,14 @@ export const clear = (editorState) => {
   )
 }
 
-export const handleKeyCommand = (editorState, command) => {
+export const handleKeyCommand = (editorState: EditorState, command) => {
   return RichUtils.handleKeyCommand(editorState, command)
 }
 
-export const undo = (editorState) => {
+export const undo = (editorState: EditorState) => {
   return EditorState.undo(editorState)
 }
 
-export const redo = (editorState) => {
+export const redo = (editorState: EditorState) => {
   return EditorState.redo(editorState)
 }

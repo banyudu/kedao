@@ -1,4 +1,4 @@
-import { CallbackEditor } from '../../types'
+import { CallbackEditor, EditorState } from '../../types'
 import React from 'react'
 import { MdInsertEmoticon } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
@@ -11,7 +11,7 @@ export const defaultEmoticons = [
   23, 24, 25
 ].map((item) => `${item}.png`)
 
-const insertEmoticon = (editor: CallbackEditor, editorState, src) => {
+const insertEmoticon = (editor: CallbackEditor, editorState: EditorState, src) => {
   editor.setValue(
     ContentUtils.insertText(editorState, ' ', null, {
       type: 'EMOTICON',

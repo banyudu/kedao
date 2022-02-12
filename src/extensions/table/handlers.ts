@@ -1,4 +1,4 @@
-import { CallbackEditor } from '../../types'
+import { CallbackEditor, EditorState } from '../../types'
 import { RichUtils } from 'draft-js'
 import { ContentUtils } from '../../utils'
 import * as TableUtils from './utils'
@@ -10,7 +10,7 @@ import * as TableUtils from './utils'
 // 在最后一个单元格中按Shift + 回车跳出表格
 
 export const handleKeyCommand =
-  (oringeHandler) => (command, editorState, editor: CallbackEditor) => {
+  (oringeHandler) => (command, editorState: EditorState, editor: CallbackEditor) => {
     if (
       oringeHandler &&
       oringeHandler(command, editorState, editor) === 'handled'
@@ -65,7 +65,7 @@ export const handleKeyCommand =
     return null
   }
 
-export const handleReturn = (oringeHandler) => (event, editorState, editor: CallbackEditor) => {
+export const handleReturn = (oringeHandler) => (event, editorState: EditorState, editor: CallbackEditor) => {
   if (
     oringeHandler &&
     oringeHandler(event, editorState, editor) === 'handled'
@@ -139,7 +139,7 @@ export const handlePastedFiles = (oringeHandler) => (files, editor: CallbackEdit
 }
 
 export const handlePastedText =
-  (oringeHandler) => (text, html, editorState, editor: CallbackEditor) => {
+  (oringeHandler) => (text, html, editorState: EditorState, editor: CallbackEditor) => {
     if (
       oringeHandler &&
       oringeHandler(text, html, editorState, editor) === 'handled'

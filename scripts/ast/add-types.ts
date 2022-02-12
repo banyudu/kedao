@@ -20,6 +20,10 @@ const importConfigMap: Record<string, ImportConfig> = {
   editorId: {
     filePath: null,
     typeName: 'string'
+  },
+  editorState: {
+    filePath: 'src/types/index.ts',
+    typeName: 'EditorState'
   }
 }
 

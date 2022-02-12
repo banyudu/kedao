@@ -1,7 +1,7 @@
 import { EditorState, SelectionState, Modifier } from 'draft-js'
 import { ContentUtils } from '../../../utils'
 
-const insertImage = (editorState, matchArr) => {
+const insertImage = (editorState: EditorState, matchArr) => {
   const currentContent = editorState.getCurrentContent()
   const selection = editorState.getSelection()
   const key = selection.getStartKey()

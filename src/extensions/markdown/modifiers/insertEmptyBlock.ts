@@ -1,7 +1,7 @@
 import { genKey, ContentBlock, EditorState } from 'draft-js'
 import { List, Map } from 'immutable'
 
-const insertEmptyBlock = (editorState, blockType = 'unstyled', data = {}) => {
+const insertEmptyBlock = (editorState: EditorState, blockType = 'unstyled', data = {}) => {
   const contentState = editorState.getCurrentContent()
   const selection = editorState.getSelection()
   const key = selection.getStartKey()
@@ -42,7 +42,7 @@ const insertEmptyBlock = (editorState, blockType = 'unstyled', data = {}) => {
       isBackward: false
     })
   })
-  return EditorState.push(editorState, newContentState, 'split-block')
+  return EditorState.push(editorState, newContentState as any, 'split-block')
 }
 
 export default insertEmptyBlock

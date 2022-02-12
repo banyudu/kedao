@@ -1,6 +1,7 @@
+import { EditorState } from '../../../types'
 import insertLink from './insertLink'
 
-const handleLink = (editorState, character) => {
+const handleLink = (editorState: EditorState, character) => {
   const re = /\[([^\]]+)]\(([^)"]+)(?: "([^"]+)")?\)/g
   const key = editorState.getSelection().getStartKey()
   const text = editorState.getCurrentContent().getBlockForKey(key).getText()

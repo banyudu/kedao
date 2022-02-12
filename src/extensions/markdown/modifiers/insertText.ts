@@ -1,6 +1,6 @@
 import { EditorState, Modifier } from 'draft-js'
 
-const insertText = (editorState, text) => {
+const insertText = (editorState: EditorState, text) => {
   const selection = editorState.getSelection()
   const content = editorState.getCurrentContent()
   const newContentState = Modifier.insertText(

@@ -38,6 +38,17 @@ export interface CallbackEditor {
   isLiving: boolean
   tempColors: string[]
   setTempColors: (colors: string[], callback: () => void) => void
+  convertOptions: ConvertOptions
+}
+
+export interface ConvertOptions {
+  fontFamilies: string[]
+  styleImportFn: Function
+  styleExportFn: Function
+  entityImportFn: Function
+  entityExportFn: Function
+  blockImportFn: Function
+  blockExportFn: Function
 }
 
 export type KeyCommand = string

@@ -5,6 +5,7 @@ import {
   defaultFontFamilies
 } from './configs'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
+import { ConvertOptions } from '../types'
 
 const defaultConvertOptions = {
   fontFamilies: defaultFontFamilies
@@ -23,7 +24,7 @@ export const convertRawToHTML = (rawContent, options) => {
   }
 }
 
-export const convertHTMLToRaw = (HTMLString, options, source) => {
+export const convertHTMLToRaw = (HTMLString: string, options?: ConvertOptions, source?: string) => {
   options = { ...defaultConvertOptions, ...options }
 
   try {
@@ -37,7 +38,7 @@ export const convertHTMLToRaw = (HTMLString, options, source) => {
   }
 }
 
-export const convertEditorStateToHTML = (editorState, options) => {
+export const convertEditorStateToHTML = (editorState: EditorState, options) => {
   options = { ...defaultConvertOptions, ...options }
 
   try {
@@ -51,10 +52,10 @@ export const convertEditorStateToHTML = (editorState, options) => {
 }
 
 export const convertHTMLToEditorState = (
-  HTMLString,
+  HTMLString: string,
   editorDecorators,
-  options,
-  source
+  options: ConvertOptions,
+  source?: string
 ) => {
   options = { ...defaultConvertOptions, ...options }
 
@@ -69,7 +70,7 @@ export const convertHTMLToEditorState = (
   }
 }
 
-export const convertEditorStateToRaw = (editorState) => {
+export const convertEditorStateToRaw = (editorState: EditorState) => {
   return convertToRaw(editorState.getCurrentContent())
 }
 

@@ -1,3 +1,5 @@
+import { EditorState } from '../../../types'
+
 // import { CHECKABLE_LIST_ITEM } from 'draft-js-checkable-list-item'
 // import { RichUtils } from 'draft-js'
 import changeCurrentBlockType from './changeCurrentBlockType'
@@ -20,7 +22,7 @@ const blockTypes = [
   'header-six'
 ]
 
-const handleBlockType = (editorState, character) => {
+const handleBlockType = (editorState: EditorState, character) => {
   const currentSelection = editorState.getSelection()
   const key = currentSelection.getStartKey()
   const text = editorState.getCurrentContent().getBlockForKey(key).getText()

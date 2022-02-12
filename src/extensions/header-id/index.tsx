@@ -1,3 +1,4 @@
+import { EditorState } from '../../types'
 import React from 'react'
 import { Map } from 'immutable'
 
@@ -16,7 +17,7 @@ Object.keys(headerTagTypeMap).forEach((key) => {
   headerTypeTagMap[headerTagTypeMap[key]] = key
 })
 
-const getHeaderTag = (TagName, editorState) => props => {
+const getHeaderTag = (TagName, editorState: EditorState) => props => {
   const blockKey = props['data-offset-key'].split('-')[0]
   const block = editorState.getCurrentContent().getBlockForKey(blockKey)
   const headerId = block.getData().get('id') || blockKey

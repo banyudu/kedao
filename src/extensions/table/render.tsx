@@ -1,4 +1,4 @@
-import { CallbackEditor } from '../../types'
+import { CallbackEditor, EditorState } from '../../types'
 import React, { useRef, useState, useEffect } from 'react'
 import Immutable from 'immutable'
 import languages from './languages'
@@ -6,6 +6,7 @@ import * as TableUtils from './utils'
 import Editor from '../../editor'
 import { MdAdd, MdDelete } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
+import { convertEditorStateToRaw } from '../../convert'
 
 const getIndexFromEvent = (event, ignoredTarget = '') => {
   if (!isNaN(event)) {
@@ -481,8 +482,8 @@ export const Table = ({ editor, editorState, children = [], columnResizable }) =
   }
 
   // 校验一下删除行、列之后的内容还有没有，没有的话则创建一个空的editorState，防止后续取不到值报错
-  const validateContent = editorState => {
-    const len = editorState.toRAW(true).blocks.length
+  const validateContent = (editorState: EditorState) => {
+    const len = convertEditorStateToRaw(editorState).blocks.length
     return len ? editorState : (Editor as any).createEditorState(null)
   }
 

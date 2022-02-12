@@ -107,7 +107,7 @@ export default (options: any = {}) => {
                 ? ret
                 : draftEditorPlugin.keyBindingFn(event, getAndSetState)
             },
-            handleReturn: (event, editorState, editor: CallbackEditor) => {
+            handleReturn: (event, editorState: EditorState, editor: CallbackEditor) => {
               const originHandler = editorProps.handleReturn
               // 这里 mention 要优于其他的插件处理 回车 事件
               // 因为在 mention 弹出 suggestion 时 有「确认选择」的功能

@@ -35,6 +35,15 @@ const importConfigMap: Record<string, ImportConfig> = {
   draftState: {
     typeName: 'RawDraftContentState',
     module: 'draft-js'
+  },
+  character: {
+    typeName: 'string'
+  },
+  type: {
+    typeName: 'string'
+  },
+  insertEmptyBlockOnReturnWithModifierKey: {
+    typeName: 'boolean'
   }
 }
 

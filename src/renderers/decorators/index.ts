@@ -1,4 +1,4 @@
-import { CompositeDecorator, ContentState } from 'draft-js'
+import { CharacterMetadata, CompositeDecorator, ContentBlock, ContentState } from 'draft-js'
 import CombineDecorators from 'draft-js-multidecorators'
 import Immutable from 'immutable'
 
@@ -35,8 +35,8 @@ const builtinDecorators = [
   }
 ]
 
-const createStrategy = (type) => (block, callback, contentState: ContentState) => {
-  block.findEntityRanges((character) => {
+const createStrategy = (type: string) => (block: ContentBlock, callback: (start: number, end: number) => void, contentState: ContentState) => {
+  block.findEntityRanges((character: CharacterMetadata) => {
     const entityKey = character.getEntity()
     return (
       entityKey !== null && contentState.getEntity(entityKey).getType() === type

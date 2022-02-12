@@ -1,4 +1,4 @@
-import { EditorState } from '../../types'
+import { EditorState, RenderMap } from '../../types'
 import React from 'react'
 import { Map } from 'immutable'
 
@@ -24,7 +24,7 @@ const getHeaderTag = (TagName, editorState: EditorState) => props => {
   return <TagName id={headerId} {...props} />
 }
 
-const getHeaderRenderMap = ({ editorState }) => {
+const getHeaderRenderMap = ({ editorState }): RenderMap => {
   return Map({
     'header-one': {
       element: getHeaderTag('h1', editorState)

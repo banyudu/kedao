@@ -11,7 +11,7 @@ import {
 import { setBlockData, getSelectionEntity } from 'draftjs-utils'
 import { convertHTMLToRaw } from '../convert'
 import Immutable from 'immutable'
-import { ConvertOptions } from '../types'
+import { ConvertOptions, Position } from '../types'
 
 const strictBlockTypes = ['atomic']
 
@@ -111,7 +111,7 @@ export const updateEachCharacterOfSelection = (editorState: EditorState, callbac
 
     const blockKey = block.getKey()
     const charactersList = block.getCharacterList()
-    let nextCharactersList = null
+    let nextCharactersList: typeof charactersList | null = null
 
     if (blockKey === startKey && blockKey === endKey) {
       nextCharactersList = charactersList.map((character, index) => {
@@ -171,8 +171,10 @@ export const getSelectedBlocks = (editorState: EditorState) => {
 
     while (blockKey !== endKey) {
       const nextBlock = contentState.getBlockAfter(blockKey)
-      selectedBlocks.push(nextBlock)
-      blockKey = nextBlock.getKey()
+      if (nextBlock) {
+        selectedBlocks.push(nextBlock)
+        blockKey = nextBlock.getKey()
+      }
     }
   }
 
@@ -246,7 +248,7 @@ export const getSelectionEntityType = (editorState: EditorState) => {
   return null
 }
 
-export const getSelectionEntityData = (editorState: EditorState, type) => {
+export const getSelectionEntityData = (editorState: EditorState, type: string) => {
   const entityKey = getSelectionEntity(editorState)
 
   if (entityKey) {
@@ -562,7 +564,7 @@ export const insertHTML = (editorState: EditorState, options: ConvertOptions, ht
 
 export const insertAtomicBlock = (
   editorState: EditorState,
-  type,
+  type: string,
   immutable = true,
   data = {}
 ) => {
@@ -633,12 +635,12 @@ export const setMediaData = (editorState: EditorState, entityKey, data): EditorS
   )
 }
 
-export const removeMedia = (editorState: EditorState, mediaBlock) => {
+export const removeMedia = (editorState: EditorState, mediaBlock: ContentBlock) => {
   return removeBlock(editorState, mediaBlock)
 }
 
-export const setMediaPosition = (editorState: EditorState, mediaBlock, position) => {
-  const newPosition: Record<string, any> = {}
+export const setMediaPosition = (editorState: EditorState, mediaBlock, position: Position) => {
+  const newPosition: Position = {}
   const { float, alignment } = position
 
   if (typeof float !== 'undefined') {

@@ -15,7 +15,7 @@ import insertText from './modifiers/insertText'
 import changeCurrentBlockType from './modifiers/changeCurrentBlockType'
 import { replaceText } from './utils'
 
-function checkCharacterForState (editorState: EditorState, character) {
+function checkCharacterForState (editorState: EditorState, character: string) {
   let newEditorState = handleBlockType(editorState, character)
   const contentState = editorState.getCurrentContent()
   const selection = editorState.getSelection()
@@ -37,7 +37,7 @@ function checkCharacterForState (editorState: EditorState, character) {
 function checkReturnForState (
   editorState: EditorState,
   ev,
-  insertEmptyBlockOnReturnWithModifierKey
+  insertEmptyBlockOnReturnWithModifierKey: boolean
 ) {
   let newEditorState = editorState
   const contentState = editorState.getCurrentContent()
@@ -120,7 +120,7 @@ export default (options) => {
               }
               return 'not-handled'
             },
-            handleBeforeInput (character, editorState: EditorState, editor: CallbackEditor) {
+            handleBeforeInput (character: string, editorState: EditorState, editor: CallbackEditor) {
               if (character.match(/[A-z0-9_*~`]/)) {
                 return 'not-handled'
               }

@@ -22,7 +22,7 @@ const blockTypes = [
   'header-six'
 ]
 
-const handleBlockType = (editorState: EditorState, character) => {
+const handleBlockType = (editorState: EditorState, character: string) => {
   const currentSelection = editorState.getSelection()
   const key = currentSelection.getStartKey()
   const text = editorState.getCurrentContent().getBlockForKey(key).getText()

@@ -1,27 +1,28 @@
 // -extended support for block-style and atomic types
 
 import React from 'react'
-import { ContentState } from 'draft-js'
+import { CompositeDecorator, ContentState, DraftDecorator } from 'draft-js'
+import { Extension } from '../types'
 
-const extensionControls = []
-const extensionDecorators = []
+const extensionControls: Extension[] = []
+const extensionDecorators: Extension[] = []
 
-const propInterceptors = []
+const propInterceptors: Extension[] = []
 
-const extensionBlockRenderMaps = []
-const extensionBlockRendererFns = []
+const extensionBlockRenderMaps: Extension[] = []
+const extensionBlockRendererFns: Extension[] = []
 
-const extensionInlineStyleMaps = []
-const extensionInlineStyleFns = []
+const extensionInlineStyleMaps: Extension[] = []
+const extensionInlineStyleFns: Extension[] = []
 
-const extensionEntities = []
+const extensionEntities: Extension[] = []
 
-const inlineStyleImporters = []
-const inlineStyleExporters = []
-const blockImporters = []
-const blockExporters = []
+const inlineStyleImporters: Extension[] = []
+const inlineStyleExporters: Extension[] = []
+const blockImporters: Extension[] = []
+const blockExporters: Extension[] = []
 
-const filterByEditorId = (items, editorId: string) => {
+const filterByEditorId = (items: Extension[], editorId: string): any[] => {
   if (!editorId) {
     return items
       .filter((item) => !item.includeEditors)
@@ -35,11 +36,11 @@ const filterByEditorId = (items, editorId: string) => {
       }
 
       if (item.includeEditors) {
-        return item.includeEditors.indexOf(editorId) !== -1 ? item.data : false
+        return item.includeEditors.includes(editorId) ? item.data : false
       }
 
       if (item.excludeEditors) {
-        return item.excludeEditors.indexOf(editorId) !== -1 ? false : item.data
+        return item.excludeEditors.includes(editorId) ? false : item.data
       }
 
       return false
@@ -54,7 +55,6 @@ export const getExtensionControls = (editorId: string) =>
   filterByEditorId(extensionControls, editorId)
 
 export const getExtensionDecorators = (editorId: string) =>
-  // filterByEditorId(extensionDecorators, editorId, 'decorators')
   filterByEditorId(extensionDecorators, editorId)
 
 export const getExtensionBlockRenderMaps = (editorId: string) =>
@@ -202,7 +202,7 @@ export const compositeBlockExportFn =
     return result
   }
 
-export const useExtension = (extension) => {
+export const useExtension = (extension: Extension) => {
   if (extension instanceof Array) {
     extension.forEach(useExtension)
     return false
@@ -379,7 +379,7 @@ export const useExtension = (extension) => {
   } else if (extension.type === 'decorator') {
     const { decorator } = extension
 
-    if (decorator?.strategy && decorator.component) {
+    if ((decorator as DraftDecorator)?.strategy && (decorator as DraftDecorator).component) {
       extensionDecorators.push({
         includeEditors,
         excludeEditors,
@@ -388,7 +388,7 @@ export const useExtension = (extension) => {
           decorator
         }
       })
-    } else if (decorator?.getDecorations) {
+    } else if ((decorator as CompositeDecorator)?.getDecorations) {
       extensionDecorators.push({
         includeEditors,
         excludeEditors,

@@ -2,7 +2,7 @@ import { EditorState } from 'draft-js'
 
 const changeCurrentBlockType = (
   editorState: EditorState,
-  type,
+  type: string,
   text,
   blockMetadata = {}
 ) => {

@@ -10,7 +10,7 @@ const inlineMatchers = {
     /(?:^|\s|\n|[^A-z0-9_*~`])(~{2})((?!\1).*?)(\1)($|\s|\n|[^A-z0-9_*~`])/g
 }
 
-const handleInlineStyle = (editorState: EditorState, character) => {
+const handleInlineStyle = (editorState: EditorState, character: string) => {
   const key = editorState.getSelection().getStartKey()
   const text = editorState.getCurrentContent().getBlockForKey(key).getText()
   const line = `${text}${character}`

@@ -148,7 +148,7 @@ export default {
     }
   ],
   converts: {
-    unitExportFn: (value, type) =>
+    unitExportFn: (value, type: string) =>
       type === 'line-height' ? value : `${value}px`
   },
   emojis: [

@@ -35,16 +35,16 @@ const Image: FC<ImageProps> = ({
   const [linkEditorVisible, setLinkEditorVisible] = useState(false)
   const [sizeEditorVisible, setSizeEditorVisible] = useState(false)
   const [tempLink, setTempLink] = useState(null)
-  const [tempWidth, setTempWidth] = useState(null)
-  const [tempHeight, setTempHeight] = useState(null)
+  const [tempWidth, setTempWidth] = useState(0)
+  const [tempHeight, setTempHeight] = useState(0)
 
   const imageElement = useRef<HTMLImageElement>(null)
   const mediaEmbederInstance = useRef<HTMLDivElement>(null)
   const toolbarElement = useRef<HTMLDivElement>(null)
-  const initialLeft = useRef(undefined)
-  const initialTop = useRef(undefined)
-  const initialWidth = useRef(undefined)
-  const initialHeight = useRef(undefined)
+  const initialLeft = useRef(0)
+  const initialTop = useRef(0)
+  const initialWidth = useRef(0)
+  const initialHeight = useRef(0)
   const reSizeType = useRef(undefined)
   const zoom = useRef(undefined)
 
@@ -83,7 +83,7 @@ const Image: FC<ImageProps> = ({
     document.removeEventListener('mouseup', upImage)
   }
 
-  const repareChangeSize = type => e => {
+  const repareChangeSize = (type: string) => e => {
     reSizeType.current = type
     const imageRect = imageElement.current?.getBoundingClientRect()
     initialTop.current = 0
@@ -111,9 +111,7 @@ const Image: FC<ImageProps> = ({
       return 0
     }
 
-    const viewRect = container
-      .querySelector('.bf-content')
-      .getBoundingClientRect()
+    const viewRect = container?.querySelector('.bf-content')?.getBoundingClientRect()
     const toolbarRect = toolbarElement.current?.getBoundingClientRect()
     const imageRect = imageElement.current?.getBoundingClientRect()
 
@@ -228,7 +226,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const confirmImageLink = () => {
-    let link = tempLink
+    let link: string | null = tempLink
     const hookReturns = hooks('set-image-link', link)(link)
 
     if (hookReturns === false) {
@@ -356,7 +354,7 @@ const Image: FC<ImageProps> = ({
     }
 
     editor.setValue(
-      ContentUtils.setMediaPosition(editor.getValue(), block, { newFloat })
+      ContentUtils.setMediaPosition(editor.getValue(), block, { float: newFloat })
     )
     unlockEditor()
     return true
@@ -375,7 +373,7 @@ const Image: FC<ImageProps> = ({
     }
 
     editor.setValue(
-      ContentUtils.setMediaPosition(editor.getValue(), block, { newAlignment })
+      ContentUtils.setMediaPosition(editor.getValue(), block, { alignment: newAlignment })
     )
     unlockEditor()
     return true

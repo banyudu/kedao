@@ -1,4 +1,4 @@
-import { EditorState, EditorProps, ContentState, ContentBlock } from 'draft-js'
+import { EditorState, EditorProps, ContentState, ContentBlock, DraftDecorator, CompositeDecorator } from 'draft-js'
 import * as React from 'react'
 
 export { EditorState, EditorProps }
@@ -336,3 +336,32 @@ export type ImageControlItem =
     render?: (mediaData: any, block?: ContentBlock) => void
     onClick?: (block: ContentBlock) => void
   }
+
+export interface Position {
+  float?: any
+  alignment?: any
+}
+
+export interface Extension {
+  name?: string
+  type?: string
+  style?: React.CSSProperties
+  includeEditors: string[]
+  excludeEditors: string[]
+  control?: Function
+  decorator?: DraftDecorator | CompositeDecorator
+  importer?: Function
+  exporter?: Function
+  interceptor?: (editorProps: EditorProps) => EditorProps
+  component?: React.ComponentType<any>
+  rendererFn?: Function
+  renderMap?: (editorProps: EditorProps) => RenderMap
+  styleFn?: Function
+  mutability?: string
+  data: any
+  strategy?: DraftDecorator['strategy']
+}
+
+export type RenderMap = Immutable.Map<string, {
+  element: React.ComponentType<any>
+}>

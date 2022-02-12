@@ -217,8 +217,8 @@ const ControlBar: FC<ControlBarProps> = ({
         })
       )
     }
-    if (type === 'editor-method' && editor[hookCommand]) {
-      editor[hookCommand]()
+    if (type === 'editor-method' && editor.commands[hookCommand]) {
+      editor.commands[hookCommand]()
     }
     return editor
   }

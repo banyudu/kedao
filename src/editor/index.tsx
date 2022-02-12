@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState, useRef } from 'react'
 import Finder from '../finder'
-// import { ColorUtils, ContentUtils } from '../utils'
-import { ColorUtils } from '../utils'
+import { ColorUtils, ContentUtils } from '../utils'
 import { Editor, EditorProps, EditorState } from 'draft-js'
 import { Map } from 'immutable'
 import mergeClassNames from 'merge-class-names'
@@ -329,8 +328,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const [tempColors, setTempColors] = useState(_tempColors)
   const [editorState, setEditorState] = useState(defaultEditorState)
-  // const [isFullscreen, setIsFullscreen] = useState(false)
-  const [isFullscreen] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   const [randomFlag, setRandomFlag] = useState(Math.random())
 
@@ -528,36 +526,38 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   const handleCompositionStart = event =>
     compositionStartHandler(event, getCallbackEditor())
 
-  // const undo = () => {
-  //   setValue(ContentUtils.undo(editorState))
-  // }
+  const undo = () => {
+    setValue(ContentUtils.undo(editorState))
+  }
 
-  // const redo = () => {
-  //   setValue(ContentUtils.redo(editorState))
-  // }
+  const redo = () => {
+    setValue(ContentUtils.redo(editorState))
+  }
 
-  // const removeSelectionInlineStyles = () => {
-  //   setValue(
-  //     ContentUtils.removeSelectionInlineStyles(editorState)
-  //   )
-  // }
+  const removeSelectionInlineStyles = () => {
+    setValue(
+      ContentUtils.removeSelectionInlineStyles(editorState)
+    )
+  }
 
-  // const insertHorizontalLine = () => {
-  //   setValue(ContentUtils.insertHorizontalLine(editorState))
-  // }
+  const insertHorizontalLine = () => {
+    setValue(ContentUtils.insertHorizontalLine(editorState))
+  }
 
-  // const clearEditorContent = () => {
-  //   setValue(ContentUtils.clear(editorState), (editorState: EditorState) => {
-  //     setValue(ContentUtils.toggleSelectionIndent(editorState, 0))
-  //   })
-  // }
+  const clearEditorContent = () => {
+    setValue(ContentUtils.clear(editorState), (editorState: EditorState) => {
+      setValue(ContentUtils.toggleSelectionIndent(editorState, 0))
+    })
+  }
 
-  // const toggleFullscreen = fullscreen => {
-  //   setIsFullscreen(v => typeof fullscreen !== 'undefined'
-  //     ? fullscreen
-  //     : !v)
-  //   editorPropsRef.current.onFullscreen?.(isFullscreen)
-  // }
+  const toggleFullscreen = () => {
+    let newValue = null
+    setIsFullscreen(v => {
+      newValue = !v
+      return newValue
+    })
+    editorPropsRef.current.onFullscreen?.(newValue)
+  }
 
   const lockOrUnlockEditor = editorLocked => {
     setEditorLocked(editorLocked)
@@ -588,7 +588,15 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         draftInstanceRef.current?.blur()
       },
       readOnly: props.readOnly,
-      forceRender
+      forceRender,
+      commands: {
+        undo,
+        redo,
+        removeSelectionInlineStyles,
+        insertHorizontalLine,
+        clearEditorContent,
+        toggleFullscreen
+      }
     }
     return callbackEditor
   }

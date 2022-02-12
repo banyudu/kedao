@@ -42,6 +42,7 @@ export interface CallbackEditor {
   blur: () => void
   readOnly: boolean
   forceRender: () => void
+  commands: Record<string, () => void>
 }
 
 export interface ConvertOptions {

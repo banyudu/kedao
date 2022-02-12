@@ -1,8 +1,7 @@
 import React from 'react'
 import Finder from '../finder'
 import { ColorUtils, ContentUtils } from '../utils'
-import { Editor, EditorProps } from 'draft-js'
-import KedaoEditorState from './state'
+import { Editor, EditorProps, EditorState } from 'draft-js'
 import { Map } from 'immutable'
 import mergeClassNames from 'merge-class-names'
 
@@ -44,7 +43,6 @@ import 'draft-js/dist/Draft.css'
 import '../assets/scss/_kedao.scss'
 import {
   CallbackEditor,
-  EditorState,
   ControlItem,
   BuiltInControlNames,
   DropDownControlItem,
@@ -55,6 +53,97 @@ import {
   ImageControlItem,
   ConvertOptions
 } from '../types'
+import {
+  convertEditorStateToRaw,
+  convertRawToEditorState,
+  convertHTMLToEditorState
+} from '../convert'
+
+export const createStateFromContent = (content, options: ConvertOptions = {}) => {
+  const customOptions: ConvertOptions = { ...options }
+  customOptions.unitExportFn =
+      customOptions.unitExportFn || defaultProps.converts.unitExportFn
+  customOptions.styleImportFn = compositeStyleImportFn(
+    customOptions.styleImportFn,
+    customOptions.editorId
+  )
+  customOptions.entityImportFn = compositeEntityImportFn(
+    customOptions.entityImportFn,
+    customOptions.editorId
+  )
+  customOptions.blockImportFn = compositeBlockImportFn(
+    customOptions.blockImportFn,
+    customOptions.editorId
+  )
+
+  let editorState: EditorState = null
+
+  if (content instanceof EditorState) {
+    editorState = content
+  }
+  if (
+    typeof content === 'object' &&
+      content &&
+      content.blocks &&
+      content.entityMap
+  ) {
+    editorState = convertRawToEditorState(
+      content,
+      getDecorators(customOptions.editorId)
+    )
+  }
+  if (typeof content === 'string') {
+    try {
+      if (/^(-)?\d+$/.test(content)) {
+        editorState = convertHTMLToEditorState(
+          content,
+          getDecorators(customOptions.editorId),
+          customOptions,
+          'create'
+        )
+      } else {
+        editorState = createStateFromContent(
+          JSON.parse(content),
+          customOptions
+        )
+      }
+    } catch (error) {
+      editorState = convertHTMLToEditorState(
+        content,
+        getDecorators(customOptions.editorId),
+        customOptions,
+        'create'
+      )
+    }
+  }
+  if (typeof content === 'number') {
+    editorState = convertHTMLToEditorState(
+      content.toLocaleString().replace(/,/g, ''),
+      getDecorators(customOptions.editorId),
+      customOptions,
+      'create'
+    )
+  } else {
+    editorState = EditorState.createEmpty(
+      getDecorators(customOptions.editorId)
+    )
+  }
+
+  customOptions.styleExportFn = compositeStyleExportFn(
+    customOptions.styleExportFn,
+    customOptions.editorId
+  )
+  customOptions.entityExportFn = compositeEntityExportFn(
+    customOptions.entityExportFn,
+    customOptions.editorId
+  )
+  customOptions.blockExportFn = compositeBlockExportFn(
+    customOptions.blockExportFn,
+    customOptions.editorId
+  )
+
+  return editorState
+}
 
 export interface KedaoEditorProps {
   value?: EditorState
@@ -198,9 +287,9 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
   valueInitialized: boolean
   containerNode: any
   draftInstance: any
+  convertOptions: ConvertOptions
 
   static defaultProps = defaultProps
-  static createEditorState = KedaoEditorState.createFrom
   static use = useExtension
 
   constructor (props) {
@@ -217,19 +306,17 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     this.valueInitialized = !!(this.props.defaultValue || this.props.value)
 
     const defaultEditorState =
-      (this.props.defaultValue || this.props.value) instanceof KedaoEditorState
+      (this.props.defaultValue || this.props.value) instanceof EditorState
         ? this.props.defaultValue || this.props.value
-        : KedaoEditorState.createEmpty(this.editorDecorators);
-    (defaultEditorState as any).setConvertOptions(getConvertOptions(this.editorProps))
+        : EditorState.createEmpty(this.editorDecorators)
+    this.convertOptions = getConvertOptions(this.editorProps)
 
     let tempColors = []
 
     if (defaultEditorState instanceof EditorState) {
       const colors = ColorUtils.detectColorsFromDraftState(
-        (defaultEditorState as any).toRAW(true)
-      );
-      (defaultEditorState as any).setConvertOptions(getConvertOptions(this.editorProps))
-
+        convertEditorStateToRaw(defaultEditorState)
+      )
       tempColors = filterColors(colors, this.editorProps.colors)
     }
 
@@ -312,9 +399,9 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     if (nextEditorState) {
       if (nextEditorState && nextEditorState !== this.state.editorState) {
         const tempColors = ColorUtils.detectColorsFromDraftState(
-          nextEditorState.toRAW(true)
+          convertEditorStateToRaw(nextEditorState)
         )
-        nextEditorState.setConvertOptions(getConvertOptions(this.editorProps))
+        this.convertOptions = getConvertOptions(this.editorProps)
 
         this.setState(
           prevState => ({
@@ -340,9 +427,7 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
 
   componentDidUpdate (_prevProps, prevState) {
     if (prevState.editorState !== this.state.editorState) {
-      this.state.editorState.setConvertOptions(
-        getConvertOptions(this.editorProps)
-      )
+      this.convertOptions = getConvertOptions(this.editorProps)
     }
   }
 
@@ -373,26 +458,20 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
   }
 
   onChange = (editorState: EditorState, callback?) => {
-    let newEditorState = KedaoEditorState.fromEditorState({ ...editorState } as any)
-    if (!(editorState instanceof KedaoEditorState)) {
-      newEditorState = KedaoEditorState.fromEditorState(
-        KedaoEditorState.set(editorState, {
-          decorator: this.editorDecorators
-        })
-      )
+    let newEditorState = editorState
+    if (!(editorState instanceof EditorState)) {
+      newEditorState = EditorState.set(editorState, {
+        decorator: this.editorDecorators
+      })
     }
 
-    if (!newEditorState.convertOptions) {
-      newEditorState.setConvertOptions(getConvertOptions(this.editorProps))
+    if (!this.convertOptions) {
+      this.convertOptions = getConvertOptions(this.editorProps)
     }
 
     this.setState({ editorState: newEditorState }, () => {
-      if (this.props.onChange) {
-        this.props.onChange(newEditorState)
-      }
-      if (callback) {
-        callback(newEditorState)
-      }
+      this.props.onChange?.(newEditorState)
+      callback?.(newEditorState)
     })
   }
 
@@ -416,12 +495,12 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     const selectionState = this.state.editorState.getSelection()
 
     this.setValue(
-      KedaoEditorState.set(this.state.editorState, {
+      EditorState.set(this.state.editorState, {
         decorator: this.editorDecorators
       }),
       () => {
         this.setValue(
-          KedaoEditorState.forceSelection(
+          EditorState.forceSelection(
             this.state.editorState,
             selectionState
           )
@@ -440,23 +519,17 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     ) {
       event.preventDefault()
     }
-    if (this.editorProps.onTab) {
-      this.editorProps.onTab(event)
-    }
+    this.editorProps.onTab?.(event)
   }
 
   onFocus = () => {
     this.isFocused = true
-    if (this.editorProps.onFocus) {
-      this.editorProps.onFocus(this.state.editorState)
-    }
+    this.editorProps.onFocus?.(this.state.editorState)
   }
 
   onBlur = () => {
     this.isFocused = false
-    if (this.editorProps.onBlur) {
-      this.editorProps.onBlur(this.state.editorState)
-    }
+    this.editorProps.onBlur?.(this.state.editorState)
   }
 
   requestFocus = () => {
@@ -556,7 +629,11 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
       setOnChange: onChange => {
         this.onChange = onChange
       },
-      convertOptions: this.state.editorState.convertOptions
+      convertOptions: this.convertOptions,
+      blur: () => {
+        this.draftInstance.blur()
+      },
+      readOnly: this.props.readOnly
     }
     return callbackEditor
   }
@@ -664,7 +741,7 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
       defaultLinkTarget
     }
 
-    const { unitExportFn } = editorState.convertOptions
+    const { unitExportFn } = this.convertOptions
 
     const commonProps = {
       editor: callbackEditor,
@@ -714,7 +791,7 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
     if (
       placeholder &&
       fixPlaceholder &&
-      editorState.isEmpty() &&
+      !editorState.getCurrentContent().hasText() &&
       editorState
         .getCurrentContent()
         .getFirstBlock()
@@ -780,4 +857,4 @@ class KedaoEditor extends React.Component<KedaoEditorProps, any> {
 
 export default KedaoEditor
 
-export { KedaoEditorState as EditorState }
+export { EditorState }

@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { CSSProperties } from 'react'
 import { ContentState } from 'draft-js'
+import { ConvertOptions } from '../types'
 
 export const namedColors = {
   aliceblue: '#f0f8ff',
@@ -431,7 +432,7 @@ const styleToHTML = (options) => (style) => {
   }
 }
 
-const blockToHTML = (options) => (block) => {
+const blockToHTML = (options: ConvertOptions) => (block) => {
   const { blockExportFn, contentState } = options
 
   if (blockExportFn) {
@@ -505,7 +506,7 @@ const blockToHTML = (options) => (block) => {
   }
 }
 
-const htmlToStyle = (options, source) => (nodeName, node, currentStyle) => {
+const htmlToStyle = (options: ConvertOptions, source) => (nodeName, node, currentStyle) => {
   if (!node || !node.style) {
     return currentStyle
   }
@@ -574,87 +575,86 @@ const htmlToStyle = (options, source) => (nodeName, node, currentStyle) => {
   return newStyle
 }
 
-const htmlToEntity =
-  (options, source) =>
-    (nodeName, node: HTMLVideoElement & HTMLImageElement, createEntity) => {
-      if (options?.entityImportFn) {
-        const customInput = options.entityImportFn(
-          nodeName,
-          node,
-          createEntity,
-          source
-        )
-        if (customInput) {
-          return customInput
-        }
+const htmlToEntity = (options: ConvertOptions, source) =>
+  (nodeName, node: HTMLVideoElement & HTMLImageElement, createEntity) => {
+    if (options?.entityImportFn) {
+      const customInput = options.entityImportFn(
+        nodeName,
+        node,
+        createEntity,
+        source
+      )
+      if (customInput) {
+        return customInput
       }
+    }
 
-      nodeName = nodeName.toLowerCase()
+    nodeName = nodeName.toLowerCase()
 
-      const { alt, title, id, controls, autoplay, loop, poster } = node
-      const meta: any = {}
-      const nodeAttributes = {}
+    const { alt, title, id, controls, autoplay, loop, poster } = node
+    const meta: any = {}
+    const nodeAttributes = {}
 
-      id && (meta.id = id)
-      alt && (meta.alt = alt)
-      title && (meta.title = title)
-      controls && (meta.controls = controls)
-      autoplay && (meta.autoPlay = autoplay)
-      loop && (meta.loop = loop)
-      poster && (meta.poster = poster)
+    id && (meta.id = id)
+    alt && (meta.alt = alt)
+    title && (meta.title = title)
+    controls && (meta.controls = controls)
+    autoplay && (meta.autoPlay = autoplay)
+    loop && (meta.loop = loop)
+    poster && (meta.poster = poster)
 
-      node.attributes &&
+    node.attributes &&
       Object.keys(node.attributes).forEach((key) => {
         const attr = node.attributes[key]
         !ignoredEntityNodeAttributes.includes(attr.name) &&
           (nodeAttributes[attr.name] = attr.value)
       })
 
-      if (nodeName === 'a' && node.querySelectorAll('img').length > 0) {
-        const href = node.getAttribute('href')
-        const target = node.getAttribute('target')
-        return createEntity('LINK', 'MUTABLE', { href, target, nodeAttributes })
-      } else if (nodeName === 'audio') {
-        return createEntity('AUDIO', 'IMMUTABLE', {
-          url: node.getAttribute('src'),
-          meta,
-          nodeAttributes
+    if (nodeName === 'a' && node.querySelectorAll('img').length > 0) {
+      const href = node.getAttribute('href')
+      const target = node.getAttribute('target')
+      return createEntity('LINK', 'MUTABLE', { href, target, nodeAttributes })
+    } else if (nodeName === 'audio') {
+      return createEntity('AUDIO', 'IMMUTABLE', {
+        url: node.getAttribute('src'),
+        meta,
+        nodeAttributes
+      })
+    } else if (nodeName === 'video') {
+      return createEntity('VIDEO', 'IMMUTABLE', {
+        url: node.getAttribute('src'),
+        meta,
+        nodeAttributes
+      })
+    } else if (nodeName === 'img') {
+      const parentNode: any = node.parentNode
+      const entityData: any = { meta }
+      const { width, height } = node.style
+
+      entityData.url = node.getAttribute('src')
+      width && (entityData.width = width)
+      height && (entityData.height = height)
+
+      if (parentNode.nodeName.toLowerCase() === 'a') {
+        entityData.link = parentNode.getAttribute('href')
+        entityData.link_target = parentNode.getAttribute('target')
+      }
+
+      return createEntity('IMAGE', 'IMMUTABLE', entityData)
+    } else if (nodeName === 'hr') {
+      return createEntity('HR', 'IMMUTABLE', {})
+    } else if ((node.parentNode as any)?.classList.contains('embed-wrap')) {
+      const embedContent = node.innerHTML || node.outerHTML
+
+      if (embedContent) {
+        return createEntity('EMBED', 'IMMUTABLE', {
+          url: embedContent
         })
-      } else if (nodeName === 'video') {
-        return createEntity('VIDEO', 'IMMUTABLE', {
-          url: node.getAttribute('src'),
-          meta,
-          nodeAttributes
-        })
-      } else if (nodeName === 'img') {
-        const parentNode: any = node.parentNode
-        const entityData: any = { meta }
-        const { width, height } = node.style
-
-        entityData.url = node.getAttribute('src')
-        width && (entityData.width = width)
-        height && (entityData.height = height)
-
-        if (parentNode.nodeName.toLowerCase() === 'a') {
-          entityData.link = parentNode.getAttribute('href')
-          entityData.link_target = parentNode.getAttribute('target')
-        }
-
-        return createEntity('IMAGE', 'IMMUTABLE', entityData)
-      } else if (nodeName === 'hr') {
-        return createEntity('HR', 'IMMUTABLE', {})
-      } else if ((node.parentNode as any)?.classList.contains('embed-wrap')) {
-        const embedContent = node.innerHTML || node.outerHTML
-
-        if (embedContent) {
-          return createEntity('EMBED', 'IMMUTABLE', {
-            url: embedContent
-          })
-        }
       }
     }
+  }
 
-const htmlToBlock = (options, source) => (nodeName, node: HTMLElement) => {
+const htmlToBlock = (options: ConvertOptions, source) => (nodeName, node: HTMLElement) => {
   if (options?.blockImportFn) {
     const customInput = options.blockImportFn(nodeName, node, source)
     if (customInput) {
@@ -724,7 +724,7 @@ const htmlToBlock = (options, source) => (nodeName, node: HTMLElement) => {
   }
 }
 
-export const getToHTMLConfig = (options) => {
+export const getToHTMLConfig = (options: ConvertOptions) => {
   return {
     styleToHTML: styleToHTML(options),
     entityToHTML: entityToHTML(options),
@@ -732,7 +732,7 @@ export const getToHTMLConfig = (options) => {
   }
 }
 
-export const getFromHTMLConfig = (options, source = 'unknow') => {
+export const getFromHTMLConfig = (options: ConvertOptions, source = 'unknow') => {
   return {
     htmlToStyle: htmlToStyle(options, source),
     htmlToEntity: htmlToEntity(options, source),

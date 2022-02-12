@@ -1,4 +1,4 @@
-import { EditorState, EditorProps } from 'draft-js'
+import { EditorState, EditorProps, ContentState } from 'draft-js'
 import * as React from 'react'
 
 export { EditorState, EditorProps }
@@ -39,16 +39,22 @@ export interface CallbackEditor {
   tempColors: string[]
   setTempColors: (colors: string[], callback: () => void) => void
   convertOptions: ConvertOptions
+  blur: () => void
+  readOnly: boolean
 }
 
 export interface ConvertOptions {
-  fontFamilies: string[]
-  styleImportFn: Function
-  styleExportFn: Function
-  entityImportFn: Function
-  entityExportFn: Function
-  blockImportFn: Function
-  blockExportFn: Function
+  editorId?: string
+  fontFamilies?: Array<{ name: string, family: string }>
+  styleImportFn?: Function
+  styleExportFn?: Function
+  entityImportFn?: Function
+  entityExportFn?: Function
+  blockImportFn?: Function
+  blockExportFn?: Function
+  unitImportFn?: Function
+  unitExportFn?: Function
+  contentState?: ContentState
 }
 
 export type KeyCommand = string

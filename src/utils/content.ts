@@ -89,7 +89,7 @@ export const getSelectionBlock = (editorState: EditorState) => {
     .getBlockForKey(editorState.getSelection().getAnchorKey())
 }
 
-export const updateEachCharacterOfSelection = (editorState: EditorState, callback) => {
+export const updateEachCharacterOfSelection = (editorState: EditorState, callback: Function) => {
   const selectionState = editorState.getSelection()
   const contentState = editorState.getCurrentContent()
   const contentBlocks = contentState.getBlockMap()
@@ -482,7 +482,7 @@ export const toggleSelectionFontFamily = (editorState: EditorState, fontFamily) 
   return toggleSelectionInlineStyle(editorState, fontFamily, 'FONTFAMILY-')
 }
 
-export const toggleSelectionLetterSpacing = (editorState: EditorState, letterSpacing) => {
+export const toggleSelectionLetterSpacing = (editorState: EditorState, letterSpacing: string) => {
   return toggleSelectionInlineStyle(
     editorState,
     letterSpacing,
@@ -627,7 +627,7 @@ export const insertMedias = (editorState: EditorState, medias = []): EditorState
   }, editorState)
 }
 
-export const setMediaData = (editorState: EditorState, entityKey, data): EditorState => {
+export const setMediaData = (editorState: EditorState, entityKey: string, data): EditorState => {
   return EditorState.push(
     editorState,
     editorState.getCurrentContent().mergeEntityData(entityKey, data),
@@ -683,7 +683,7 @@ export const clear = (editorState: EditorState) => {
   )
 }
 
-export const handleKeyCommand = (editorState: EditorState, command) => {
+export const handleKeyCommand = (editorState: EditorState, command: string) => {
   return RichUtils.handleKeyCommand(editorState, command)
 }
 

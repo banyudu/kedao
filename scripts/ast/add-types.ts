@@ -44,6 +44,18 @@ const importConfigMap: Record<string, ImportConfig> = {
   },
   insertEmptyBlockOnReturnWithModifierKey: {
     typeName: 'boolean'
+  },
+  command: {
+    typeName: 'string'
+  },
+  letterSpacing: {
+    typeName: 'string'
+  },
+  entityKey: {
+    typeName: 'string'
+  },
+  callback: {
+    typeName: 'Function'
   }
 }
 

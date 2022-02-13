@@ -10,7 +10,7 @@ import * as TableUtils from './utils'
 // 在最后一个单元格中按Shift + 回车跳出表格
 
 export const handleKeyCommand =
-  (oringeHandler) => (command, editorState: EditorState, editor: CallbackEditor) => {
+  (oringeHandler) => (command: string, editorState: EditorState, editor: CallbackEditor) => {
     if (
       oringeHandler &&
       oringeHandler(command, editorState, editor) === 'handled'

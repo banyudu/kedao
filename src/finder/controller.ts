@@ -198,7 +198,7 @@ export default class FinderController {
     this.changeListeners.forEach(({ callback }) => callback(this.items))
   };
 
-  uploadImage = (file, callback) => {
+  uploadImage = (file, callback: Function) => {
     const fileId = new Date().getTime() + '_' + UniqueIndex()
 
     this.addMediaItem({
@@ -215,7 +215,7 @@ export default class FinderController {
     })
   };
 
-  uploadImageRecursively = (files, callback, index = 0) => {
+  uploadImageRecursively = (files, callback: Function, index = 0) => {
     if (files[index] && files[index].type.indexOf('image') > -1) {
       this.uploadImage(files[index], (image) => {
         callback?.(image)
@@ -283,7 +283,7 @@ export default class FinderController {
     }
   };
 
-  onChange = (callback) => {
+  onChange = (callback: Function) => {
     const listenerId = UniqueIndex()
 
     this.changeListeners.push({

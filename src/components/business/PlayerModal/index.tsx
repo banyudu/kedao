@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC, MouseEventHandler } from 'react'
 import { showModal } from '../../common/Modal'
 import './style.scss'
 import { MdClose, MdCode, MdMusicVideo, MdPlayArrow, MdVideocam } from 'react-icons/md'
@@ -19,7 +19,17 @@ const iconMap = {
   embed: <MdCode {...defaultIconProps} />
 }
 
-const PlayerModal = ({
+interface PlayerModalProps {
+  title: string
+  type: keyof typeof iconMap
+  language: Language
+  name: string
+  url: string
+  poster: Function
+  onRemove: MouseEventHandler
+}
+
+const PlayerModal: FC<PlayerModalProps> = ({
   title,
   type,
   language,

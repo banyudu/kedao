@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import './styles.scss'
 import { Map } from 'immutable'
-import { EditorState, SelectionState, ContentState } from 'draft-js'
+import { EditorState, SelectionState, ContentState, ContentBlock } from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
 import { ContentUtils } from '../../utils'
 import Prism from 'prismjs'
@@ -104,7 +104,7 @@ const CodeBlockWrapper = ({
   )
 }
 
-const getCodeBlockBlock = (block) => {
+const getCodeBlockBlock = (block: ContentBlock) => {
   if (!block || !block.getType || block.getType() !== 'code-block') {
     return null
   }

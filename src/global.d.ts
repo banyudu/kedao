@@ -7,3 +7,4 @@ declare global {
 }
 
 declare module 'mymergeclassnames' {}
+declare module 'draftjs-utils' {}

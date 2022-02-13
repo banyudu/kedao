@@ -236,14 +236,14 @@ const isControlEnabled = (
   )
 }
 
-const getConvertOptions = ({
-  _editorId: editorId,
-  id,
-  converts,
-  fontFamilies
+const getConvertOptions = ({ _editorId: editorId, id, converts, fontFamilies }: {
+  _editorId: string
+  id: string
+  converts: Partial<ConvertOptions>
+  fontFamilies: ConvertOptions['fontFamilies']
 }): ConvertOptions => {
   const realEditorId = editorId || id
-  const convertOptions = {
+  const convertOptions: ConvertOptions = {
     ...defaultProps.converts,
     ...converts,
     fontFamilies: fontFamilies
@@ -317,7 +317,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       : EditorState.createEmpty(editorDecoratorsRef.current)
   const convertOptionsRef = useRef(getConvertOptions(editorPropsRef.current))
 
-  let _tempColors = []
+  let _tempColors: string[] = []
 
   if (defaultEditorState instanceof EditorState) {
     const colors = ColorUtils.detectColorsFromDraftState(
@@ -430,7 +430,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     convertOptionsRef.current = getConvertOptions(editorPropsRef.current)
   }, [editorState])
 
-  let handleChange = (editorState: EditorState, callback?) => {
+  let handleChange = (editorState: EditorState, callback?: Function) => {
     let newEditorState = editorState
     if (!(editorState instanceof EditorState)) {
       newEditorState = EditorState.set(editorState, {
@@ -451,7 +451,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     return editorState
   }
 
-  const setValue = (editorState: EditorState, callback?) => {
+  const setValue = (editorState: EditorState, callback?: Function) => {
     return handleChange(editorState, callback)
   }
 
@@ -500,7 +500,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     setTimeout(() => draftInstanceRef.current?.focus(), 0)
   }
 
-  const handleKeyCommand = (command, editorState: EditorState) =>
+  const handleKeyCommand = (command: string, editorState: EditorState) =>
     keyCommandHandlers(command, editorState, getCallbackEditor())
 
   const handleReturn = (event, editorState: EditorState) =>

@@ -173,7 +173,7 @@ const ControlBar: FC<ControlBarProps> = ({
     return className
   }
 
-  const applyControl = (command, type: string, data: any = {}) => {
+  const applyControl = (command: string, type: string, data: any = {}) => {
     let hookCommand = command
     const hookReturns = hooks(
       commandHookMap[type] || type,

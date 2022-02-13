@@ -162,7 +162,7 @@ const Image: FC<ImageProps> = ({
     return false
   }
 
-  const executeCommand = command => {
+  const executeCommand = (command: string | Function) => {
     const allCommands = {
       setImageFloat,
       setImageAlignment,
@@ -172,9 +172,7 @@ const Image: FC<ImageProps> = ({
     }
     if (typeof command === 'string') {
       const [method, param] = command.split('|')
-      if (allCommands[method]) {
-        allCommands[method](param)
-      }
+      allCommands[method]?.(param)
     } else if (typeof command === 'function') {
       command(block, mediaData, editor.getValue())
     }

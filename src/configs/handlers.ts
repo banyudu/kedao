@@ -6,7 +6,7 @@ import { CallbackEditor } from '../types'
 import defaultProps from './props'
 import { convertEditorStateToHTML } from '../convert'
 
-export const keyCommandHandlers = (command, editorState: EditorState, editor: CallbackEditor) => {
+export const keyCommandHandlers = (command: string, editorState: EditorState, editor: CallbackEditor) => {
   if (
     editor.editorProps.handleKeyCommand?.(command, editorState, editor) ===
       'handled'

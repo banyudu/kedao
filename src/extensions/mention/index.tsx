@@ -51,7 +51,7 @@ export default (options: any = {}) => {
           // 如果有更好的办法请告知
           const hackOnChange = editor.onChange
           if (hackOnChange) {
-            editor.setOnChange((editorState, callback) => {
+            editor.setOnChange((editorState, callback: Function) => {
               hackOnChange.call(editor, editorState, callback)
               if (draftEditorPlugin.onChange) {
                 draftEditorPlugin.onChange(editorState, getAndSetState)

@@ -1,4 +1,4 @@
-import React, { CSSProperties, useRef, useState, FC } from 'react'
+import React, { CSSProperties, useRef, useState, FC, MouseEventHandler } from 'react'
 import { ContentUtils } from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import BuiltinColorPicker from '../../common/ColorPicker'
@@ -33,7 +33,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
 
   const dropDownInstance = useRef(null)
 
-  const switchColorType = ({ currentTarget }) => {
+  const switchColorType: MouseEventHandler<HTMLButtonElement> = ({ currentTarget }) => {
     setColorType(currentTarget.dataset.type)
   }
 

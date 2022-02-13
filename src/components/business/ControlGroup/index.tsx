@@ -1,12 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 
-const ControlGroup = ({ children }) => (
+const ControlGroup: FC<{}> = ({ children }) => (
   <div className="control-item-group">{children}</div>
 )
-
-ControlGroup.propTypes = {
-  children: PropTypes.any
-}
 
 export default ControlGroup

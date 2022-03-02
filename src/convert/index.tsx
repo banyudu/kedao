@@ -74,7 +74,7 @@ export const convertEditorStateToRaw = (editorState: EditorState) => {
   return convertToRaw(editorState.getCurrentContent())
 }
 
-export const convertRawToEditorState = (rawContent, editorDecorators) => {
+export const convertRawToEditorState = (rawContent, editorDecorators?) => {
   try {
     return EditorState.createWithContent(
       convertFromRaw(rawContent),
@@ -85,3 +85,5 @@ export const convertRawToEditorState = (rawContent, editorDecorators) => {
     return EditorState.createEmpty(editorDecorators)
   }
 }
+
+export { convertFromRaw, convertToRaw }

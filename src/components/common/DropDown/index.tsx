@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef } from 'react'
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import mergeClassNames from 'merge-class-names'
 import ResponsiveHelper from '../../../helpers/responsive'
 import './style.scss'
@@ -109,6 +109,10 @@ const DropDown = forwardRef<any, DropDownProps>(({
   const hide = () => {
     setActive(false)
   }
+  
+  useImperativeHandle(ref, () => {
+    return {hide, toggle}
+  }, [setActive]);
 
   return (
     <div
@@ -118,7 +122,6 @@ const DropDown = forwardRef<any, DropDownProps>(({
         disabled && 'disabled',
         className
       )}
-      ref={ref}
     >
       {
         htmlCaption

@@ -20,7 +20,7 @@
     "lint:fix-js": "eslint --fix . --ext .js,.jsx,.ts,.tsx",
     "lint:fix-style": "stylelint --fix src/**/*.{css,scss}",
     "prepublishOnly": "npm run build",
-    "postversion": "npm publish",
+    "postversion": "npm publish && git push --follow-tags",
     "copyfiles": "copyfiles -u 1 'src/**/*.{scss,woff,ttf,json}' lib/",
     "build": "rimraf lib && tsc && npm run copyfiles",
     "build:watch": "tsc -w",

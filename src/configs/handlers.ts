@@ -29,7 +29,7 @@ export const keyCommandHandlers = (command: string, editorState: EditorState, ed
   const cursorIsAtFirst = cursorStart === 0 && cursorEnd === 0
 
   if (command === 'backspace') {
-    if (!editor.editorProps.onDelete?.(editorState)) {
+    if (editor.editorProps.onDelete && !editor.editorProps.onDelete?.(editorState)) {
       return 'handled'
     }
 

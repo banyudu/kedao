@@ -40,7 +40,7 @@ import {
 import ControlBar from '../components/business/ControlBar'
 
 import 'draft-js/dist/Draft.css'
-import '../assets/scss/_kedao.scss'
+import '../assets/scss/kedao.scss'
 import {
   CallbackEditor,
   ControlItem,

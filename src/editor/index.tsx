@@ -241,7 +241,6 @@ export interface KedaoEditorProps {
   onChange?: (editorState: EditorState) => void
   onFocus?: Function
   onBlur?: Function
-  onTab?: Function
   onDelete?: Function
   onSave?: Function
   onFullscreen?: Function
@@ -287,6 +286,11 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   const { defaultValue, value, onChange } = props
   const draftInstanceRef = useRef(null)
   const [editorLocked, setEditorLocked] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setLoading(false)
+  }, [])
 
   const getEditorProps = (): KedaoEditorProps => {
     const { value, defaultValue, onChange, ...restProps } = props // eslint-disable-line no-unused-vars
@@ -540,13 +544,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     }
 
     return 'not-handled'
-  }
-
-  const onTab = (event) => {
-    if (keyCommandHandlers('tab', editorState) === 'handled') {
-      event.preventDefault()
-    }
-    editorProps.onTab?.(event)
   }
 
   const onFocus = () => {
@@ -1008,6 +1005,10 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   )
   const memoControls = useMemo(() => controls, [controls?.join(',')])
 
+  if (loading) {
+    return null
+  }
+
   return (
     <JotaiProvider>
       <div
@@ -1071,7 +1072,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
             handlePastedText={handlePastedText}
             handlePastedFiles={handlePastedFiles}
             onChange={handleChange}
-            onTab={onTab}
             onFocus={onFocus}
             onBlur={onBlur}
             blockRenderMap={blockRenderMap}

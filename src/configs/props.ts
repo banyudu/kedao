@@ -283,7 +283,6 @@ export default {
   onChange: null,
   onFocus: null,
   onBlur: null,
-  onTab: null,
   onDelete: null,
   onSave: null,
   fixPlaceholder: false

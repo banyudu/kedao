@@ -56,7 +56,6 @@ sidebar_position: 2
 | onChange                 | 变更回调             | (editorState: EditorState) => void                                  |        |
 | onFocus                  | 聚焦回调函数         | Function                                                            |        |
 | onBlur                   | 失焦回调函数         | Function                                                            |        |
-| onTab                    |                      | Function                                                            |        |
 | onDelete                 |                      | Function                                                            |        |
 | onSave                   |                      | Function                                                            |        |
 | onFullscreen             |                      | Function                                                            |        |

@@ -1,11 +1,11 @@
-
 import { classNameParser } from '../../utils/style'
 import React, {
   CSSProperties,
   useRef,
   useState,
   FC,
-  MouseEventHandler
+  MouseEventHandler,
+  useEffect
 } from 'react'
 import {
   toggleSelectionBackgroundColor,
@@ -44,8 +44,10 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   onRequestFocus
 }) => {
   const [colorType, setColorType] = useState('color')
-
   const dropDownInstance = useRef(null)
+
+  const [captionStyle, setCaptionStyle] = useState<CSSProperties>({})
+  const [currentColor, setCurrentColor] = useState<string | null>(null)
 
   const switchColorType: MouseEventHandler<HTMLButtonElement> = ({
     currentTarget
@@ -80,28 +82,32 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
     return true
   }
 
-  const captionStyle: CSSProperties = {}
-  let currentColor = null
+  useEffect(() => {
+    const selectionStyles = editorState
+      .getCurrentInlineStyle()
+      .toJS() as string[]
+    const newCaptionStyle: CSSProperties = {}
+    let newCurrentColor: string | null = null
 
-  const selectionStyles = editorState
-    .getCurrentInlineStyle()
-    .toJS() as string[]
-
-  selectionStyles.forEach((style) => {
-    if (style.indexOf('COLOR-') === 0) {
-      captionStyle.color = `#${style.split('-')[1]}`
-      if (colorType === 'color') {
-        currentColor = captionStyle.color
+    selectionStyles.forEach(style => {
+      if (style.indexOf('COLOR-') === 0) {
+        newCaptionStyle.color = `#${style.split('-')[1]}`
+        if (colorType === 'color') {
+          newCurrentColor = newCaptionStyle.color
+        }
       }
-    }
 
-    if (style.indexOf('BGCOLOR-') === 0) {
-      captionStyle.backgroundColor = `#${style.split('-')[1]}`
-      if (colorType === 'background-color') {
-        currentColor = captionStyle.backgroundColor
+      if (style.indexOf('BGCOLOR-') === 0) {
+        newCaptionStyle.backgroundColor = `#${style.split('-')[1]}`
+        if (colorType === 'background-color') {
+          newCurrentColor = newCaptionStyle.backgroundColor
+        }
       }
-    }
-  })
+    })
+
+    setCaptionStyle(newCaptionStyle)
+    setCurrentColor(newCurrentColor)
+  }, [editorState])
 
   const caption = (
     <MdFormatColorText {...defaultIconProps} style={captionStyle} />
@@ -126,16 +132,16 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
           style={enableBackgroundColor ? {} : { display: 'none' }}
         >
           <button
-            type="button"
-            data-type="color"
+            type='button'
+            data-type='color'
             className={cls(colorType === 'color' ? 'active' : '')}
             onClick={switchColorType}
           >
             {language.controls.textColor}
           </button>
           <button
-            type="button"
-            data-type="background-color"
+            type='button'
+            data-type='background-color'
             className={cls(colorType === 'background-color' ? 'active' : '')}
             onClick={switchColorType}
           >

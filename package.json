@@ -106,8 +106,8 @@
     "react-dom": ">=16.8.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
-    "*.{css,scss}": "stylelint --fix",
-    "*.md": "prettier --write"
+    "!(examples/**/*)*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "!(examples/**/*)*.{css,scss}": "stylelint --fix",
+    "!(examples/**/*)*.md": "prettier --write"
   }
 }

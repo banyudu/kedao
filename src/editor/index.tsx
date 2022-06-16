@@ -424,7 +424,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         setEditorState(nextEditorState)
       }
     }
-  }, [])
+  })
 
   useEffect(() => {
     convertOptionsRef.current = getConvertOptions(editorPropsRef.current)

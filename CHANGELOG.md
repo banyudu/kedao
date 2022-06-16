@@ -1,3 +1,14 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.2](https://github.com/banyudu/kedao/compare/v0.1.0...v0.1.2) (2022-06-16)
+
+### Bug Fixes
+
+- compile ([#6](https://github.com/banyudu/kedao/issues/6)) ([bfbda5f](https://github.com/banyudu/kedao/commit/bfbda5f663ff65f93d62266041b1d8cdb4a15106))
+- value should be controlled ([90044dd](https://github.com/banyudu/kedao/commit/90044ddc103422200f82c413819d0a7cac068ea0))
+
 ## [0.1.0](https://github.com/banyudu/kedao/compare/v0.0.5...v0.1.0) (2022-06-15)
 
 - release compiled css ([abf4e14](https://github.com/banyudu/kedao/commit/abf4e142ebb9694fb45b97fea142300e51431b78))

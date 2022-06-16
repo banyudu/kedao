@@ -109,10 +109,10 @@ const DropDown = forwardRef<any, DropDownProps>(({
   const hide = () => {
     setActive(false)
   }
-  
+
   useImperativeHandle(ref, () => {
-    return {hide, toggle}
-  }, [setActive]);
+    return { hide, toggle }
+  }, [setActive])
 
   return (
     <div

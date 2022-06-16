@@ -1,6 +1,16 @@
 {
   "extends": "stylelint-config-standard-scss",
   "rules": {
-    "at-import-partial-extension": "always"
-  }
+    "scss/at-import-partial-extension": "always",
+    "no-descending-specificity": null,
+    "font-family-no-missing-generic-family-keyword": [
+      true,
+      {
+        "ignoreFontFamilies": "bf-icons"
+      }
+    ]
+  },
+  "plugins": [
+    "stylelint-scss"
+  ]
 }

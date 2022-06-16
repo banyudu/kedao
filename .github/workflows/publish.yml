@@ -9,43 +9,74 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Cache pnpm modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-
-    - uses: pnpm/action-setup@v2.1.0
-      with:
-        version: 7.2.1
-        run_install: |
-          - recursive: true
-            args: [--frozen-lockfile, --strict-peer-dependencies]
-    - run: npm test
+      - uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 7
+          run_install: false
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: npm config set registry https://registry.npmmirror.com && pnpm i -r
+      - run: npm test
 
   publish:
     name: publish
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Cache pnpm modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-
-    - uses: pnpm/action-setup@v2.1.0
-      with:
-        version: 7.2.1
-        run_install: |
-          - recursive: false
-            args: [--frozen-lockfile, --strict-peer-dependencies]
-    - run: git config user.name 'github-actions[bot]' && git config user.email 'github-actions[bot]@users.noreply.github.com'
-    - run: npm run version
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 7
+          run_install: false
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: npm config set registry https://registry.npmmirror.com && pnpm i -r
+      - run: git config user.name 'github-actions[bot]' && git config user.email 'github-actions[bot]@users.noreply.github.com'
+      - run: echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' >> ./.npmrc
+      - run: npm run version
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

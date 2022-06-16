@@ -28,6 +28,7 @@
     "postversion": "git push --follow-tags && npm publish",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
+    "test": "npm run build",
     "version": "standard-version",
     "watch:css": "gulp css --watch",
     "watch:js": "tsc -w"

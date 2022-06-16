@@ -27,6 +27,7 @@ jobs:
 
   publish:
     name: publish
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -43,6 +44,7 @@ jobs:
         run_install: |
           - recursive: false
             args: [--frozen-lockfile, --strict-peer-dependencies]
+    - run: git config user.name 'github-actions[bot]' && git config user.email 'github-actions[bot]@users.noreply.github.com'
     - run: npm run version
       env:
         NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

@@ -367,10 +367,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     }
   }, [])
 
-  // eslint-disable-next-line camelcase
   useEffect(() => {
-    editorPropsRef.current = getEditorProps()
-
     const editorState = value
     const { media, language } = editorPropsRef.current
     const currentProps: KedaoEditorProps = getEditorProps()
@@ -424,7 +421,8 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         setEditorState(nextEditorState)
       }
     }
-  })
+    editorPropsRef.current = currentProps
+  }, [defaultValue, value])
 
   useEffect(() => {
     convertOptionsRef.current = getConvertOptions(editorPropsRef.current)

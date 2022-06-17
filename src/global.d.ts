@@ -1,10 +1,10 @@
-export {}
-
-declare global {
-  interface Window {
-    __KEDAO_DRAGING__IMAGE__: any
-  }
+declare module 'draftjs-utils';
+declare module '*.scss' {
+  const content: Record<string, string>
+  export default content
 }
 
-declare module 'mymergeclassnames' {}
-declare module 'draftjs-utils' {}
+declare module '*.css' {
+  const content: Record<string, string>
+  export default content
+}

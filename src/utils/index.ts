@@ -1,7 +1,11 @@
-import * as _ContentUtils from './content'
-import * as _BaseUtils from './base'
-import * as _ColorUtils from './color'
+import * as ContentUtils from './content'
+import * as BaseUtils from './base'
+import * as ColorUtils from './color'
+import * as StyleUtils from './style'
 
-export const ContentUtils = _ContentUtils
-export const BaseUtils = _BaseUtils
-export const ColorUtils = _ColorUtils
+export {
+  ContentUtils,
+  BaseUtils,
+  ColorUtils,
+  StyleUtils
+}

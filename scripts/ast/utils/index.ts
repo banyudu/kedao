@@ -1,11 +1,21 @@
 
-import { Project, SourceFile, Node, MethodDeclaration, FunctionDeclaration, ArrowFunction, ImportDeclaration, FunctionExpression } from 'ts-morph'
+import {
+  Project,
+  SourceFile,
+  Node,
+  MethodDeclaration,
+  FunctionDeclaration,
+  ArrowFunction,
+  ImportDeclaration,
+  JsxAttribute,
+  FunctionExpression
+} from 'ts-morph'
 import * as path from 'path'
 
 /**
  * get project from command line options
  */
-export function getProject (): Project {
+export function getProject(): Project {
   return new Project({
     tsConfigFilePath: path.join(__dirname, '..', '..', '..', 'tsconfig.json')
   })
@@ -16,11 +26,11 @@ export function getProject (): Project {
  * @param node root node
  * @param callback callback function, return false to stop walk
  */
-export function walk (node: Node, callback: (node: Node) => boolean): boolean {
+export function walk(node: Node, callback: (node: Node) => boolean): boolean {
   return _walk(node, callback, new Set())
 }
 
-function _walk (node: Node, callback: (node: Node) => boolean, parsed: Set<Node>): boolean {
+function _walk(node: Node, callback: (node: Node) => boolean, parsed: Set<Node>): boolean {
   try {
     if (parsed.has(node) || node.compilerNode === null) {
       return false
@@ -46,7 +56,7 @@ function _walk (node: Node, callback: (node: Node) => boolean, parsed: Set<Node>
   return true
 }
 
-export function getFunctions (file: SourceFile): Array<MethodDeclaration | FunctionDeclaration | ArrowFunction | FunctionExpression> {
+export function getFunctions(file: SourceFile): Array<MethodDeclaration | FunctionDeclaration | ArrowFunction | FunctionExpression> {
   const functions: Array<MethodDeclaration | FunctionDeclaration | ArrowFunction | FunctionExpression> = []
   walk(file, (node) => {
     const checklist: any[] = [node]
@@ -70,7 +80,7 @@ export function getFunctions (file: SourceFile): Array<MethodDeclaration | Funct
   return functions
 }
 
-export function getImportDeclarationFromFile (sourceFile: SourceFile, file: SourceFile, createIfNotExists: boolean = false): ImportDeclaration | undefined {
+export function getImportDeclarationFromFile(sourceFile: SourceFile, file: SourceFile, createIfNotExists: boolean = false): ImportDeclaration | undefined {
   const arr = sourceFile.getImportDeclarations().filter(
     item => item.getModuleSpecifierSourceFile() === file
   ) ?? []
@@ -102,9 +112,9 @@ export function getImportDeclarationFromFile (sourceFile: SourceFile, file: Sour
   return result as ImportDeclaration
 }
 
-export function getImportDeclaration (sourceFile: SourceFile, module: string, createIfNotExists: boolean = false): ImportDeclaration | undefined {
+export function getImportDeclaration(sourceFile: SourceFile, moduleName: string, createIfNotExists: boolean = false): ImportDeclaration | undefined {
   const arr = sourceFile.getImportDeclarations().filter(
-    item => item.getModuleSpecifier().getLiteralValue() === module
+    item => item.getModuleSpecifier().getLiteralValue() === moduleName
   ) ?? []
   let result
   if (arr.length > 0) {
@@ -112,20 +122,20 @@ export function getImportDeclaration (sourceFile: SourceFile, module: string, cr
   }
 
   if (result === undefined && createIfNotExists) {
-    result = sourceFile.insertImportDeclaration(0, { moduleSpecifier: module, namedImports: [] })
+    result = sourceFile.insertImportDeclaration(0, { moduleSpecifier: moduleName, namedImports: [] })
   }
   return result as ImportDeclaration
 }
 
-export function camelToSnakeCase (str: string): string {
+export function camelToSnakeCase(str: string): string {
   return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
 }
 
-export function getFiles (): SourceFile[] {
+export function getFiles(): SourceFile[] {
   return getProject().getSourceFiles()
 }
 
-export function inspectNode (data: any | any[], withKindName?: boolean): void {
+export function inspectNode(data: any | any[], withKindName?: boolean): void {
   if (!Array.isArray(data)) {
     data = [data]
   }
@@ -135,4 +145,15 @@ export function inspectNode (data: any | any[], withKindName?: boolean): void {
       console.log(`    ${item.getKindName() as string}`)
     }
   })
+}
+
+export function getJsxAttributes(file: SourceFile): JsxAttribute[] {
+  const jsxAttrs: JsxAttribute[] = []
+  walk(file, (node) => {
+    if (Node.isJsxAttribute(node)) {
+      jsxAttrs.push(node)
+    }
+    return true
+  })
+  return jsxAttrs
 }

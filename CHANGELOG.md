@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.1.8 (2022-06-17)
+
+### Bug Fixes
+
+- add source map ([a2d2717](https://github.com/banyudu/kedao/commit/a2d27177dbb27991e699b09a1050d7c66298adad))
+
 ### 0.1.7 (2022-06-16)
 
 ### 0.1.6 (2022-06-16)

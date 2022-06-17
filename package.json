@@ -7,6 +7,7 @@
   "types": "./lib/index.d.ts",
   "author": "banyudu",
   "files": [
+    "src",
     "lib"
   ],
   "publishConfig": {

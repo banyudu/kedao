@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'src'
+      - 'tsconfig.json'
+      - '.github/workflows/publish.yml'
+      - 'package.json'
+      - 'gulpfile.js'
+      - '!src/**/*.md'
 name: Publish
 jobs:
   test:

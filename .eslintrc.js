@@ -1,7 +1,11 @@
 module.exports = {
   extends: ["standard-with-typescript", "plugin:react/recommended"],
   parserOptions: {
-    project: "./tsconfig.json",
+    project: [
+      "./tsconfig.json",
+      "./examples/**/tsconfig.json",
+      "./docs/tsconfig.json",
+    ],
   },
   rules: {
     "@typescript-eslint/strict-boolean-expressions": "off",

@@ -98,6 +98,7 @@
   "exclude": [
     "node_modules",
     "examples",
+    "docs",
     "lib",
     "scripts"
   ]

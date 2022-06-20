@@ -93,7 +93,15 @@
     // "noPropertyAccessFromIndexSignature": true,       /* Enforces using indexed accessors for keys declared using an indexed type */
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
+    "plugins": [
+      {
+        "transform": "ts-rename-import-plugin",
+        "type": "config",
+        "from": "\\.scss$",
+        "to": ".css"
+      },
+    ]
   },
   "exclude": [
     "node_modules",

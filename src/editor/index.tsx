@@ -115,8 +115,7 @@ export const createStateFromContent = (content, options: ConvertOptions = {}) =>
         'create'
       )
     }
-  }
-  if (typeof content === 'number') {
+  } else if (typeof content === 'number') {
     editorState = convertHTMLToEditorState(
       Number(content).toLocaleString().replace(/,/g, ''),
       getDecorators(customOptions.editorId),

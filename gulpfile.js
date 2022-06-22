@@ -10,6 +10,9 @@ function compileSass() {
 }
 
 gulp.task("css:compile", compileSass);
+gulp.task("css:watch", function () {
+  gulp.watch("**/*.scss", gulp.series("css:compile"));
+});
 
 // use ts-rename-import-plugin instead of gulp
 // function replaceSassImport() {
@@ -27,3 +30,4 @@ gulp.task("css:compile", compileSass);
 
 // exports.css = gulp.series("css:compile", "css:replace");
 exports.css = gulp.series("css:compile");
+exports.watch = gulp.series("css:watch");

@@ -31,7 +31,7 @@
     "prepublishOnly": "npm run build",
     "test": "npm run build",
     "version": "standard-version",
-    "watch:css": "gulp css --watch",
+    "watch:css": "gulp watch",
     "watch:js": "ttsc -w"
   },
   "repository": "https://github.com/banyudu/kedao",

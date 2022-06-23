@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.1.14 (2022-06-23)
+
+### Bug Fixes
+
+- control item icons vertical layout style ([8222685](https://github.com/banyudu/kedao/commit/82226857c65fbf8e640426ead919f1a9fdfd5fb6))
+
 ### 0.1.13 (2022-06-22)
 
 ### 0.1.12 (2022-06-22)

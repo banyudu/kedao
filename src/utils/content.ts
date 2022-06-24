@@ -119,25 +119,25 @@ export const updateEachCharacterOfSelection = (editorState: EditorState, callbac
           return callback(character)
         }
         return character
-      })
+      }).toList()
     } else if (blockKey === startKey) {
       nextCharactersList = charactersList.map((character, index) => {
         if (index >= startOffset) {
           return callback(character)
         }
         return character
-      })
+      }).toList()
     } else if (blockKey === endKey) {
       nextCharactersList = charactersList.map((character, index) => {
         if (index < endOffset) {
           return callback(character)
         }
         return character
-      })
+      }).toList()
     } else {
       nextCharactersList = charactersList.map((character) => {
         return callback(character)
-      })
+      }).toList()
     }
 
     return block.merge({

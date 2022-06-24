@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import '../../../components/business/LinkEditor/style.scss'
 
 const viewLink = (event, link) => {
   // When pressing the Ctrl / command key, click to open the url in the link text

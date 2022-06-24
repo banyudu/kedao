@@ -11,7 +11,7 @@ function compileSass() {
 
 gulp.task("css:compile", compileSass);
 gulp.task("css:watch", function () {
-  gulp.watch("**/*.scss", gulp.series("css:compile"));
+  gulp.watch("src/**/*.scss", gulp.series("css:compile"));
 });
 
 // use ts-rename-import-plugin instead of gulp

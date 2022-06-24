@@ -3,6 +3,7 @@ import { Map } from 'immutable'
 import { DefaultDraftBlockRenderMap } from 'draft-js'
 
 import { getExtensionBlockRenderMaps } from '../../helpers/extension'
+import '../../extensions/code-highlighter/styles.scss'
 
 export default (props, blockRenderMap) => {
   let customBlockRenderMap = Map({

@@ -7,6 +7,7 @@ import { createStateFromContent } from '../../editor'
 import { MdAdd, MdDelete } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
 import { convertEditorStateToRaw } from '../../convert'
+import './style.scss'
 
 const getIndexFromEvent = (event, ignoredTarget = '') => {
   if (!isNaN(event)) {

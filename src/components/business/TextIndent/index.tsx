@@ -4,6 +4,7 @@ import { defaultIconProps } from '../../../configs/props'
 import { CommonPickerProps } from '../../../types'
 import { ContentUtils } from '../../../utils'
 import ControlGroup from '..//ControlGroup'
+import '../ControlBar/style.scss'
 
 const TextIndent: FC<CommonPickerProps> = ({ editorState, language, editor }) => {
   const [currentIndent, setCurrentIndent] = useState(0)

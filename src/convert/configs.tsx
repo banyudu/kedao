@@ -2,6 +2,7 @@
 import React, { CSSProperties } from 'react'
 import { ContentState } from 'draft-js'
 import { ConvertOptions } from '../types'
+import './style.scss'
 
 export const namedColors = {
   aliceblue: '#f0f8ff',

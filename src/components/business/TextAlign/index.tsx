@@ -11,6 +11,7 @@ import {
 } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
 import { CommonPickerProps } from '../../../types'
+import '../ControlBar/style.scss'
 
 const iconMap = {
   left: <MdFormatAlignLeft {...defaultIconProps} />,

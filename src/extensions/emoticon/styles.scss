@@ -3,33 +3,38 @@
   width: 210px;
   height: 210px;
   overflow: hidden;
+
   &::before,
-  &::after{
+  &::after {
     position: absolute;
     z-index: 1;
     right: 0;
     left: 0;
     height: 30px;
     border-radius: 2px;
-    content: '';
+    content: "";
     pointer-events: none;
   }
-  &::before{
+
+  &::before {
     top: 0;
     background-image: linear-gradient(to top, rgba(#21242a, 0), rgba(#21242a, 1));
   }
-  &::after{
+
+  &::after {
     bottom: 0;
     background-image: linear-gradient(rgba(#21242a, 0), rgba(#21242a, 1));
   }
-  .kedao-emoticons-list{
+
+  .kedao-emoticons-list {
     box-sizing: content-box;
     width: 200px;
     height: 190px;
     margin: 0;
     padding: 15px 15px 20px;
     overflow: auto;
-    img{
+
+    img {
       display: block;
       box-sizing: content-box;
       float: left;
@@ -38,18 +43,20 @@
       margin: 3px;
       padding: 5px;
       border-radius: 3px;
-      &:hover{
+
+      &:hover {
         background-color: #3498db;
       }
     }
   }
 }
 
-.kedao-emoticon-in-editor{
+.kedao-emoticon-in-editor {
   position: relative;
   padding: 0 2px;
   letter-spacing: 12px;
-  img{
+
+  img {
     position: absolute;
     top: 0;
     left: 2px;

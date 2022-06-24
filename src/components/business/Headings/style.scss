@@ -1,33 +1,47 @@
-.headings-dropdown{
+.headings-dropdown {
   min-width: 110px;
-  .menu{
+
+  .menu {
     width: 200px;
     overflow: hidden;
+
     .menu-item {
       padding: 15px 20px;
       text-align: left;
       line-height: initial;
-      h1,h2,h3,h4,h5,h6{
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
         margin: 0;
         padding: 0;
         color: inherit;
       }
-      h1{
+
+      h1 {
         font-size: 28px;
       }
-      h2{
+
+      h2 {
         font-size: 24px;
       }
-      h3{
+
+      h3 {
         font-size: 20px;
       }
-      h4{
+
+      h4 {
         font-size: 16px;
       }
-      h5{
+
+      h5 {
         font-size: 14px;
       }
-      h6{
+
+      h6 {
         font-size: 12px;
       }
     }

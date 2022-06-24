@@ -3,12 +3,9 @@
   "rules": {
     "scss/at-import-partial-extension": "always",
     "no-descending-specificity": null,
-    "font-family-no-missing-generic-family-keyword": [
-      true,
-      {
-        "ignoreFontFamilies": "bf-icons"
-      }
-    ]
+    "font-family-no-missing-generic-family-keyword": null,
+    "selector-class-pattern": null,
+    "scss/dollar-variable-pattern": null
   },
   "plugins": [
     "stylelint-scss"

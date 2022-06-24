@@ -1,39 +1,44 @@
-@import '../../../assets/scss/inc.scss';
+@import "../../../assets/scss/inc.scss";
 
-.bf-emojis-wrap{
+.bf-emojis-wrap {
   position: relative;
   width: 210px;
   height: 220px;
   overflow: hidden;
+
   &::before,
-  &::after{
+  &::after {
     position: absolute;
     z-index: 1;
     right: 0;
     left: 0;
     height: 30px;
     border-radius: 2px;
-    content: '';
+    content: "";
     pointer-events: none;
   }
-  &::before{
+
+  &::before {
     top: 0;
     background-image: linear-gradient(to top, rgba($COLOR_DARK, 0), rgba($COLOR_DARK, 1));
   }
-  &::after{
+
+  &::after {
     bottom: 0;
     background-image: linear-gradient(rgba($COLOR_DARK, 0), rgba($COLOR_DARK, 1));
   }
 }
-.bf-emojis{
+
+.bf-emojis {
   box-sizing: content-box;
   width: 200px;
   height: 195px;
   list-style: none;
   margin: 0;
-  padding: 15px 15px 20px 15px;
+  padding: 15px 15px 20px;
   overflow: auto;
-  li{
+
+  li {
     display: block;
     float: left;
     width: 30px;
@@ -48,8 +53,9 @@
     text-align: center;
     cursor: pointer;
     user-select: none;
-    transition: transform .2s;
-    &:hover{
+    transition: transform 0.2s;
+
+    &:hover {
       transform: scale(1.5);
     }
   }

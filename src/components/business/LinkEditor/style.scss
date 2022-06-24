@@ -1,37 +1,44 @@
-@import '../../../assets/scss/inc.scss';
+@import "../../../assets/scss/inc.scss";
 
-.bf-link-editor{
+.bf-link-editor {
   width: 360px;
   padding-top: 25px;
-  .input-group{
-    margin: 0 15px 8px 15px;
-    input{
-      background-color: rgba(#fff, .07);
+
+  .input-group {
+    margin: 0 15px 8px;
+
+    input {
+      background-color: rgba(#fff, 0.07);
       border: none;
       border-radius: 2px;
-      box-shadow: inset 0 0 0 1px rgba(#fff, .1);
+      box-shadow: inset 0 0 0 1px rgba(#fff, 0.1);
       color: #fff;
       font-weight: bold;
-      &:hover{
-        box-shadow: inset 0 0 0 1px rgba($COLOR_ACTIVE, .5);
+
+      &:hover {
+        box-shadow: inset 0 0 0 1px rgba($COLOR_ACTIVE, 0.5);
       }
-      &:focus{
+
+      &:focus {
         box-shadow: inset 0 0 0 1px rgba($COLOR_ACTIVE, 1);
       }
-      &:disabled{
-        color: rgba(#fff, .7);
+
+      &:disabled {
+        color: rgba(#fff, 0.7);
         box-shadow: none;
       }
     }
   }
 
-  .switch-group{
+  .switch-group {
     height: 16px;
     margin: 15px;
-    .bf-switch{
+
+    .bf-switch {
       float: left;
     }
-    label{
+
+    label {
       float: left;
       margin-left: 15px;
       color: #999;
@@ -40,32 +47,38 @@
     }
   }
 
-  .buttons{
+  .buttons {
     box-sizing: content-box;
     height: 32px;
     margin-top: 20px;
     padding: 15px;
     overflow: hidden;
-    box-shadow: inset 0 1px 0 0 rgba(#fff, .1);
-    .button-remove-link{
+    box-shadow: inset 0 1px 0 0 rgba(#fff, 0.1);
+
+    .button-remove-link {
       color: #999;
       font-size: 12px;
       line-height: 32px;
       cursor: pointer;
-      &:hover{
+
+      &:hover {
         color: $COLOR_DANGER;
       }
-      i{
+
+      i {
         margin-right: 5px;
         font-size: 16px;
       }
-      i, span{
+
+      i,
+      span {
         display: block;
         float: left;
         line-height: 32px;
       }
     }
-    button{
+
+    button {
       margin-left: 10px;
       border-radius: 2px;
       font-weight: bold;

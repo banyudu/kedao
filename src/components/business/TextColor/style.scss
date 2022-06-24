@@ -1,13 +1,13 @@
-@import '../../../assets/scss/inc.scss';
+@import "../../../assets/scss/inc.scss";
 
 .text-color-dropdown {
-
-  &.light-theme{
-    .bf-color-switch-buttons{
-      button{
+  &.light-theme {
+    .bf-color-switch-buttons {
+      button {
         border-bottom: 1px solid #ccc;
         color: #616569;
-        &.active{
+
+        &.active {
           border-bottom-color: #3498db;
           color: #3498db;
         }
@@ -18,7 +18,8 @@
   button.dropdown-handler {
     display: flex;
     align-items: center;
-    span{
+
+    span {
       width: 36px;
       padding: 0;
       overflow: hidden;
@@ -26,29 +27,30 @@
     }
   }
 
-  .bf-text-color-picker-wrap{
+  .bf-text-color-picker-wrap {
     overflow: hidden;
   }
 
-  .bf-color-switch-buttons{
+  .bf-color-switch-buttons {
     height: 36px;
-    button{
+
+    button {
       float: left;
       width: 50%;
       height: 36px;
       background-color: transparent;
       border: none;
-      border-bottom: 1px solid rgba(#fff, .1);
-      color: rgba(#fff, .5);
+      border-bottom: 1px solid rgba(#fff, 0.1);
+      color: rgba(#fff, 0.5);
       font-size: 12px;
       font-weight: normal;
       text-transform: uppercase;
       cursor: pointer;
-      &.active{
+
+      &.active {
         border-bottom-color: #3498db;
         color: #3498db;
       }
     }
   }
-
 }

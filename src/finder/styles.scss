@@ -75,7 +75,6 @@
       color: $COLOR_DANGER;
 
       &:hover {
-        // color: lighten($COLOR_DANGER, 30%);
         color: color.adjust($COLOR_DANGER, $lightness: 30%);
       }
     }
@@ -432,7 +431,6 @@
       background-color: $COLOR_ACTIVE;
 
       &:hover {
-        // background-color: lighten($COLOR_ACTIVE, 20%);
         background-color: color.adjust($COLOR_ACTIVE, $lightness: 20%);
       }
 

@@ -1,10 +1,10 @@
-@import '../../../assets/scss/inc.scss';
+@import "../../../assets/scss/inc.scss";
 
-.bf-video-player video{
+.bf-video-player video {
   display: block;
   width: 640px;
   max-width: 80vw;
   height: auto;
-  margin: 0 10px 10px 10px;
+  margin: 0 10px 10px;
   object-fit: contain;
 }

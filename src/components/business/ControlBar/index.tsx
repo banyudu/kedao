@@ -458,7 +458,7 @@ const ControlBar: FC<ControlBarProps> = ({
           return (
             <DropDown
               key={uuidv4()}
-              className={`control-item extend-control-item dropdown ${controlItem.className ||
+              className={`extend-control-item ${controlItem.className ||
                 ''}`}
               caption={controlItem.text}
               htmlCaption={controlItem.html}

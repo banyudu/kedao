@@ -117,7 +117,7 @@ const DropDown = forwardRef<any, DropDownProps>(({
   return (
     <div
       className={mergeClassNames(
-        'bf-dropdown',
+        'bf-dropdown control-item dropdown',
         !disabled && active && 'active',
         disabled && 'disabled',
         className

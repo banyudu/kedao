@@ -55,7 +55,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({ lineHeights, defaultCapti
       getContainerNode={getContainerNode}
       title={language.controls.lineHeight}
       ref={dropDownInstance}
-      className="control-item dropdown bf-line-height-dropdown"
+      className="bf-line-height-dropdown"
     >
       <ul className="bf-line-heights">
         {lineHeights.map((item) => {

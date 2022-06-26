@@ -147,7 +147,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
           getContainerNode={getContainerNode}
           showArrow={false}
           ref={dropDownInstance}
-          className="control-item dropdown link-editor-dropdown"
+          className="link-editor-dropdown"
         >
           <div className="bf-link-editor">
             {allowInsertLinkText

@@ -3,6 +3,9 @@
 
 .pull-left {
   float: left;
+  align-items: center;
+  display: flex;
+  height: 100%;
 }
 
 .pull-right {
@@ -602,5 +605,10 @@
     color: #ccc;
     font-size: 12px;
     text-align: center;
+  }
+
+  .bf-bottom-text {
+    display: flex;
+    align-items: center;
   }
 }

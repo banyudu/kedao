@@ -108,7 +108,7 @@ const config = {
         //     ],
         //   },
         // ],
-        copyright: `Copyright © ${new Date().getFullYear()} Kedao, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Kedao. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

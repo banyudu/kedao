@@ -50,13 +50,12 @@ function App() {
 export default App;
 ```
 
+更多示例参见 [examples](./examples/)
+
 ## 贡献
 
 欢迎任何方式的贡献，issue、文档、翻译等。
 
-## TODO
+## 文档
 
-- [ ] 完善 Typescript 类型定义
-- [ ] 输出 scss 改成 css
-- [ ] 添加更多的 demo
-- [ ] 输出与 Braft-Editor 的指标对比和迁移指南
+更多文档见组件官网：[https://kedao.vercel.app](https://kedao.vercel.app)

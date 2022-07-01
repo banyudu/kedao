@@ -37,6 +37,7 @@ specifiers:
   prop-types: ^15.7.2
   react-color: ^2.14.1
   react-icons: ^4.3.1
+  react-recipes: ^1.4.0
   rimraf: ^3.0.2
   sass: ^1.52.3
   standard-version: ^9.5.0
@@ -92,6 +93,7 @@ devDependencies:
   prettier: 2.5.1
   prism-js: 1.0.0
   prismjs: 1.26.0
+  react-recipes: 1.4.0
   rimraf: 3.0.2
   sass: 1.52.3
   standard-version: 9.5.0
@@ -4624,6 +4626,13 @@ packages:
       react-fast-compare: 3.2.0
       warning: 4.0.3
     dev: false
+
+  /react-recipes/1.4.0:
+    resolution: {integrity: sha512-NStiubbNW/1iIOnVE27mMxmr6Rjmq7nPeyDGF58okpXzMxieffCNza972NXxyXKwiayhmXzQP7dIeNX0eYufjg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    dev: true
 
   /reactcss/1.2.3:
     resolution: {integrity: sha512-KiwVUcFu1RErkI97ywr8nvx8dNOpT03rbnma0SSalTYjkrPYaEajR4a/MRt6DZ46K6arDRbWMNHF+xH7G7n/8A==}

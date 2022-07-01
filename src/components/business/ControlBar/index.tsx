@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, FC, CSSProperties } from 'react'
+import React, { useEffect, useRef, CSSProperties, useImperativeHandle, forwardRef } from 'react'
+// import { useWhyDidYouUpdate } from 'react-recipes'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
 import getEditorControls from '../../../configs/controls'
@@ -104,7 +105,11 @@ interface ControlBarProps extends
   textBackgroundColor: boolean
 }
 
-const ControlBar: FC<ControlBarProps> = ({
+interface ControlBarForwardRef {
+  closeFinder: () => void
+}
+
+const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(({
   language,
   editorState,
   hooks,
@@ -115,7 +120,6 @@ const ControlBar: FC<ControlBarProps> = ({
   className,
   colorPicker,
   colorPickerAutoHide,
-  // colorPickerTheme,
   colors,
   controls,
   defaultLinkTarget,
@@ -131,8 +135,38 @@ const ControlBar: FC<ControlBarProps> = ({
   style,
   textAligns,
   textBackgroundColor
-}) => {
+}, ref) => {
+  // useWhyDidYouUpdate('ControlBar', {
+  //   editorState,
+  //   hooks,
+  //   editor,
+  //   finder,
+  //   media,
+  //   allowInsertLinkText,
+  //   className,
+  //   colorPicker,
+  //   colorPickerAutoHide,
+  //   colors,
+  //   controls,
+  //   defaultLinkTarget,
+  //   editorId,
+  //   emojis,
+  //   extendControls,
+  //   fontFamilies,
+  //   fontSizes,
+  //   getContainerNode,
+  //   headings,
+  //   letterSpacings,
+  //   lineHeights,
+  //   style,
+  //   textAligns,
+  //   textBackgroundColor
+  // })
+  useImperativeHandle(ref, () => ({
+    closeFinder
+  }))
   useEffect(() => {
+    // console.debug('init controlbar')
     allControls.current?.forEach(item => {
       if (item.type === 'modal') {
         if (item.modal?.id && extendedModals.current?.[item.modal.id]) {
@@ -143,6 +177,10 @@ const ControlBar: FC<ControlBarProps> = ({
         }
       }
     })
+
+    return () => {
+      // console.debug('destroy controlbar')
+    }
   }, [])
 
   const allControls = useRef([])
@@ -298,13 +336,12 @@ const ControlBar: FC<ControlBarProps> = ({
   const renderedControls = []
   const editorControls = getEditorControls(language, editor)
   const extensionControls = getExtensionControls(editorId)
-  const allControls_ = mergeControls(
+  allControls.current = mergeControls(
     commonProps,
     controls,
     extensionControls,
     extendControls
   )
-  allControls.current = allControls_
 
   return (
     <div
@@ -314,7 +351,7 @@ const ControlBar: FC<ControlBarProps> = ({
       role='button'
       tabIndex={0}
     >
-      {allControls_.map(item => {
+      {allControls.current.map(item => {
         const itemKey = typeof item === 'string' ? item : item.key
         if (typeof itemKey !== 'string') {
           return null
@@ -352,7 +389,6 @@ const ControlBar: FC<ControlBarProps> = ({
               key={uuidv4()}
               colors={colors}
               colorPicker={colorPicker}
-              // theme={colorPickerTheme}
               autoHide={colorPickerAutoHide}
               enableBackgroundColor={textBackgroundColor}
               {...commonProps}
@@ -575,6 +611,6 @@ const ControlBar: FC<ControlBarProps> = ({
       })}
     </div>
   )
-}
+})
 
 export default ControlBar

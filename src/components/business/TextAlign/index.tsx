@@ -24,7 +24,14 @@ export interface TextAlignProps extends CommonPickerProps {
   textAligns: string[]
 }
 
-const TextAlign: FC<TextAlignProps> = ({ editorState, textAligns, editor, language, hooks }) => {
+const TextAlign: FC<TextAlignProps> = ({
+  editorState,
+  textAligns,
+  onChange,
+  onRequestFocus,
+  language,
+  hooks
+}) => {
   const [currentAlignment, setCurrentAlignment] = useState(undefined)
 
   useEffect(() => {
@@ -33,7 +40,7 @@ const TextAlign: FC<TextAlignProps> = ({ editorState, textAligns, editor, langua
     )
   }, [editorState])
 
-  const setAlignment = event => {
+  const setAlignment = (event) => {
     let { alignment } = event.currentTarget.dataset
     const hookReturns = hooks('toggle-text-alignment', alignment)(alignment)
 
@@ -41,10 +48,8 @@ const TextAlign: FC<TextAlignProps> = ({ editorState, textAligns, editor, langua
       alignment = hookReturns
     }
 
-    editor.setValue(
-      ContentUtils.toggleSelectionAlignment(editorState, alignment)
-    )
-    editor.requestFocus()
+    onChange(ContentUtils.toggleSelectionAlignment(editorState, alignment))
+    onRequestFocus()
   }
 
   const textAlignmentTitles = [
@@ -58,7 +63,7 @@ const TextAlign: FC<TextAlignProps> = ({ editorState, textAligns, editor, langua
     <ControlGroup>
       {textAligns.map((item, index) => (
         <button
-          type='button'
+          type="button"
           key={uuidv4()}
           data-title={textAlignmentTitles[index]}
           data-alignment={item}

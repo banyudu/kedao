@@ -16,11 +16,12 @@ export interface LinkEditorProps extends CommonPickerProps {
 const LinkEditor: FC<LinkEditorProps> = ({
   defaultLinkTarget,
   editorState,
-  editor,
   hooks,
   language,
   getContainerNode,
-  allowInsertLinkText
+  allowInsertLinkText,
+  onChange,
+  onRequestFocus
 }) => {
   const [text, setText] = useState('')
   const [href, setHref] = useState('')
@@ -45,12 +46,10 @@ const LinkEditor: FC<LinkEditorProps> = ({
     setTextSelected(textSelected)
     setText(selectedText)
     setHref(href || '')
-    setTarget(typeof target === 'undefined'
-      ? defaultLinkTarget || ''
-      : target || '')
-  }, [
-    editorState, defaultLinkTarget
-  ])
+    setTarget(
+      typeof target === 'undefined' ? defaultLinkTarget || '' : target || ''
+    )
+  }, [editorState, defaultLinkTarget])
 
   const dropDownInstance = useRef(null)
 
@@ -72,7 +71,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
   }
 
   const toggleTarget = () => {
-    setTarget(target => target === '_blank' ? '' : '_blank')
+    setTarget((target) => (target === '_blank' ? '' : '_blank'))
   }
 
   const handleCancel = () => {
@@ -81,9 +80,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
 
   const handleUnlink = () => {
     dropDownInstance.current?.hide()
-    editor.setValue(
-      ContentUtils.toggleSelectionLink(editorState, false)
-    )
+    onChange(ContentUtils.toggleSelectionLink(editorState, false))
   }
 
   const handleConfirm = () => {
@@ -93,7 +90,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
     })
 
     dropDownInstance.current?.hide()
-    editor.requestFocus()
+    onRequestFocus()
 
     if (hookReturns === false) {
       return false
@@ -112,20 +109,12 @@ const LinkEditor: FC<LinkEditorProps> = ({
 
     if (textSelected) {
       if (_href) {
-        editor.setValue(
-          ContentUtils.toggleSelectionLink(
-            editorState,
-            _href,
-            _target
-          )
-        )
+        onChange(ContentUtils.toggleSelectionLink(editorState, _href, _target))
       } else {
-        editor.setValue(
-          ContentUtils.toggleSelectionLink(editorState, false)
-        )
+        onChange(ContentUtils.toggleSelectionLink(editorState, false))
       }
     } else {
-      editor.setValue(
+      onChange(
         ContentUtils.insertText(editorState, text || href, null, {
           type: 'LINK',
           data: { href, target }
@@ -138,88 +127,84 @@ const LinkEditor: FC<LinkEditorProps> = ({
   const caption = <MdLink {...defaultIconProps} />
 
   return (
-      <ControlGroup>
-        <DropDown
-          key={0}
-          caption={caption}
-          title={language.controls.link}
-          autoHide
-          getContainerNode={getContainerNode}
-          showArrow={false}
-          ref={dropDownInstance}
-          className="control-item dropdown link-editor-dropdown"
-        >
-          <div className="bf-link-editor">
-            {allowInsertLinkText
-              ? (
-              <div className="input-group">
-                <input
-                  type="text"
-                  value={text}
-                  spellCheck={false}
-                  disabled={textSelected}
-                  placeholder={
-                    language.linkEditor.textInputPlaceHolder
-                  }
-                  onKeyDown={handeKeyDown}
-                  onChange={handleTnputText}
-                />
-              </div>
-                )
-              : null}
+    <ControlGroup>
+      <DropDown
+        key={0}
+        caption={caption}
+        title={language.controls.link}
+        autoHide
+        getContainerNode={getContainerNode}
+        showArrow={false}
+        ref={dropDownInstance}
+        className="control-item dropdown link-editor-dropdown"
+      >
+        <div className="bf-link-editor">
+          {allowInsertLinkText
+            ? (
             <div className="input-group">
               <input
                 type="text"
-                value={href}
+                value={text}
                 spellCheck={false}
-                placeholder={
-                  language.linkEditor.linkInputPlaceHolder
-                }
+                disabled={textSelected}
+                placeholder={language.linkEditor.textInputPlaceHolder}
                 onKeyDown={handeKeyDown}
-                onChange={handleInputLink}
+                onChange={handleTnputText}
               />
             </div>
-            <div className="switch-group">
-              <Switch active={target === '_blank'} onClick={toggleTarget} />
-              <label>{language.linkEditor.openInNewWindow}</label>
-            </div>
-            <div className="buttons">
-              <a
-                onClick={handleUnlink}
-                role="presentation"
-                className="primary button-remove-link pull-left"
-              >
-                <MdClose {...defaultIconProps} />
-                <span>{language.linkEditor.removeLink}</span>
-              </a>
-              <button
-                type="button"
-                onClick={handleConfirm}
-                className="primary pull-right"
-              >
-                {language.base.confirm}
-              </button>
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="default pull-right"
-              >
-                {language.base.cancel}
-              </button>
-            </div>
+              )
+            : null}
+          <div className="input-group">
+            <input
+              type="text"
+              value={href}
+              spellCheck={false}
+              placeholder={language.linkEditor.linkInputPlaceHolder}
+              onKeyDown={handeKeyDown}
+              onChange={handleInputLink}
+            />
           </div>
-        </DropDown>
-        <button
-          key={1}
-          type="button"
-          data-title={language.controls.unlink}
-          className="control-item button"
-          onClick={handleUnlink}
-          disabled={!textSelected || !href}
-        >
-          <MdLinkOff {...defaultIconProps} />
-        </button>
-      </ControlGroup>
+          <div className="switch-group">
+            <Switch active={target === '_blank'} onClick={toggleTarget} />
+            <label>{language.linkEditor.openInNewWindow}</label>
+          </div>
+          <div className="buttons">
+            <a
+              onClick={handleUnlink}
+              role="presentation"
+              className="primary button-remove-link pull-left"
+            >
+              <MdClose {...defaultIconProps} />
+              <span>{language.linkEditor.removeLink}</span>
+            </a>
+            <button
+              type="button"
+              onClick={handleConfirm}
+              className="primary pull-right"
+            >
+              {language.base.confirm}
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="default pull-right"
+            >
+              {language.base.cancel}
+            </button>
+          </div>
+        </div>
+      </DropDown>
+      <button
+        key={1}
+        type="button"
+        data-title={language.controls.unlink}
+        className="control-item button"
+        onClick={handleUnlink}
+        disabled={!textSelected || !href}
+      >
+        <MdLinkOff {...defaultIconProps} />
+      </button>
+    </ControlGroup>
   )
 }
 

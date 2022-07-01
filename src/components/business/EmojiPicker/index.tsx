@@ -5,7 +5,9 @@ import { ContentUtils } from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
-export interface EmojiPickerProps extends CommonPickerProps, Pick<DropDownProps, 'getContainerNode'> {
+export interface EmojiPickerProps
+  extends CommonPickerProps,
+  Pick<DropDownProps, 'getContainerNode'> {
   defaultCaption: DropDownProps['caption']
   emojis: string[]
 }
@@ -16,8 +18,9 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
   language,
   emojis,
   hooks,
-  editor,
-  editorState
+  editorState,
+  onChange,
+  onRequestFocus
 }) => {
   const insertEmoji = (event) => {
     let emoji = event.currentTarget.dataset.emoji
@@ -31,8 +34,8 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
       emoji = hookReturns
     }
 
-    editor.setValue(ContentUtils.insertText(editorState, emoji))
-    editor.requestFocus()
+    onChange(ContentUtils.insertText(editorState, emoji))
+    onRequestFocus()
 
     return true
   }

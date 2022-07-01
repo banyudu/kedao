@@ -4,10 +4,15 @@ import { ContentUtils } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/common/Switch'
 import './style.scss'
-import { CommonPickerProps, ImageControlItem } from '../../../types'
+import {
+  CallbackEditor,
+  CommonPickerProps,
+  ImageControlItem
+} from '../../../types'
 import { ContentBlock } from 'draft-js'
 
 interface ImageProps extends CommonPickerProps {
+  editor: CallbackEditor
   imageEqualRatio: boolean
   entityKey: string
   containerNode: HTMLElement
@@ -48,7 +53,7 @@ const Image: FC<ImageProps> = ({
   const reSizeType = useRef(undefined)
   const zoom = useRef(undefined)
 
-  const changeSize = e => {
+  const changeSize = (e) => {
     const type = reSizeType.current
     if (!initialLeft.current) {
       initialLeft.current = e.screenX
@@ -67,7 +72,7 @@ const Image: FC<ImageProps> = ({
     initialTop.current = e.screenY
   }
 
-  const moveImage = e => {
+  const moveImage = (e) => {
     changeSize(e)
     setTempWidth(Math.abs(initialWidth.current))
     setTempHeight(Math.abs(initialHeight.current))
@@ -83,7 +88,7 @@ const Image: FC<ImageProps> = ({
     document.removeEventListener('mouseup', upImage)
   }
 
-  const repareChangeSize = (type: string) => e => {
+  const repareChangeSize = (type: string) => (e) => {
     reSizeType.current = type
     const imageRect = imageElement.current?.getBoundingClientRect()
     initialTop.current = 0
@@ -111,7 +116,9 @@ const Image: FC<ImageProps> = ({
       return 0
     }
 
-    const viewRect = container?.querySelector('.bf-content')?.getBoundingClientRect()
+    const viewRect = container
+      ?.querySelector('.bf-content')
+      ?.getBoundingClientRect()
     const toolbarRect = toolbarElement.current?.getBoundingClientRect()
     const imageRect = imageElement.current?.getBoundingClientRect()
 
@@ -184,26 +191,26 @@ const Image: FC<ImageProps> = ({
   }
 
   const toggleLinkEditor = () => {
-    setLinkEditorVisible(v => !v)
+    setLinkEditorVisible((v) => !v)
     setSizeEditorVisible(false)
   }
 
   const toggleSizeEditor = () => {
     setLinkEditorVisible(false)
-    setSizeEditorVisible(v => !v)
+    setSizeEditorVisible((v) => !v)
   }
 
-  const handleLinkInputKeyDown = e => {
+  const handleLinkInputKeyDown = (e) => {
     if (e.keyCode === 13) {
       confirmImageLink()
     }
   }
 
-  const setImageLink = e => {
+  const setImageLink = (e) => {
     setTempLink(e.currentTarget.value)
   }
 
-  const setImageLinkTarget = linkTarget => {
+  const setImageLinkTarget = (linkTarget) => {
     let newLinkTarget
     const hookReturns = hooks('set-image-link-target', linkTarget)(linkTarget)
 
@@ -244,7 +251,7 @@ const Image: FC<ImageProps> = ({
     return true
   }
 
-  const handleSizeInputKeyDown = e => {
+  const handleSizeInputKeyDown = (e) => {
     if (e.keyCode === 13) {
       confirmImageSize()
     }
@@ -339,7 +346,7 @@ const Image: FC<ImageProps> = ({
     return true
   }
 
-  const setImageFloat = float => {
+  const setImageFloat = (float) => {
     let newFloat = float
     const hookReturns = hooks('set-image-float', newFloat)(newFloat)
 
@@ -352,15 +359,20 @@ const Image: FC<ImageProps> = ({
     }
 
     editor.setValue(
-      ContentUtils.setMediaPosition(editor.getValue(), block, { float: newFloat })
+      ContentUtils.setMediaPosition(editor.getValue(), block, {
+        float: newFloat
+      })
     )
     unlockEditor()
     return true
   }
 
-  const setImageAlignment = alignment => {
+  const setImageAlignment = (alignment) => {
     let newAlignment = alignment
-    const hookReturns = hooks('set-image-alignment', newAlignment)(newAlignment)
+    const hookReturns = hooks(
+      'set-image-alignment',
+      newAlignment
+    )(newAlignment)
 
     if (hookReturns === false) {
       return false
@@ -371,13 +383,15 @@ const Image: FC<ImageProps> = ({
     }
 
     editor.setValue(
-      ContentUtils.setMediaPosition(editor.getValue(), block, { alignment: newAlignment })
+      ContentUtils.setMediaPosition(editor.getValue(), block, {
+        alignment: newAlignment
+      })
     )
     unlockEditor()
     return true
   }
 
-  const showToolbar = event => {
+  const showToolbar = (event) => {
     if (editor.editorProps.readOnly || editor.editorProps.disabled) {
       return false
     }
@@ -392,7 +406,7 @@ const Image: FC<ImageProps> = ({
     return true
   }
 
-  const hideToolbar = event => {
+  const hideToolbar = (event) => {
     event.preventDefault()
 
     setToolbarVisible(false)
@@ -422,13 +436,13 @@ const Image: FC<ImageProps> = ({
     clearFix = true
   }
 
-  const renderedControlItems = imageControls.map(item => {
+  const renderedControlItems = imageControls.map((item) => {
     if (typeof item === 'string') {
       if (imageControlItems[item]) {
         return (
           <a
             className={item === 'link' && link ? 'active' : ''}
-            role='presentation'
+            role="presentation"
             key={uuidv4()}
             onClick={() => executeCommand(imageControlItems[item].command)}
           >
@@ -444,7 +458,7 @@ const Image: FC<ImageProps> = ({
         : (
         <a
           key={uuidv4()}
-          role='presentation'
+          role="presentation"
           onClick={() => item.onClick && executeCommand(item.onClick)}
         >
           {item.text}
@@ -455,7 +469,7 @@ const Image: FC<ImageProps> = ({
   })
 
   return (
-    <div className='bf-media'>
+    <div className="bf-media">
       <div
         style={imageStyles}
         draggable
@@ -465,7 +479,7 @@ const Image: FC<ImageProps> = ({
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         ref={mediaEmbederInstance}
-        className='bf-image'
+        className="bf-image"
       >
         {toolbarVisible
           ? (
@@ -474,24 +488,24 @@ const Image: FC<ImageProps> = ({
             ref={toolbarElement}
             data-float={float}
             data-align={alignment}
-            className='bf-media-toolbar'
+            className="bf-media-toolbar"
           >
             {linkEditorVisible
               ? (
-              <div className='bf-image-link-editor'>
-                <div className='editor-input-group'>
+              <div className="bf-image-link-editor">
+                <div className="editor-input-group">
                   <input
-                    type='text'
+                    type="text"
                     placeholder={language.linkEditor.inputWithEnterPlaceHolder}
                     onKeyDown={handleLinkInputKeyDown}
                     onChange={setImageLink}
                     defaultValue={link}
                   />
-                  <button type='button' onClick={confirmImageLink}>
+                  <button type="button" onClick={confirmImageLink}>
                     {language.base.confirm}
                   </button>
                 </div>
-                <div className='switch-group'>
+                <div className="switch-group">
                   <Switch
                     active={linkTarget === '_blank'}
                     onClick={() => setImageLinkTarget(linkTarget)}
@@ -503,23 +517,23 @@ const Image: FC<ImageProps> = ({
               : null}
             {sizeEditorVisible
               ? (
-              <div className='bf-image-size-editor'>
-                <div className='editor-input-group'>
+              <div className="bf-image-size-editor">
+                <div className="editor-input-group">
                   <input
-                    type='text'
+                    type="text"
                     placeholder={language.base.width}
                     onKeyDown={handleSizeInputKeyDown}
                     onChange={setImageWidth}
                     defaultValue={width}
                   />
                   <input
-                    type='text'
+                    type="text"
                     placeholder={language.base.height}
                     onKeyDown={handleSizeInputKeyDown}
                     onChange={setImageHeight}
                     defaultValue={height}
                   />
-                  <button type='button' onClick={confirmImageSize}>
+                  <button type="button" onClick={confirmImageSize}>
                     {language.base.confirm}
                   </button>
                 </div>
@@ -529,7 +543,7 @@ const Image: FC<ImageProps> = ({
             {renderedControlItems}
             <i
               style={{ marginLeft: toolbarOffset * -1 }}
-              className='bf-media-toolbar-arrow'
+              className="bf-media-toolbar-arrow"
             />
           </div>
             )
@@ -545,7 +559,7 @@ const Image: FC<ImageProps> = ({
           <img
             ref={imageElement}
             src={url}
-            alt='Alt'
+            alt="Alt"
             width={width}
             height={height}
             {...meta}
@@ -553,8 +567,8 @@ const Image: FC<ImageProps> = ({
           {toolbarVisible && imageResizable
             ? (
             <div
-              role='presentation'
-              className='bf-csize-icon right-bottom'
+              role="presentation"
+              className="bf-csize-icon right-bottom"
               onMouseDown={repareChangeSize('rightbottom')}
             />
               )
@@ -562,8 +576,8 @@ const Image: FC<ImageProps> = ({
           {toolbarVisible && imageResizable
             ? (
             <div
-              role='presentation'
-              className='bf-csize-icon left-bottom'
+              role="presentation"
+              className="bf-csize-icon left-bottom"
               onMouseDown={repareChangeSize('leftbottom')}
             />
               )
@@ -576,7 +590,7 @@ const Image: FC<ImageProps> = ({
       </div>
       {clearFix && (
         <div
-          className='clearfix'
+          className="clearfix"
           style={{ clear: 'both', height: 0, lineHeight: 0, float: 'none' }}
         />
       )}

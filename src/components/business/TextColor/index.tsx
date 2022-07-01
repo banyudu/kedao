@@ -1,39 +1,49 @@
-import React, { CSSProperties, useRef, useState, FC, MouseEventHandler } from 'react'
+import React, {
+  CSSProperties,
+  useRef,
+  useState,
+  FC,
+  MouseEventHandler
+} from 'react'
 import { ContentUtils } from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import BuiltinColorPicker from '../../common/ColorPicker'
 import './style.scss'
 import { MdFormatColorText } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
-import { CallbackEditor, Hooks, EditorState, Language } from '../../../types'
+import { Hooks, EditorState, Language } from '../../../types'
 
-export interface TextColorPickerProps extends Pick<DropDownProps, 'getContainerNode' | 'autoHide'> {
+export interface TextColorPickerProps
+  extends Pick<DropDownProps, 'getContainerNode' | 'autoHide'> {
   hooks: Hooks
-  editor: CallbackEditor
   editorState: EditorState
   colorPicker: React.ComponentType<any>
   enableBackgroundColor: boolean
   colors: string[]
   language: Language
+  onChange: (state: EditorState) => void
+  onRequestFocus: () => void
 }
 
 const TextColorPicker: FC<TextColorPickerProps> = ({
   hooks,
-  editor,
   editorState,
   colorPicker,
-  // theme,
   getContainerNode,
   enableBackgroundColor,
   colors,
   language,
-  autoHide
+  autoHide,
+  onChange,
+  onRequestFocus
 }) => {
   const [colorType, setColorType] = useState('color')
 
   const dropDownInstance = useRef(null)
 
-  const switchColorType: MouseEventHandler<HTMLButtonElement> = ({ currentTarget }) => {
+  const switchColorType: MouseEventHandler<HTMLButtonElement> = ({
+    currentTarget
+  }) => {
     setColorType(currentTarget.dataset.type)
   }
 
@@ -51,11 +61,9 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
       }
 
       if (colorType === 'color') {
-        editor.setValue(
-          ContentUtils.toggleSelectionColor(editorState, newColor)
-        )
+        onChange(ContentUtils.toggleSelectionColor(editorState, newColor))
       } else {
-        editor.setValue(
+        onChange(
           ContentUtils.toggleSelectionBackgroundColor(editorState, newColor)
         )
       }
@@ -63,7 +71,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
 
     if (closePicker) {
       dropDownInstance.current?.hide()
-      editor.requestFocus()
+      onRequestFocus()
     }
     return true
   }
@@ -71,9 +79,11 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   const captionStyle: CSSProperties = {}
   let currentColor = null
 
-  const selectionStyles = editorState.getCurrentInlineStyle().toJS() as string[]
+  const selectionStyles = editorState
+    .getCurrentInlineStyle()
+    .toJS() as string[]
 
-  selectionStyles.forEach(style => {
+  selectionStyles.forEach((style) => {
     if (style.indexOf('COLOR-') === 0) {
       captionStyle.color = `#${style.split('-')[1]}`
       if (colorType === 'color') {
@@ -104,24 +114,24 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
       // theme={theme}
       getContainerNode={getContainerNode}
       ref={dropDownInstance}
-      className='control-item dropdown text-color-dropdown'
+      className="control-item dropdown text-color-dropdown"
     >
-      <div className='bf-text-color-picker-wrap'>
+      <div className="bf-text-color-picker-wrap">
         <div
-          className='bf-color-switch-buttons'
+          className="bf-color-switch-buttons"
           style={enableBackgroundColor ? {} : { display: 'none' }}
         >
           <button
-            type='button'
-            data-type='color'
+            type="button"
+            data-type="color"
             className={colorType === 'color' ? 'active' : ''}
             onClick={switchColorType}
           >
             {language.controls.textColor}
           </button>
           <button
-            type='button'
-            data-type='background-color'
+            type="button"
+            data-type="background-color"
             className={colorType === 'background-color' ? 'active' : ''}
             onClick={switchColorType}
           >

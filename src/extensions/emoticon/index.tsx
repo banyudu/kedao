@@ -11,7 +11,11 @@ export const defaultEmoticons = [
   23, 24, 25
 ].map((item) => `${item}.png`)
 
-const insertEmoticon = (editor: CallbackEditor, editorState: EditorState, src) => {
+const insertEmoticon = (
+  editor: CallbackEditor,
+  editorState: EditorState,
+  src
+) => {
   editor.setValue(
     ContentUtils.insertText(editorState, ' ', null, {
       type: 'EMOTICON',
@@ -81,7 +85,7 @@ export default (options) => {
         </span>
       )
     },
-    importer: (nodeName, node) => {
+    importer: (nodeName: string, node) => {
       if (
         nodeName.toLowerCase() === 'span' &&
         node.classList &&

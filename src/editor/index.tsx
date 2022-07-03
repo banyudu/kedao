@@ -324,8 +324,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     getDecorators(editorPropsRef.current.editorId || editorPropsRef.current.id)
   )
   const controlBarInstanceRef = useRef(null)
-  const isFocusedRef = useRef(false)
-  const isLivingRef = useRef(false)
+  const [isLiving, setIsLiving] = useState(false)
   const finderRef = useRef(null)
   const valueInitialized = !!(defaultValue || value)
 
@@ -353,7 +352,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   const forceUpdate = () => setRandomFlag(Math.random())
   const finderInitFlag = useRef(false)
 
-  const containerNodeRef = useRef(null)
+  const containerRef = useRef(null)
 
   // eslint-disable-next-line camelcase
   if (!finderInitFlag.current) {
@@ -377,10 +376,10 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   }
 
   useEffect(() => {
-    isLivingRef.current = true
+    setIsLiving(true)
 
     return () => {
-      isLivingRef.current = false
+      setIsLiving(false)
       controlBarInstanceRef.current?.closeFinder()
     }
   }, [])
@@ -571,12 +570,10 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   }
 
   const onFocus = () => {
-    isFocusedRef.current = true
     editorPropsRef.current.onFocus?.(editorState)
   }
 
   const onBlur = () => {
-    isFocusedRef.current = false
     editorPropsRef.current.onBlur?.(editorState)
   }
 
@@ -713,7 +710,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
             validateResult
               .then(() => {
                 finderRef.current.uploadImage(file, (image) => {
-                  if (isLivingRef.current) {
+                  if (isLiving) {
                     setValue(ContentUtils.insertMedias(editorState, [image]))
                   }
                 })
@@ -721,7 +718,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
               .catch(console.error)
           } else if (validateResult) {
             finderRef.current.uploadImage(file, (image) => {
-              if (isLivingRef.current) {
+              if (isLiving) {
                 setValue(ContentUtils.insertMedias(editorState, [image]))
               }
             })
@@ -922,7 +919,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       editorProps: editorPropsRef.current,
       lockOrUnlockEditor: setEditorLocked,
       finder: finderRef.current,
-      isLiving: isLivingRef.current,
+      isLiving,
       tempColors,
       setTempColors: (tempColors, callback) => {
         setTempColors(tempColors)
@@ -977,7 +974,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       editorPropsRef.current,
       setEditorLocked,
       finderRef.current,
-      isLivingRef.current,
+      isLiving,
       tempColors,
       handleChange,
       convertOptionsRef.current,
@@ -996,7 +993,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     editorId,
     hooks,
     editorState,
-    containerNode: containerNodeRef,
+    containerNode: containerRef,
     imageControls,
     imageResizable,
     language,
@@ -1046,8 +1043,8 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   }
 
   const getContainerNode = useCallback(
-    () => containerNodeRef.current,
-    [containerNodeRef.current]
+    () => containerRef.current,
+    [containerRef.current]
   )
   const controlBarColors = useMemo(
     () => [...colors, ...tempColors],
@@ -1059,7 +1056,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     <div
       key={randomFlag}
       style={style}
-      ref={containerNodeRef}
+      ref={containerRef}
       className={mergeClassNames(
         'bf-container',
         className,

@@ -40,7 +40,7 @@ import {
   getPropInterceptors
   // useExtension
 } from '../helpers/extension'
-import ControlBar from '../components/business/ControlBar'
+import ControlBar, { ControlBarProps } from '../components/business/ControlBar'
 
 import 'draft-js/dist/Draft.css'
 import '../assets/scss/kedao.scss'
@@ -52,6 +52,7 @@ import {
   ButtonControlItem,
   ModalControlItem,
   MediaType,
+  MediaProps,
   Hooks,
   ImageControlItem,
   ConvertOptions
@@ -194,6 +195,12 @@ export interface KedaoEditorProps {
   draftProps?: EditorProps
   blockRenderMap?: Immutable.Map<any, any> | Function
   blockRendererFn?: Function
+  customStyleFn?: Function
+  customStyleMap?: Function
+  blockStyleFn?: Function
+  keyBindingFn?: Function
+  colorPickerAutoHide?: boolean
+  colorPicker?: ControlBarProps['colorPicker']
   converts?: object
   hooks?: Hooks
   textBackgroundColor?: boolean
@@ -220,6 +227,9 @@ export interface KedaoEditorProps {
   handleBeforeInput?: Function
   handleReturn?: Function
   handleKeyCommand?: Function
+  codeTabIndents?: number
+  disabled?: boolean
+  extendAtomics?: any[]
 }
 
 const buildHooks =
@@ -249,58 +259,12 @@ const isControlEnabled = (
   )
 }
 
-const getConvertOptions = ({
-  _editorId: editorId,
-  id,
-  converts,
-  fontFamilies
-}: {
-  _editorId: string
-  id: string
-  converts: Partial<ConvertOptions>
-  fontFamilies: ConvertOptions['fontFamilies']
-}): ConvertOptions => {
-  const realEditorId = editorId || id
-  const convertOptions: ConvertOptions = {
-    ...defaultProps.converts,
-    ...converts,
-    fontFamilies: fontFamilies
-  }
-
-  convertOptions.styleImportFn = compositeStyleImportFn(
-    convertOptions.styleImportFn,
-    realEditorId
-  )
-  convertOptions.styleExportFn = compositeStyleExportFn(
-    convertOptions.styleExportFn,
-    realEditorId
-  )
-  convertOptions.entityImportFn = compositeEntityImportFn(
-    convertOptions.entityImportFn,
-    realEditorId
-  )
-  convertOptions.entityExportFn = compositeEntityExportFn(
-    convertOptions.entityExportFn,
-    realEditorId
-  )
-  convertOptions.blockImportFn = compositeBlockImportFn(
-    convertOptions.blockImportFn,
-    realEditorId
-  )
-  convertOptions.blockExportFn = compositeBlockExportFn(
-    convertOptions.blockExportFn,
-    realEditorId
-  )
-
-  return convertOptions
-}
-
 const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   const { defaultValue, value, onChange } = props
   const draftInstanceRef = useRef(null)
   const [editorLocked, setEditorLocked] = useState(null)
 
-  const getEditorProps = (): EditorProps => {
+  const getEditorProps = (): KedaoEditorProps => {
     const { value, defaultValue, onChange, ...restProps } = props // eslint-disable-line no-unused-vars
     const propInterceptors = getPropInterceptors(
       restProps.editorId || restProps.id
@@ -319,9 +283,9 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     return propsMap.toJS() as any
   }
 
-  const editorPropsRef = useRef<any>(getEditorProps())
+  const currentEditorProps = useMemo(getEditorProps, [value, defaultValue])
   const editorDecoratorsRef = useRef(
-    getDecorators(editorPropsRef.current.editorId || editorPropsRef.current.id)
+    getDecorators(currentEditorProps.editorId || currentEditorProps.id)
   )
   const controlBarInstanceRef = useRef(null)
   const [isLiving, setIsLiving] = useState(false)
@@ -332,7 +296,44 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     (defaultValue || value) instanceof EditorState
       ? defaultValue || value
       : EditorState.createEmpty(editorDecoratorsRef.current)
-  const convertOptionsRef = useRef(getConvertOptions(editorPropsRef.current))
+  const getConvertOptions = (): ConvertOptions => {
+    const { editorId, id, converts, fontFamilies } = currentEditorProps
+    const realEditorId = editorId || id
+    const result: ConvertOptions = {
+      ...defaultProps.converts,
+      ...converts,
+      fontFamilies: fontFamilies
+    }
+
+    result.styleImportFn = compositeStyleImportFn(
+      result.styleImportFn,
+      realEditorId
+    )
+    result.styleExportFn = compositeStyleExportFn(
+      result.styleExportFn,
+      realEditorId
+    )
+    result.entityImportFn = compositeEntityImportFn(
+      result.entityImportFn,
+      realEditorId
+    )
+    result.entityExportFn = compositeEntityExportFn(
+      result.entityExportFn,
+      realEditorId
+    )
+    result.blockImportFn = compositeBlockImportFn(
+      result.blockImportFn,
+      realEditorId
+    )
+    result.blockExportFn = compositeBlockExportFn(
+      result.blockExportFn,
+      realEditorId
+    )
+
+    return result
+  }
+
+  const convertOptions = useMemo(getConvertOptions, [currentEditorProps])
 
   let _tempColors: string[] = []
 
@@ -340,7 +341,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     const colors = ColorUtils.detectColorsFromDraftState(
       convertEditorStateToRaw(defaultEditorState)
     )
-    _tempColors = filterColors(colors, editorPropsRef.current.colors)
+    _tempColors = filterColors(colors, currentEditorProps.colors)
   }
 
   const [tempColors, setTempColors] = useState(_tempColors)
@@ -356,8 +357,8 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   // eslint-disable-next-line camelcase
   if (!finderInitFlag.current) {
-    if (isControlEnabled(editorPropsRef.current, 'media')) {
-      const { language, media } = editorPropsRef.current
+    if (isControlEnabled(currentEditorProps, 'media')) {
+      const { language, media } = currentEditorProps
       const { uploadFn, validateFn, items }: any = {
         ...defaultProps.media,
         ...media
@@ -386,14 +387,9 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   useEffect(() => {
     const editorState = value
-    const { media, language } = editorPropsRef.current
-    const currentProps: KedaoEditorProps = getEditorProps()
+    const { media, language } = currentEditorProps
 
-    if (
-      !isControlEnabled(currentProps, 'media') &&
-      isControlEnabled(editorPropsRef.current, 'media') &&
-      !finderRef.current
-    ) {
+    if (isControlEnabled(currentEditorProps, 'media') && !finderRef.current) {
       const { uploadFn, validateFn, items }: any = {
         ...defaultProps.media,
         ...media
@@ -426,10 +422,9 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         const tempColors = ColorUtils.detectColorsFromDraftState(
           convertEditorStateToRaw(nextEditorState)
         )
-        convertOptionsRef.current = getConvertOptions(editorPropsRef.current)
 
         setTempColors((oldColors) =>
-          filterColors([...oldColors, ...tempColors], currentProps.colors)
+          filterColors([...oldColors, ...tempColors], currentEditorProps.colors)
         )
         setEditorState(nextEditorState)
         onChange?.(nextEditorState)
@@ -437,12 +432,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         setEditorState(nextEditorState)
       }
     }
-    editorPropsRef.current = currentProps
   }, [defaultValue, value])
-
-  useEffect(() => {
-    convertOptionsRef.current = getConvertOptions(editorPropsRef.current)
-  }, [editorState])
 
   let handleChange = (
     editorState: EditorState,
@@ -453,10 +443,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       newEditorState = EditorState.set(editorState, {
         decorator: editorDecoratorsRef.current
       })
-    }
-
-    if (!convertOptionsRef.current) {
-      convertOptionsRef.current = getConvertOptions(editorPropsRef.current)
     }
 
     setEditorState(newEditorState)
@@ -486,7 +472,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const keyCommandHandlers = (command: string, editorState: EditorState) => {
     if (
-      editorPropsRef.current.handleKeyCommand?.(
+      currentEditorProps.handleKeyCommand?.(
         command,
         editorState,
         callbackEditor
@@ -496,11 +482,11 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     }
 
     if (command === 'kedao-save') {
-      editorPropsRef.current.onSave?.(editorState)
+      currentEditorProps.onSave?.(editorState)
       return 'handled'
     }
 
-    const { controls, excludeControls } = editorPropsRef.current
+    const { controls, excludeControls } = currentEditorProps
     const allowIndent =
       (controls.indexOf('text-indent' as any) !== 0 ||
         controls.find((item) => item.key === 'text-indent')) &&
@@ -511,8 +497,8 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
     if (command === 'backspace') {
       if (
-        editorPropsRef.current.onDelete &&
-        !editorPropsRef.current.onDelete?.(editorState)
+        currentEditorProps.onDelete &&
+        !currentEditorProps.onDelete?.(editorState)
       ) {
         return 'handled'
       }
@@ -531,7 +517,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         setValue(
           ContentUtils.insertText(
             editorState,
-            ' '.repeat(editorPropsRef.current.codeTabIndents)
+            ' '.repeat(currentEditorProps.codeTabIndents)
           )
         )
         return 'handled'
@@ -566,15 +552,15 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     if (keyCommandHandlers('tab', editorState) === 'handled') {
       event.preventDefault()
     }
-    editorPropsRef.current.onTab?.(event)
+    currentEditorProps.onTab?.(event)
   }
 
   const onFocus = () => {
-    editorPropsRef.current.onFocus?.(editorState)
+    currentEditorProps.onFocus?.(editorState)
   }
 
   const onBlur = () => {
-    editorPropsRef.current.onBlur?.(editorState)
+    currentEditorProps.onBlur?.(editorState)
   }
 
   const requestFocus = () => {
@@ -583,11 +569,8 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const handleReturn = (event, editorState: EditorState) => {
     if (
-      editorPropsRef.current.handleReturn?.(
-        event,
-        editorState,
-        callbackEditor
-      ) === 'handled'
+      currentEditorProps.handleReturn?.(event, editorState, callbackEditor) ===
+      'handled'
     ) {
       return 'handled'
     }
@@ -651,7 +634,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const handleBeforeInput = (chars, editorState: EditorState) => {
     if (
-      editorPropsRef.current.handleBeforeInput?.(
+      currentEditorProps.handleBeforeInput?.(
         chars,
         editorState,
         callbackEditor
@@ -664,7 +647,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   }
 
   const handleDrop = (selectionState, dataTransfer) => {
-    if (editorPropsRef.current.readOnly || editorPropsRef.current.disabled) {
+    if (currentEditorProps.readOnly || currentEditorProps.disabled) {
       return 'handled'
     }
 
@@ -699,7 +682,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   const handleFiles = (files) => {
     const { pasteImage, validateFn, imagePasteLimit }: any = {
       ...defaultProps.media,
-      ...editorPropsRef.current.media
+      ...currentEditorProps.media
     }
 
     if (pasteImage) {
@@ -736,7 +719,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const handleDroppedFiles = (selectionState, files) => {
     if (
-      editorPropsRef.current.handleDroppedFiles?.(
+      currentEditorProps.handleDroppedFiles?.(
         selectionState,
         files,
         callbackEditor
@@ -750,7 +733,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const handlePastedFiles = (files) => {
     if (
-      editorPropsRef.current.handlePastedFiles?.(files, callbackEditor) ===
+      currentEditorProps.handlePastedFiles?.(files, callbackEditor) ===
       'handled'
     ) {
       return 'handled'
@@ -773,10 +756,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
           (window as any).clipboardData ||
           event.originalEvent.clipboardData
 
-        const html = convertEditorStateToHTML(
-          tempEditorState,
-          convertOptionsRef.current
-        )
+        const html = convertEditorStateToHTML(tempEditorState, convertOptions)
         const text = tempEditorState.getCurrentContent().getPlainText()
 
         clipboardData.setData('text/html', html)
@@ -791,7 +771,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const handlePastedText = (text, html, editorState: EditorState) => {
     if (
-      editorPropsRef.current.handlePastedText?.(
+      currentEditorProps.handlePastedText?.(
         text,
         html,
         editorState,
@@ -801,7 +781,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       return 'handled'
     }
 
-    if (!html || editorPropsRef.current.stripPastedStyles) {
+    if (!html || currentEditorProps.stripPastedStyles) {
       return false
     }
 
@@ -809,16 +789,11 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
     setTempColors(
       [...tempColors, ...tempColors_]
-        .filter((item) => !editorPropsRef.current.colors.includes(item))
+        .filter((item) => !currentEditorProps.colors.includes(item))
         .filter((item, index, array) => array.indexOf(item) === index)
     )
     setValue(
-      ContentUtils.insertHTML(
-        editorState,
-        convertOptionsRef.current,
-        html,
-        'paste'
-      )
+      ContentUtils.insertHTML(editorState, convertOptions, html, 'paste')
     )
     return 'handled'
   }
@@ -842,8 +817,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     }
   }
 
-  let { editorId, controls, language, hooks, placeholder } =
-    editorPropsRef.current
+  let { editorId, controls, language, hooks, placeholder } = currentEditorProps
   const {
     id,
     excludeControls,
@@ -877,17 +851,17 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     contentStyle,
     stripPastedStyles,
     componentBelowControlBar
-  } = editorPropsRef.current
+  } = currentEditorProps
 
   editorId = editorId || id
   hooks = buildHooks(hooks)
-  controls = controls.filter((item) => excludeControls.indexOf(item) === -1)
+  controls = controls.filter((item) => !excludeControls.includes(item as any))
   language =
     (typeof language === 'function'
       ? language(languages, 'kedao')
       : languages[language]) || languages[defaultProps.language]
 
-  const controlBarMedia = useMemo(() => {
+  const controlBarMedia: MediaProps = useMemo(() => {
     const defaultMedia = defaultProps.media
     const result = {
       ...defaultMedia,
@@ -916,7 +890,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       setValue,
       getValue: () => editorState,
       requestFocus,
-      editorProps: editorPropsRef.current,
+      editorProps: currentEditorProps,
       lockOrUnlockEditor: setEditorLocked,
       finder: finderRef.current,
       isLiving,
@@ -929,7 +903,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       setOnChange: (onChange) => {
         handleChange = onChange
       },
-      convertOptions: convertOptionsRef.current,
+      convertOptions: convertOptions,
       blur: () => {
         draftInstanceRef.current?.blur()
       },
@@ -962,7 +936,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
             newValue = !v
             return newValue
           })
-          editorPropsRef.current.onFullscreen?.(newValue)
+          currentEditorProps.onFullscreen?.(newValue)
         }
       }
     }),
@@ -971,13 +945,13 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       editorState,
       setValue,
       requestFocus,
-      editorPropsRef.current,
+      currentEditorProps,
       setEditorLocked,
       finderRef.current,
       isLiving,
       tempColors,
       handleChange,
-      convertOptionsRef.current,
+      convertOptions,
       draftInstanceRef.current,
       props.readOnly,
       forceRender,
@@ -986,7 +960,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     ]
   )
 
-  const { unitExportFn } = convertOptionsRef.current
+  const { unitExportFn } = convertOptions
 
   const commonProps = {
     editor: callbackEditor,
@@ -1003,32 +977,32 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const blockRendererFn = getBlockRendererFn(
     commonProps,
-    editorPropsRef.current.blockRendererFn
+    currentEditorProps.blockRendererFn
   )
   const blockRenderMap = getBlockRenderMap(
     commonProps,
-    editorPropsRef.current.blockRenderMap
+    currentEditorProps.blockRenderMap
   )
-  const blockStyleFn = getBlockStyleFn(editorPropsRef.current.blockStyleFn)
+  const blockStyleFn = getBlockStyleFn(currentEditorProps.blockStyleFn)
   const customStyleMap = getCustomStyleMap(
     commonProps,
-    editorPropsRef.current.customStyleMap
+    currentEditorProps.customStyleMap
   )
   const customStyleFn = getCustomStyleFn(commonProps, {
     fontFamilies,
     unitExportFn,
-    customStyleFn: editorPropsRef.current.customStyleFn
+    customStyleFn: currentEditorProps.customStyleFn
   })
 
-  const keyBindingFn = getKeyBindingFn(editorPropsRef.current.keyBindingFn)
+  const keyBindingFn = getKeyBindingFn(currentEditorProps.keyBindingFn)
 
   const mixedProps: any = {}
 
   if (
     editorLocked ||
-    editorPropsRef.current.disabled ||
-    editorPropsRef.current.readOnly ||
-    editorPropsRef.current.draftProps.readOnly
+    currentEditorProps.disabled ||
+    currentEditorProps.readOnly ||
+    currentEditorProps.draftProps.readOnly
   ) {
     mixedProps.readOnly = true
   }
@@ -1079,7 +1053,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         editorId={editorId}
         media={controlBarMedia}
         controls={memoControls}
-        language={language}
+        language={language as any}
         extendControls={extendControls}
         headings={headings}
         fontSizes={fontSizes}
@@ -1125,7 +1099,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
           keyBindingFn={keyBindingFn}
           placeholder={placeholder}
           stripPastedStyles={stripPastedStyles}
-          {...editorPropsRef.current.draftProps}
+          {...currentEditorProps.draftProps}
           {...mixedProps}
         />
       </div>

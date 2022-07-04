@@ -102,7 +102,7 @@ const mergeControls = (
     )
 }
 
-interface ControlBarProps
+export interface ControlBarProps
   extends CommonPickerProps,
   Pick<TextColorPickerProps, 'colorPicker'>,
   Pick<EmojiPickerProps, 'emojis'>,

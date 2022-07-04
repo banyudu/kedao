@@ -17,7 +17,7 @@ Object.keys(headerTagTypeMap).forEach((key) => {
   headerTypeTagMap[headerTagTypeMap[key]] = key
 })
 
-const getHeaderTag = (TagName, editorState: EditorState) => props => {
+const getHeaderTag = (TagName, editorState: EditorState) => (props) => {
   const blockKey = props['data-offset-key'].split('-')[0]
   const block = editorState.getCurrentContent().getBlockForKey(blockKey)
   const headerId = block.getData().get('id') || blockKey
@@ -56,7 +56,7 @@ export default (options: any = {}) => {
     includeEditors,
     excludeEditors,
     renderMap: getHeaderRenderMap,
-    importer: (nodeName, node) => {
+    importer: (nodeName: string, node) => {
       if (/h[1-6]/.test(nodeName)) {
         const blockData: any = {
           id: node.getAttribute('id')

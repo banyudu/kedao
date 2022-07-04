@@ -77,7 +77,7 @@ export const getExtensionInlineStyleFns = (editorId: string) =>
   filterByEditorId(extensionInlineStyleFns, editorId)
 
 export const compositeStyleImportFn =
-  (styleImportFn, editorId: string) => (nodeName, node, style) => {
+  (styleImportFn, editorId: string) => (nodeName: string, node, style) => {
     filterByEditorId(inlineStyleImporters, editorId).forEach(
       (styleImporter) => {
         if (styleImporter.importer?.(nodeName, node)) {
@@ -89,51 +89,53 @@ export const compositeStyleImportFn =
     return styleImportFn ? styleImportFn(nodeName, node, style) : style
   }
 
-export const compositeStyleExportFn = (styleExportFn, editorId: string) => (style) => {
-  style = style.toUpperCase()
-  let result = styleExportFn ? styleExportFn(style) : undefined
-
-  if (result) {
-    return result
-  }
-
-  filterByEditorId(inlineStyleExporters, editorId).find((item) => {
-    if (item.inlineStyleName === style) {
-      result = item.exporter
-      return true
-    }
-    return false
-  })
-
-  return result
-}
-
-export const compositeEntityImportFn =
-  (entityImportFn, editorId: string) => (nodeName, node, createEntity, source) => {
-    let result = entityImportFn
-      ? entityImportFn(nodeName, node, createEntity, source)
-      : null
+export const compositeStyleExportFn =
+  (styleExportFn, editorId: string) => (style) => {
+    style = style.toUpperCase()
+    let result = styleExportFn ? styleExportFn(style) : undefined
 
     if (result) {
       return result
     }
 
-    filterByEditorId(extensionEntities, editorId).find((entityItem) => {
-      const matched = entityItem.importer
-        ? entityItem.importer(nodeName, node, source)
-        : null
-      if (matched) {
-        result = createEntity(
-          entityItem.entityType,
-          matched.mutability || 'MUTABLE',
-          matched.data || {}
-        )
+    filterByEditorId(inlineStyleExporters, editorId).find((item) => {
+      if (item.inlineStyleName === style) {
+        result = item.exporter
+        return true
       }
-      return !!matched
+      return false
     })
 
     return result
   }
+
+export const compositeEntityImportFn =
+  (entityImportFn, editorId: string) =>
+    (nodeName: string, node, createEntity, source) => {
+      let result = entityImportFn
+        ? entityImportFn(nodeName, node, createEntity, source)
+        : null
+
+      if (result) {
+        return result
+      }
+
+      filterByEditorId(extensionEntities, editorId).find((entityItem) => {
+        const matched = entityItem.importer
+          ? entityItem.importer(nodeName, node, source)
+          : null
+        if (matched) {
+          result = createEntity(
+            entityItem.entityType,
+            matched.mutability || 'MUTABLE',
+            matched.data || {}
+          )
+        }
+        return !!matched
+      })
+
+      return result
+    }
 
 export const compositeEntityExportFn =
   (entityExportFn, editorId: string) => (entity, originalText) => {
@@ -161,7 +163,7 @@ export const compositeEntityExportFn =
   }
 
 export const compositeBlockImportFn =
-  (blockImportFn, editorId: string) => (nodeName, node, source) => {
+  (blockImportFn, editorId: string) => (nodeName: string, node, source) => {
     let result = blockImportFn ? blockImportFn(nodeName, node, source) : null
 
     if (result) {
@@ -379,7 +381,10 @@ export const useExtension = (extension: Extension) => {
   } else if (extension.type === 'decorator') {
     const { decorator } = extension
 
-    if ((decorator as DraftDecorator)?.strategy && (decorator as DraftDecorator).component) {
+    if (
+      (decorator as DraftDecorator)?.strategy &&
+      (decorator as DraftDecorator).component
+    ) {
       extensionDecorators.push({
         includeEditors,
         excludeEditors,

@@ -28,7 +28,7 @@ const buildColgroup = (blockData) => {
 
 let tableColgroupData = []
 
-export const tableImportFn = (nodeName, node) => {
+export const tableImportFn = (nodeName: string, node) => {
   if (
     nodeName !== 'body' &&
     node &&
@@ -78,53 +78,56 @@ export const tableImportFn = (nodeName, node) => {
   return null
 }
 
-export const tableExportFn = (exportAttrString) => (contentState: ContentState, block) => {
-  if (block.type.toLowerCase() !== 'table-cell') {
-    return null
+export const tableExportFn =
+  (exportAttrString) => (contentState: ContentState, block) => {
+    if (block.type.toLowerCase() !== 'table-cell') {
+      return null
+    }
+
+    const previousBlock = contentState.getBlockBefore(block.key)
+    const nextBlock = contentState.getBlockAfter(block.key)
+    const previousBlockType = previousBlock ? previousBlock.getType() : null
+    const previousBlockData = previousBlock
+      ? previousBlock.getData().toJS()
+      : {}
+    const nextBlockType = nextBlock ? nextBlock.getType() : null
+    const nextBlockData = nextBlock ? nextBlock.getData().toJS() : {}
+
+    let start = ''
+    let end = ''
+    let blockStyle = ''
+
+    if (block.data.textAlign) {
+      blockStyle += ` style="text-align:${block.data.textAlign};"`
+    }
+
+    if (previousBlockType !== 'table-cell') {
+      start = `<table ${exportAttrString}>${buildColgroup(
+        block.data
+      )}<tr><td${blockStyle} colSpan="${block.data.colSpan}" rowSpan="${
+        block.data.rowSpan
+      }">`
+    } else if (previousBlockData.rowIndex !== block.data.rowIndex) {
+      start = `<tr><td${blockStyle} colSpan="${block.data.colSpan}" rowSpan="${block.data.rowSpan}">`
+    } else {
+      start = `<td${blockStyle} colSpan="${block.data.colSpan}" rowSpan="${block.data.rowSpan}">`
+    }
+
+    if (nextBlockType !== 'table-cell') {
+      end = '</td></tr></table>'
+    } else if (nextBlockData.rowIndex !== block.data.rowIndex) {
+      end = '</td></tr>'
+    } else {
+      end = '</td>'
+    }
+
+    if (!previousBlockType) {
+      start = '<p></p>' + start
+    }
+
+    if (!nextBlockType) {
+      end += '<p></p>'
+    }
+
+    return { start, end }
   }
-
-  const previousBlock = contentState.getBlockBefore(block.key)
-  const nextBlock = contentState.getBlockAfter(block.key)
-  const previousBlockType = previousBlock ? previousBlock.getType() : null
-  const previousBlockData = previousBlock ? previousBlock.getData().toJS() : {}
-  const nextBlockType = nextBlock ? nextBlock.getType() : null
-  const nextBlockData = nextBlock ? nextBlock.getData().toJS() : {}
-
-  let start = ''
-  let end = ''
-  let blockStyle = ''
-
-  if (block.data.textAlign) {
-    blockStyle += ` style="text-align:${block.data.textAlign};"`
-  }
-
-  if (previousBlockType !== 'table-cell') {
-    start = `<table ${exportAttrString}>${buildColgroup(
-      block.data
-    )}<tr><td${blockStyle} colSpan="${block.data.colSpan}" rowSpan="${
-      block.data.rowSpan
-    }">`
-  } else if (previousBlockData.rowIndex !== block.data.rowIndex) {
-    start = `<tr><td${blockStyle} colSpan="${block.data.colSpan}" rowSpan="${block.data.rowSpan}">`
-  } else {
-    start = `<td${blockStyle} colSpan="${block.data.colSpan}" rowSpan="${block.data.rowSpan}">`
-  }
-
-  if (nextBlockType !== 'table-cell') {
-    end = '</td></tr></table>'
-  } else if (nextBlockData.rowIndex !== block.data.rowIndex) {
-    end = '</td></tr>'
-  } else {
-    end = '</td>'
-  }
-
-  if (!previousBlockType) {
-    start = '<p></p>' + start
-  }
-
-  if (!nextBlockType) {
-    end += '<p></p>'
-  }
-
-  return { start, end }
-}

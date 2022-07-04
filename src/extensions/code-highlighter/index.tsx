@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import './styles.scss'
 import { Map } from 'immutable'
-import { EditorState, SelectionState, ContentState, ContentBlock } from 'draft-js'
+import {
+  EditorState,
+  SelectionState,
+  ContentState,
+  ContentBlock
+} from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
 import { ContentUtils } from '../../utils'
 import Prism from 'prismjs'
@@ -31,9 +36,7 @@ const CodeBlockWrapper = ({
     if (codeBlockBlock) {
       const blockData = codeBlockBlock.getData()
       const syntax = blockData.get('syntax') || syntaxs[0].syntax
-      const syntaxName = syntaxs.find(
-        (item) => item.syntax === syntax
-      ).name
+      const syntaxName = syntaxs.find((item) => item.syntax === syntax).name
 
       if (syntaxName) {
         setSyntax(syntax)
@@ -50,9 +53,7 @@ const CodeBlockWrapper = ({
     }
 
     try {
-      const syntaxName = syntaxs.find(
-        (item) => item.syntax === syntax
-      ).name
+      const syntaxName = syntaxs.find((item) => item.syntax === syntax).name
 
       if (!syntaxName) {
         return
@@ -158,7 +159,7 @@ export default (options: any = {}) => {
       includeEditors,
       excludeEditors,
       renderMap: getCodeBlockRenderMap({ syntaxs, showLineNumber, showTools }),
-      importer: (nodeName, node) => {
+      importer: (nodeName: string, node) => {
         if (nodeName.toLowerCase() === 'pre') {
           try {
             const syntax = node.dataset.lang

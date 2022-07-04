@@ -6,7 +6,12 @@ import { ContentUtils } from '../../../utils'
 import ControlGroup from '..//ControlGroup'
 import '../ControlBar/style.scss'
 
-const TextIndent: FC<CommonPickerProps> = ({ editorState, language, editor }) => {
+const TextIndent: FC<CommonPickerProps> = ({
+  editorState,
+  language,
+  onChange,
+  onRequestFocus
+}) => {
   const [currentIndent, setCurrentIndent] = useState(0)
 
   useEffect(() => {
@@ -16,20 +21,20 @@ const TextIndent: FC<CommonPickerProps> = ({ editorState, language, editor }) =>
   }, [editorState])
 
   const increaseIndent = () => {
-    editor.setValue(ContentUtils.increaseSelectionIndent(editorState))
-    editor.requestFocus()
+    onChange(ContentUtils.increaseSelectionIndent(editorState))
+    onRequestFocus()
   }
 
   const decreaseIndent = () => {
-    editor.setValue(ContentUtils.decreaseSelectionIndent(editorState))
-    editor.requestFocus()
+    onChange(ContentUtils.decreaseSelectionIndent(editorState))
+    onRequestFocus()
   }
 
   return (
     <ControlGroup>
       <button
         key={0}
-        type='button'
+        type="button"
         data-title={language.controls.increaseIndent}
         disabled={currentIndent >= 6}
         className={`control-item button button-indent-increase${
@@ -41,10 +46,10 @@ const TextIndent: FC<CommonPickerProps> = ({ editorState, language, editor }) =>
       </button>
       <button
         key={1}
-        type='button'
+        type="button"
         data-title={language.controls.decreaseIndent}
         disabled={currentIndent <= 0}
-        className='control-item button button-indent-decrease'
+        className="control-item button button-indent-decrease"
         onClick={decreaseIndent}
       >
         <MdFormatIndentDecrease {...defaultIconProps} />

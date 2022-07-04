@@ -2,25 +2,36 @@ import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentUtils } from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
-import { CommonPickerProps } from '../../../types'
+import { CommonPickerProps, EditorState } from '../../../types'
 import './style.scss'
 
 export interface LineHeightPickerProps extends CommonPickerProps {
   lineHeights: number[]
   defaultCaption: DropDownProps['caption']
+  onRequestFocus: () => void
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
 }
 
-const LineHeightPicker: FC<LineHeightPickerProps> = ({ lineHeights, defaultCaption, getContainerNode, language, editor, editorState, hooks }) => {
+const LineHeightPicker: FC<LineHeightPickerProps> = ({
+  lineHeights,
+  defaultCaption,
+  getContainerNode,
+  language,
+  onChange,
+  onRequestFocus,
+  editorState,
+  hooks
+}) => {
   let caption = null
   let currentLineHeight = null
   const dropDownInstance = React.createRef<any>()
 
   lineHeights.find((item) => {
     if (
-      ContentUtils.selectionHasInlineStyle(
-        editorState,
-        `LINEHEIGHT-${item}`
-      )
+      ContentUtils.selectionHasInlineStyle(editorState, `LINEHEIGHT-${item}`)
     ) {
       caption = item
       currentLineHeight = item
@@ -41,10 +52,8 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({ lineHeights, defaultCapti
       lineHeight = hookReturns
     }
 
-    editor.setValue(
-      ContentUtils.toggleSelectionLineHeight(editorState, lineHeight)
-    )
-    editor.requestFocus()
+    onChange(ContentUtils.toggleSelectionLineHeight(editorState, lineHeight))
+    onRequestFocus()
     return true
   }
 

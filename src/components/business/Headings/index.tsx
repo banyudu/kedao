@@ -5,7 +5,8 @@ import { CommonPickerProps } from '../../../types'
 import DropDown from '../../common/DropDown'
 import './style.scss'
 
-export interface HeadingsPickerProps extends CommonPickerProps {
+export interface HeadingsPickerProps
+  extends Omit<CommonPickerProps, 'onChange'> {
   headings: string[]
   current: any
   onChange: (command: string, type: string) => void
@@ -20,8 +21,8 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
 }) => {
   const dropDownInstance = React.createRef<any>()
 
-  const innerHeadings = getHeadings(language).filter(
-    (item) => headings.includes(item.key)
+  const innerHeadings = getHeadings(language).filter((item) =>
+    headings.includes(item.key)
   )
   const currentHeadingIndex = innerHeadings.findIndex(
     (item) => item.command === current

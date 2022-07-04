@@ -239,7 +239,11 @@ export const blocks = {
 const blockTypes = Object.keys(blocks)
 const blockNames = blockTypes.map((key) => blocks[key])
 
-const convertAtomicBlock = (block, contentState: ContentState, blockNodeAttributes) => {
+const convertAtomicBlock = (
+  block,
+  contentState: ContentState,
+  blockNodeAttributes
+) => {
   if (!block || !block.key) {
     return <p />
   }
@@ -507,223 +511,232 @@ const blockToHTML = (options: ConvertOptions) => (block) => {
   }
 }
 
-const htmlToStyle = (options: ConvertOptions, source) => (nodeName, node, currentStyle) => {
-  if (!node || !node.style) {
-    return currentStyle
-  }
-
-  const unitImportFn = options.unitImportFn || defaultUnitImportFn
-  let newStyle = currentStyle;
-
-  [].forEach.call(node.style, (style) => {
-    if (nodeName === 'span' && style === 'color') {
-      const color = getHexColor(node.style.color)
-      newStyle = color
-        ? newStyle.add('COLOR-' + color.replace('#', '').toUpperCase())
-        : newStyle
-    } else if (nodeName === 'span' && style === 'background-color') {
-      const color = getHexColor(node.style.backgroundColor)
-      newStyle = color
-        ? newStyle.add('BGCOLOR-' + color.replace('#', '').toUpperCase())
-        : newStyle
-    } else if (nodeName === 'span' && style === 'font-size') {
-      newStyle = newStyle.add(
-        'FONTSIZE-' + unitImportFn(node.style.fontSize, 'font-size', source)
-      )
-    } else if (
-      nodeName === 'span' &&
-      style === 'line-height' &&
-      !isNaN(parseFloat(node.style.lineHeight))
-    ) {
-      newStyle = newStyle.add(
-        'LINEHEIGHT-' +
-          unitImportFn(node.style.lineHeight, 'line-height', source)
-      )
-    } else if (
-      nodeName === 'span' &&
-      style === 'letter-spacing' &&
-      !isNaN(parseFloat(node.style.letterSpacing))
-    ) {
-      newStyle = newStyle.add(
-        'LETTERSPACING-' +
-          unitImportFn(node.style.letterSpacing, 'letter-spacing', source)
-      )
-    } else if (nodeName === 'span' && style === 'text-decoration') {
-      if (node.style.textDecoration === 'line-through') {
-        newStyle = newStyle.add('STRIKETHROUGH')
-      } else if (node.style.textDecoration === 'underline') {
-        newStyle = newStyle.add('UNDERLINE')
+const htmlToStyle =
+  (options: ConvertOptions, source) =>
+    (nodeName: string, node, currentStyle) => {
+      if (!node || !node.style) {
+        return currentStyle
       }
-    } else if (nodeName === 'span' && style === 'font-family') {
-      const fontFamily = options.fontFamilies.find(
-        (item) =>
-          item.family.toLowerCase() === node.style.fontFamily.toLowerCase()
-      )
-      if (!fontFamily) return
-      newStyle = newStyle.add('FONTFAMILY-' + fontFamily.name.toUpperCase())
-    }
-  })
 
-  if (nodeName === 'sup') {
-    newStyle = newStyle.add('SUPERSCRIPT')
-  } else if (nodeName === 'sub') {
-    newStyle = newStyle.add('SUBSCRIPT')
-  }
+      const unitImportFn = options.unitImportFn || defaultUnitImportFn
+      let newStyle = currentStyle;
 
-  options.styleImportFn &&
-    (newStyle =
-      options.styleImportFn(nodeName, node, newStyle, source) || newStyle)
-  return newStyle
-}
+      [].forEach.call(node.style, (style) => {
+        if (nodeName === 'span' && style === 'color') {
+          const color = getHexColor(node.style.color)
+          newStyle = color
+            ? newStyle.add('COLOR-' + color.replace('#', '').toUpperCase())
+            : newStyle
+        } else if (nodeName === 'span' && style === 'background-color') {
+          const color = getHexColor(node.style.backgroundColor)
+          newStyle = color
+            ? newStyle.add('BGCOLOR-' + color.replace('#', '').toUpperCase())
+            : newStyle
+        } else if (nodeName === 'span' && style === 'font-size') {
+          newStyle = newStyle.add(
+            'FONTSIZE-' + unitImportFn(node.style.fontSize, 'font-size', source)
+          )
+        } else if (
+          nodeName === 'span' &&
+        style === 'line-height' &&
+        !isNaN(parseFloat(node.style.lineHeight))
+        ) {
+          newStyle = newStyle.add(
+            'LINEHEIGHT-' +
+            unitImportFn(node.style.lineHeight, 'line-height', source)
+          )
+        } else if (
+          nodeName === 'span' &&
+        style === 'letter-spacing' &&
+        !isNaN(parseFloat(node.style.letterSpacing))
+        ) {
+          newStyle = newStyle.add(
+            'LETTERSPACING-' +
+            unitImportFn(node.style.letterSpacing, 'letter-spacing', source)
+          )
+        } else if (nodeName === 'span' && style === 'text-decoration') {
+          if (node.style.textDecoration === 'line-through') {
+            newStyle = newStyle.add('STRIKETHROUGH')
+          } else if (node.style.textDecoration === 'underline') {
+            newStyle = newStyle.add('UNDERLINE')
+          }
+        } else if (nodeName === 'span' && style === 'font-family') {
+          const fontFamily = options.fontFamilies.find(
+            (item) =>
+              item.family.toLowerCase() === node.style.fontFamily.toLowerCase()
+          )
+          if (!fontFamily) return
+          newStyle = newStyle.add('FONTFAMILY-' + fontFamily.name.toUpperCase())
+        }
+      })
 
-const htmlToEntity = (options: ConvertOptions, source) =>
-  (nodeName, node: HTMLVideoElement & HTMLImageElement, createEntity) => {
-    if (options?.entityImportFn) {
-      const customInput = options.entityImportFn(
-        nodeName,
-        node,
-        createEntity,
-        source
-      )
-      if (customInput) {
-        return customInput
+      if (nodeName === 'sup') {
+        newStyle = newStyle.add('SUPERSCRIPT')
+      } else if (nodeName === 'sub') {
+        newStyle = newStyle.add('SUBSCRIPT')
       }
+
+      options.styleImportFn &&
+      (newStyle =
+        options.styleImportFn(nodeName, node, newStyle, source) || newStyle)
+      return newStyle
     }
 
-    nodeName = nodeName.toLowerCase()
+const htmlToEntity =
+  (options: ConvertOptions, source) =>
+    (
+      nodeName: string,
+      node: HTMLVideoElement & HTMLImageElement,
+      createEntity
+    ) => {
+      if (options?.entityImportFn) {
+        const customInput = options.entityImportFn(
+          nodeName,
+          node,
+          createEntity,
+          source
+        )
+        if (customInput) {
+          return customInput
+        }
+      }
 
-    const { alt, title, id, controls, autoplay, loop, poster } = node
-    const meta: any = {}
-    const nodeAttributes = {}
+      nodeName = nodeName.toLowerCase()
 
-    id && (meta.id = id)
-    alt && (meta.alt = alt)
-    title && (meta.title = title)
-    controls && (meta.controls = controls)
-    autoplay && (meta.autoPlay = autoplay)
-    loop && (meta.loop = loop)
-    poster && (meta.poster = poster)
+      const { alt, title, id, controls, autoplay, loop, poster } = node
+      const meta: any = {}
+      const nodeAttributes = {}
 
-    node.attributes &&
+      id && (meta.id = id)
+      alt && (meta.alt = alt)
+      title && (meta.title = title)
+      controls && (meta.controls = controls)
+      autoplay && (meta.autoPlay = autoplay)
+      loop && (meta.loop = loop)
+      poster && (meta.poster = poster)
+
+      node.attributes &&
       Object.keys(node.attributes).forEach((key) => {
         const attr = node.attributes[key]
         !ignoredEntityNodeAttributes.includes(attr.name) &&
           (nodeAttributes[attr.name] = attr.value)
       })
 
-    if (nodeName === 'a' && node.querySelectorAll('img').length > 0) {
-      const href = node.getAttribute('href')
-      const target = node.getAttribute('target')
-      return createEntity('LINK', 'MUTABLE', { href, target, nodeAttributes })
-    } else if (nodeName === 'audio') {
-      return createEntity('AUDIO', 'IMMUTABLE', {
-        url: node.getAttribute('src'),
-        meta,
-        nodeAttributes
-      })
-    } else if (nodeName === 'video') {
-      return createEntity('VIDEO', 'IMMUTABLE', {
-        url: node.getAttribute('src'),
-        meta,
-        nodeAttributes
-      })
-    } else if (nodeName === 'img') {
-      const parentNode: any = node.parentNode
-      const entityData: any = { meta }
-      const { width, height } = node.style
-
-      entityData.url = node.getAttribute('src')
-      width && (entityData.width = width)
-      height && (entityData.height = height)
-
-      if (parentNode.nodeName.toLowerCase() === 'a') {
-        entityData.link = parentNode.getAttribute('href')
-        entityData.link_target = parentNode.getAttribute('target')
-      }
-
-      return createEntity('IMAGE', 'IMMUTABLE', entityData)
-    } else if (nodeName === 'hr') {
-      return createEntity('HR', 'IMMUTABLE', {})
-    } else if ((node.parentNode as any)?.classList.contains('embed-wrap')) {
-      const embedContent = node.innerHTML || node.outerHTML
-
-      if (embedContent) {
-        return createEntity('EMBED', 'IMMUTABLE', {
-          url: embedContent
+      if (nodeName === 'a' && node.querySelectorAll('img').length > 0) {
+        const href = node.getAttribute('href')
+        const target = node.getAttribute('target')
+        return createEntity('LINK', 'MUTABLE', { href, target, nodeAttributes })
+      } else if (nodeName === 'audio') {
+        return createEntity('AUDIO', 'IMMUTABLE', {
+          url: node.getAttribute('src'),
+          meta,
+          nodeAttributes
         })
+      } else if (nodeName === 'video') {
+        return createEntity('VIDEO', 'IMMUTABLE', {
+          url: node.getAttribute('src'),
+          meta,
+          nodeAttributes
+        })
+      } else if (nodeName === 'img') {
+        const parentNode: any = node.parentNode
+        const entityData: any = { meta }
+        const { width, height } = node.style
+
+        entityData.url = node.getAttribute('src')
+        width && (entityData.width = width)
+        height && (entityData.height = height)
+
+        if (parentNode.nodeName.toLowerCase() === 'a') {
+          entityData.link = parentNode.getAttribute('href')
+          entityData.link_target = parentNode.getAttribute('target')
+        }
+
+        return createEntity('IMAGE', 'IMMUTABLE', entityData)
+      } else if (nodeName === 'hr') {
+        return createEntity('HR', 'IMMUTABLE', {})
+      } else if ((node.parentNode as any)?.classList.contains('embed-wrap')) {
+        const embedContent = node.innerHTML || node.outerHTML
+
+        if (embedContent) {
+          return createEntity('EMBED', 'IMMUTABLE', {
+            url: embedContent
+          })
+        }
       }
     }
-  }
 
-const htmlToBlock = (options: ConvertOptions, source) => (nodeName, node: HTMLElement) => {
-  if (options?.blockImportFn) {
-    const customInput = options.blockImportFn(nodeName, node, source)
-    if (customInput) {
-      return customInput
-    }
-  }
+const htmlToBlock =
+  (options: ConvertOptions, source) =>
+    (nodeName: string, node: HTMLElement) => {
+      if (options?.blockImportFn) {
+        const customInput = options.blockImportFn(nodeName, node, source)
+        if (customInput) {
+          return customInput
+        }
+      }
 
-  const nodeAttributes = {}
-  const nodeStyle: any = node.style ?? {}
+      const nodeAttributes = {}
+      const nodeStyle: any = node.style ?? {}
 
-  node.attributes &&
-    Object.keys(node.attributes).forEach((key) => {
-      const attr = node.attributes[key]
-      !ignoredNodeAttributes.includes(attr.name) &&
-        (nodeAttributes[attr.name] = attr.value)
-    })
+      node.attributes &&
+      Object.keys(node.attributes).forEach((key) => {
+        const attr = node.attributes[key]
+        !ignoredNodeAttributes.includes(attr.name) &&
+          (nodeAttributes[attr.name] = attr.value)
+      })
 
-  if (node.classList?.contains('media-wrap')) {
-    return {
-      type: 'atomic',
-      data: {
-        nodeAttributes: nodeAttributes,
-        float: nodeStyle.float,
-        alignment: nodeStyle.textAlign
+      if (node.classList?.contains('media-wrap')) {
+        return {
+          type: 'atomic',
+          data: {
+            nodeAttributes: nodeAttributes,
+            float: nodeStyle.float,
+            alignment: nodeStyle.textAlign
+          }
+        }
+      } else if (nodeName === 'img') {
+        return {
+          type: 'atomic',
+          data: {
+            nodeAttributes: nodeAttributes,
+            float: nodeStyle.float,
+            alignment: nodeStyle.textAlign
+          }
+        }
+      } else if (nodeName === 'hr') {
+        return {
+          type: 'atomic',
+          data: { nodeAttributes }
+        }
+      } else if (nodeName === 'pre') {
+        node.innerHTML = node.innerHTML
+          .replace(/<code(.*?)>/g, '')
+          .replace(/<\/code>/g, '')
+
+        return {
+          type: 'code-block',
+          data: { nodeAttributes }
+        }
+      } else if (blockNames.includes(nodeName)) {
+        const blockData: any = { nodeAttributes }
+
+        if (nodeStyle.textAlign) {
+          blockData.textAlign = nodeStyle.textAlign
+        }
+
+        if (nodeStyle.textIndent) {
+          blockData.textIndent = /^\d+em$/.test(nodeStyle.textIndent)
+            ? Math.ceil(parseInt(nodeStyle.textIndent, 10) / 2)
+            : 1
+        }
+
+        return {
+          type: blockTypes[blockNames.indexOf(nodeName)],
+          data: blockData
+        }
       }
     }
-  } else if (nodeName === 'img') {
-    return {
-      type: 'atomic',
-      data: {
-        nodeAttributes: nodeAttributes,
-        float: nodeStyle.float,
-        alignment: nodeStyle.textAlign
-      }
-    }
-  } else if (nodeName === 'hr') {
-    return {
-      type: 'atomic',
-      data: { nodeAttributes }
-    }
-  } else if (nodeName === 'pre') {
-    node.innerHTML = node.innerHTML
-      .replace(/<code(.*?)>/g, '')
-      .replace(/<\/code>/g, '')
-
-    return {
-      type: 'code-block',
-      data: { nodeAttributes }
-    }
-  } else if (blockNames.includes(nodeName)) {
-    const blockData: any = { nodeAttributes }
-
-    if (nodeStyle.textAlign) {
-      blockData.textAlign = nodeStyle.textAlign
-    }
-
-    if (nodeStyle.textIndent) {
-      blockData.textIndent = /^\d+em$/.test(nodeStyle.textIndent)
-        ? Math.ceil(parseInt(nodeStyle.textIndent, 10) / 2)
-        : 1
-    }
-
-    return {
-      type: blockTypes[blockNames.indexOf(nodeName)],
-      data: blockData
-    }
-  }
-}
 
 export const getToHTMLConfig = (options: ConvertOptions) => {
   return {
@@ -733,7 +746,10 @@ export const getToHTMLConfig = (options: ConvertOptions) => {
   }
 }
 
-export const getFromHTMLConfig = (options: ConvertOptions, source = 'unknow') => {
+export const getFromHTMLConfig = (
+  options: ConvertOptions,
+  source = 'unknow'
+) => {
   return {
     htmlToStyle: htmlToStyle(options, source),
     htmlToEntity: htmlToEntity(options, source),

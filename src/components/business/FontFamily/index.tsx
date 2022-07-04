@@ -5,7 +5,9 @@ import { ContentUtils } from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
-export interface FontFamilyPickerProps extends CommonPickerProps, Pick<DropDownProps, 'getContainerNode'> {
+export interface FontFamilyPickerProps
+  extends CommonPickerProps,
+  Pick<DropDownProps, 'getContainerNode'> {
   fontFamilies: any[]
   defaultCaption: DropDownProps['caption']
   language: Language
@@ -14,11 +16,12 @@ export interface FontFamilyPickerProps extends CommonPickerProps, Pick<DropDownP
 const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
   fontFamilies,
   editorState,
-  editor,
   hooks,
   defaultCaption,
   getContainerNode,
-  language
+  language,
+  onChange,
+  onRequestFocus
 }) => {
   let caption = null
   let currentIndex = null
@@ -53,10 +56,10 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
       fontFamilyName = hookReturns
     }
 
-    editor.setValue(
+    onChange(
       ContentUtils.toggleSelectionFontFamily(editorState, fontFamilyName)
     )
-    editor.requestFocus()
+    onRequestFocus()
     return true
   }
 

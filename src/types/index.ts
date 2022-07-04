@@ -1,4 +1,11 @@
-import { EditorState, EditorProps, ContentState, ContentBlock, DraftDecorator, CompositeDecorator } from 'draft-js'
+import {
+  EditorState,
+  EditorProps,
+  ContentState,
+  ContentBlock,
+  DraftDecorator,
+  CompositeDecorator
+} from 'draft-js'
 import * as React from 'react'
 
 export { EditorState, EditorProps }
@@ -12,24 +19,47 @@ export interface CallbackEditor {
   getValue: () => EditorState
   requestFocus: () => void
   onChange: (editorState: EditorState, callback?) => void
-  setOnChange: (onChange: (editorState: EditorState, callback?) => void) => void
+  setOnChange: (
+    onChange: (editorState: EditorState, callback?) => void
+  ) => void
   lockOrUnlockEditor: (lock: boolean) => void
   editorProps: {
     codeTabIndents: number
     controls: ControlItem[]
     excludeControls: string[]
-    handleKeyCommand: (command: KeyCommand, editorState: EditorState, editor: CallbackEditor) => string
+    handleKeyCommand: (
+      command: KeyCommand,
+      editorState: EditorState,
+      editor: CallbackEditor
+    ) => string
     onSave: (state: EditorState) => void
     onDelete: (state: EditorState) => boolean
-    handleReturn: (event, editorState: EditorState, editor: CallbackEditor) => string
-    handleBeforeInput: (chars, editorState: EditorState, editor: CallbackEditor) => string
+    handleReturn: (
+      event,
+      editorState: EditorState,
+      editor: CallbackEditor
+    ) => string
+    handleBeforeInput: (
+      chars,
+      editorState: EditorState,
+      editor: CallbackEditor
+    ) => string
     readOnly: boolean
     disabled: boolean
     media: any
-    handlePastedText: (text, html, editorState, editor: CallbackEditor) => string
+    handlePastedText: (
+      text,
+      html,
+      editorState,
+      editor: CallbackEditor
+    ) => string
     stripPastedStyles: any
     colors: string[]
-    handleDroppedFiles: (selectionState, files, editor: CallbackEditor) => string
+    handleDroppedFiles: (
+      selectionState,
+      files,
+      editor: CallbackEditor
+    ) => string
     handlePastedFiles: (files, editor: CallbackEditor) => string
     language: any
   }
@@ -159,11 +189,15 @@ export interface MediaProps {
 
 export interface CommonPickerProps {
   hooks: Hooks
-  editor: CallbackEditor
   editorState: EditorState
   editorId: string
   language: Language
   getContainerNode: () => HTMLElement
+  onRequestFocus: () => void
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
 }
 
 export type BuiltInControlNames =
@@ -362,6 +396,9 @@ export interface Extension {
   strategy?: DraftDecorator['strategy']
 }
 
-export type RenderMap = Immutable.Map<string, {
+export type RenderMap = Immutable.Map<
+string,
+{
   element: React.ComponentType<any>
-}>
+}
+>

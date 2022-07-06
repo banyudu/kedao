@@ -5,7 +5,10 @@ import React, {
   FC,
   MouseEventHandler
 } from 'react'
-import { ContentUtils } from '../../../utils'
+import {
+  toggleSelectionBackgroundColor,
+  toggleSelectionColor
+} from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import BuiltinColorPicker from '../../common/ColorPicker'
 import './style.scss'
@@ -61,11 +64,9 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
       }
 
       if (colorType === 'color') {
-        onChange(ContentUtils.toggleSelectionColor(editorState, newColor))
+        onChange(toggleSelectionColor(editorState, newColor))
       } else {
-        onChange(
-          ContentUtils.toggleSelectionBackgroundColor(editorState, newColor)
-        )
+        onChange(toggleSelectionBackgroundColor(editorState, newColor))
       }
     }
 

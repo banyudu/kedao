@@ -7,7 +7,27 @@ import React, {
   useCallback
 } from 'react'
 import Finder from '../finder'
-import { ColorUtils, ContentUtils } from '../utils'
+import {
+  toggleSelectionIndent,
+  insertHorizontalLine,
+  undo,
+  redo,
+  insertHTML,
+  increaseSelectionIndent,
+  getSelectedBlocks,
+  insertMedias,
+  detectColorsFromHTMLString,
+  handleKeyCommand,
+  removeBlock,
+  getSelectionBlock,
+  removeSelectionInlineStyles,
+  getSelectionBlockType,
+  decreaseSelectionIndent,
+  detectColorsFromDraftState,
+  toggleSelectionBlockType,
+  insertText,
+  clear
+} from '../utils'
 import {
   Editor,
   EditorProps,
@@ -338,7 +358,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   let _tempColors: string[] = []
 
   if (defaultEditorState instanceof EditorState) {
-    const colors = ColorUtils.detectColorsFromDraftState(
+    const colors = detectColorsFromDraftState(
       convertEditorStateToRaw(defaultEditorState)
     )
     _tempColors = filterColors(colors, editorProps.colors)
@@ -396,7 +416,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
     if (nextEditorState) {
       if (nextEditorState && nextEditorState !== editorState) {
-        const tempColors = ColorUtils.detectColorsFromDraftState(
+        const tempColors = detectColorsFromDraftState(
           convertEditorStateToRaw(nextEditorState)
         )
 
@@ -474,22 +494,19 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         return 'handled'
       }
 
-      const blockType = ContentUtils.getSelectionBlockType(editorState)
+      const blockType = getSelectionBlockType(editorState)
 
       if (allowIndent && cursorIsAtFirst && blockType !== 'code-block') {
-        setValue(ContentUtils.decreaseSelectionIndent(editorState))
+        setValue(decreaseSelectionIndent(editorState))
       }
     }
 
     if (command === 'tab') {
-      const blockType = ContentUtils.getSelectionBlockType(editorState)
+      const blockType = getSelectionBlockType(editorState)
 
       if (blockType === 'code-block') {
         setValue(
-          ContentUtils.insertText(
-            editorState,
-            ' '.repeat(editorProps.codeTabIndents)
-          )
+          insertText(editorState, ' '.repeat(editorProps.codeTabIndents))
         )
         return 'handled'
       }
@@ -504,12 +521,12 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         return 'handled'
       }
       if (blockType !== 'atomic' && allowIndent && cursorIsAtFirst) {
-        setValue(ContentUtils.increaseSelectionIndent(editorState))
+        setValue(increaseSelectionIndent(editorState))
         return 'handled'
       }
     }
 
-    const nextEditorState = ContentUtils.handleKeyCommand(editorState, command)
+    const nextEditorState = handleKeyCommand(editorState, command)
 
     if (nextEditorState) {
       setValue(nextEditorState)
@@ -546,7 +563,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       return 'handled'
     }
 
-    const currentBlock = ContentUtils.getSelectionBlock(editorState)
+    const currentBlock = getSelectionBlock(editorState)
     const currentBlockType = currentBlock.getType()
 
     if (
@@ -554,9 +571,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       currentBlockType === 'ordered-list-item'
     ) {
       if (currentBlock.getLength() === 0) {
-        setValue(
-          ContentUtils.toggleSelectionBlockType(editorState, 'unstyled')
-        )
+        setValue(toggleSelectionBlockType(editorState, 'unstyled'))
         return 'handled'
       }
 
@@ -569,9 +584,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
           event.getModifierState('Alt') ||
           event.getModifierState('Control'))
       ) {
-        setValue(
-          ContentUtils.toggleSelectionBlockType(editorState, 'unstyled')
-        )
+        setValue(toggleSelectionBlockType(editorState, 'unstyled'))
         return 'handled'
       }
 
@@ -624,10 +637,10 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         editorState,
         selectionState
       )
-      nextEditorState = ContentUtils.insertMedias(nextEditorState, [
+      nextEditorState = insertMedias(nextEditorState, [
         window.__KEDAO_DRAGING__IMAGE__.mediaData
       ])
-      nextEditorState = ContentUtils.removeBlock(
+      nextEditorState = removeBlock(
         nextEditorState,
         window.__KEDAO_DRAGING__IMAGE__.block,
         nextEditorState.getSelection()
@@ -662,7 +675,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
               .then(() => {
                 finder.uploadImage(file, (image) => {
                   if (isLiving) {
-                    setValue(ContentUtils.insertMedias(editorState, [image]))
+                    setValue(insertMedias(editorState, [image]))
                   }
                 })
               })
@@ -670,7 +683,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
           } else if (validateResult) {
             finder.uploadImage(file, (image) => {
               if (isLiving) {
-                setValue(ContentUtils.insertMedias(editorState, [image]))
+                setValue(insertMedias(editorState, [image]))
               }
             })
           }
@@ -750,22 +763,20 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       return false
     }
 
-    const tempColors_ = ColorUtils.detectColorsFromHTMLString(html)
+    const tempColors_ = detectColorsFromHTMLString(html)
 
     setTempColors(
       [...tempColors, ...tempColors_]
         .filter((item) => !editorProps.colors.includes(item))
         .filter((item, index, array) => array.indexOf(item) === index)
     )
-    setValue(
-      ContentUtils.insertHTML(editorState, convertOptions, html, 'paste')
-    )
+    setValue(insertHTML(editorState, convertOptions, html, 'paste'))
     return 'handled'
   }
 
   const handleCompositionStart = () => {
     const { editorState } = callbackEditor
-    const selectedBlocks = ContentUtils.getSelectedBlocks(editorState)
+    const selectedBlocks = getSelectedBlocks(editorState)
 
     if (selectedBlocks && selectedBlocks.length > 1) {
       const nextEditorState = EditorState.push(
@@ -876,24 +887,21 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       forceRender,
       commands: {
         undo: () => {
-          setValue(ContentUtils.undo(editorState))
+          setValue(undo(editorState))
         },
         redo: () => {
-          setValue(ContentUtils.redo(editorState))
+          setValue(redo(editorState))
         },
         removeSelectionInlineStyles: () => {
-          setValue(ContentUtils.removeSelectionInlineStyles(editorState))
+          setValue(removeSelectionInlineStyles(editorState))
         },
         insertHorizontalLine: () => {
-          setValue(ContentUtils.insertHorizontalLine(editorState))
+          setValue(insertHorizontalLine(editorState))
         },
         clearEditorContent: () => {
-          setValue(
-            ContentUtils.clear(editorState),
-            (editorState: EditorState) => {
-              setValue(ContentUtils.toggleSelectionIndent(editorState, 0))
-            }
-          )
+          setValue(clear(editorState), (editorState: EditorState) => {
+            setValue(toggleSelectionIndent(editorState, 0))
+          })
         },
         toggleFullscreen: () => {
           let newValue = null
@@ -920,7 +928,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       draftInstanceRef.current,
       props.readOnly,
       forceRender,
-      ContentUtils,
       setIsFullscreen
     ]
   )

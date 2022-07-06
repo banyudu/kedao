@@ -1,7 +1,10 @@
 import React, { FC, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps, EditorState } from '../../../types'
-import { ContentUtils } from '../../../utils'
+import {
+  toggleSelectionFontSize,
+  selectionHasInlineStyle
+} from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
@@ -30,7 +33,7 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
   const dropDownInstance = useRef(null)
 
   fontSizes.find((item) => {
-    if (ContentUtils.selectionHasInlineStyle(editorState, `FONTSIZE-${item}`)) {
+    if (selectionHasInlineStyle(editorState, `FONTSIZE-${item}`)) {
       caption = item
       currentFontSize = item
       return true
@@ -50,7 +53,7 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
       fontSize = hookReturns
     }
 
-    onChange(ContentUtils.toggleSelectionFontSize(editorState, fontSize))
+    onChange(toggleSelectionFontSize(editorState, fontSize))
     onRequestFocus()
     return true
   }

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, FC } from 'react'
 import ReactDOM from 'react-dom'
-import { BaseUtils } from '../../../utils'
+import { UniqueIndex } from '../../../utils'
 import mergeClassNames from 'merge-class-names'
 import './style.scss'
 import { MdClose } from 'react-icons/md'
@@ -107,7 +107,7 @@ const Modal: FC<ModalProps> = ({
   const active = useRef(false)
   const activeId = useRef(null)
   const rootElement = useRef(null)
-  const componentId = useRef(`KEDAO-MODAL-${BaseUtils.UniqueIndex()}`)
+  const componentId = useRef(`KEDAO-MODAL-${UniqueIndex()}`)
 
   useEffect(() => {
     if (visible) {

@@ -1,6 +1,6 @@
 import React, { FC, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '../../../utils'
+import { setMediaData, setMediaPosition, removeBlock } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/common/Switch'
 import './style.scss'
@@ -186,7 +186,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const removeImage = () => {
-    editor.setValue(ContentUtils.removeBlock(editor.getValue(), block))
+    editor.setValue(removeBlock(editor.getValue(), block))
     unlockEditor()
   }
 
@@ -224,7 +224,7 @@ const Image: FC<ImageProps> = ({
 
     newLinkTarget = newLinkTarget === '_blank' ? '' : '_blank'
     editor.setValue(
-      ContentUtils.setMediaData(editor.getValue(), entityKey, { newLinkTarget })
+      setMediaData(editor.getValue(), entityKey, { newLinkTarget })
     )
     window.setImmediate(editor.forceRender)
     return true
@@ -243,9 +243,7 @@ const Image: FC<ImageProps> = ({
     }
 
     if (link !== null) {
-      editor.setValue(
-        ContentUtils.setMediaData(editor.getValue(), entityKey, { link })
-      )
+      editor.setValue(setMediaData(editor.getValue(), entityKey, { link }))
       window.setImmediate(editor.forceRender)
     }
     return true
@@ -299,9 +297,7 @@ const Image: FC<ImageProps> = ({
       newImageSize = hookReturns
     }
 
-    editor.setValue(
-      ContentUtils.setMediaData(editor.getValue(), entityKey, newImageSize)
-    )
+    editor.setValue(setMediaData(editor.getValue(), entityKey, newImageSize))
     window.setImmediate(editor.forceRender)
     return true
   }
@@ -339,9 +335,7 @@ const Image: FC<ImageProps> = ({
       newImageSize = hookReturns
     }
 
-    editor.setValue(
-      ContentUtils.setMediaData(editor.getValue(), entityKey, newImageSize)
-    )
+    editor.setValue(setMediaData(editor.getValue(), entityKey, newImageSize))
     window.setImmediate(editor.forceRender)
     return true
   }
@@ -359,7 +353,7 @@ const Image: FC<ImageProps> = ({
     }
 
     editor.setValue(
-      ContentUtils.setMediaPosition(editor.getValue(), block, {
+      setMediaPosition(editor.getValue(), block, {
         float: newFloat
       })
     )
@@ -383,7 +377,7 @@ const Image: FC<ImageProps> = ({
     }
 
     editor.setValue(
-      ContentUtils.setMediaPosition(editor.getValue(), block, {
+      setMediaPosition(editor.getValue(), block, {
         alignment: newAlignment
       })
     )

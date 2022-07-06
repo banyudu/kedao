@@ -1,6 +1,6 @@
 import './style.scss'
 import React from 'react'
-import { ContentUtils } from '../../utils'
+import { registerStrictBlockType } from '../../utils'
 import {
   handleKeyCommand,
   handleReturn,
@@ -15,7 +15,7 @@ import { tableImportFn, tableExportFn } from './converts'
 import { MdGridOn } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
 
-ContentUtils.registerStrictBlockType('table-cell')
+registerStrictBlockType('table-cell')
 
 export let dropdownInstance = null
 

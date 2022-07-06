@@ -1,7 +1,10 @@
 import React, { useRef, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps, EditorState } from '../../../types'
-import { ContentUtils } from '../../../utils'
+import {
+  toggleSelectionLetterSpacing,
+  selectionHasInlineStyle
+} from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
@@ -30,9 +33,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
   const dropDownInstance = useRef(null)
 
   letterSpacings.find((item) => {
-    if (
-      ContentUtils.selectionHasInlineStyle(editorState, `LETTERSPACING-${item}`)
-    ) {
+    if (selectionHasInlineStyle(editorState, `LETTERSPACING-${item}`)) {
       caption = item
       currentLetterSpacing = item
       return true
@@ -55,9 +56,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
       letterSpacing = hookReturns
     }
 
-    onChange(
-      ContentUtils.toggleSelectionLetterSpacing(editorState, letterSpacing)
-    )
+    onChange(toggleSelectionLetterSpacing(editorState, letterSpacing))
     onRequestFocus()
     return true
   }

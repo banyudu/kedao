@@ -1,7 +1,10 @@
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps, Language } from '../../../types'
-import { ContentUtils } from '../../../utils'
+import {
+  toggleSelectionFontFamily,
+  selectionHasInlineStyle
+} from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
@@ -28,12 +31,7 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
   let dropDownInstance = null
 
   fontFamilies.find((item, index) => {
-    if (
-      ContentUtils.selectionHasInlineStyle(
-        editorState,
-        `FONTFAMILY-${item.name}`
-      )
-    ) {
+    if (selectionHasInlineStyle(editorState, `FONTFAMILY-${item.name}`)) {
       caption = item.name
       currentIndex = index
       return true
@@ -56,9 +54,7 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
       fontFamilyName = hookReturns
     }
 
-    onChange(
-      ContentUtils.toggleSelectionFontFamily(editorState, fontFamilyName)
-    )
+    onChange(toggleSelectionFontFamily(editorState, fontFamilyName))
     onRequestFocus()
     return true
   }

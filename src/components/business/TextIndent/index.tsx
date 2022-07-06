@@ -2,7 +2,11 @@ import React, { useState, useEffect, FC } from 'react'
 import { MdFormatIndentDecrease, MdFormatIndentIncrease } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
 import { CommonPickerProps } from '../../../types'
-import { ContentUtils } from '../../../utils'
+import {
+  decreaseSelectionIndent,
+  increaseSelectionIndent,
+  getSelectionBlockData
+} from '../../../utils'
 import ControlGroup from '..//ControlGroup'
 import '../ControlBar/style.scss'
 
@@ -15,18 +19,16 @@ const TextIndent: FC<CommonPickerProps> = ({
   const [currentIndent, setCurrentIndent] = useState(0)
 
   useEffect(() => {
-    setCurrentIndent(
-      ContentUtils.getSelectionBlockData(editorState, 'textIndent') || 0
-    )
+    setCurrentIndent(getSelectionBlockData(editorState, 'textIndent') || 0)
   }, [editorState])
 
   const increaseIndent = () => {
-    onChange(ContentUtils.increaseSelectionIndent(editorState))
+    onChange(increaseSelectionIndent(editorState))
     onRequestFocus()
   }
 
   const decreaseIndent = () => {
-    onChange(ContentUtils.decreaseSelectionIndent(editorState))
+    onChange(decreaseSelectionIndent(editorState))
     onRequestFocus()
   }
 

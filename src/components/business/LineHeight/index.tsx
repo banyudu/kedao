@@ -1,6 +1,9 @@
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '../../../utils'
+import {
+  toggleSelectionLineHeight,
+  selectionHasInlineStyle
+} from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import { CommonPickerProps, EditorState } from '../../../types'
 import './style.scss'
@@ -30,9 +33,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
   const dropDownInstance = React.createRef<any>()
 
   lineHeights.find((item) => {
-    if (
-      ContentUtils.selectionHasInlineStyle(editorState, `LINEHEIGHT-${item}`)
-    ) {
+    if (selectionHasInlineStyle(editorState, `LINEHEIGHT-${item}`)) {
       caption = item
       currentLineHeight = item
       return true
@@ -52,7 +53,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
       lineHeight = hookReturns
     }
 
-    onChange(ContentUtils.toggleSelectionLineHeight(editorState, lineHeight))
+    onChange(toggleSelectionLineHeight(editorState, lineHeight))
     onRequestFocus()
     return true
   }

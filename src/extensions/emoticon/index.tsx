@@ -2,7 +2,7 @@ import { CallbackEditor, EditorState } from '../../types'
 import React from 'react'
 import { MdInsertEmoticon } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
-import { ContentUtils } from '../../utils'
+import { insertText } from '../../utils'
 import './styles.scss'
 
 // https://www.iconfinder.com/iconsets/emoji-18
@@ -17,7 +17,7 @@ const insertEmoticon = (
   src
 ) => {
   editor.setValue(
-    ContentUtils.insertText(editorState, ' ', null, {
+    insertText(editorState, ' ', null, {
       type: 'EMOTICON',
       mutability: 'IMMUTABLE',
       data: { src }

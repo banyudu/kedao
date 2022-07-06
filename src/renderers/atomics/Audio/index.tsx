@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ContentUtils } from '../../../utils'
+import { removeBlock } from '../../../utils'
 import PlayerModal from '../../../components/business/PlayerModal'
 
 import './style.scss'
@@ -8,7 +8,7 @@ import './style.scss'
 const Audio = ({ mediaData, language, editor, editorState, block }) => {
   const { url, name, meta } = mediaData
   const removeAudio = () => {
-    editor.setValue(ContentUtils.removeBlock(editorState, block))
+    editor.setValue(removeBlock(editorState, block))
   }
 
   return (

@@ -1,4 +1,4 @@
-import { BaseUtils } from '../utils'
+import { UniqueIndex } from '../utils'
 
 let resizeEventHandlers = []
 let responsiveHelperInited = false
@@ -6,7 +6,7 @@ let debouce: any = false
 
 export default {
   resolve (eventHandler) {
-    const id = BaseUtils.UniqueIndex()
+    const id = UniqueIndex()
     resizeEventHandlers.push({ id, eventHandler })
     return id
   },

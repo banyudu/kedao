@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ContentUtils } from '../../../utils'
+import { removeBlock } from '../../../utils'
 
 import './style.scss'
 
 const HorizontalLine = ({ editorState, block, editor }) => {
   const removeHorizontalLine = () => {
-    editor.setValue(ContentUtils.removeBlock(editorState, block))
+    editor.setValue(removeBlock(editorState, block))
   }
 
   return (

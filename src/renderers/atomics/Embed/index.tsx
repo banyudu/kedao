@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ContentUtils } from '../../../utils'
+import { removeBlock } from '../../../utils'
 import PlayerModal from '../../../components/business/PlayerModal'
 import './style.scss'
 
@@ -8,7 +8,7 @@ const Embed = ({ mediaData, language, editor, editorState, block }) => {
   const { name, url, meta } = mediaData
 
   const removeEmbed = () => {
-    editor.setValue(ContentUtils.removeBlock(editorState, block))
+    editor.setValue(removeBlock(editorState, block))
   }
   return (
     <div className="bf-embed-wrap">

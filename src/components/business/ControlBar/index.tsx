@@ -385,7 +385,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       extendControls
     ])
     const renderedControlList = useDeepCompareMemo(() => {
-      console.log(allControls, 'AAAA')
       return allControls.map((item) => {
         return [item, uuidv4()] as const
       })

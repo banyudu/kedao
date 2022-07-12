@@ -38,6 +38,7 @@ import {
 } from 'draft-js'
 import { Map } from 'immutable'
 import mergeClassNames from 'merge-class-names'
+import { Provider as JotaiProvider } from 'jotai'
 
 import languages from '../languages'
 import getKeyBindingFn from '../configs/keybindings'
@@ -999,82 +1000,84 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   const memoControls = useMemo(() => controls, [controls?.join(',')])
 
   return (
-    <div
-      style={style}
-      ref={containerRef}
-      className={mergeClassNames(
-        'bf-container',
-        className,
-        disabled && 'disabled',
-        readOnly && 'read-only',
-        isFullscreen && 'fullscreen'
-      )}
-    >
-      <ControlBar
-        ref={controlBarInstanceRef}
-        editorState={editorState}
-        finder={finder}
-        getContainerNode={getContainerNode}
-        className={controlBarClassName}
-        style={controlBarStyle}
-        colors={controlBarColors}
-        colorPicker={colorPicker}
-        colorPickerAutoHide={colorPickerAutoHide}
-        hooks={hooks}
-        editorId={editorId}
-        media={controlBarMedia}
-        controls={memoControls}
-        language={language as any}
-        extendControls={extendControls}
-        headings={headings}
-        fontSizes={fontSizes}
-        fontFamilies={fontFamilies}
-        emojis={emojis}
-        lineHeights={lineHeights}
-        letterSpacings={letterSpacings}
-        textAligns={textAligns}
-        textBackgroundColor={textBackgroundColor}
-        allowInsertLinkText={allowInsertLinkText}
-        defaultLinkTarget={defaultLinkTarget}
-        isFullscreen={isFullscreen}
-        onChange={setValue}
-        onRequestFocus={requestFocus}
-        commands={callbackEditor.commands}
-      />
-      {componentBelowControlBar}
+    <JotaiProvider>
       <div
-        onCompositionStart={handleCompositionStart}
-        className={`bf-content ${contentClassName}`}
-        onCopy={handleCopyContent}
-        style={contentStyle}
+        style={style}
+        ref={containerRef}
+        className={mergeClassNames(
+          'bf-container',
+          className,
+          disabled && 'disabled',
+          readOnly && 'read-only',
+          isFullscreen && 'fullscreen'
+        )}
       >
-        <Editor
-          ref={draftInstanceRef}
+        <ControlBar
+          ref={controlBarInstanceRef}
           editorState={editorState}
-          handleKeyCommand={keyCommandHandlers}
-          handleReturn={handleReturn}
-          handleBeforeInput={handleBeforeInput}
-          handleDrop={handleDrop}
-          handleDroppedFiles={handleDroppedFiles}
-          handlePastedText={handlePastedText}
-          handlePastedFiles={handlePastedFiles}
-          onChange={handleChange}
-          onTab={onTab}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          blockRenderMap={blockRenderMap}
-          blockRendererFn={blockRendererFn}
-          blockStyleFn={blockStyleFn}
-          customStyleMap={customStyleMap}
-          customStyleFn={customStyleFn}
-          keyBindingFn={keyBindingFn}
-          placeholder={placeholder}
-          stripPastedStyles={stripPastedStyles}
-          {...editorProps.draftProps}
-          {...mixedProps}
+          finder={finder}
+          getContainerNode={getContainerNode}
+          className={controlBarClassName}
+          style={controlBarStyle}
+          colors={controlBarColors}
+          colorPicker={colorPicker}
+          colorPickerAutoHide={colorPickerAutoHide}
+          hooks={hooks}
+          editorId={editorId}
+          media={controlBarMedia}
+          controls={memoControls}
+          language={language as any}
+          extendControls={extendControls}
+          headings={headings}
+          fontSizes={fontSizes}
+          fontFamilies={fontFamilies}
+          emojis={emojis}
+          lineHeights={lineHeights}
+          letterSpacings={letterSpacings}
+          textAligns={textAligns}
+          textBackgroundColor={textBackgroundColor}
+          allowInsertLinkText={allowInsertLinkText}
+          defaultLinkTarget={defaultLinkTarget}
+          isFullscreen={isFullscreen}
+          onChange={setValue}
+          onRequestFocus={requestFocus}
+          commands={callbackEditor.commands}
         />
+        {componentBelowControlBar}
+        <div
+          onCompositionStart={handleCompositionStart}
+          className={`bf-content ${contentClassName}`}
+          onCopy={handleCopyContent}
+          style={contentStyle}
+        >
+          <Editor
+            ref={draftInstanceRef}
+            editorState={editorState}
+            handleKeyCommand={keyCommandHandlers}
+            handleReturn={handleReturn}
+            handleBeforeInput={handleBeforeInput}
+            handleDrop={handleDrop}
+            handleDroppedFiles={handleDroppedFiles}
+            handlePastedText={handlePastedText}
+            handlePastedFiles={handlePastedFiles}
+            onChange={handleChange}
+            onTab={onTab}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            blockRenderMap={blockRenderMap}
+            blockRendererFn={blockRendererFn}
+            blockStyleFn={blockStyleFn}
+            customStyleMap={customStyleMap}
+            customStyleFn={customStyleFn}
+            keyBindingFn={keyBindingFn}
+            placeholder={placeholder}
+            stripPastedStyles={stripPastedStyles}
+            {...editorProps.draftProps}
+            {...mixedProps}
+          />
+        </div>
       </div>
-    </div>
+    </JotaiProvider>
   )
 };
 

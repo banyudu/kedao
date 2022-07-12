@@ -43,6 +43,7 @@ import {
   EditorState
 } from '../../../types'
 import './style.scss'
+import { useDeepCompareMemo } from '../../../utils/use-deep-compare-memo'
 
 const isModalControl = (control: ControlItem): control is ModalControlItem => {
   return control.type === 'modal'
@@ -208,7 +209,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       closeFinder
     }))
     useEffect(() => {
-      allControls.current?.forEach((item) => {
+      allControls.forEach((item) => {
         if (item.type === 'modal') {
           if (item.modal?.id && extendedModals.current?.[item.modal.id]) {
             extendedModals[item.modal.id].update({
@@ -220,7 +221,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       })
     }, [])
 
-    const allControls = useRef([])
     const mediaLibiraryModal = useRef(null)
     const extendedModals = useRef({})
 
@@ -371,12 +371,25 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     const renderedControls = []
     const editorControls = getEditorControls(language, isFullscreen)
     const extensionControls = getExtensionControls(editorId)
-    allControls.current = mergeControls(
+    const allControls = useDeepCompareMemo(() => {
+      return mergeControls(
+        commonProps,
+        controls,
+        extensionControls,
+        extendControls
+      )
+    }, [
+      mergeControls,
       commonProps,
       controls,
       extensionControls,
       extendControls
-    )
+    ])
+    const renderedControlList = useDeepCompareMemo(() => {
+      return allControls.map((item) => {
+        return [item, uuidv4()] as const
+      })
+    }, [allControls.current])
 
     return (
       <div
@@ -386,7 +399,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
         role="button"
         tabIndex={0}
       >
-        {allControls.current.map((item) => {
+        {renderedControlList.map(([item, key]) => {
           const itemKey = typeof item === 'string' ? item : item.key
           if (typeof itemKey !== 'string') {
             return null
@@ -395,7 +408,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return null
           }
           if (itemKey.toLowerCase() === 'separator') {
-            return <span key={uuidv4()} className="separator-line" />
+            return <span key={key} className="separator-line" />
           }
           let controlItem: ControlItem = editorControls.find((subItem) => {
             return subItem.key.toLowerCase() === itemKey.toLowerCase()
@@ -410,7 +423,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'headings') {
             return (
               <HeadingPicker
-                key={uuidv4()}
+                key={key}
                 headings={headings}
                 current={currentBlockType}
                 {...commonProps}
@@ -421,7 +434,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'text-color') {
             return (
               <TextColorPicker
-                key={uuidv4()}
+                key={key}
                 colors={colors}
                 colorPicker={colorPicker}
                 autoHide={colorPickerAutoHide}
@@ -486,7 +499,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'link') {
             return (
               <LinkEditor
-                key={uuidv4()}
+                key={key}
                 defaultLinkTarget={defaultLinkTarget}
                 allowInsertLinkText={allowInsertLinkText}
                 onChange={onChange}
@@ -497,11 +510,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           }
           if (controlItem.type === 'text-align') {
             return (
-              <TextAlign
-                key={uuidv4()}
-                textAligns={textAligns}
-                {...commonProps}
-              />
+              <TextAlign key={key} textAligns={textAligns} {...commonProps} />
             )
           }
           if (controlItem.type === 'media') {
@@ -511,7 +520,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <button
                 type="button"
-                key={uuidv4()}
+                key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
                 className="control-item media button"
@@ -524,7 +533,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (isDropDownControl(controlItem)) {
             return (
               <DropDown
-                key={uuidv4()}
+                key={key}
                 className={`control-item extend-control-item dropdown ${
                   controlItem.className || ''
                 }`}
@@ -546,7 +555,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <button
                 type="button"
-                key={uuidv4()}
+                key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
                 className={`control-item extend-control-item button ${
@@ -582,7 +591,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'component') {
             return (
               <div
-                key={uuidv4()}
+                key={key}
                 className={`component-wrapper ${controlItem.className || ''}`}
               >
                 {controlItem.component}
@@ -593,7 +602,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <button
                 type="button"
-                key={uuidv4()}
+                key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
                 className={`control-item button ${controlItem.className || ''}`}
@@ -620,7 +629,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <button
                 type="button"
-                key={uuidv4()}
+                key={key}
                 disabled={disabled}
                 data-title={controlItem.title}
                 className={getControlTypeClassName({

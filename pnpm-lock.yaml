@@ -4,6 +4,7 @@ specifiers:
   '@commitlint/cli': ^17.0.2
   '@commitlint/config-conventional': ^17.0.2
   '@draft-js-plugins/mention': ^5.1.1
+  '@react-hookz/web': ^15.0.1
   '@types/draft-js': ^0.11.8
   '@types/node': ^17.0.13
   '@types/prismjs': ^1.26.0
@@ -27,6 +28,7 @@ specifiers:
   gulp-sass: ^5.1.0
   husky: ^7.0.4
   immutable: ~4.0.0
+  jotai: ^1.7.4
   lint-staged: ^12.3.3
   merge-class-names: ^1.4.2
   npm-run-all: ^4.1.5
@@ -55,11 +57,13 @@ specifiers:
 
 dependencies:
   '@draft-js-plugins/mention': 5.1.1_draft-js@0.11.7
+  '@react-hookz/web': 15.0.1
   draft-convert: 2.1.12_draft-js@0.11.7
   draft-js: 0.11.7
   draft-js-multidecorators: 1.0.0
   draftjs-utils: 0.10.2_ujs3q2tsweye44uegipscipvhu
   immutable: 4.0.0
+  jotai: 1.7.4
   merge-class-names: 1.4.2
   prop-types: 15.8.1
   react-color: 2.19.3
@@ -416,6 +420,23 @@ packages:
 
   /@popperjs/core/2.11.2:
     resolution: {integrity: sha512-92FRmppjjqz29VMJ2dn+xdyXZBrMlE42AV6Kq6BwjWV7CNUW1hs2FtxSNLQE+gJhaZ6AAmYuO9y8dshhcBl7vA==}
+    dev: false
+
+  /@react-hookz/deep-equal/1.0.3:
+    resolution: {integrity: sha512-lGZR5l3YRjzeIOHtJhiq96vQKrsq+9lsCyv+0fROMQeSNWtLLzX3R+psHNi6nsoP3XEhspiZ92nsiPmdNo8ztQ==}
+    dev: false
+
+  /@react-hookz/web/15.0.1:
+    resolution: {integrity: sha512-nvVLUsDFv3fpZcINoy3I4MeaX8+yoKU21m2Ey2g0VAVqOMp+0GBBC6OHkzT2lRa2fiPIVuJwlmboSKQt7segfQ==}
+    peerDependencies:
+      js-cookie: ^3.0.1
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
+    peerDependenciesMeta:
+      js-cookie:
+        optional: true
+    dependencies:
+      '@react-hookz/deep-equal': 1.0.3
     dev: false
 
   /@ts-morph/common/0.12.3:
@@ -3447,6 +3468,41 @@ packages:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /jotai/1.7.4:
+    resolution: {integrity: sha512-PvkjL6DA4I0GFNFWt/1MKouTpN6Ohj0qyfuV4LoYGBHQRlf38qF6cPILozYsYZi2Nfeap9MdzWVGSYu1qBElKQ==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      '@babel/template': '*'
+      '@urql/core': '*'
+      immer: '*'
+      optics-ts: '*'
+      react: '>=16.8'
+      react-query: '*'
+      valtio: '*'
+      wonka: '*'
+      xstate: '*'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/template':
+        optional: true
+      '@urql/core':
+        optional: true
+      immer:
+        optional: true
+      optics-ts:
+        optional: true
+      react-query:
+        optional: true
+      valtio:
+        optional: true
+      wonka:
+        optional: true
+      xstate:
+        optional: true
+    dev: false
 
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}

@@ -7,6 +7,9 @@ import { MdClose, MdLink, MdLinkOff } from 'react-icons/md'
 import './style.scss'
 import { defaultIconProps } from '../../../configs/props'
 import { CommonPickerProps } from '../../../types'
+import { useAtom } from 'jotai'
+import { linkEditorActiveAtom } from './states'
+import { useResetState } from '../../../utils/use-reset-state'
 
 export interface LinkEditorProps extends CommonPickerProps {
   defaultLinkTarget: string
@@ -23,10 +26,13 @@ const LinkEditor: FC<LinkEditorProps> = ({
   onChange,
   onRequestFocus
 }) => {
-  const [text, setText] = useState('')
-  const [href, setHref] = useState('')
-  const [target, setTarget] = useState(defaultLinkTarget || '')
+  const [text, setText, resetText] = useResetState('')
+  const [href, setHref, resetHref] = useResetState('')
+  const [target, setTarget, resetTarget] = useResetState(
+    defaultLinkTarget || ''
+  )
   const [textSelected, setTextSelected] = useState(false)
+  const [isDropdownActive, setDropdownActive] = useAtom(linkEditorActiveAtom)
 
   useEffect(() => {
     const { href, target } = ContentUtils.getSelectionEntityData(
@@ -75,11 +81,11 @@ const LinkEditor: FC<LinkEditorProps> = ({
   }
 
   const handleCancel = () => {
-    dropDownInstance.current?.hide()
+    setDropdownActive(false)
   }
 
   const handleUnlink = () => {
-    dropDownInstance.current?.hide()
+    setDropdownActive(false)
     onChange(ContentUtils.toggleSelectionLink(editorState, false))
   }
 
@@ -89,7 +95,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
       target
     })
 
-    dropDownInstance.current?.hide()
+    setDropdownActive(false)
     onRequestFocus()
 
     if (hookReturns === false) {
@@ -131,6 +137,15 @@ const LinkEditor: FC<LinkEditorProps> = ({
       <DropDown
         key={0}
         caption={caption}
+        isActive={isDropdownActive}
+        onActiveChage={(v) => {
+          setDropdownActive(v)
+          if (!v) {
+            resetHref()
+            resetTarget()
+            resetText()
+          }
+        }}
         title={language.controls.link}
         autoHide
         getContainerNode={getContainerNode}

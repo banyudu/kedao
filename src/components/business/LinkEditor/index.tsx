@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef, FC } from 'react'
-import { ContentUtils } from '../../../utils'
+import {
+  insertText,
+  toggleSelectionLink,
+  getSelectionEntityData,
+  getSelectionBlockType,
+  getSelectionText
+} from '../../../utils'
 import Switch from '../../common/Switch'
 import DropDown from '../../common/DropDown'
 import ControlGroup from '../ControlGroup'
@@ -35,18 +41,15 @@ const LinkEditor: FC<LinkEditorProps> = ({
   const [isDropdownActive, setDropdownActive] = useAtom(linkEditorActiveAtom)
 
   useEffect(() => {
-    const { href, target } = ContentUtils.getSelectionEntityData(
-      editorState,
-      'LINK'
-    )
+    const { href, target } = getSelectionEntityData(editorState, 'LINK')
     const textSelected =
       !editorState.getSelection().isCollapsed() &&
-      ContentUtils.getSelectionBlockType(editorState) !== 'atomic'
+      getSelectionBlockType(editorState) !== 'atomic'
 
     let selectedText = ''
 
     if (textSelected) {
-      selectedText = ContentUtils.getSelectionText(editorState)
+      selectedText = getSelectionText(editorState)
     }
 
     setTextSelected(textSelected)
@@ -86,7 +89,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
 
   const handleUnlink = () => {
     setDropdownActive(false)
-    onChange(ContentUtils.toggleSelectionLink(editorState, false))
+    onChange(toggleSelectionLink(editorState, false))
   }
 
   const handleConfirm = () => {
@@ -115,13 +118,13 @@ const LinkEditor: FC<LinkEditorProps> = ({
 
     if (textSelected) {
       if (_href) {
-        onChange(ContentUtils.toggleSelectionLink(editorState, _href, _target))
+        onChange(toggleSelectionLink(editorState, _href, _target))
       } else {
-        onChange(ContentUtils.toggleSelectionLink(editorState, false))
+        onChange(toggleSelectionLink(editorState, false))
       }
     } else {
       onChange(
-        ContentUtils.insertText(editorState, text || href, null, {
+        insertText(editorState, text || href, null, {
           type: 'LINK',
           data: { href, target }
         })

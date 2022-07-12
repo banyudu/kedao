@@ -4,6 +4,7 @@ import {
   MdAdd,
   MdAudiotrack,
   MdClose,
+  MdCheck,
   MdCode,
   MdDescription,
   MdDone,
@@ -59,7 +60,7 @@ const FinderView = ({
   const [items, setItems] = useState(initialItems)
 
   const changeListenerId = useRef(
-    controller.onChange(items => {
+    controller.onChange((items) => {
       setItems(items)
       setConfirmable(items.find(({ selected }) => selected))
       onChange?.(items)
@@ -77,7 +78,7 @@ const FinderView = ({
           ','
         )
       : [newAccepts.image, newAccepts.video, newAccepts.audio]
-          .filter(item => item)
+          .filter((item) => item)
           .join(',')
 
     const external = {
@@ -111,14 +112,14 @@ const FinderView = ({
 
   const buildItemList = () => {
     return (
-      <ul className='bf-list'>
-        <li className='bf-add-item'>
-          <MdAdd {...defaultIconProps} />
+      <ul className="bf-list">
+        <li className="bf-add-item">
+          <MdAdd size={50} />
           <input
             accept={fileAccept}
             onChange={reslovePickedFiles}
             multiple
-            type='file'
+            type="file"
           />
         </li>
         {items.map((item, index) => {
@@ -126,9 +127,9 @@ const FinderView = ({
           const progressMarker =
             item.uploading && !hideProgress
               ? (
-              <div className='bf-item-uploading'>
+              <div className="bf-item-uploading">
                 <div
-                  className='bf-item-uploading-bar'
+                  className="bf-item-uploading-bar"
                   style={{ width: item.uploadProgress / 1 + '%' }}
                 ></div>
               </div>
@@ -140,7 +141,7 @@ const FinderView = ({
           switch (item.type) {
             case 'IMAGE':
               previewerComponents = (
-                <div className='bf-image'>
+                <div className="bf-image">
                   {progressMarker}
                   <img src={item.thumbnail || item.url} />
                 </div>
@@ -148,7 +149,7 @@ const FinderView = ({
               break
             case 'VIDEO':
               previewerComponents = (
-                <div className='bf-icon bf-video' title={item.url}>
+                <div className="bf-icon bf-video" title={item.url}>
                   {progressMarker}
                   <MdMovie {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -157,7 +158,7 @@ const FinderView = ({
               break
             case 'AUDIO':
               previewerComponents = (
-                <div className='bf-icon bf-audio' title={item.url}>
+                <div className="bf-icon bf-audio" title={item.url}>
                   {progressMarker}
                   <MdAudiotrack {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -166,7 +167,7 @@ const FinderView = ({
               break
             case 'EMBED':
               previewerComponents = (
-                <div className='bf-icon bf-embed' title={item.url}>
+                <div className="bf-icon bf-embed" title={item.url}>
                   {progressMarker}
                   <MdCode {...defaultIconProps} />
                   <span>{item.name || language.embed}</span>
@@ -175,7 +176,7 @@ const FinderView = ({
               break
             default:
               previewerComponents = (
-                <a className='bf-icon bf-file' title={item.url} href={item.url}>
+                <a className="bf-icon bf-file" title={item.url} href={item.url}>
                   {progressMarker}
                   <MdDescription {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -198,12 +199,18 @@ const FinderView = ({
               onClick={toggleSelectItem}
             >
               {previewerComponents}
+              {item.selected && (
+                <div className="kedao-icon-selected">
+                  <MdCheck size={50} color="white" />
+                </div>
+              )}
               <MdClose
                 {...defaultIconProps}
                 data-id={item.id}
                 onClick={removeItem}
+                className="bf-item-remove braft-icon-close"
               />
-              <span className='bf-item-title'>{item.name}</span>
+              <span className="bf-item-title">{item.name}</span>
             </li>
           )
         })}
@@ -211,7 +218,7 @@ const FinderView = ({
     )
   }
 
-  const toggleSelectItem = event => {
+  const toggleSelectItem = (event) => {
     const itemId = event.currentTarget.dataset.id
     const item = controller.getMediaItem(itemId)
 
@@ -238,7 +245,7 @@ const FinderView = ({
     }
   }
 
-  const removeItem = event => {
+  const removeItem = (event) => {
     const itemId = event.currentTarget.dataset.id
     const item = controller.getMediaItem(itemId)
 
@@ -287,26 +294,26 @@ const FinderView = ({
     }
   }
 
-  const handleDragLeave = event => {
+  const handleDragLeave = (event) => {
     event.preventDefault()
     dragCounter.current = dragCounter.current - 1
     dragCounter.current === 0 && setDraging(false)
   }
 
-  const handleDragDrop = event => {
+  const handleDragDrop = (event) => {
     event.preventDefault()
     dragCounter.current = 0
     setDraging(false)
     reslovePickedFiles(event)
   }
 
-  const handleDragEnter = event => {
+  const handleDragEnter = (event) => {
     event.preventDefault()
     dragCounter.current = dragCounter.current + 1
     setDraging(true)
   }
 
-  const reslovePickedFiles = event => {
+  const reslovePickedFiles = (event) => {
     event.persist()
 
     let { files } = event.type === 'drop' ? event.dataTransfer : event.target
@@ -338,21 +345,21 @@ const FinderView = ({
     )
   }
 
-  const inputExternal = event => {
-    setExternal(external => ({
+  const inputExternal = (event) => {
+    setExternal((external) => ({
       ...external,
       url: event.target.value
     }))
   }
 
-  const switchExternalType = event => {
-    setExternal(external => ({
+  const switchExternalType = (event) => {
+    setExternal((external) => ({
       ...external,
       type: event.target.dataset.type
     }))
   }
 
-  const confirmAddExternal = event => {
+  const confirmAddExternal = (event) => {
     if (
       event.target.nodeName.toLowerCase() === 'button' ||
       event.keyCode === 13
@@ -382,7 +389,7 @@ const FinderView = ({
   }
 
   const toggleExternalForm = () => {
-    setShowExternalForm(v => !v)
+    setShowExternalForm((v) => !v)
   }
 
   const cancelInsert = () => {
@@ -409,12 +416,12 @@ const FinderView = ({
   }
 
   return (
-    <div className='kedao-finder'>
+    <div className="kedao-finder">
       <div
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDragDrop}
-        className='bf-uploader'
+        className="bf-uploader"
       >
         <div
           className={
@@ -423,27 +430,27 @@ const FinderView = ({
             (draging ? 'draging' : '')
           }
         >
-          <span className='bf-drag-tip'>
+          <span className="bf-drag-tip">
             <input
               accept={fileAccept}
               onChange={reslovePickedFiles}
               multiple
-              type='file'
+              type="file"
             />
             {draging ? language.dropTip : language.dragTip}
           </span>
         </div>
         {items.length
           ? (
-          <div className='bf-list-wrap'>
-            <div className='bf-list-tools'>
-              <span onClick={selectAllItems} className='bf-select-all'>
+          <div className="bf-list-wrap">
+            <div className="bf-list-tools">
+              <span onClick={selectAllItems} className="bf-select-all">
                 <MdDone {...defaultIconProps} />
                 {language.selectAll}
               </span>
               <span
                 onClick={deselectAllItems}
-                className='bf-deselect-all'
+                className="bf-deselect-all"
                 {...{ disabled: !confirmable }}
               >
                 <MdClose {...defaultIconProps} />
@@ -451,7 +458,7 @@ const FinderView = ({
               </span>
               <span
                 onClick={removeSelectedItems}
-                className='bf-remove-selected'
+                className="bf-remove-selected"
                 {...{ disabled: !confirmable }}
               >
                 <MdRemove {...defaultIconProps} />
@@ -464,9 +471,9 @@ const FinderView = ({
           : null}
         {showExternalForm && allowExternal
           ? (
-          <div className='bf-add-external'>
-            <div className='bf-external-form'>
-              <div className='bf-external-input'>
+          <div className="bf-add-external">
+            <div className="bf-external-form">
+              <div className="bf-external-input">
                 <div>
                   <input
                     onKeyDown={confirmAddExternal}
@@ -476,7 +483,7 @@ const FinderView = ({
                   />
                 </div>
                 <button
-                  type='button'
+                  type="button"
                   onClick={confirmAddExternal}
                   disabled={!external.url.trim().length}
                 >
@@ -485,14 +492,14 @@ const FinderView = ({
               </div>
               <div
                 data-type={external.type}
-                className='bf-switch-external-type'
+                className="bf-switch-external-type"
               >
                 {externals.image
                   ? (
                   <button
-                    type='button'
+                    type="button"
                     onClick={switchExternalType}
-                    data-type='IMAGE'
+                    data-type="IMAGE"
                   >
                     {language.image}
                   </button>
@@ -501,9 +508,9 @@ const FinderView = ({
                 {externals.audio
                   ? (
                   <button
-                    type='button'
+                    type="button"
                     onClick={switchExternalType}
-                    data-type='AUDIO'
+                    data-type="AUDIO"
                   >
                     {language.audio}
                   </button>
@@ -512,9 +519,9 @@ const FinderView = ({
                 {externals.video
                   ? (
                   <button
-                    type='button'
+                    type="button"
                     onClick={switchExternalType}
-                    data-type='VIDEO'
+                    data-type="VIDEO"
                   >
                     {language.video}
                   </button>
@@ -523,16 +530,16 @@ const FinderView = ({
                 {externals.embed
                   ? (
                   <button
-                    type='button'
+                    type="button"
                     onClick={switchExternalType}
-                    data-type='EMBED'
+                    data-type="EMBED"
                   >
                     {language.embed}
                   </button>
                     )
                   : null}
               </div>
-              <span className='bf-external-tip'>
+              <span className="bf-external-tip">
                 {language.externalInputTip}
               </span>
             </div>
@@ -540,23 +547,23 @@ const FinderView = ({
             )
           : null}
       </div>
-      <footer className='bf-manager-footer'>
-        <div className='pull-left'>
+      <footer className="bf-manager-footer">
+        <div className="pull-left">
           {allowExternal
             ? (
             <span
               onClick={toggleExternalForm}
-              className='bf-toggle-external-form'
+              className="bf-toggle-external-form"
             >
               {showExternalForm
                 ? (
-                <span className='bf-bottom-text'>
+                <span className="bf-bottom-text">
                   <MdAdd {...defaultIconProps} />
                   {language.addLocalFile}
                 </span>
                   )
                 : (
-                <span className='bf-bottom-text'>
+                <span className="bf-bottom-text">
                   <MdAdd {...defaultIconProps} /> {language.addExternalSource}
                 </span>
                   )}
@@ -564,15 +571,15 @@ const FinderView = ({
               )
             : null}
         </div>
-        <div className='pull-right'>
+        <div className="pull-right">
           <button
             onClick={confirmInsert}
-            className='button button-insert'
+            className="button button-insert"
             disabled={!confirmable}
           >
             {language.insert}
           </button>
-          <button onClick={cancelInsert} className='button button-cancel'>
+          <button onClick={cancelInsert} className="button button-cancel">
             {language.cancel}
           </button>
         </div>

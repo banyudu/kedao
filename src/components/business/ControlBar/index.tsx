@@ -7,7 +7,15 @@ import React, {
 } from 'react'
 // import { useWhyDidYouUpdate } from 'react-recipes'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '../../../utils'
+import {
+  selectionHasInlineStyle,
+  getSelectionBlockType,
+  getSelectionEntityType,
+  toggleSelectionInlineStyle,
+  toggleSelectionBlockType,
+  toggleSelectionEntity,
+  insertMedias
+} from '../../../utils'
 import getEditorControls from '../../../configs/controls'
 import LinkEditor, { LinkEditorProps } from '../LinkEditor'
 import HeadingPicker, { HeadingsPickerProps } from '../Headings'
@@ -103,7 +111,7 @@ const mergeControls = (
     )
 }
 
-interface ControlBarProps
+export interface ControlBarProps
   extends CommonPickerProps,
   Pick<TextColorPickerProps, 'colorPicker'>,
   Pick<EmojiPickerProps, 'emojis'>,
@@ -222,17 +230,17 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
 
       if (
         type === 'inline-style' &&
-        ContentUtils.selectionHasInlineStyle(editorState, command)
+        selectionHasInlineStyle(editorState, command)
       ) {
         className += ' active'
       } else if (
         type === 'block-type' &&
-        ContentUtils.getSelectionBlockType(editorState) === command
+        getSelectionBlockType(editorState) === command
       ) {
         className += ' active'
       } else if (
         type === 'entity' &&
-        ContentUtils.getSelectionEntityType(editorState) === command
+        getSelectionEntityType(editorState) === command
       ) {
         className += ' active'
       }
@@ -259,28 +267,21 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
         const exclusiveInlineStyle = exclusiveInlineStyles[hookCommand]
         if (
           exclusiveInlineStyle &&
-          ContentUtils.selectionHasInlineStyle(
-            editorState,
-            exclusiveInlineStyle
-          )
+          selectionHasInlineStyle(editorState, exclusiveInlineStyle)
         ) {
-          editorState = ContentUtils.toggleSelectionInlineStyle(
+          editorState = toggleSelectionInlineStyle(
             editorState,
             exclusiveInlineStyle
           )
         }
-        onChange(
-          ContentUtils.toggleSelectionInlineStyle(editorState, hookCommand)
-        )
+        onChange(toggleSelectionInlineStyle(editorState, hookCommand))
       }
       if (type === 'block-type') {
-        onChange(
-          ContentUtils.toggleSelectionBlockType(editorState, hookCommand)
-        )
+        onChange(toggleSelectionBlockType(editorState, hookCommand))
       }
       if (type === 'entity') {
         onChange(
-          ContentUtils.toggleSelectionEntity(editorState, {
+          toggleSelectionEntity(editorState, {
             type: hookCommand,
             mutability: data.mutability || 'MUTABLE',
             data: data.data || {}
@@ -314,7 +315,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           <MediaLibrary
             accepts={mediaProps.accepts}
             onCancel={closeFinder}
-            onInsert={insertMedias}
+            onInsert={insertMedias_}
             onChange={mediaProps.onChange}
             externals={mediaProps.externals}
             onBeforeSelect={bindFinderHook('select-medias')}
@@ -334,8 +335,8 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           return hooks(hookName, params[0])(...params)
         }
 
-    const insertMedias = (medias) => {
-      onChange(ContentUtils.insertMedias(editorState, medias))
+    const insertMedias_ = (medias) => {
+      onChange(insertMedias(editorState, medias))
       onRequestFocus()
       media.onInsert?.(medias)
       closeFinder()
@@ -356,7 +357,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       }
     }
 
-    const currentBlockType = ContentUtils.getSelectionBlockType(editorState)
+    const currentBlockType = getSelectionBlockType(editorState)
     const commonProps = {
       editorId,
       editorState,

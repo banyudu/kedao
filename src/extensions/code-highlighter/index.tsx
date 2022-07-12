@@ -8,7 +8,7 @@ import {
   ContentBlock
 } from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
-import { ContentUtils } from '../../utils'
+import { setSelectionBlockData } from '../../utils'
 import Prism from 'prismjs'
 
 const CodeBlockWrapper = ({
@@ -67,9 +67,7 @@ const CodeBlockWrapper = ({
       setSyntax(syntax)
       setSyntaxName(syntaxName)
 
-      editor.setValue(
-        ContentUtils.setSelectionBlockData(newEditorState, { syntax })
-      )
+      editor.setValue(setSelectionBlockData(newEditorState, { syntax }))
     } catch (error) {
       console.warn(error)
     }

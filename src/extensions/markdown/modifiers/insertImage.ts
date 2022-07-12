@@ -1,5 +1,5 @@
 import { EditorState, SelectionState, Modifier } from 'draft-js'
-import { ContentUtils } from '../../../utils'
+import { insertMedias } from '../../../utils'
 
 const insertImage = (editorState: EditorState, matchArr) => {
   const currentContent = editorState.getCurrentContent()
@@ -25,7 +25,7 @@ const insertImage = (editorState: EditorState, matchArr) => {
   )
   // nextEditorState = EditorState.forceSelection(nextEditorState, newContentState.getSelectionAfter())
 
-  return ContentUtils.insertMedias(nextEditorState, [
+  return insertMedias(nextEditorState, [
     {
       type: 'IMAGE',
       name: alt || title,

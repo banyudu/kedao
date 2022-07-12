@@ -1,6 +1,9 @@
 import React, { useState, useEffect, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentUtils } from '../../../utils'
+import {
+  getSelectionBlockData,
+  toggleSelectionAlignment
+} from '../../../utils'
 import mergeClassNames from 'merge-class-names'
 import ControlGroup from '../ControlGroup'
 import {
@@ -35,9 +38,7 @@ const TextAlign: FC<TextAlignProps> = ({
   const [currentAlignment, setCurrentAlignment] = useState(undefined)
 
   useEffect(() => {
-    setCurrentAlignment(
-      ContentUtils.getSelectionBlockData(editorState, 'textAlign')
-    )
+    setCurrentAlignment(getSelectionBlockData(editorState, 'textAlign'))
   }, [editorState])
 
   const setAlignment = (event) => {
@@ -48,7 +49,7 @@ const TextAlign: FC<TextAlignProps> = ({
       alignment = hookReturns
     }
 
-    onChange(ContentUtils.toggleSelectionAlignment(editorState, alignment))
+    onChange(toggleSelectionAlignment(editorState, alignment))
     onRequestFocus()
   }
 

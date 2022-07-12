@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ContentUtils } from '../../../utils'
+import { removeBlock } from '../../../utils'
 
 import PlayerModal from '../../../components/business/PlayerModal'
 
@@ -11,7 +11,7 @@ const Video = ({ mediaData, language, editor, editorState, block }) => {
   const { poster = '' } = meta
 
   const removeVideo = () => {
-    editor.setValue(ContentUtils.removeBlock(editorState, block))
+    editor.setValue(removeBlock(editorState, block))
   }
 
   return (

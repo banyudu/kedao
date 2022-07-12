@@ -55,6 +55,8 @@
       line-height: 20px;
       cursor: pointer;
       user-select: none;
+      display: flex;
+      align-items: center;
 
       &[disabled] {
         opacity: 0.3;
@@ -125,6 +127,9 @@
   .bf-add-item {
     background-color: #ecedef;
     color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
       background-color: #e1e2e3;
@@ -193,9 +198,6 @@
       height: 113px;
       color: #fff;
       font-size: 48px;
-
-      // FIXME: check whether bf-icons is valid
-      font-family: bf-icons;
       line-height: 113px;
       text-align: center;
     }
@@ -222,10 +224,10 @@
     }
 
     &.active {
-      &::before {
-        display: block;
-        content: "\e912";
-      }
+      // &::before {
+      //   display: block;
+      //   content: "\e912";
+      // }
 
       &::after {
         background-color: rgba($COLOR_ACTIVE, 0.6);
@@ -240,6 +242,17 @@
           display: none;
         }
       }
+    }
+
+    .kedao-icon-selected {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 

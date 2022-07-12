@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps } from '../../../types'
-import { ContentUtils } from '../../../utils'
+import { insertText } from '../../../utils'
 import DropDown, { DropDownProps } from '../../common/DropDown'
 import './style.scss'
 
@@ -34,7 +34,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
       emoji = hookReturns
     }
 
-    onChange(ContentUtils.insertText(editorState, emoji))
+    onChange(insertText(editorState, emoji))
     onRequestFocus()
 
     return true

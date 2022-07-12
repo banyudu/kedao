@@ -7,6 +7,7 @@ import {
   CompositeDecorator
 } from 'draft-js'
 import * as React from 'react'
+import { KedaoEditorProps } from '../editor'
 
 export { EditorState, EditorProps }
 
@@ -23,46 +24,7 @@ export interface CallbackEditor {
     onChange: (editorState: EditorState, callback?) => void
   ) => void
   lockOrUnlockEditor: (lock: boolean) => void
-  editorProps: {
-    codeTabIndents: number
-    controls: ControlItem[]
-    excludeControls: string[]
-    handleKeyCommand: (
-      command: KeyCommand,
-      editorState: EditorState,
-      editor: CallbackEditor
-    ) => string
-    onSave: (state: EditorState) => void
-    onDelete: (state: EditorState) => boolean
-    handleReturn: (
-      event,
-      editorState: EditorState,
-      editor: CallbackEditor
-    ) => string
-    handleBeforeInput: (
-      chars,
-      editorState: EditorState,
-      editor: CallbackEditor
-    ) => string
-    readOnly: boolean
-    disabled: boolean
-    media: any
-    handlePastedText: (
-      text,
-      html,
-      editorState,
-      editor: CallbackEditor
-    ) => string
-    stripPastedStyles: any
-    colors: string[]
-    handleDroppedFiles: (
-      selectionState,
-      files,
-      editor: CallbackEditor
-    ) => string
-    handlePastedFiles: (files, editor: CallbackEditor) => string
-    language: any
-  }
+  editorProps: KedaoEditorProps
   editorState: EditorState
   finder: Finder
   isLiving: boolean
@@ -176,12 +138,17 @@ export interface Finder {
 }
 
 export interface MediaProps {
-  onClose: () => void
+  onClose?: () => void
   onCancel: () => void
   onInsert: (medias: any) => void
   onChange: () => void
-  accepts: string[]
-  externals: string[]
+  accepts: MediaType['accepts']
+  externals: {
+    audio?: boolean
+    video?: boolean
+    image?: boolean
+    embed?: boolean
+  }
   image: boolean
   audio: boolean
   video: boolean

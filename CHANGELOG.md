@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.1.24 (2022-07-20)
+
+### Bug Fixes
+
+- dependencies ([#30](https://github.com/banyudu/kedao/issues/30)) ([a745231](https://github.com/banyudu/kedao/commit/a7452318b60a0e59f5f8a5a11d9ecebb54c8a48b))
+
 ### 0.1.23 (2022-07-20)
 
 ### Bug Fixes

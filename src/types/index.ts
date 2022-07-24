@@ -365,7 +365,5 @@ export interface Extension {
 
 export type RenderMap = Immutable.Map<
 string,
-{
-  element: React.ComponentType<any>
-}
+{ element: React.ComponentType<any> }
 >

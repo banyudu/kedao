@@ -1,17 +1,15 @@
-import React, { FC, MouseEventHandler } from 'react'
-import { showModal } from '../../common/Modal'
+import React, { FC, MouseEventHandler, useState } from 'react'
+import Modal from '../../common/Modal'
 import './style.scss'
-import { MdClose, MdCode, MdMusicVideo, MdPlayArrow, MdVideocam } from 'react-icons/md'
+import {
+  MdClose,
+  MdCode,
+  MdMusicVideo,
+  MdPlayArrow,
+  MdVideocam
+} from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
 import { Language } from '../../../types'
-
-const playViaModal = (title: string, component: React.ReactNode, language: Language) =>
-  showModal({
-    title,
-    component,
-    language,
-    showFooter: false
-  })
 
 const iconMap = {
   video: <MdVideocam {...defaultIconProps} />,
@@ -39,6 +37,7 @@ const PlayerModal: FC<PlayerModalProps> = ({
   children,
   onRemove
 }) => {
+  const [modalVisible, setModalVisible] = useState(false)
   return (
     <div className={`bf-player-holder ${type}`}>
       <div className="icon-badge">
@@ -48,12 +47,7 @@ const PlayerModal: FC<PlayerModalProps> = ({
       <button onMouseDown={onRemove} className="button-remove">
         <MdClose {...defaultIconProps} />
       </button>
-      <button
-        onMouseDown={() =>
-          playViaModal(name ? `${title}:${name}` : title, children, language)
-        }
-        className="button-play"
-      >
+      <button onMouseDown={() => setModalVisible(true)} className="button-play">
         <MdPlayArrow {...defaultIconProps} />
       </button>
       {name ? <h5 className="bf-name">{name}</h5> : null}
@@ -66,6 +60,15 @@ const PlayerModal: FC<PlayerModalProps> = ({
         />
           )
         : null}
+      <Modal
+        visible={modalVisible}
+        title={name ? `${title}:${name}` : title}
+        language={language}
+        onClose={() => setModalVisible(false)}
+        showFooter={false}
+      >
+        {children}
+      </Modal>
     </div>
   )
 }

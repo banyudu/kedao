@@ -10,6 +10,7 @@ specifiers:
   '@types/prismjs': ^1.26.0
   '@types/react': ^16.9.23
   '@types/react-dom': ^17.0.11
+  '@types/react-portal': ^4.0.4
   '@types/uuid': ^8.3.4
   '@typescript-eslint/eslint-plugin': ^5.10.1
   '@typescript-eslint/parser': ^5.10.1
@@ -39,6 +40,7 @@ specifiers:
   prop-types: ^15.7.2
   react-color: ^2.14.1
   react-icons: ^4.3.1
+  react-portal: ^4.2.2
   react-recipes: ^1.4.0
   rimraf: ^3.0.2
   sass: ^1.52.3
@@ -71,6 +73,7 @@ dependencies:
   prop-types: 15.8.1
   react-color: 2.19.3
   react-icons: 4.3.1
+  react-portal: 4.2.2
   react-recipes: 1.4.0
   rimraf: 3.0.2
   uuid: 8.3.2
@@ -83,6 +86,7 @@ devDependencies:
   '@types/prismjs': 1.26.0
   '@types/react': 16.14.22
   '@types/react-dom': 17.0.11
+  '@types/react-portal': 4.0.4
   '@types/uuid': 8.3.4
   '@typescript-eslint/eslint-plugin': 5.10.2_ewk4eetk5rguw3uujojr3k5uyi
   '@typescript-eslint/parser': 5.10.2_txwvkng2juu2h6yeaibqmql3uy
@@ -509,6 +513,12 @@ packages:
 
   /@types/react-dom/17.0.11:
     resolution: {integrity: sha512-f96K3k+24RaLGVu/Y2Ng3e1EbZ8/cVJvypZWd7cy0ofCBaf2lcM46xNhycMZ2xGwbBjRql7hOlZ+e2WlJ5MH3Q==}
+    dependencies:
+      '@types/react': 16.14.22
+    dev: true
+
+  /@types/react-portal/4.0.4:
+    resolution: {integrity: sha512-ecVWngYHeSymq5XdrQOXRpIb9ay5SM4Stm/ur6+wc0Z+r05gafZ5SuMRbXKYsj4exNJa+4CTKK6J7qcTKm9K5g==}
     dependencies:
       '@types/react': 16.14.22
     dev: true
@@ -4670,6 +4680,15 @@ packages:
       '@popperjs/core': 2.11.2
       react-fast-compare: 3.2.0
       warning: 4.0.3
+    dev: false
+
+  /react-portal/4.2.2:
+    resolution: {integrity: sha512-vS18idTmevQxyQpnde0Td6ZcUlv+pD8GTyR42n3CHUQq9OHi1C4jDE4ZWEbEsrbrLRhSECYiao58cvocwMtP7Q==}
+    peerDependencies:
+      react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+      react-dom: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+    dependencies:
+      prop-types: 15.8.1
     dev: false
 
   /react-recipes/1.4.0:

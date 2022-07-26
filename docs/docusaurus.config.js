@@ -71,43 +71,6 @@ const config = {
       },
       footer: {
         style: "dark",
-        // links: [
-        //   {
-        //     title: '文档',
-        //     items: [
-        //       {
-        //         label: '使用教程',
-        //         to: '/docs/intro',
-        //       },
-        //     ],
-        //   },
-        //   {
-        //     title: '社区',
-        //     items: [
-        //       {
-        //         label: 'Stack Overflow',
-        //         href: 'https://stackoverflow.com/questions/tagged/kedao',
-        //       },
-        //       // {
-        //       //   label: 'Discord',
-        //       //   href: 'https://discordapp.com/invite/docusaurus',
-        //       // },
-        //       // {
-        //       //   label: 'Twitter',
-        //       //   href: 'https://twitter.com/docusaurus',
-        //       // },
-        //     ],
-        //   },
-        //   {
-        //     title: '更多',
-        //     items: [
-        //       {
-        //         label: 'GitHub',
-        //         href: 'https://github.com/banyudu/kedao',
-        //       },
-        //     ],
-        //   },
-        // ],
         copyright: `Copyright © ${new Date().getFullYear()} Kedao. Built with Docusaurus.`,
       },
       prism: {
@@ -115,6 +78,14 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+  plugins: [
+    [
+      "docusaurus-plugin-sentry",
+      {
+        DSN: "9eef41bc41854dfd94044d8c26b0a697",
+      },
+    ],
+  ],
 };
 
 module.exports = config;

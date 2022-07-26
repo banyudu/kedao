@@ -940,7 +940,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     editorId,
     hooks,
     editorState,
-    containerNode: containerRef,
+    containerNode: containerRef.current,
     imageControls,
     imageResizable,
     language,

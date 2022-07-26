@@ -111,16 +111,14 @@ const Image: FC<ImageProps> = ({
 
   const calcToolbarOffset = () => {
     const container = getContainerNode ? getContainerNode() : containerNode
-
-    if (!container) {
-      return 0
-    }
-
     const viewRect = container
       ?.querySelector('.bf-content')
       ?.getBoundingClientRect()
     const toolbarRect = toolbarElement.current?.getBoundingClientRect()
     const imageRect = imageElement.current?.getBoundingClientRect()
+    if (!container || !viewRect || !toolbarRect || !imageRect) {
+      return 0
+    }
 
     const right =
       viewRect.right -
@@ -139,11 +137,6 @@ const Image: FC<ImageProps> = ({
       return 0
     }
   }
-
-  // const preventDragEvent = event => {
-  //   event.stopPropagation()
-  //   event.preventDefault()
-  // }
 
   const handleDragStart = () => {
     if (editor.editorProps.readOnly || editor.editorProps.disabled) {

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.1.25 (2022-07-26)
+
+### Bug Fixes
+
+- fix image hover error ([1dca9d5](https://github.com/banyudu/kedao/commit/1dca9d5134204605e3de0cad1b1398505e64f333))
+
 ### 0.1.24 (2022-07-20)
 
 ### Bug Fixes

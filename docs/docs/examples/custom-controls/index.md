@@ -32,6 +32,7 @@ const controls = [
 
 - 如果仅隐藏个别操作按钮，使用 excludeControls 更方便
 - 只可以指定内置的 key，详见 [API 说明](../../api)
+- key 必须唯一，如果有多个相同的 key，只会渲染第一个
 
 ### 演示
 

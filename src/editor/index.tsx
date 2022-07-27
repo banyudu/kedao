@@ -748,7 +748,11 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     }
   }
 
-  const handlePastedText = (text, html, editorState: EditorState) => {
+  const handlePastedText = (
+    text: string,
+    html: string,
+    editorState: EditorState
+  ) => {
     if (
       editorProps.handlePastedText?.(
         text,
@@ -764,10 +768,10 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       return false
     }
 
-    const tempColors_ = detectColorsFromHTMLString(html)
+    const detectedColors = detectColorsFromHTMLString(html)
 
     setTempColors(
-      [...tempColors, ...tempColors_]
+      [...tempColors, ...detectedColors]
         .filter((item) => !editorProps.colors.includes(item))
         .filter((item, index, array) => array.indexOf(item) === index)
     )

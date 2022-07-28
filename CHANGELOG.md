@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.1.29 (2022-07-28)
+
+### Features
+
+- support ssr in docusaurus ([f2c6837](https://github.com/banyudu/kedao/commit/f2c68378e9df19df09d99d60014362d14cfecf14))
+
 ### 0.1.28 (2022-07-28)
 
 ### 0.1.27 (2022-07-28)

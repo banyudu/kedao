@@ -20,7 +20,9 @@ function Demo () {
     setValue(convertEditorStateToRaw(newEditorState))
   }
 
-  return <Editor value={editorState} onChange={handleChange} />
+  return (
+    <Editor className="demo" value={editorState} onChange={handleChange} />
+  )
 }
 
 export default Demo

@@ -13,7 +13,9 @@ const Demo = () => {
     console.log('raw: ', convertEditorStateToRaw(newEditorState))
     console.log('html: ', convertEditorStateToHTML(newEditorState, {}))
   }
-  return <Editor value={editorState} onChange={handleChange} />
+  return (
+    <Editor className="demo" value={editorState} onChange={handleChange} />
+  )
 }
 
 export default Demo

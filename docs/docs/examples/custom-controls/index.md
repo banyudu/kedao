@@ -76,7 +76,12 @@ const Demo = () => {
     console.log("html: ", convertEditorStateToHTML(newEditorState, {}));
   };
   return (
-    <Editor value={editorState} onChange={handleChange} controls={controls} />
+    <Editor
+      className="demo"
+      value={editorState}
+      onChange={handleChange}
+      controls={controls}
+    />
   );
 };
 

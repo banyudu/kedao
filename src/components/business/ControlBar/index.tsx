@@ -129,7 +129,7 @@ export interface ControlBarProps
   allowInsertLinkText: boolean
   media: MediaProps
   colorPickerAutoHide: TextColorPickerProps['autoHide']
-  controls: ControlItem[]
+  controls: Array<ControlItem | string>
   editorId: string
   extendControls: ControlItem[]
   textBackgroundColor: boolean

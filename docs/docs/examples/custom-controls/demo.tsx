@@ -1,6 +1,5 @@
 import React from 'react'
-import Editor from '../../../src/components/lazy'
-import {
+import Editor, {
   EditorState,
   convertEditorStateToHTML,
   convertEditorStateToRaw

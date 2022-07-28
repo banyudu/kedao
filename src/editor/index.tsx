@@ -195,7 +195,7 @@ export interface KedaoEditorProps {
   | 'fr'
   | 'vi-vn'
   | ((languages: any, context: any) => any)
-  controls?: ControlItem[]
+  controls?: Array<ControlItem | string>
   excludeControls?: BuiltInControlNames[]
   extendControls?: Array<
   DropDownControlItem | ButtonControlItem | ModalControlItem
@@ -484,7 +484,9 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     const { controls, excludeControls } = editorProps
     const allowIndent =
       (controls.indexOf('text-indent' as any) !== 0 ||
-        controls.find((item) => item.key === 'text-indent')) &&
+        controls.find(
+          (item) => typeof item !== 'string' && item.key === 'text-indent'
+        )) &&
       !excludeControls.includes('text-indent')
     const cursorStart = editorState.getSelection().getStartOffset()
     const cursorEnd = editorState.getSelection().getEndOffset()

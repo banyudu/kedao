@@ -26,6 +26,7 @@ import {
   detectColorsFromDraftState,
   toggleSelectionBlockType,
   insertText,
+  handleNewLine,
   clear
 } from '../utils'
 import {
@@ -86,7 +87,6 @@ import {
 } from '../convert'
 
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
-import { handleNewLine } from 'draftjs-utils'
 
 export const createStateFromContent = (
   content,

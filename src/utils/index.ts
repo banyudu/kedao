@@ -1,3 +1,4 @@
+import { KeyboardEvent } from 'react'
 import {
   Modifier,
   EditorState,
@@ -9,13 +10,12 @@ import {
   convertFromRaw,
   ContentBlock,
   DraftInlineStyle,
-  ContentState
+  ContentState,
+  KeyBindingUtil
 } from 'draft-js'
-import { setBlockData, getSelectionEntity } from 'draftjs-utils'
 import { convertHTMLToRaw } from '../convert'
 import Immutable from 'immutable'
 import { ConvertOptions, Position } from '../types'
-
 import { namedColors } from '../constants'
 
 /**
@@ -187,6 +187,15 @@ export const updateEachCharacterOfSelection = (
     }) as any,
     'update-selection-character-list' as any
   )
+}
+
+export const getSelectedBlock = (editorState: EditorState) => {
+  const selectionState = editorState.getSelection()
+  const contentState = editorState.getCurrentContent()
+
+  const startKey = selectionState.getStartKey()
+  const startingBlock = contentState.getBlockForKey(startKey)
+  return startingBlock
 }
 
 export const getSelectedBlocks = (editorState: EditorState) => {
@@ -854,4 +863,245 @@ export const detectColorsFromDraftState = (
   })
 
   return result.filter((color) => color)
+}
+
+/**
+ * Function will handle followind keyPress scenario:
+ * case Shift+Enter, select not collapsed ->
+ *   selected text will be removed and line break will be inserted.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/block.js
+ */
+export function addLineBreakRemovingSelection (editorState: EditorState) {
+  const content = editorState.getCurrentContent()
+  const selection = editorState.getSelection()
+  let newContent = Modifier.removeRange(content, selection, 'forward')
+  const fragment = newContent.getSelectionAfter()
+  const block = newContent.getBlockForKey(fragment.getStartKey())
+  newContent = Modifier.insertText(
+    newContent,
+    fragment,
+    '\n',
+    block.getInlineStyleAt(fragment.getStartOffset()),
+    null
+  )
+  return EditorState.push(editorState, newContent, 'insert-fragment')
+}
+
+/**
+ * This function will return the entity applicable to whole of current selection.
+ * An entity can not span multiple blocks.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/inline.js
+ */
+export const getSelectionEntity = (editorState: EditorState) => {
+  let entity
+  const selection = editorState.getSelection()
+  let start = selection.getStartOffset()
+  let end = selection.getEndOffset()
+  if (start === end && start === 0) {
+    end = 1
+  } else if (start === end) {
+    start -= 1
+  }
+  const block = getSelectedBlock(editorState)
+
+  for (let i = start; i < end; i += 1) {
+    const currentEntity = block.getEntityAt(i)
+    if (!currentEntity) {
+      entity = undefined
+      break
+    }
+    if (i === start) {
+      entity = currentEntity
+    } else if (entity !== currentEntity) {
+      entity = undefined
+      break
+    }
+  }
+  return entity
+}
+
+/**
+ * Function will add block level meta-data.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/block.js
+ */
+export const setBlockData = (
+  editorState: EditorState,
+  data: Immutable.Map<any, any>
+) => {
+  const newContentState = Modifier.setBlockData(
+    editorState.getCurrentContent(),
+    editorState.getSelection(),
+    data
+  )
+  return EditorState.push(editorState, newContentState, 'change-block-data')
+}
+
+/**
+ * The function will handle keypress 'Enter' in editor. Following are the scenarios:
+ *
+ * 1. Shift+Enter, Selection Collapsed -> line break will be inserted.
+ * 2. Shift+Enter, Selection not Collapsed ->
+ *      selected text will be removed and line break will be inserted.
+ * 3. Enter, Selection Collapsed ->
+ *      if current block is of type list and length of block is 0
+ *      a new list block of depth less that current one will be inserted.
+ * 4. Enter, Selection Collapsed ->
+ *      if current block not of type list, a new unstyled block will be inserted.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/keyPress.js
+ */
+export const handleNewLine = (
+  editorState: EditorState,
+  event: KeyboardEvent<{}>
+) => {
+  if (KeyBindingUtil.isSoftNewlineEvent(event)) {
+    const selection = editorState.getSelection()
+    if (selection.isCollapsed()) {
+      return RichUtils.insertSoftNewline(editorState)
+    }
+    return addLineBreakRemovingSelection(editorState)
+  }
+  return handleHardNewlineEvent(editorState)
+}
+
+/**
+ * Function to check if a block is of type list.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/list.js
+ */
+export function isListBlock (block: ContentBlock) {
+  if (block) {
+    const blockType = block.getType()
+    return (
+      blockType === 'unordered-list-item' || blockType === 'ordered-list-item'
+    )
+  }
+  return false
+}
+
+/**
+ * Function to change depth of block(s).
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/list.js
+ */
+const changeBlocksDepth = (
+  editorState: EditorState,
+  adjustment: number,
+  maxDepth: number
+): ContentState => {
+  const selectionState = editorState.getSelection()
+  const contentState = editorState.getCurrentContent()
+  let blockMap = contentState.getBlockMap()
+  const blocks = getSelectedBlocks(editorState).map((block) => {
+    let depth = block.getDepth() + adjustment
+    depth = Math.max(0, Math.min(depth, maxDepth))
+    return block.set('depth', depth)
+  })
+  blockMap = blockMap.merge(blocks)
+  return contentState.merge({
+    blockMap,
+    selectionBefore: selectionState,
+    selectionAfter: selectionState
+  }) as ContentState
+}
+
+/**
+ * Function will check various conditions for changing depth and will accordingly
+ * either call function changeBlocksDepth or just return the call.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/list.js
+ */
+const changeDepth = (
+  editorState: EditorState,
+  adjustment: number,
+  maxDepth: number
+) => {
+  const selection = editorState.getSelection()
+  let key
+  if (selection.getIsBackward()) {
+    key = selection.getFocusKey()
+  } else {
+    key = selection.getAnchorKey()
+  }
+  const content = editorState.getCurrentContent()
+  const block = content.getBlockForKey(key)
+  const type = block.getType()
+  if (type !== 'unordered-list-item' && type !== 'ordered-list-item') {
+    return editorState
+  }
+  const blockAbove = content.getBlockBefore(key)
+  if (!blockAbove) {
+    return editorState
+  }
+  const typeAbove = blockAbove.getType()
+  if (typeAbove !== type) {
+    return editorState
+  }
+  const depth = block.getDepth()
+  if (adjustment === 1 && depth === maxDepth) {
+    return editorState
+  }
+  const adjustedMaxDepth = Math.min(blockAbove.getDepth() + 1, maxDepth)
+  const withAdjustment = changeBlocksDepth(
+    editorState,
+    adjustment,
+    adjustedMaxDepth
+  )
+  return EditorState.push(editorState, withAdjustment, 'adjust-depth')
+}
+
+/**
+ * Function will handle followind keyPress scenarios when Shift key is not pressed.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/keyPress.js
+ */
+const handleHardNewlineEvent = (editorState: EditorState) => {
+  const selection = editorState.getSelection()
+  if (selection.isCollapsed()) {
+    const contentState = editorState.getCurrentContent()
+    const blockKey = selection.getStartKey()
+    const block = contentState.getBlockForKey(blockKey)
+    if (
+      !isListBlock(block) &&
+      block.getType() !== 'unstyled' &&
+      block.getLength() === selection.getStartOffset()
+    ) {
+      return insertNewUnstyledBlock(editorState)
+    }
+    if (isListBlock(block) && block.getLength() === 0) {
+      const depth = block.getDepth()
+      if (depth === 0) {
+        return removeSelectedBlocksStyle(editorState)
+      }
+      if (depth > 0) {
+        return changeDepth(editorState, -1, depth)
+      }
+    }
+  }
+  return undefined
+}
+
+/**
+ * Function will inset a new unstyled block.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/block.js
+ */
+const insertNewUnstyledBlock = (editorState: EditorState) => {
+  const newContentState = Modifier.splitBlock(
+    editorState.getCurrentContent(),
+    editorState.getSelection()
+  )
+  const newEditorState = EditorState.push(
+    editorState,
+    newContentState,
+    'split-block'
+  )
+  return removeSelectedBlocksStyle(newEditorState)
+}
+
+/**
+ * Function will change block style to unstyled for selected blocks.
+ * RichUtils.tryToRemoveBlockStyle does not workd for blocks of length greater than 1.
+ * Credit: https://github.com/jpuri/draftjs-utils/blob/9e96939aa4a41bb89ad57f8c71c6a8c27efb76f8/js/block.js
+ */
+const removeSelectedBlocksStyle = (editorState: EditorState) => {
+  const newContentState = RichUtils.tryToRemoveBlockStyle(editorState)
+  if (newContentState) {
+    return EditorState.push(editorState, newContentState, 'change-block-type')
+  }
+  return editorState
 }

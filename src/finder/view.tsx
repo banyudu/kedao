@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { UniqueIndex } from './utils/base'
+import { UniqueIndex } from '../utils'
 import {
   MdAdd,
   MdAudiotrack,

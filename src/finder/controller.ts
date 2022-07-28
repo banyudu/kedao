@@ -1,4 +1,4 @@
-import { UniqueIndex } from './utils/base'
+import { UniqueIndex } from '../utils'
 import { compressImage } from './utils/image'
 
 const defaultValidator = () => true
@@ -166,9 +166,11 @@ export default class FinderController {
   };
 
   createThumbnail = ({ id, file }) => {
-    compressImage(URL.createObjectURL(file), 226, 226).then((result: any) => {
-      this.setMediaItemState(id, { thumbnail: result.url })
-    }).catch(console.error)
+    compressImage(URL.createObjectURL(file), 226, 226)
+      .then((result: any) => {
+        this.setMediaItemState(id, { thumbnail: result.url })
+      })
+      .catch(console.error)
   };
 
   createInlineImage = (param) => {

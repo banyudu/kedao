@@ -1,5 +1,13 @@
-
-import { Project, SourceFile, Node, MethodDeclaration, FunctionDeclaration, ArrowFunction, ImportDeclaration, FunctionExpression } from 'ts-morph'
+import {
+  Project,
+  SourceFile,
+  Node,
+  MethodDeclaration,
+  FunctionDeclaration,
+  ArrowFunction,
+  ImportDeclaration,
+  FunctionExpression
+} from 'ts-morph'
 import * as path from 'path'
 
 /**
@@ -20,7 +28,11 @@ export function walk (node: Node, callback: (node: Node) => boolean): boolean {
   return _walk(node, callback, new Set())
 }
 
-function _walk (node: Node, callback: (node: Node) => boolean, parsed: Set<Node>): boolean {
+function _walk (
+  node: Node,
+  callback: (node: Node) => boolean,
+  parsed: Set<Node>
+): boolean {
   try {
     if (parsed.has(node) || node.compilerNode === null) {
       return false
@@ -46,8 +58,14 @@ function _walk (node: Node, callback: (node: Node) => boolean, parsed: Set<Node>
   return true
 }
 
-export function getFunctions (file: SourceFile): Array<MethodDeclaration | FunctionDeclaration | ArrowFunction | FunctionExpression> {
-  const functions: Array<MethodDeclaration | FunctionDeclaration | ArrowFunction | FunctionExpression> = []
+export function getFunctions (
+  file: SourceFile
+): Array<
+  MethodDeclaration | FunctionDeclaration | ArrowFunction | FunctionExpression
+  > {
+  const functions: Array<
+  MethodDeclaration | FunctionDeclaration | ArrowFunction | FunctionExpression
+  > = []
   walk(file, (node) => {
     const checklist: any[] = [node]
     if (Node.isPropertyDeclaration(node)) {
@@ -61,7 +79,12 @@ export function getFunctions (file: SourceFile): Array<MethodDeclaration | Funct
       checklist.push(node.getBody())
     }
     for (const item of checklist) {
-      if ((Node.isMethodDeclaration(item) || Node.isFunctionDeclaration(item) || Node.isArrowFunction(item) || Node.isFunctionExpression(node))) {
+      if (
+        Node.isMethodDeclaration(item) ||
+        Node.isFunctionDeclaration(item) ||
+        Node.isArrowFunction(item) ||
+        Node.isFunctionExpression(node)
+      ) {
         functions.push(item)
       }
     }
@@ -70,18 +93,29 @@ export function getFunctions (file: SourceFile): Array<MethodDeclaration | Funct
   return functions
 }
 
-export function getImportDeclarationFromFile (sourceFile: SourceFile, file: SourceFile, createIfNotExists: boolean = false): ImportDeclaration | undefined {
-  const arr = sourceFile.getImportDeclarations().filter(
-    item => item.getModuleSpecifierSourceFile() === file
-  ) ?? []
+export function getImportDeclarationFromFile (
+  sourceFile: SourceFile,
+  file: SourceFile,
+  createIfNotExists: boolean = false
+): ImportDeclaration | undefined {
+  const arr =
+    sourceFile
+      .getImportDeclarations()
+      .filter((item) => item.getModuleSpecifierSourceFile() === file) ?? []
   let result
   if (arr.length > 0) {
     result = arr[0]
   }
 
   if (result === undefined && createIfNotExists) {
-    let relativePath = path.relative(path.dirname(sourceFile.getFilePath().toString()), file.getFilePath().toString())
-    relativePath = relativePath.substring(0, relativePath.length - path.extname(relativePath).length)
+    let relativePath = path.relative(
+      path.dirname(sourceFile.getFilePath().toString()),
+      file.getFilePath().toString()
+    )
+    relativePath = relativePath.substring(
+      0,
+      relativePath.length - path.extname(relativePath).length
+    )
 
     // 去除后缀名
     if (relativePath.endsWith('.ts') || relativePath.endsWith('.tsx')) {
@@ -90,35 +124,51 @@ export function getImportDeclarationFromFile (sourceFile: SourceFile, file: Sour
 
     // 去除 /index 后缀
     if (relativePath.endsWith('/index')) {
-      relativePath = relativePath.substring(0, relativePath.length - '/index'.length)
+      relativePath = relativePath.substring(
+        0,
+        relativePath.length - '/index'.length
+      )
     }
 
     // 添加当前路径前缀
     if (!relativePath.startsWith('.')) {
       relativePath = './' + relativePath
     }
-    result = sourceFile.insertImportDeclaration(0, { moduleSpecifier: relativePath, namedImports: [] })
+    result = sourceFile.insertImportDeclaration(0, {
+      moduleSpecifier: relativePath,
+      namedImports: []
+    })
   }
   return result as ImportDeclaration
 }
 
-export function getImportDeclaration (sourceFile: SourceFile, module: string, createIfNotExists: boolean = false): ImportDeclaration | undefined {
-  const arr = sourceFile.getImportDeclarations().filter(
-    item => item.getModuleSpecifier().getLiteralValue() === module
-  ) ?? []
+export function getImportDeclaration (
+  sourceFile: SourceFile,
+  module: string,
+  createIfNotExists: boolean = false
+): ImportDeclaration | undefined {
+  const arr =
+    sourceFile
+      .getImportDeclarations()
+      .filter(
+        (item) => item.getModuleSpecifier().getLiteralValue() === module
+      ) ?? []
   let result
   if (arr.length > 0) {
     result = arr[0]
   }
 
   if (result === undefined && createIfNotExists) {
-    result = sourceFile.insertImportDeclaration(0, { moduleSpecifier: module, namedImports: [] })
+    result = sourceFile.insertImportDeclaration(0, {
+      moduleSpecifier: module,
+      namedImports: []
+    })
   }
   return result as ImportDeclaration
 }
 
 export function camelToSnakeCase (str: string): string {
-  return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
 }
 
 export function getFiles (): SourceFile[] {

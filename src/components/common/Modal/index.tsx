@@ -1,93 +1,20 @@
-import React, { useEffect, useRef, FC } from 'react'
-import ReactDOM from 'react-dom'
-import { UniqueIndex } from '../../../utils'
+import React, { FC, useEffect, useState } from 'react'
 import mergeClassNames from 'merge-class-names'
 import './style.scss'
 import { MdClose } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
-import { Language } from '../../../types'
-
-interface ModalProps {
-  title?: string
-  className?: string
-  width?: number
-  height?: number
-  component?: React.ReactNode
-  confirmable?: boolean
-  closeOnConfirm?: boolean
-  onConfirm?: () => void
-  showFooter?: boolean
-  showCancel?: boolean
-  showConfirm?: boolean
-  onBlur?: () => void
-  showClose?: boolean
-  cancelText?: string
-  onClose?: () => void
-  confirmText?: string
-  onCancel?: () => void
-  closeOnBlur?: boolean
-  bottomText?: React.ReactNode
-  closeOnCancel?: boolean
-  language: Language
-  visible?: boolean
-}
-
-export const showModal = (props: ModalProps) => {
-  const hostNode = document.createElement('div')
-  const newProps = {
-    visible: true,
-    closeOnConfirm: true,
-    closeOnCancel: true,
-    ...props
-  }
-
-  hostNode.style.display = 'none'
-  document.body.appendChild(hostNode)
-
-  const close = () => {
-    if (ReactDOM.unmountComponentAtNode(hostNode)) {
-      hostNode.parentNode.removeChild(hostNode)
-    }
-  }
-
-  const onConfirm = () => {
-    newProps.onConfirm?.()
-  }
-
-  const onCancel = () => {
-    newProps.onCancel?.()
-  }
-
-  const onClose = () => {
-    close()
-    newProps.onClose?.()
-  }
-
-  // eslint-disable-next-line react/no-render-return-value
-  const modalInstance: any = ReactDOM.render(
-    <Modal
-      {...newProps}
-      onConfirm={onConfirm}
-      onCancel={onCancel}
-      onClose={onClose}
-    />,
-    hostNode
-  )
-  modalInstance.destroy = close
-  modalInstance.update = modalInstance.renderComponent
-
-  return modalInstance
-}
+import { ModalProps } from '../../../types'
+import { Portal } from 'react-portal'
 
 const Modal: FC<ModalProps> = ({
   title,
   className,
   width,
   height,
+  onCreate,
   children,
-  component,
   confirmable,
-  closeOnConfirm,
+  closeOnConfirm = true,
   onConfirm,
   showFooter = true,
   showCancel = true,
@@ -100,42 +27,16 @@ const Modal: FC<ModalProps> = ({
   onCancel,
   closeOnBlur = true,
   bottomText,
-  closeOnCancel,
+  closeOnCancel = true,
   language,
-  visible
+  visible: outerVisible = true
 }) => {
-  const active = useRef(false)
-  const activeId = useRef(null)
-  const rootElement = useRef(null)
-  const componentId = useRef(`KEDAO-MODAL-${UniqueIndex()}`)
-
+  const [visible, setVisible] = useState(outerVisible)
   useEffect(() => {
-    if (visible) {
-      active.current = true
-      renderComponent()
-    }
-  }, [])
+    setVisible(outerVisible)
+  }, [outerVisible])
 
-  useEffect(() => {
-    if (!visible) {
-      unrenderComponent()
-    } else {
-      renderComponent()
-    }
-  }, [visible])
-
-  const handleTransitionEnd = () => {
-    if (!rootElement.current?.classList) {
-      return false
-    }
-
-    if (!rootElement.current.classList.contains('active')) {
-      if (ReactDOM.unmountComponentAtNode(rootElement.current)) {
-        rootElement.current.parentNode.removeChild(rootElement.current)
-      }
-    }
-    return true
-  }
+  useEffect(() => onCreate?.(), [])
 
   const handleMouseDown = (event) => {
     const tagName = event.target.tagName.toLowerCase()
@@ -148,50 +49,37 @@ const Modal: FC<ModalProps> = ({
     return true
   }
 
-  const handleCancel = () => {
-    if (closeOnCancel) {
-      close()
-    }
-    onCancel?.()
-  }
-
-  const handleConfirm = () => {
-    if (closeOnConfirm) {
-      close()
-    }
-    if (onConfirm) {
-      onConfirm()
-    }
-  }
-
-  const handleMaskClick = () => {
-    if (closeOnBlur) {
-      close()
-    }
-    onBlur?.()
-  }
-
-  const close = () => {
-    unrenderComponent()
+  const handleClose = () => {
+    setVisible(false)
     onClose?.()
   }
 
-  const unrenderComponent = () => {
-    active.current = false
-    if (activeId.current) {
-      window.clearImmediate(activeId.current)
+  const handleCancel = () => {
+    if (closeOnCancel) {
+      setVisible(false)
     }
-    if (rootElement.current?.classList) {
-      rootElement.current.classList.remove('active')
+    onCancel?.()
+  }
+  const handleConfirm = () => {
+    if (closeOnConfirm) {
+      setVisible(false)
+    }
+    onConfirm?.()
+  }
+
+  const handleBlur = () => {
+    onBlur?.()
+    if (closeOnBlur) {
+      handleClose()
     }
   }
 
-  const renderComponent = () => {
-    if (!active) {
-      return false
-    }
+  if (!visible) {
+    return null
+  }
 
-    const childComponent = (
+  return (
+    <Portal>
       <div
         role="presentation"
         onMouseDown={handleMouseDown}
@@ -200,26 +88,22 @@ const Modal: FC<ModalProps> = ({
         <div
           role="presentation"
           className="bf-modal-mask"
-          onClick={handleMaskClick}
+          onClick={handleBlur}
         />
-        <div
-          onTransitionEnd={handleTransitionEnd}
-          style={{ width, height }}
-          className="bf-modal-content"
-        >
+        <div style={{ width, height }} className="bf-modal-content">
           <div className="bf-modal-header">
             <h3 className="bf-modal-caption">{title}</h3>
             {showClose && (
               <button
                 type="button"
-                onClick={close}
+                onClick={handleClose}
                 className="bf-modal-close-button"
               >
                 <MdClose {...defaultIconProps} />
               </button>
             )}
           </div>
-          <div className="bf-modal-body">{children || component}</div>
+          <div className="bf-modal-body">{children}</div>
           {showFooter
             ? (
             <div className="bf-modal-footer">
@@ -252,26 +136,8 @@ const Modal: FC<ModalProps> = ({
             : null}
         </div>
       </div>
-    )
-
-    rootElement.current = document.querySelector(`#${componentId.current}`)
-
-    if (!rootElement.current) {
-      rootElement.current = document.createElement('div')
-      rootElement.current.id = componentId.current
-      rootElement.current.className = 'bf-modal-root'
-      document.body.appendChild(rootElement.current)
-    }
-
-    ReactDOM.render(childComponent, rootElement.current)
-
-    activeId.current = window.setImmediate(() => {
-      rootElement.current.classList.add('active')
-    })
-    return true
-  }
-
-  return null
+    </Portal>
+  )
 }
 
 export default Modal

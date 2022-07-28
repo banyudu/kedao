@@ -44,7 +44,6 @@ const Image: FC<ImageProps> = ({
   const [tempHeight, setTempHeight] = useState(0)
 
   const imageElement = useRef<HTMLImageElement>(null)
-  const mediaEmbederInstance = useRef<HTMLDivElement>(null)
   const toolbarElement = useRef<HTMLDivElement>(null)
   const initialLeft = useRef(0)
   const initialTop = useRef(0)
@@ -465,7 +464,6 @@ const Image: FC<ImageProps> = ({
         onMouseLeave={hideToolbar}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        ref={mediaEmbederInstance}
         className="bf-image"
       >
         {toolbarVisible

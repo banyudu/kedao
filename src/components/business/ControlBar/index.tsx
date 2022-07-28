@@ -1,11 +1,10 @@
 import React, {
-  useEffect,
-  useRef,
   CSSProperties,
   useImperativeHandle,
-  forwardRef
+  forwardRef,
+  useMemo,
+  useState
 } from 'react'
-// import { useWhyDidYouUpdate } from 'react-recipes'
 import { v4 as uuidv4 } from 'uuid'
 import {
   selectionHasInlineStyle,
@@ -16,7 +15,7 @@ import {
   toggleSelectionEntity,
   insertMedias
 } from '../../../utils'
-import getEditorControls from '../../../configs/controls'
+import getEditorControlMap from '../../../configs/controls'
 import LinkEditor, { LinkEditorProps } from '../LinkEditor'
 import HeadingPicker, { HeadingsPickerProps } from '../Headings'
 import TextColorPicker, { TextColorPickerProps } from '../TextColor'
@@ -30,7 +29,7 @@ import LetterSpacingPicker, {
 } from '../LetterSpacing'
 import TextIndent from '../TextIndent'
 import DropDown from '../../../components/common/DropDown'
-import { showModal } from '../../../components/common/Modal'
+import Modal from '../../../components/common/Modal'
 import { getExtensionControls } from '../../../helpers/extension'
 import {
   Finder,
@@ -40,7 +39,8 @@ import {
   ModalControlItem,
   ButtonControlItem,
   DropDownControlItem,
-  EditorState
+  EditorState,
+  ModalProps
 } from '../../../types'
 import './style.scss'
 import { useDeepCompareMemo } from '../../../utils/use-deep-compare-memo'
@@ -180,49 +180,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     },
     ref
   ) => {
-    // useWhyDidYouUpdate('ControlBar', {
-    //   editorState,
-    //   hooks,
-    //   finder,
-    //   media,
-    //   allowInsertLinkText,
-    //   className,
-    //   colorPicker,
-    //   colorPickerAutoHide,
-    //   colors,
-    //   controls,
-    //   defaultLinkTarget,
-    //   editorId,
-    //   emojis,
-    //   extendControls,
-    //   fontFamilies,
-    //   fontSizes,
-    //   getContainerNode,
-    //   headings,
-    //   letterSpacings,
-    //   lineHeights,
-    //   style,
-    //   textAligns,
-    //   textBackgroundColor
-    // })
     useImperativeHandle(ref, () => ({
       closeFinder
     }))
-    useEffect(() => {
-      allControls.forEach((item) => {
-        if (item.type === 'modal') {
-          if (item.modal?.id && extendedModals.current?.[item.modal.id]) {
-            extendedModals[item.modal.id].update({
-              ...item.modal,
-              language
-            })
-          }
-        }
-      })
-    }, [])
 
-    const mediaLibiraryModal = useRef(null)
-    const extendedModals = useRef({})
+    const [mediaLibraryVisible, setMediaLibraryVisible] = useState(false)
+    const [extendModal, setExtendModal] = useState<ModalProps | null>(null)
 
     const getControlTypeClassName = (data) => {
       let className = 'control-item button'
@@ -293,40 +256,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       }
     }
 
+    const MediaLibrary = finder?.ReactComponent
     const openFinder = () => {
-      if (!finder || !finder.ReactComponent) {
-        return false
+      if (!MediaLibrary || hooks('open-kedao-finder')?.() === false) {
+        return
       }
-
-      if (hooks('open-kedao-finder')() === false) {
-        return false
-      }
-
-      const mediaProps = media
-      const MediaLibrary = finder.ReactComponent
-
-      mediaLibiraryModal.current = showModal({
-        title: language.controls.mediaLibirary,
-        language: language,
-        width: 640,
-        showFooter: false,
-        onClose: mediaProps.onClose,
-        component: (
-          <MediaLibrary
-            accepts={mediaProps.accepts}
-            onCancel={closeFinder}
-            onInsert={insertMedias_}
-            onChange={mediaProps.onChange}
-            externals={mediaProps.externals}
-            onBeforeSelect={bindFinderHook('select-medias')}
-            onBeforeDeselect={bindFinderHook('deselect-medias')}
-            onBeforeRemove={bindFinderHook('remove-medias')}
-            onBeforeInsert={bindFinderHook('insert-medias')}
-            onFileSelect={bindFinderHook('select-files')}
-          />
-        )
-      })
-      return true
+      setMediaLibraryVisible(true)
     }
 
     const bindFinderHook =
@@ -344,15 +279,13 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
 
     const closeFinder = () => {
       media.onCancel?.()
-      mediaLibiraryModal.current?.close()
+      setMediaLibraryVisible(false)
     }
 
     const preventDefault = (event) => {
       const tagName = event.target.tagName.toLowerCase()
 
-      if (tagName === 'input' || tagName === 'label') {
-        // ...
-      } else {
+      if (tagName !== 'input' && tagName !== 'label') {
         event.preventDefault()
       }
     }
@@ -368,8 +301,10 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       onRequestFocus: onRequestFocus
     }
 
-    const renderedControls = []
-    const editorControls = getEditorControls(language, isFullscreen)
+    const editorControlMap = useMemo(
+      () => getEditorControlMap(language, isFullscreen),
+      [language, isFullscreen]
+    )
     const extensionControls = getExtensionControls(editorId)
     const allControls = useDeepCompareMemo(() => {
       return mergeControls(
@@ -386,10 +321,24 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       extendControls
     ])
     const renderedControlList = useDeepCompareMemo(() => {
-      return allControls.map((item) => {
-        return [item, uuidv4()] as const
-      })
-    }, [allControls.current])
+      const keySet = new Set<string>()
+      return allControls
+        .filter((item) => {
+          const itemKey = typeof item === 'string' ? item : item?.key
+          if (
+            typeof itemKey !== 'string' ||
+            itemKey.length === 0 ||
+            keySet.has(itemKey)
+          ) {
+            return false
+          }
+          keySet.add(itemKey)
+          return true
+        })
+        .map((item) => {
+          return [item, uuidv4()] as const
+        })
+    }, [allControls])
 
     return (
       <div
@@ -401,25 +350,17 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       >
         {renderedControlList.map(([item, key]) => {
           const itemKey = typeof item === 'string' ? item : item.key
-          if (typeof itemKey !== 'string') {
-            return null
-          }
-          if (renderedControls.includes(itemKey)) {
-            return null
-          }
           if (itemKey.toLowerCase() === 'separator') {
             return <span key={key} className="separator-line" />
           }
-          let controlItem: ControlItem = editorControls.find((subItem) => {
-            return subItem.key.toLowerCase() === itemKey.toLowerCase()
-          })
+          let controlItem: ControlItem =
+            editorControlMap[itemKey.toLowerCase()]
           if (typeof item !== 'string') {
             controlItem = { ...controlItem, ...item }
           }
           if (!controlItem) {
             return null
           }
-          renderedControls.push(itemKey)
           if (controlItem.type === 'headings') {
             return (
               <HeadingPicker
@@ -567,19 +508,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 onClick={(event) => {
                   const { modal, onClick } = controlItem as ModalControlItem
                   if (modal?.id) {
-                    if (extendedModals.current?.[modal.id]) {
-                      extendedModals.current[modal.id].active = true
-                      extendedModals.current[modal.id].update({
-                        ...modal,
-                        language
-                      })
-                    } else {
-                      extendedModals.current[modal.id] = showModal({
-                        ...modal,
-                        language
-                      })
-                      modal.onCreate?.(extendedModals.current[modal.id])
-                    }
+                    setExtendModal(modal)
                   }
                   onClick?.(event)
                 }}
@@ -650,6 +579,30 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           }
           return null
         })}
+        <Modal
+          title={language.controls.mediaLibirary}
+          language={language}
+          width={640}
+          showFooter={false}
+          onClose={closeFinder}
+          visible={mediaLibraryVisible}
+        >
+          <MediaLibrary
+            accepts={media.accepts}
+            onCancel={closeFinder}
+            onInsert={insertMedias_}
+            onChange={media.onChange}
+            externals={media.externals}
+            onBeforeSelect={bindFinderHook('select-medias')}
+            onBeforeDeselect={bindFinderHook('deselect-medias')}
+            onBeforeRemove={bindFinderHook('remove-medias')}
+            onBeforeInsert={bindFinderHook('insert-medias')}
+            onFileSelect={bindFinderHook('select-files')}
+          />
+        </Modal>
+        {extendModal && (
+          <Modal key={extendModal.id} {...extendModal} language={language} />
+        )}
       </div>
     )
   }

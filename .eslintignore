@@ -1,6 +1,5 @@
 node_modules
 dist
-scripts
 build
 lib
 **/*.js

@@ -230,33 +230,36 @@ export interface DropDownControlItem extends BaseExtendControlItem {
   component?: React.ReactNode
 }
 
+export interface ModalProps {
+  id?: string
+  title?: string
+  className?: string
+  width?: number
+  height?: number
+  confirmable?: boolean
+  closeOnConfirm?: boolean
+  onConfirm?: () => void
+  onCreate?: () => void
+  showFooter?: boolean
+  showCancel?: boolean
+  showConfirm?: boolean
+  onBlur?: () => void
+  showClose?: boolean
+  cancelText?: string
+  onClose?: () => void
+  confirmText?: string
+  onCancel?: () => void
+  closeOnBlur?: boolean
+  bottomText?: React.ReactNode
+  closeOnCancel?: boolean
+  language: Language
+  visible?: boolean
+}
+
 export interface ModalControlItem extends BaseExtendControlItem {
   type: 'modal'
   onClick?: (e: any) => void
-  modal?: {
-    id: string
-    title?: string
-    className?: string
-    width?: number
-    height?: number
-    showFooter?: boolean
-    showCancel?: boolean
-    showConfirm?: boolean
-    confirmable?: boolean
-    showClose?: boolean
-    closeOnBlur?: boolean
-    closeOnConfirm?: boolean
-    closeOnCancel?: boolean
-    cancelText?: string
-    confirmText?: string
-    bottomText?: React.ReactNode
-    onConfirm?: () => void
-    onCancel?: () => void
-    onClose?: () => void
-    onBlur?: () => void
-    onCreate?: (v: any) => void
-    children: React.ReactNode
-  }
+  modal?: ModalProps
 }
 
 interface ComponentControlItem extends BaseExtendControlItem {
@@ -365,7 +368,5 @@ export interface Extension {
 
 export type RenderMap = Immutable.Map<
 string,
-{
-  element: React.ComponentType<any>
-}
+{ element: React.ComponentType<any> }
 >

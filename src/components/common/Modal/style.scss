@@ -22,7 +22,8 @@
   width: 100%;
   height: 100%;
   background-color: rgba(#000, 0.1);
-  opacity: 0;
+
+  // opacity: 0;
   transition: opacity 0.2s;
 }
 
@@ -35,7 +36,8 @@
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 15px 30px rgba(#000, 0.1);
-  opacity: 0;
+
+  // opacity: 0;
   transform: translate(-50%, -40%);
   transition: transform 0.2s, opacity 0.2s;
 }

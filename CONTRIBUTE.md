@@ -14,7 +14,9 @@ Draft-js 提供的是编辑器的内核，而 BraftEditor / Kedao 在它的基�
 
 目前，kedao 完成了项目的依赖升级(react / draft-js 等)、技术栈升级(Typescript)，输出产物重构等各项优化，使它能够更容易地嵌入在主流框架中使用。
 
-短期来看，kedao 的目标是支持更多的框架，做一些架构优化，并梳理规范的 API 等。
+短期来看，kedao 的目标是支持更多的框架，做一些架构优化、性能优化，并梳理规范的 API 等。
+
+长期来看，会开发更多的插件打造更便利的开箱即用的编辑器，将来如果 draft-js 一直不更新的话，也有可能会在需要的时候做一次 fork。
 
 ## 开发指南
 
@@ -55,9 +57,21 @@ Kedao 的技术栈为 React (Hooks) + Typescript，使用 [pnpm](https://pnpm.io
 
 ### 版本说明
 
+项目计划采用如下的版本管理模式：
+
 - main 分支中每一次对功能有影响的提交，都会自动触发 npm 发布，只要测试通过就会正常发布。
 - next 分支暂时不会自动发布 npm 包，但会触发 vercel 自动构建，所以一样可以及时预览。
 - v\* 分支每一次提交也会触发 npm 发布，用旧的大版本号。
+
+main 分支和 next 分支以及 v\* 分支每次提交时都会自动触发 npm 发布(通过 Github Actions)。
+
+其中
+
+- main 分支对应 latest dist-tag，每次发布时自动更新版本号并保存 CHANGELOG
+- next 分支对应 next dist-tag，每次发布时使用时间戳生成随机版本号
+- v\* 分支使用和分支名相同的 dist-tag，如 v0 分支会使用 v0 的 dist-tag。
+
+main 分支的 Github Actions 已经配置完成，next 分支和 v\* 分支的待需要时再配置。
 
 ## 协作指南
 

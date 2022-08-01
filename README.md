@@ -56,6 +56,8 @@ export default App;
 
 欢迎任何方式的贡献，issue、文档、翻译等。
 
+[贡献指南](./CONTRIBUTE.md)
+
 ## 文档
 
 更多文档见组件官网：[https://kedao.vercel.app](https://kedao.vercel.app)

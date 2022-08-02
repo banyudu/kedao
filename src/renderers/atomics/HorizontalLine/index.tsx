@@ -1,10 +1,20 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
-
+import { EditorState } from 'draft-js'
+import { CallbackEditor } from '../../../types'
 import './style.scss'
 
-const HorizontalLine = ({ editorState, block, editor }) => {
+interface HorizontalLineProps {
+  editorState: EditorState
+  block: any
+  editor: CallbackEditor
+}
+
+const HorizontalLine: FC<HorizontalLineProps> = ({
+  editorState,
+  block,
+  editor
+}) => {
   const removeHorizontalLine = () => {
     editor.setValue(removeBlock(editorState, block))
   }
@@ -18,12 +28,6 @@ const HorizontalLine = ({ editorState, block, editor }) => {
       </div>
     </div>
   )
-}
-
-HorizontalLine.propTypes = {
-  editor: PropTypes.any,
-  editorState: PropTypes.any,
-  block: PropTypes.any
 }
 
 export default HorizontalLine

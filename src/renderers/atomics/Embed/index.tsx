@@ -1,10 +1,24 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
 import PlayerModal from '../../../components/business/PlayerModal'
 import './style.scss'
+import { CallbackEditor, EditorState, Language } from '../../../types'
 
-const Embed = ({ mediaData, language, editor, editorState, block }) => {
+interface EmbedProps {
+  mediaData: any
+  language: Language
+  editor: CallbackEditor
+  editorState: EditorState
+  block: any
+}
+
+const Embed: FC<EmbedProps> = ({
+  mediaData,
+  language,
+  editor,
+  editorState,
+  block
+}) => {
   const { name, url, meta } = mediaData
 
   const removeEmbed = () => {
@@ -28,14 +42,6 @@ const Embed = ({ mediaData, language, editor, editorState, block }) => {
       </PlayerModal>
     </div>
   )
-}
-
-Embed.propTypes = {
-  mediaData: PropTypes.any,
-  language: PropTypes.any,
-  editor: PropTypes.any,
-  editorState: PropTypes.any,
-  block: PropTypes.any
 }
 
 export default Embed

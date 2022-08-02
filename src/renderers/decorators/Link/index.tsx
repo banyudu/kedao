@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FC } from 'react'
 import '../../../components/business/LinkEditor/style.scss'
+import { ContentState } from 'draft-js'
 
 const viewLink = (event, link) => {
   // When pressing the Ctrl / command key, click to open the url in the link text
@@ -12,8 +12,13 @@ const viewLink = (event, link) => {
   }
 }
 
-const Link = (props) => {
-  const { children, entityKey, contentState } = props
+interface LinkProps {
+  entityKey: string
+  contentState: ContentState
+  children: React.ReactNode
+}
+
+const Link: FC<LinkProps> = ({ children, entityKey, contentState }) => {
   const { href, target } = contentState.getEntity(entityKey).getData()
 
   return (
@@ -28,12 +33,6 @@ const Link = (props) => {
       </a>
     </span>
   )
-}
-
-Link.propTypes = {
-  children: PropTypes.any,
-  entityKey: PropTypes.any,
-  contentState: PropTypes.any
 }
 
 export default Link

@@ -25,7 +25,7 @@
 
     /* Modules */
     "module": "ES6",                                     /* Specify what module code is generated. */
-    "rootDir": "./src",                                  /* Specify the root folder within your source files. */
+    "rootDir": "./",                                     /* Specify the root folder within your source files. */
     "moduleResolution": "node",                          /* Specify how TypeScript looks up a file from a given module specifier. */
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
@@ -93,22 +93,9 @@
     // "noPropertyAccessFromIndexSignature": true,       /* Enforces using indexed accessors for keys declared using an indexed type */
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
-    "plugins": [
-      {
-        "transform": "ts-rename-import-plugin",
-        "type": "config",
-        "from": "\\.scss$",
-        "to": ".css"
-      },
-    ]
+    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "exclude": [
     "node_modules",
-    "examples",
-    "docs",
-    "test",
-    "lib",
-    "scripts"
   ]
 }

@@ -29,7 +29,11 @@
     "postversion": "git push --follow-tags && npm publish",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
-    "test": "npm run build",
+    "test": "run-s -l build test:build test:self",
+    "test:build": "run-s -l test:build-docs test:build-cra",
+    "test:build-docs": "cd docs && npm run build && cd ..",
+    "test:build-cra": "cd examples/with-cra && npm run build && cd ..",
+    "test:self": "echo success",
     "version": "standard-version",
     "watch:css": "gulp watch",
     "watch:js": "ttsc -w"

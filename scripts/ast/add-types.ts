@@ -61,9 +61,6 @@ const importConfigMap: Record<string, ImportConfig> = {
   },
   callback: {
     typeName: 'Function'
-  },
-  nodeName: {
-    typeName: 'string'
   }
 };
 

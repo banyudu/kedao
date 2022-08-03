@@ -6,6 +6,7 @@ import {
   FunctionDeclaration,
   ArrowFunction,
   ImportDeclaration,
+  JsxAttribute,
   FunctionExpression
 } from 'ts-morph'
 import * as path from 'path'
@@ -144,14 +145,14 @@ export function getImportDeclarationFromFile (
 
 export function getImportDeclaration (
   sourceFile: SourceFile,
-  module: string,
+  moduleName: string,
   createIfNotExists: boolean = false
 ): ImportDeclaration | undefined {
   const arr =
     sourceFile
       .getImportDeclarations()
       .filter(
-        (item) => item.getModuleSpecifier().getLiteralValue() === module
+        (item) => item.getModuleSpecifier().getLiteralValue() === moduleName
       ) ?? []
   let result
   if (arr.length > 0) {
@@ -160,7 +161,7 @@ export function getImportDeclaration (
 
   if (result === undefined && createIfNotExists) {
     result = sourceFile.insertImportDeclaration(0, {
-      moduleSpecifier: module,
+      moduleSpecifier: moduleName,
       namedImports: []
     })
   }
@@ -185,4 +186,15 @@ export function inspectNode (data: any | any[], withKindName?: boolean): void {
       console.log(`    ${item.getKindName() as string}`)
     }
   })
+}
+
+export function getJsxAttributes (file: SourceFile): JsxAttribute[] {
+  const jsxAttrs: JsxAttribute[] = []
+  walk(file, (node) => {
+    if (Node.isJsxAttribute(node)) {
+      jsxAttrs.push(node)
+    }
+    return true
+  })
+  return jsxAttrs
 }

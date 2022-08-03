@@ -142,7 +142,7 @@ const Image: FC<ImageProps> = ({
       return false
     }
 
-    window.__KEDAO_DRAGING__IMAGE__ = {
+    (window as any).__KEDAO_DRAGING__IMAGE__ = {
       block: block,
       mediaData: {
         type: 'IMAGE',
@@ -157,7 +157,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const handleDragEnd = () => {
-    window.__KEDAO_DRAGING__IMAGE__ = null
+    (window as any).__KEDAO_DRAGING__IMAGE__ = null
     return false
   }
 

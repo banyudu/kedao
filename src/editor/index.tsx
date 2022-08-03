@@ -635,21 +635,21 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       return 'handled'
     }
 
-    if (window?.__KEDAO_DRAGING__IMAGE__) {
+    if ((window as any).__KEDAO_DRAGING__IMAGE__) {
       let nextEditorState: any = EditorState.forceSelection(
         editorState,
         selectionState
       )
       nextEditorState = insertMedias(nextEditorState, [
-        window.__KEDAO_DRAGING__IMAGE__.mediaData
+        (window as any).__KEDAO_DRAGING__IMAGE__.mediaData
       ])
       nextEditorState = removeBlock(
         nextEditorState,
-        window.__KEDAO_DRAGING__IMAGE__.block,
+        (window as any).__KEDAO_DRAGING__IMAGE__.block,
         nextEditorState.getSelection()
-      )
+      );
 
-      window.__KEDAO_DRAGING__IMAGE__ = null
+      (window as any).__KEDAO_DRAGING__IMAGE__ = null
 
       setEditorLocked(true)
       setValue(nextEditorState)

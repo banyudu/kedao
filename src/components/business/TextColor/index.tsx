@@ -115,7 +115,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
       // theme={theme}
       getContainerNode={getContainerNode}
       ref={dropDownInstance}
-      className="control-item dropdown text-color-dropdown"
+      className="text-color-dropdown"
     >
       <div className="bf-text-color-picker-wrap">
         <div

@@ -68,7 +68,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
       getContainerNode={getContainerNode}
       title={language.controls.letterSpacing}
       ref={dropDownInstance}
-      className="control-item dropdown bf-letter-spacing-dropdown"
+      className="bf-letter-spacing-dropdown"
     >
       <ul className="bf-letter-spacings">
         {letterSpacings.map((item) => {

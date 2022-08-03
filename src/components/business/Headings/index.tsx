@@ -39,7 +39,7 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
       title={language.controls.headings}
       arrowActive={currentHeadingIndex === 0}
       ref={dropDownInstance}
-      className="control-item dropdown headings-dropdown"
+      className="headings-dropdown"
     >
       <ul className="menu">
         {innerHeadings.map((item) => {

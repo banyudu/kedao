@@ -8,6 +8,7 @@ import {
 } from '../../../utils'
 import Switch from '../../common/Switch'
 import DropDown from '../../common/DropDown'
+import Button from '../../common/Button'
 import ControlGroup from '../ControlGroup'
 import { MdClose, MdLink, MdLinkOff } from 'react-icons/md'
 import './style.scss'
@@ -154,7 +155,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
         getContainerNode={getContainerNode}
         showArrow={false}
         ref={dropDownInstance}
-        className="control-item dropdown link-editor-dropdown"
+        className="link-editor-dropdown"
       >
         <div className="bf-link-editor">
           {allowInsertLinkText
@@ -212,16 +213,15 @@ const LinkEditor: FC<LinkEditorProps> = ({
           </div>
         </div>
       </DropDown>
-      <button
+      <Button
         key={1}
         type="button"
         data-title={language.controls.unlink}
-        className="control-item button"
         onClick={handleUnlink}
         disabled={!textSelected || !href}
       >
         <MdLinkOff {...defaultIconProps} />
-      </button>
+      </Button>
     </ControlGroup>
   )
 }

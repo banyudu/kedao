@@ -65,7 +65,7 @@ import {
 import ControlBar, { ControlBarProps } from '../components/business/ControlBar'
 
 import 'draft-js/dist/Draft.css'
-import '../assets/scss/kedao.scss'
+import './style.scss'
 import {
   CallbackEditor,
   ControlItem,
@@ -1057,6 +1057,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
           style={contentStyle}
         >
           <Editor
+            className="editor-core"
             ref={draftInstanceRef}
             editorState={editorState}
             handleKeyCommand={keyCommandHandlers}

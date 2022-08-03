@@ -1,50 +1,47 @@
 import './styles.scss'
 import React from 'react'
 import { SketchPicker } from 'react-color'
+import Button from '../../components/common/Button'
 
-const getColorPicker =
-  (superProps) =>
-    function ColorPicker ({ onChange, color, presetColors, ...props }) {
-      const handleChange = (colorObject) => {
-        if (colorObject.hex === color) {
-          return
-        }
-        onChange(colorObject.hex, false)
-        superProps.onChange?.(colorObject.hex)
+const getColorPicker = (superProps) =>
+  function ColorPicker ({ onChange, color, presetColors, ...props }) {
+    const handleChange = (colorObject) => {
+      if (colorObject.hex === color) {
+        return
       }
-
-      const clearColor = () => onChange(color, false)
-      const closePicker = () => onChange(null, true)
-
-      color = color || presetColors[0]
-
-      return (
-        <div className={`kedao-color-picker ${superProps.theme}-theme`}>
-          <SketchPicker
-            color={color}
-            presetColors={presetColors}
-            onChangeComplete={handleChange}
-            {...props} />
-          <footer className="footer">
-            <button
-              type="button"
-              className="button control-item button-clear"
-              onClick={clearColor}
-              disabled={!color}
-            >
-              {superProps.clearButtonText}
-            </button>
-            <button
-              type="button"
-              className="button control-item button-close"
-              onClick={closePicker}
-            >
-              {superProps.closeButtonText}
-            </button>
-          </footer>
-        </div>
-      )
+      onChange(colorObject.hex, false)
+      superProps.onChange?.(colorObject.hex)
     }
+
+    const clearColor = () => onChange(color, false)
+    const closePicker = () => onChange(null, true)
+
+    color = color || presetColors[0]
+
+    return (
+      <div className={`kedao-color-picker ${superProps.theme}-theme`}>
+        <SketchPicker
+          color={color}
+          presetColors={presetColors}
+          onChangeComplete={handleChange}
+          {...props}
+        />
+        <footer className="footer">
+          <Button
+            type="button"
+            className="button-clear"
+            onClick={clearColor}
+            disabled={!color}
+          >
+            {superProps.clearButtonText}
+          </Button>
+          <Button type="button" className="button-close" onClick={closePicker}>
+            {superProps.closeButtonText}
+          </Button>
+        </footer>
+      </div>
+    )
+  }
 
 export default (options) => {
   options = {

@@ -46,7 +46,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
       showArrow={false}
       getContainerNode={getContainerNode}
       title={language.controls.emoji}
-      className="control-item dropdown bf-emoji-dropdown"
+      className="bf-emoji-dropdown"
     >
       <div className="bf-emojis-wrap">
         <ul className="bf-emojis">

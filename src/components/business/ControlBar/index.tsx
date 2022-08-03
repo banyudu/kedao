@@ -28,7 +28,8 @@ import LetterSpacingPicker, {
   LetterSpacingPickerProps
 } from '../LetterSpacing'
 import TextIndent from '../TextIndent'
-import DropDown from '../../../components/common/DropDown'
+import DropDown from '../../common/DropDown'
+import Button from '../../common/Button'
 import Modal from '../../../components/common/Modal'
 import { getExtensionControls } from '../../../helpers/extension'
 import {
@@ -188,7 +189,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     const [extendModal, setExtendModal] = useState<ModalProps | null>(null)
 
     const getControlTypeClassName = (data) => {
-      let className = 'control-item button'
+      let className = ''
       const { type, command } = data
 
       if (
@@ -459,25 +460,23 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
               return null
             }
             return (
-              <button
+              <Button
                 type="button"
                 key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
-                className="control-item media button"
+                className="media"
                 onClick={openFinder}
               >
                 {controlItem.text}
-              </button>
+              </Button>
             )
           }
           if (isDropDownControl(controlItem)) {
             return (
               <DropDown
                 key={key}
-                className={`control-item extend-control-item dropdown ${
-                  controlItem.className || ''
-                }`}
+                className={`extend-control-item ${controlItem.className || ''}`}
                 caption={controlItem.text}
                 htmlCaption={controlItem.html}
                 showArrow={controlItem.showArrow}
@@ -494,14 +493,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           }
           if (isModalControl(controlItem)) {
             return (
-              <button
+              <Button
                 type="button"
                 key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
-                className={`control-item extend-control-item button ${
-                  controlItem.className || ''
-                }`}
+                className={`extend-control-item ${controlItem.className || ''}`}
                 dangerouslySetInnerHTML={
                   controlItem.html ? { __html: controlItem.html } : null
                 }
@@ -514,7 +511,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 }}
               >
                 {!controlItem.html ? controlItem.text : null}
-              </button>
+              </Button>
             )
           }
           if (controlItem.type === 'component') {
@@ -529,12 +526,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           }
           if (isButtonControl(controlItem)) {
             return (
-              <button
+              <Button
                 type="button"
                 key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
-                className={`control-item button ${controlItem.className || ''}`}
+                className={controlItem.className || ''}
                 dangerouslySetInnerHTML={
                   controlItem.html ? { __html: controlItem.html } : null
                 }
@@ -543,7 +540,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 }
               >
                 {!controlItem.html ? controlItem.text : null}
-              </button>
+              </Button>
             )
           }
           if (controlItem) {
@@ -556,7 +553,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             }
 
             return (
-              <button
+              <Button
                 type="button"
                 key={key}
                 disabled={disabled}
@@ -574,7 +571,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 }
               >
                 {controlItem.text}
-              </button>
+              </Button>
             )
           }
           return null

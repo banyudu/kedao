@@ -9,7 +9,7 @@ import {
   handlePastedText
 } from './handlers'
 import { getLanguage, tableRenderMap } from './render'
-import DropdownControl from './dropdown'
+import Dropdown from './dropdown'
 import * as _TableUtils from './utils'
 import { tableImportFn, tableExportFn } from './converts'
 import { MdGridOn } from 'react-icons/md'
@@ -62,7 +62,7 @@ export default (options) => {
             autoHide: true,
             ref: dropdownRef,
             component: (
-              <DropdownControl
+              <Dropdown
                 language={language}
                 defaultRows={defaultRows}
                 defaultColumns={defaultColumns}

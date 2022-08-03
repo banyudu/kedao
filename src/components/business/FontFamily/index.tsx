@@ -68,7 +68,7 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
       arrowActive={currentIndex === 0}
       // eslint-disable-next-line no-return-assign
       ref={(instance) => (dropDownInstance = instance)}
-      className="control-item dropdown font-family-dropdown"
+      className="font-family-dropdown"
     >
       <ul className="menu">
         {fontFamilies.map((item, index) => {

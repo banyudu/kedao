@@ -9,6 +9,7 @@ import {
 } from '../../../utils'
 import ControlGroup from '..//ControlGroup'
 import '../ControlBar/style.scss'
+import Button from '../../common/Button'
 
 const TextIndent: FC<CommonPickerProps> = ({
   editorState,
@@ -34,28 +35,28 @@ const TextIndent: FC<CommonPickerProps> = ({
 
   return (
     <ControlGroup>
-      <button
+      <Button
         key={0}
         type="button"
         data-title={language.controls.increaseIndent}
         disabled={currentIndent >= 6}
-        className={`control-item button button-indent-increase${
+        className={`button-indent-increase${
           currentIndent > 0 && currentIndent < 6 ? ' active' : ''
         }`}
         onClick={increaseIndent}
       >
         <MdFormatIndentIncrease {...defaultIconProps} />
-      </button>
-      <button
+      </Button>
+      <Button
         key={1}
         type="button"
         data-title={language.controls.decreaseIndent}
         disabled={currentIndent <= 0}
-        className="control-item button button-indent-decrease"
+        className="button-indent-decrease"
         onClick={decreaseIndent}
       >
         <MdFormatIndentDecrease {...defaultIconProps} />
-      </button>
+      </Button>
     </ControlGroup>
   )
 }

@@ -12,6 +12,7 @@ import './style.scss'
 import { MdArrowDropDown } from 'react-icons/md'
 import { defaultIconProps } from '../../../configs/props'
 import { useClickOutside, usePrevious, useSyncedRef } from '@react-hookz/web'
+
 export interface DropDownProps {
   disabled?: boolean
   autoHide: boolean

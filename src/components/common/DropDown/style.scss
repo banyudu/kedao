@@ -3,8 +3,12 @@
 .bf-dropdown {
   position: relative;
   width: auto;
+  display: block;
+  float: left;
   height: 36px;
-  margin: 0;
+  margin: 5px 0 5px 3px;
+  border-radius: 2px;
+  cursor: pointer;
 
   &.disabled {
     pointer-events: none;
@@ -125,6 +129,7 @@
     border: none;
     color: $COLOR_GRAY;
     cursor: pointer;
+    border-radius: 2px;
 
     &:hover {
       background-color: rgba(#000, 0.05);
@@ -139,6 +144,7 @@
 
     > span {
       float: left;
+      display: flex;
       padding: 0 10px;
       font-size: 14px;
       line-height: 36px;
@@ -164,5 +170,13 @@
       opacity: 1;
       transform: translate(-50%, 0);
     }
+  }
+
+  &.component-wrapper {
+    cursor: default;
+  }
+
+  &:first-child {
+    margin-left: 0;
   }
 }

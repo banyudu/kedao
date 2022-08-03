@@ -15,6 +15,7 @@ import {
 import { defaultIconProps } from '../../../configs/props'
 import { CommonPickerProps } from '../../../types'
 import '../ControlBar/style.scss'
+import Button from '../../common/Button'
 
 const iconMap = {
   left: <MdFormatAlignLeft {...defaultIconProps} />,
@@ -63,19 +64,16 @@ const TextAlign: FC<TextAlignProps> = ({
   return (
     <ControlGroup>
       {textAligns.map((item, index) => (
-        <button
+        <Button
           type="button"
           key={uuidv4()}
           data-title={textAlignmentTitles[index]}
           data-alignment={item}
-          className={mergeClassNames(
-            'control-item button',
-            item === currentAlignment && 'active'
-          )}
+          className={mergeClassNames(item === currentAlignment && 'active')}
           onClick={setAlignment}
         >
           {iconMap[item] ?? null}
-        </button>
+        </Button>
       ))}
     </ControlGroup>
   )

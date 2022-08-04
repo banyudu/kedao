@@ -1,21 +1,6 @@
 @use "sass:color";
 @import "../assets/scss/inc.scss";
 
-.kedao-content {
-  height: 500px;
-  padding-bottom: 10px;
-  overflow: auto;
-  font-size: 16px;
-
-  img {
-    user-select: none;
-  }
-
-  * {
-    line-height: initial;
-  }
-}
-
 .kedao-container {
   position: relative;
   height: 100%;
@@ -73,14 +58,6 @@
     }
   }
 
-  .pull-left {
-    float: left;
-  }
-
-  .pull-right {
-    float: right;
-  }
-
   button {
     line-height: initial;
 
@@ -121,165 +98,6 @@
         background-color: color.adjust($COLOR_ACTIVE, $lightness: 20%);
       }
     }
-  }
-
-  .public-DraftEditorPlaceholder-root {
-    top: 15px;
-    left: 15px;
-    font-size: 16px;
-    pointer-events: none;
-  }
-
-  .DraftEditor-editorContainer {
-    box-sizing: border-box;
-    border: none;
-  }
-
-  .DraftEditor-root,
-  .public-DraftEditor-content {
-    height: 100%;
-  }
-
-  .public-DraftEditor-content {
-    box-sizing: border-box;
-    padding: 15px;
-    word-wrap: break-word;
-    word-break: break-all;
-
-    > div {
-      padding-bottom: 20px;
-    }
-
-    .kedao-link {
-      color: #4078c0;
-    }
-
-    blockquote {
-      margin: 0 0 10px;
-      padding: 15px 20px;
-      background-color: #f1f2f3;
-      border-left: solid 5px #ccc;
-      color: #666;
-      font-style: italic;
-    }
-
-    pre {
-      max-width: 100%;
-      max-height: 100%;
-      margin: 10px 0;
-      padding: 15px;
-      overflow: auto;
-      background-color: #f1f2f3;
-      border-radius: 3px;
-      color: #666;
-      font-family: monospace;
-      font-size: 14px;
-      font-weight: normal;
-      line-height: 16px;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-
-      pre {
-        margin: 0;
-        padding: 0;
-      }
-    }
-  }
-
-  .bfa-left {
-    text-align: left;
-
-    .public-DraftStyleDefault-ltr {
-      text-align: left;
-    }
-  }
-
-  .bfa-right {
-    text-align: right;
-
-    .public-DraftStyleDefault-ltr {
-      text-align: right;
-    }
-  }
-
-  .bfa-center {
-    text-align: center;
-
-    .public-DraftStyleDefault-ltr {
-      text-align: center;
-    }
-  }
-
-  .bfa-justify {
-    text-align: justify;
-
-    .public-DraftStyleDefault-ltr {
-      text-align: justify;
-    }
-  }
-
-  .bfa-left,
-  .bfa-right,
-  .bfa-center,
-  .bfa-justify {
-    & > div {
-      display: inline-block;
-    }
-  }
-
-  .bff-left,
-  .bff-right {
-    &:hover {
-      z-index: 2;
-    }
-  }
-
-  .bff-left {
-    position: relative;
-    z-index: 1;
-    float: left;
-    margin: 0 10px 0 0;
-  }
-
-  .bff-right {
-    position: relative;
-    z-index: 1;
-    float: right;
-    margin: 0 0 0 10px;
-  }
-
-  .bftd-1 {
-    text-indent: 2em;
-    display: initial;
-  }
-
-  .bftd-2 {
-    text-indent: 4em;
-    display: initial;
-  }
-
-  .bftd-3 {
-    text-indent: 6em;
-    display: initial;
-  }
-
-  .bftd-4 {
-    text-indent: 8em;
-    display: initial;
-  }
-
-  .bftd-5 {
-    text-indent: 10em;
-    display: initial;
-  }
-
-  .bftd-6 {
-    text-indent: 12em;
-    display: initial;
-  }
-
-  .kedao-media {
-    position: relative;
   }
 
   .kedao-image {
@@ -352,6 +170,176 @@
 
       &.active {
         color: $COLOR_ACTIVE;
+      }
+    }
+  }
+
+  .kedao-content {
+    height: 500px;
+    padding-bottom: 10px;
+    overflow: auto;
+    font-size: 16px;
+
+    img {
+      user-select: none;
+    }
+
+    * {
+      line-height: initial;
+    }
+
+    .public-DraftEditorPlaceholder-root {
+      top: 15px;
+      left: 15px;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .DraftEditor-editorContainer {
+      box-sizing: border-box;
+      border: none;
+    }
+
+    .DraftEditor-root,
+    .public-DraftEditor-content {
+      height: 100%;
+    }
+
+    .public-DraftEditor-content {
+      box-sizing: border-box;
+      padding: 15px;
+      word-wrap: break-word;
+      word-break: break-all;
+
+      > div {
+        padding-bottom: 20px;
+      }
+
+      .kedao-link {
+        color: #4078c0;
+      }
+
+      blockquote {
+        margin: 0 0 10px;
+        padding: 15px 20px;
+        background-color: #f1f2f3;
+        border-left: solid 5px #ccc;
+        color: #666;
+        font-style: italic;
+      }
+
+      pre {
+        max-width: 100%;
+        max-height: 100%;
+        margin: 10px 0;
+        padding: 15px;
+        overflow: auto;
+        background-color: #f1f2f3;
+        border-radius: 3px;
+        color: #666;
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 16px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+
+        pre {
+          margin: 0;
+          padding: 0;
+        }
+      }
+
+      .bfa-left {
+        text-align: left;
+
+        .public-DraftStyleDefault-ltr {
+          text-align: left;
+        }
+      }
+
+      .bfa-right {
+        text-align: right;
+
+        .public-DraftStyleDefault-ltr {
+          text-align: right;
+        }
+      }
+
+      .bfa-center {
+        text-align: center;
+
+        .public-DraftStyleDefault-ltr {
+          text-align: center;
+        }
+      }
+
+      .bfa-justify {
+        text-align: justify;
+
+        .public-DraftStyleDefault-ltr {
+          text-align: justify;
+        }
+      }
+
+      .bfa-left,
+      .bfa-right,
+      .bfa-center,
+      .bfa-justify {
+        & > div {
+          display: inline-block;
+        }
+      }
+
+      .bff-left,
+      .bff-right {
+        &:hover {
+          z-index: 2;
+        }
+      }
+
+      .bff-left {
+        position: relative;
+        z-index: 1;
+        float: left;
+        margin: 0 10px 0 0;
+      }
+
+      .bff-right {
+        position: relative;
+        z-index: 1;
+        float: right;
+        margin: 0 0 0 10px;
+      }
+
+      .bftd-1 {
+        text-indent: 2em;
+        display: initial;
+      }
+
+      .bftd-2 {
+        text-indent: 4em;
+        display: initial;
+      }
+
+      .bftd-3 {
+        text-indent: 6em;
+        display: initial;
+      }
+
+      .bftd-4 {
+        text-indent: 8em;
+        display: initial;
+      }
+
+      .bftd-5 {
+        text-indent: 10em;
+        display: initial;
+      }
+
+      .bftd-6 {
+        text-indent: 12em;
+        display: initial;
       }
     }
   }

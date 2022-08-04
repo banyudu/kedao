@@ -1,17 +1,6 @@
 @use "sass:color";
 @import "../assets/scss/inc.scss";
 
-.pull-left {
-  float: left;
-  align-items: center;
-  display: flex;
-  height: 100%;
-}
-
-.pull-right {
-  float: right;
-}
-
 .kedao-finder {
   .kedao-uploader {
     position: relative;
@@ -623,5 +612,16 @@
   .kedao-bottom-text {
     display: flex;
     align-items: center;
+  }
+
+  .pull-left {
+    float: left;
+    align-items: center;
+    display: flex;
+    height: 100%;
+  }
+
+  .pull-right {
+    float: right;
   }
 }

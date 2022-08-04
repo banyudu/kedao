@@ -1,6 +1,10 @@
 @use "sass:color";
 @import "../../../assets/scss/inc.scss";
 
+.kedao-media {
+  position: relative;
+}
+
 .kedao-image-size-editor,
 .kedao-image-link-editor {
   padding-bottom: 1px;

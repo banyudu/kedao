@@ -343,7 +343,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
 
     return (
       <div
-        className={`bf-controlbar ${className || ''}`}
+        className={`kedao-controlbar ${className || ''}`}
         style={style}
         onMouseDown={preventDefault}
         role="button"

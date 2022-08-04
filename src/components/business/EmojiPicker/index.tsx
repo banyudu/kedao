@@ -46,10 +46,10 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
       showArrow={false}
       getContainerNode={getContainerNode}
       title={language.controls.emoji}
-      className="bf-emoji-dropdown"
+      className="kedao-emoji-dropdown"
     >
-      <div className="bf-emojis-wrap">
-        <ul className="bf-emojis">
+      <div className="kedao-emojis-wrap">
+        <ul className="kedao-emojis">
           {emojis.map((item) => {
             return (
               <li

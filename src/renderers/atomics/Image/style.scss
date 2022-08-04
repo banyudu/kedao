@@ -1,8 +1,8 @@
 @use "sass:color";
 @import "../../../assets/scss/inc.scss";
 
-.bf-image-size-editor,
-.bf-image-link-editor {
+.kedao-image-size-editor,
+.kedao-image-link-editor {
   padding-bottom: 1px;
   overflow: hidden;
   border-radius: 2px 2px 0 0;
@@ -57,13 +57,13 @@
   }
 }
 
-.bf-image-size-editor {
+.kedao-image-size-editor {
   input {
     width: 80px;
   }
 }
 
-.bf-image-link-editor {
+.kedao-image-link-editor {
   input {
     width: 185px;
   }
@@ -72,7 +72,7 @@
     height: 16px;
     margin: 10px;
 
-    .bf-switch {
+    .kedao-switch {
       float: left;
     }
 
@@ -86,10 +86,10 @@
   }
 }
 
-.bf-content .bf-image {
+.kedao-content .kedao-image {
   position: relative;
 
-  .bf-csize-icon {
+  .kedao-csize-icon {
     position: absolute;
     z-index: 2;
     width: 10px;
@@ -109,7 +109,7 @@
     }
   }
 
-  .bf-pre-csize {
+  .kedao-pre-csize {
     position: absolute;
     z-index: 1;
     background: transparent;
@@ -127,7 +127,7 @@
     }
   }
 
-  .bf-media-toolbar {
+  .kedao-media-toolbar {
     &::before {
       visibility: hidden;
     }

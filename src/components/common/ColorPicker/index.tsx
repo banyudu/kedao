@@ -8,9 +8,13 @@ export interface ColorPickerProps {
   onChange: (color: string, closePicker: boolean) => void
 }
 
-const ColorPicker: FC<ColorPickerProps> = ({ presetColors, color, onChange }) => (
-  <div className="bf-colors-wrap">
-    <ul className="bf-colors">
+const ColorPicker: FC<ColorPickerProps> = ({
+  presetColors,
+  color,
+  onChange
+}) => (
+  <div className="kedao-colors-wrap">
+    <ul className="kedao-colors">
       {presetColors.map((item) => {
         const className =
           color && item.toLowerCase() === color.toLowerCase()

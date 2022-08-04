@@ -1,6 +1,6 @@
 @import "../../../assets/scss/inc.scss";
 
-.bf-content .bf-hr {
+.kedao-content .kedao-hr {
   position: relative;
   box-sizing: content-box;
   height: 15px;
@@ -19,12 +19,12 @@
       background-color: rgba(#000, 0.3);
     }
 
-    .bf-media-toolbar {
+    .kedao-media-toolbar {
       display: block;
     }
   }
 
-  .bf-media-toolbar {
+  .kedao-media-toolbar {
     display: none;
   }
 }

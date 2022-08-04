@@ -111,7 +111,7 @@ const Image: FC<ImageProps> = ({
   const calcToolbarOffset = () => {
     const container = getContainerNode ? getContainerNode() : containerNode
     const viewRect = container
-      ?.querySelector('.bf-content')
+      ?.querySelector('.kedao-content')
       ?.getBoundingClientRect()
     const toolbarRect = toolbarElement.current?.getBoundingClientRect()
     const imageRect = imageElement.current?.getBoundingClientRect()
@@ -455,7 +455,7 @@ const Image: FC<ImageProps> = ({
   })
 
   return (
-    <div className="bf-media">
+    <div className="kedao-media">
       <div
         style={imageStyles}
         draggable
@@ -464,7 +464,7 @@ const Image: FC<ImageProps> = ({
         onMouseLeave={hideToolbar}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        className="bf-image"
+        className="kedao-image"
       >
         {toolbarVisible
           ? (
@@ -473,11 +473,11 @@ const Image: FC<ImageProps> = ({
             ref={toolbarElement}
             data-float={float}
             data-align={alignment}
-            className="bf-media-toolbar"
+            className="kedao-media-toolbar"
           >
             {linkEditorVisible
               ? (
-              <div className="bf-image-link-editor">
+              <div className="kedao-image-link-editor">
                 <div className="editor-input-group">
                   <input
                     type="text"
@@ -502,7 +502,7 @@ const Image: FC<ImageProps> = ({
               : null}
             {sizeEditorVisible
               ? (
-              <div className="bf-image-size-editor">
+              <div className="kedao-image-size-editor">
                 <div className="editor-input-group">
                   <input
                     type="text"
@@ -528,7 +528,7 @@ const Image: FC<ImageProps> = ({
             {renderedControlItems}
             <i
               style={{ marginLeft: toolbarOffset * -1 }}
-              className="bf-media-toolbar-arrow"
+              className="kedao-media-toolbar-arrow"
             />
           </div>
             )
@@ -553,7 +553,7 @@ const Image: FC<ImageProps> = ({
             ? (
             <div
               role="presentation"
-              className="bf-csize-icon right-bottom"
+              className="kedao-csize-icon right-bottom"
               onMouseDown={repareChangeSize('rightbottom')}
             />
               )
@@ -562,13 +562,13 @@ const Image: FC<ImageProps> = ({
             ? (
             <div
               role="presentation"
-              className="bf-csize-icon left-bottom"
+              className="kedao-csize-icon left-bottom"
               onMouseDown={repareChangeSize('leftbottom')}
             />
               )
             : null}
           <div
-            className={`bf-pre-csize ${reSizeType.current}`}
+            className={`kedao-pre-csize ${reSizeType.current}`}
             style={{ width: `${tempWidth}px`, height: `${tempHeight}px` }}
           />
         </div>

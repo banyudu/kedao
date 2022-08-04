@@ -25,7 +25,7 @@ const Audio: FC<AudioProps> = ({
   }
 
   return (
-    <div className="bf-audio-wrap">
+    <div className="kedao-audio-wrap">
       <PlayerModal
         type="audio"
         onRemove={removeAudio}
@@ -35,7 +35,7 @@ const Audio: FC<AudioProps> = ({
         name={name}
         title={language.audioPlayer.title}
       >
-        <div className="bf-audio-player">
+        <div className="kedao-audio-player">
           <audio controls src={url} />
         </div>
       </PlayerModal>

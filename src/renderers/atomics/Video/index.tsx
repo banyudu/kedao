@@ -27,7 +27,7 @@ const Video: FC<VideoProps> = ({
   }
 
   return (
-    <div className="bf-video-wrap">
+    <div className="kedao-video-wrap">
       <PlayerModal
         type="video"
         onRemove={removeVideo}
@@ -37,7 +37,7 @@ const Video: FC<VideoProps> = ({
         name={name}
         title={language.videoPlayer.title}
       >
-        <div className="bf-video-player">
+        <div className="kedao-video-player">
           <video controls poster={poster}>
             <source src={url} />
           </video>

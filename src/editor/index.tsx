@@ -1011,7 +1011,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         style={style}
         ref={containerRef}
         className={mergeClassNames(
-          'bf-container',
+          'kedao-container',
           className,
           disabled && 'disabled',
           readOnly && 'read-only',
@@ -1052,7 +1052,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         {componentBelowControlBar}
         <div
           onCompositionStart={handleCompositionStart}
-          className={`bf-content ${contentClassName}`}
+          className={`kedao-content ${contentClassName}`}
           onCopy={handleCopyContent}
           style={contentStyle}
         >

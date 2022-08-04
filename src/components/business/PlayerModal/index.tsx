@@ -39,7 +39,7 @@ const PlayerModal: FC<PlayerModalProps> = ({
 }) => {
   const [modalVisible, setModalVisible] = useState(false)
   return (
-    <div className={`bf-player-holder ${type}`}>
+    <div className={`kedao-player-holder ${type}`}>
       <div className="icon-badge">
         {iconMap[type] ?? null}
         <span className="text">{language.media[type]}</span>
@@ -50,12 +50,12 @@ const PlayerModal: FC<PlayerModalProps> = ({
       <button onMouseDown={() => setModalVisible(true)} className="button-play">
         <MdPlayArrow {...defaultIconProps} />
       </button>
-      {name ? <h5 className="bf-name">{name}</h5> : null}
-      <h6 className="bf-url">{url}</h6>
+      {name ? <h5 className="kedao-name">{name}</h5> : null}
+      <h6 className="kedao-url">{url}</h6>
       {poster
         ? (
         <div
-          className="bf-poster"
+          className="kedao-poster"
           style={{ backgroundImage: `url(${poster})` }}
         />
           )

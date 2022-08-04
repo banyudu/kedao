@@ -141,7 +141,7 @@ const DropDown = forwardRef<any, DropDownProps>(
     return (
       <div
         className={mergeClassNames(
-          'bf-dropdown',
+          'kedao-dropdown',
           !disabled && active && 'active',
           disabled && 'disabled',
           className

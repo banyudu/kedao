@@ -1,7 +1,7 @@
 @use "sass:color";
 @import "../../../assets/scss/inc.scss";
 
-.bf-modal {
+.kedao-modal {
   position: fixed;
   z-index: 99999;
   top: 0;
@@ -14,7 +14,7 @@
   }
 }
 
-.bf-modal-mask {
+.kedao-modal-mask {
   position: absolute;
   z-index: 1;
   top: 0;
@@ -27,7 +27,7 @@
   transition: opacity 0.2s;
 }
 
-.bf-modal-content {
+.kedao-modal-content {
   position: absolute;
   z-index: 2;
   top: 45%;
@@ -42,11 +42,11 @@
   transition: transform 0.2s, opacity 0.2s;
 }
 
-.bf-modal-header {
+.kedao-modal-header {
   height: 50px;
 }
 
-.bf-modal-caption {
+.kedao-modal-caption {
   float: left;
   margin: 0;
   padding: 0 15px;
@@ -56,7 +56,7 @@
   line-height: 50px;
 }
 
-.bf-modal-close-button {
+.kedao-modal-close-button {
   float: right;
   width: 50px;
   height: 50px;
@@ -71,29 +71,29 @@
   }
 }
 
-.bf-modal-body {
+.kedao-modal-body {
   overflow: auto;
 }
 
-.bf-modal-footer {
+.kedao-modal-footer {
   min-height: 15px;
   padding: 0 15px;
   overflow: hidden;
 }
 
-.bf-modal-addon-text {
+.kedao-modal-addon-text {
   float: left;
   color: #999;
   font-size: 12px;
   line-height: 60px;
 }
 
-.bf-modal-buttons {
+.kedao-modal-buttons {
   float: right;
 }
 
-.bf-modal-cancel,
-.bf-modal-confirm {
+.kedao-modal-cancel,
+.kedao-modal-confirm {
   height: 36px;
   margin: 12px 0 12px 15px;
   padding: 0 30px;
@@ -104,7 +104,7 @@
   cursor: pointer;
 }
 
-.bf-modal-cancel {
+.kedao-modal-cancel {
   background-color: #e8e9ea;
   color: #999;
 
@@ -113,7 +113,7 @@
   }
 }
 
-.bf-modal-confirm {
+.kedao-modal-confirm {
   background-color: $COLOR_ACTIVE;
   color: #fff;
 
@@ -128,12 +128,12 @@
   }
 }
 
-.bf-modal-root.active {
-  .bf-modal-mask {
+.kedao-modal-root.active {
+  .kedao-modal-mask {
     opacity: 1;
   }
 
-  .bf-modal-content {
+  .kedao-modal-content {
     opacity: 1;
     transform: translate(-50%, -50%);
   }

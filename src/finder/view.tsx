@@ -112,8 +112,8 @@ const FinderView = ({
 
   const buildItemList = () => {
     return (
-      <ul className="bf-list">
-        <li className="bf-add-item">
+      <ul className="kedao-list">
+        <li className="kedao-add-item">
           <MdAdd size={50} />
           <input
             accept={fileAccept}
@@ -127,9 +127,9 @@ const FinderView = ({
           const progressMarker =
             item.uploading && !hideProgress
               ? (
-              <div className="bf-item-uploading">
+              <div className="kedao-item-uploading">
                 <div
-                  className="bf-item-uploading-bar"
+                  className="kedao-item-uploading-bar"
                   style={{ width: item.uploadProgress / 1 + '%' }}
                 ></div>
               </div>
@@ -141,7 +141,7 @@ const FinderView = ({
           switch (item.type) {
             case 'IMAGE':
               previewerComponents = (
-                <div className="bf-image">
+                <div className="kedao-image">
                   {progressMarker}
                   <img src={item.thumbnail || item.url} />
                 </div>
@@ -149,7 +149,7 @@ const FinderView = ({
               break
             case 'VIDEO':
               previewerComponents = (
-                <div className="bf-icon bf-video" title={item.url}>
+                <div className="kedao-icon kedao-video" title={item.url}>
                   {progressMarker}
                   <MdMovie {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -158,7 +158,7 @@ const FinderView = ({
               break
             case 'AUDIO':
               previewerComponents = (
-                <div className="bf-icon bf-audio" title={item.url}>
+                <div className="kedao-icon kedao-audio" title={item.url}>
                   {progressMarker}
                   <MdAudiotrack {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -167,7 +167,7 @@ const FinderView = ({
               break
             case 'EMBED':
               previewerComponents = (
-                <div className="bf-icon bf-embed" title={item.url}>
+                <div className="kedao-icon kedao-embed" title={item.url}>
                   {progressMarker}
                   <MdCode {...defaultIconProps} />
                   <span>{item.name || language.embed}</span>
@@ -176,7 +176,11 @@ const FinderView = ({
               break
             default:
               previewerComponents = (
-                <a className="bf-icon bf-file" title={item.url} href={item.url}>
+                <a
+                  className="kedao-icon kedao-file"
+                  title={item.url}
+                  href={item.url}
+                >
                   {progressMarker}
                   <MdDescription {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -185,7 +189,7 @@ const FinderView = ({
               break
           }
 
-          const className = ['bf-item']
+          const className = ['kedao-item']
           item.selected && className.push('active')
           item.uploading && className.push('uploading')
           item.error && className.push('error')
@@ -208,9 +212,9 @@ const FinderView = ({
                 {...defaultIconProps}
                 data-id={item.id}
                 onClick={removeItem}
-                className="bf-item-remove braft-icon-close"
+                className="kedao-item-remove braft-icon-close"
               />
-              <span className="bf-item-title">{item.name}</span>
+              <span className="kedao-item-title">{item.name}</span>
             </li>
           )
         })}
@@ -421,16 +425,16 @@ const FinderView = ({
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDragDrop}
-        className="bf-uploader"
+        className="kedao-uploader"
       >
         <div
           className={
-            'bf-drag-uploader ' +
+            'kedao-drag-uploader ' +
             (draging || !items.length ? 'active ' : ' ') +
             (draging ? 'draging' : '')
           }
         >
-          <span className="bf-drag-tip">
+          <span className="kedao-drag-tip">
             <input
               accept={fileAccept}
               onChange={reslovePickedFiles}
@@ -442,15 +446,15 @@ const FinderView = ({
         </div>
         {items.length
           ? (
-          <div className="bf-list-wrap">
-            <div className="bf-list-tools">
-              <span onClick={selectAllItems} className="bf-select-all">
+          <div className="kedao-list-wrap">
+            <div className="kedao-list-tools">
+              <span onClick={selectAllItems} className="kedao-select-all">
                 <MdDone {...defaultIconProps} />
                 {language.selectAll}
               </span>
               <span
                 onClick={deselectAllItems}
-                className="bf-deselect-all"
+                className="kedao-deselect-all"
                 {...{ disabled: !confirmable }}
               >
                 <MdClose {...defaultIconProps} />
@@ -458,7 +462,7 @@ const FinderView = ({
               </span>
               <span
                 onClick={removeSelectedItems}
-                className="bf-remove-selected"
+                className="kedao-remove-selected"
                 {...{ disabled: !confirmable }}
               >
                 <MdRemove {...defaultIconProps} />
@@ -471,9 +475,9 @@ const FinderView = ({
           : null}
         {showExternalForm && allowExternal
           ? (
-          <div className="bf-add-external">
-            <div className="bf-external-form">
-              <div className="bf-external-input">
+          <div className="kedao-add-external">
+            <div className="kedao-external-form">
+              <div className="kedao-external-input">
                 <div>
                   <input
                     onKeyDown={confirmAddExternal}
@@ -492,7 +496,7 @@ const FinderView = ({
               </div>
               <div
                 data-type={external.type}
-                className="bf-switch-external-type"
+                className="kedao-switch-external-type"
               >
                 {externals.image
                   ? (
@@ -539,7 +543,7 @@ const FinderView = ({
                     )
                   : null}
               </div>
-              <span className="bf-external-tip">
+              <span className="kedao-external-tip">
                 {language.externalInputTip}
               </span>
             </div>
@@ -547,23 +551,23 @@ const FinderView = ({
             )
           : null}
       </div>
-      <footer className="bf-manager-footer">
+      <footer className="kedao-manager-footer">
         <div className="pull-left">
           {allowExternal
             ? (
             <span
               onClick={toggleExternalForm}
-              className="bf-toggle-external-form"
+              className="kedao-toggle-external-form"
             >
               {showExternalForm
                 ? (
-                <span className="bf-bottom-text">
+                <span className="kedao-bottom-text">
                   <MdAdd {...defaultIconProps} />
                   {language.addLocalFile}
                 </span>
                   )
                 : (
-                <span className="bf-bottom-text">
+                <span className="kedao-bottom-text">
                   <MdAdd {...defaultIconProps} /> {language.addExternalSource}
                 </span>
                   )}

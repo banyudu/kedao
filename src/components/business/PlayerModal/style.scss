@@ -1,6 +1,6 @@
 @import "../../../assets/scss/inc.scss";
 
-.bf-player-holder {
+.kedao-player-holder {
   position: relative;
   height: 240px;
   overflow: hidden;
@@ -75,7 +75,7 @@
     }
   }
 
-  .bf-name {
+  .kedao-name {
     position: relative;
     z-index: 2;
     margin: 0;
@@ -85,7 +85,7 @@
     text-align: center;
   }
 
-  .bf-url {
+  .kedao-url {
     position: relative;
     z-index: 2;
     width: 70%;
@@ -96,7 +96,7 @@
     text-align: center;
   }
 
-  .bf-poster {
+  .kedao-poster {
     position: absolute;
     top: 0;
     left: 0;

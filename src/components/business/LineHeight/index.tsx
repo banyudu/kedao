@@ -65,9 +65,9 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
       getContainerNode={getContainerNode}
       title={language.controls.lineHeight}
       ref={dropDownInstance}
-      className="bf-line-height-dropdown"
+      className="kedao-line-height-dropdown"
     >
-      <ul className="bf-line-heights">
+      <ul className="kedao-line-heights">
         {lineHeights.map((item) => {
           return (
             <li

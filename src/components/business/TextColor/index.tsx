@@ -117,9 +117,9 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
       ref={dropDownInstance}
       className="text-color-dropdown"
     >
-      <div className="bf-text-color-picker-wrap">
+      <div className="kedao-text-color-picker-wrap">
         <div
-          className="bf-color-switch-buttons"
+          className="kedao-color-switch-buttons"
           style={enableBackgroundColor ? {} : { display: 'none' }}
         >
           <button

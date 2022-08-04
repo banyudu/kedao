@@ -43,7 +43,12 @@ interface TableProps {
   columnResizable: boolean
 }
 
-export const Table: FC<TableProps> = ({ editor, editorState, children = [], columnResizable }) => {
+export const Table: FC<TableProps> = ({
+  editor,
+  editorState,
+  children = [],
+  columnResizable
+}) => {
   const [tableRows, setTableRows] = useState([])
   const [colToolHandlers, setColToolHandlers] = useState([])
   const [rowToolHandlers, setRowToolHandlers] = useState([])
@@ -102,11 +107,11 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     selectedCells
   ])
 
-  const handleToolbarMouseDown = event => {
+  const handleToolbarMouseDown = (event) => {
     event.preventDefault()
   }
 
-  const handleKeyDown = event => {
+  const handleKeyDown = (event) => {
     if (event.keyCode === 8) {
       if (selectedColumnIndex > -1) {
         removeColumn()
@@ -118,7 +123,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }
   }
 
-  const handleMouseUp = event => {
+  const handleMouseUp = (event) => {
     if (event.button !== 0) {
       return
     }
@@ -143,7 +148,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
 
       renderCells()
       updateCellsData({
-        colgroupData: nextColToolHandlers.map(item => ({
+        colgroupData: nextColToolHandlers.map((item) => ({
           width: item.width
         }))
       })
@@ -152,7 +157,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }
   }
 
-  const handleMouseMove = event => {
+  const handleMouseMove = (event) => {
     if (colResizing) {
       setColResizeOffset(
         getResizeOffset(event.clientX - colResizeStartAtRef.current)
@@ -160,13 +165,13 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }
   }
 
-  const handleColResizerMouseDown = event => {
+  const handleColResizerMouseDown = (event) => {
     colResizeIndexRef.current = event.currentTarget.dataset.index * 1
     colResizeStartAtRef.current = event.clientX
     setColResizing(true)
   }
 
-  const handleCellContexrMenu = event => {
+  const handleCellContexrMenu = (event) => {
     const { cellKey } = event.currentTarget.dataset
 
     if (!~selectedCells.indexOf(cellKey)) {
@@ -190,11 +195,11 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     event.preventDefault()
   }
 
-  const handleContextMenuContextMenu = event => {
+  const handleContextMenuContextMenu = (event) => {
     event.preventDefault()
   }
 
-  const handleCellMouseDown = event => {
+  const handleCellMouseDown = (event) => {
     if (colResizing) {
       event.preventDefault()
       event.stopPropagation()
@@ -203,7 +208,8 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     dragSelectingRef.current = true
     dragSelectingStartColumnIndexRef.current =
       event.currentTarget.dataset.colIndex
-    dragSelectingStartRowIndexRef.current = event.currentTarget.dataset.rowIndex
+    dragSelectingStartRowIndexRef.current =
+      event.currentTarget.dataset.rowIndex
 
     draggingStartPointRef.current = {
       x: event.clientX,
@@ -225,11 +231,12 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     setDraggingRectBounding(null)
   }
 
-  const handleCellMouseEnter = event => {
+  const handleCellMouseEnter = (event) => {
     if (dragSelectingRef.current) {
       dragSelectingEndColumnIndexRef.current =
         event.currentTarget.dataset.colIndex
-      dragSelectingEndRowIndexRef.current = event.currentTarget.dataset.rowIndex
+      dragSelectingEndRowIndexRef.current =
+        event.currentTarget.dataset.rowIndex
 
       if (
         dragSelectingEndColumnIndexRef.current !==
@@ -247,14 +254,14 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }
   }
 
-  const handleTableMouseMove = event => {
+  const handleTableMouseMove = (event) => {
     if (dragSelectingRef.current && dragSelectedRef.current) {
       updateDraggingRectBounding(event)
       event.preventDefault()
     }
   }
 
-  const handleTableMouseLeave = event => {
+  const handleTableMouseLeave = (event) => {
     if (
       dragSelectingRef.current &&
       event.currentTarget &&
@@ -276,21 +283,19 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       return
     }
 
-    const {
-      cellKeys: selectedCells,
-      spannedCellBlockKeys
-    } = TableUtils.getCellsInsideRect(
-      editorState,
-      tableKeyRef.current,
-      [
-        dragSelectingStartColumnIndexRef.current,
-        dragSelectingStartRowIndexRef.current
-      ],
-      [
-        dragSelectingEndColumnIndexRef.current,
-        dragSelectingEndRowIndexRef.current
-      ]
-    ) as any
+    const { cellKeys: selectedCells, spannedCellBlockKeys } =
+      TableUtils.getCellsInsideRect(
+        editorState,
+        tableKeyRef.current,
+        [
+          dragSelectingStartColumnIndexRef.current,
+          dragSelectingStartRowIndexRef.current
+        ],
+        [
+          dragSelectingEndColumnIndexRef.current,
+          dragSelectingEndRowIndexRef.current
+        ]
+      ) as any
 
     if (selectedCells.length < 2) {
       return
@@ -303,7 +308,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     setSelectedCells(selectedCells)
   }
 
-  const updateDraggingRectBounding = mouseEvent => {
+  const updateDraggingRectBounding = (mouseEvent) => {
     if (draggingRectBoundingUpdatingRef.current || !dragSelectingRef.current) {
       return
     }
@@ -339,7 +344,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }, 100)
   }
 
-  const selectCell = event => {
+  const selectCell = (event) => {
     const { cellKey } = event.currentTarget.dataset
     const { colSpan, rowSpan } = event.currentTarget
 
@@ -354,7 +359,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     setSelectedColumnIndex(-1)
   }
 
-  const selectColumn = event => {
+  const selectColumn = (event) => {
     const newSelectedColumnIndex = getIndexFromEvent(event, 'insert-column')
 
     if (newSelectedColumnIndex === false) {
@@ -369,15 +374,13 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       return
     }
 
-    const {
-      cellKeys: selectedCells,
-      spannedCellBlockKeys
-    } = TableUtils.getCellsInsideRect(
-      editorState,
-      tableKeyRef.current,
-      [newSelectedColumnIndex, 0],
-      [newSelectedColumnIndex, rowToolHandlers.length - 1]
-    ) as any
+    const { cellKeys: selectedCells, spannedCellBlockKeys } =
+      TableUtils.getCellsInsideRect(
+        editorState,
+        tableKeyRef.current,
+        [newSelectedColumnIndex, 0],
+        [newSelectedColumnIndex, rowToolHandlers.length - 1]
+      ) as any
 
     setSelectedColumnIndex(newSelectedColumnIndex)
     setSelectedRowIndex(-1)
@@ -386,7 +389,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     setSelectedCells(selectedCells)
   }
 
-  const selectRow = event => {
+  const selectRow = (event) => {
     const newSelectedRowIndex = getIndexFromEvent(event, 'insert-row')
 
     if (newSelectedRowIndex === false) {
@@ -401,15 +404,13 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       return
     }
 
-    const {
-      cellKeys: selectedCells,
-      spannedCellBlockKeys
-    } = TableUtils.getCellsInsideRect(
-      editorState,
-      tableKeyRef.current,
-      [0, newSelectedRowIndex],
-      [colToolHandlers.length, newSelectedRowIndex]
-    ) as any
+    const { cellKeys: selectedCells, spannedCellBlockKeys } =
+      TableUtils.getCellsInsideRect(
+        editorState,
+        tableKeyRef.current,
+        [0, newSelectedRowIndex],
+        [colToolHandlers.length, newSelectedRowIndex]
+      ) as any
 
     setSelectedColumnIndex(-1)
     setSelectedRowIndex(newSelectedRowIndex)
@@ -418,14 +419,14 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     setSelectedCells(selectedCells)
   }
 
-  const insertColumn = event => {
+  const insertColumn = (event) => {
     const columnIndex = getIndexFromEvent(event)
 
     if (columnIndex === false) {
       return
     }
 
-    const nextColToolHandlers = colToolHandlers.map(item => ({
+    const nextColToolHandlers = colToolHandlers.map((item) => ({
       ...item,
       width: 0
     }))
@@ -447,7 +448,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
   }
 
   const removeColumn = () => {
-    const nextColToolHandlers = colToolHandlers.map(item => ({
+    const nextColToolHandlers = colToolHandlers.map((item) => ({
       ...item,
       width: 0
     }))
@@ -468,7 +469,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }
   }
 
-  const insertRow = event => {
+  const insertRow = (event) => {
     const rowIndex = getIndexFromEvent(event)
 
     if (rowIndex === false) {
@@ -519,11 +520,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       setSelectedColumnIndex(-1)
 
       editor.setValue(
-        TableUtils.mergeCells(
-          editorState,
-          tableKeyRef.current,
-          selectedCells
-        )
+        TableUtils.mergeCells(editorState, tableKeyRef.current, selectedCells)
       )
     }
   }
@@ -557,7 +554,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }
   }, [])
 
-  const getResizeOffset = offset => {
+  const getResizeOffset = (offset) => {
     let leftLimit = 0
     let rightLimit = 0
 
@@ -567,7 +564,8 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
         defaultColWidth) -
         30)
     rightLimit =
-      (colToolHandlers[colResizeIndexRef.current].width || defaultColWidth) - 30
+      (colToolHandlers[colResizeIndexRef.current].width || defaultColWidth) -
+      30
 
     offset = offset < leftLimit ? leftLimit : offset
     offset = offset > rightLimit ? rightLimit : offset
@@ -580,9 +578,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     const newRowToolHandlers = [...rowToolHandlers]
 
     rowRefs.current?.forEach((ref, index) => {
-      const rowHeight = ref
-        ? ref.getBoundingClientRect().height
-        : 40
+      const rowHeight = ref ? ref.getBoundingClientRect().height : 40
       if (
         newRowToolHandlers[index] &&
         newRowToolHandlers[index].height !== rowHeight
@@ -597,7 +593,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     }
   }
 
-  const updateCellsData = blockData => {
+  const updateCellsData = (blockData) => {
     editor.setValue(
       TableUtils.updateAllTableBlocks(
         editorState,
@@ -619,7 +615,9 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
     endCellKeyRef.current = children[children.length - 1].key
 
     children.forEach((cell, cellIndex) => {
-      const cellBlock = editorState.getCurrentContent().getBlockForKey(cell.key)
+      const cellBlock = editorState
+        .getCurrentContent()
+        .getBlockForKey(cell.key)
       const cellBlockData = cellBlock.getData()
       const tableKey = cellBlockData.get('tableKey')
       const colIndex = cellBlockData.get('colIndex') * 1
@@ -660,7 +658,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
         'data-cell-index': cellIndex,
         'data-cell-key': cell.key,
         'data-table-key': tableKey,
-        className: `bf-table-cell ${cell.props.className}`,
+        className: `kedao-table-cell ${cell.props.className}`,
         colSpan: colSpan,
         rowSpan: rowSpan,
         onClick: selectCell,
@@ -695,7 +693,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       <colgroup>
         {colToolHandlers.map((item, index) => (
           <col
-            ref={ref => (colRefs.current[index] = ref)}
+            ref={(ref) => (colRefs.current[index] = ref)}
             width={item.width || defaultColWidth}
             key={index}
           ></col>
@@ -709,8 +707,8 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       <div
         data-active={selectedColumnIndex >= 0}
         contentEditable={false}
-        data-key='bf-col-toolbar'
-        className={`bf-table-col-tools${colResizing ? ' resizing' : ''}`}
+        data-key="kedao-col-toolbar"
+        className={`kedao-table-col-tools${colResizing ? ' resizing' : ''}`}
         onMouseDown={handleToolbarMouseDown}
       >
         {colToolHandlers.map((item, index) => (
@@ -719,7 +717,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
             data-key={item.key}
             data-index={index}
             data-active={selectedColumnIndex == index}
-            className='bf-col-tool-handler'
+            className="kedao-col-tool-handler"
             style={{ width: item.width || defaultColWidth }}
             onClick={selectColumn}
           >
@@ -728,7 +726,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
               <div
                 data-index={index}
                 data-key={item.key}
-                className={`bf-col-resizer${
+                className={`kedao-col-resizer${
                   colResizing && colResizeIndexRef.current === index
                     ? ' active'
                     : ''
@@ -742,31 +740,31 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
               ></div>
                 )
               : null}
-            <div className='bf-col-tool-left'>
+            <div className="kedao-col-tool-left">
               <div
                 data-index={index}
-                data-role='insert-column'
-                className='bf-insert-col-before'
+                data-role="insert-column"
+                className="kedao-insert-col-before"
                 onClick={insertColumn}
               >
                 <MdAdd {...defaultIconProps} />
               </div>
             </div>
-            <div className='bf-col-tool-center'>
+            <div className="kedao-col-tool-center">
               <div
                 data-index={index}
-                data-role='remove-col'
-                className='bf-remove-col'
+                data-role="remove-col"
+                className="kedao-remove-col"
                 onClick={removeColumn}
               >
                 <MdDelete {...defaultIconProps} />
               </div>
             </div>
-            <div className='bf-col-tool-right'>
+            <div className="kedao-col-tool-right">
               <div
                 data-index={index + 1}
-                data-role='insert-column'
-                className='bf-insert-col-after'
+                data-role="insert-column"
+                className="kedao-insert-col-after"
                 onClick={insertColumn}
               >
                 <MdAdd {...defaultIconProps} />
@@ -783,7 +781,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       <div
         data-active={selectedRowIndex >= 0}
         contentEditable={false}
-        className='bf-table-row-tools'
+        className="kedao-table-row-tools"
         onMouseDown={handleToolbarMouseDown}
       >
         {rowToolHandlers.map((item, index) => (
@@ -792,35 +790,35 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
             data-key={item.key}
             data-index={index}
             data-active={selectedRowIndex == index}
-            className='bf-row-tool-handler'
+            className="kedao-row-tool-handler"
             style={{ height: item.height }}
             onClick={selectRow}
           >
-            <div className='bf-row-tool-up'>
+            <div className="kedao-row-tool-up">
               <div
                 data-index={index}
-                data-role='insert-row'
-                className='bf-insert-row-before'
+                data-role="insert-row"
+                className="kedao-insert-row-before"
                 onClick={insertRow}
               >
                 <MdAdd {...defaultIconProps} />
               </div>
             </div>
-            <div className='bf-row-tool-center'>
+            <div className="kedao-row-tool-center">
               <div
                 data-index={index}
-                data-role='remove-row'
-                className='bf-remove-row'
+                data-role="remove-row"
+                className="kedao-remove-row"
                 onClick={removeRow}
               >
                 <MdDelete {...defaultIconProps} />
               </div>
             </div>
-            <div className='bf-row-tool-down'>
+            <div className="kedao-row-tool-down">
               <div
                 data-index={index + 1}
-                data-role='insert-row'
-                className='bf-insert-row-after'
+                data-role="insert-row"
+                className="kedao-insert-row-after"
                 onClick={insertRow}
               >
                 <MdAdd {...defaultIconProps} />
@@ -839,26 +837,26 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
 
     return (
       <div
-        className='bf-table-context-menu'
+        className="kedao-table-context-menu"
         onContextMenu={handleContextMenuContextMenu}
         contentEditable={false}
         style={contextMenuPosition}
       >
         <div
-          className='context-menu-item'
+          className="context-menu-item"
           onMouseDown={mergeCells}
           data-disabled={!cellsMergeable}
         >
           {languageRef.current.mergeCells}
         </div>
         <div
-          className='context-menu-item'
+          className="context-menu-item"
           onMouseDown={splitCell}
           data-disabled={!cellSplittable}
         >
           {languageRef.current.splitCell}
         </div>
-        <div className='context-menu-item' onMouseDown={removeTable}>
+        <div className="context-menu-item" onMouseDown={removeTable}>
           {languageRef.current.removeTable}
         </div>
       </div>
@@ -868,10 +866,10 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
   const readOnly = editor.readOnly
 
   return (
-    <div className='bf-table-container'>
+    <div className="kedao-table-container">
       <table
-        data-role='table'
-        className={`bf-table${dragSelecting ? ' dragging' : ''}`}
+        data-role="table"
+        className={`kedao-table${dragSelecting ? ' dragging' : ''}`}
         ref={tableRef}
         onMouseMove={handleTableMouseMove}
         onMouseLeave={handleTableMouseLeave}
@@ -879,7 +877,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
         {createColGroup()}
         <tbody>
           {tableRows.map((cells, rowIndex) => (
-            <tr ref={ref => (rowRefs.current[rowIndex] = ref)} key={rowIndex}>
+            <tr ref={(ref) => (rowRefs.current[rowIndex] = ref)} key={rowIndex}>
               {cells}
             </tr>
           ))}
@@ -887,7 +885,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
       </table>
       {dragSelecting
         ? (
-        <div className='dragging-rect' style={draggingRectBounding} />
+        <div className="dragging-rect" style={draggingRectBounding} />
           )
         : null}
       {!readOnly && createContextMenu()}
@@ -897,7 +895,7 @@ export const Table: FC<TableProps> = ({ editor, editorState, children = [], colu
   )
 }
 
-export const tableRenderMap = options => props => {
+export const tableRenderMap = (options) => (props) => {
   return Immutable.Map({
     'table-cell': {
       element: 'td',

@@ -13,7 +13,7 @@ const Switch: FC<SwitchProps> = ({ active, onClick, className }) => {
     <div
       role="presentation"
       onClick={onClick}
-      className={mergeClassNames('bf-switch', className, active && 'active')}
+      className={mergeClassNames('kedao-switch', className, active && 'active')}
     />
   )
 }

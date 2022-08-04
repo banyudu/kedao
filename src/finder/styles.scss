@@ -13,14 +13,14 @@
 }
 
 .kedao-finder {
-  .bf-uploader {
+  .kedao-uploader {
     position: relative;
     height: 370px;
     margin: 0;
 
     &.draging {
-      .bf-list-wrap,
-      .bf-add-external {
+      .kedao-list-wrap,
+      .kedao-add-external {
         pointer-events: none;
       }
     }
@@ -34,12 +34,12 @@
     }
   }
 
-  .bf-list-wrap {
+  .kedao-list-wrap {
     position: relative;
     height: 370px;
   }
 
-  .bf-list-tools {
+  .kedao-list-tools {
     z-index: 1;
     position: absolute;
     top: 0;
@@ -64,8 +64,8 @@
       }
     }
 
-    .bf-select-all,
-    .bf-deselect-all {
+    .kedao-select-all,
+    .kedao-deselect-all {
       float: left;
       margin-right: 5px;
       color: #bbb;
@@ -75,7 +75,7 @@
       }
     }
 
-    .bf-remove-selected {
+    .kedao-remove-selected {
       float: right;
       color: $COLOR_DANGER;
 
@@ -85,7 +85,7 @@
     }
   }
 
-  .bf-list {
+  .kedao-list {
     position: absolute;
     z-index: 1;
     top: 30px;
@@ -112,8 +112,8 @@
     }
   }
 
-  .bf-item,
-  .bf-add-item {
+  .kedao-item,
+  .kedao-add-item {
     position: relative;
     display: block;
     float: left;
@@ -124,7 +124,7 @@
     border-radius: 3px;
   }
 
-  .bf-add-item {
+  .kedao-add-item {
     background-color: #ecedef;
     color: #999;
     display: flex;
@@ -155,7 +155,7 @@
     }
   }
 
-  .bf-item {
+  .kedao-item {
     &.uploading {
       pointer-events: none;
     }
@@ -183,7 +183,7 @@
         }
       }
 
-      .bf-item-uploading {
+      .kedao-item-uploading {
         display: none;
       }
     }
@@ -218,7 +218,7 @@
         background-color: rgba($COLOR_ACTIVE, 0.3);
       }
 
-      .bf-item-remove {
+      .kedao-item-remove {
         display: block;
       }
     }
@@ -238,7 +238,7 @@
           background-color: rgba($COLOR_ACTIVE, 0.8);
         }
 
-        .bf-item-remove {
+        .kedao-item-remove {
           display: none;
         }
       }
@@ -256,7 +256,7 @@
     }
   }
 
-  .bf-item-uploading {
+  .kedao-item-uploading {
     box-sizing: border-box;
     position: absolute;
     z-index: 3;
@@ -270,13 +270,13 @@
     box-shadow: 0 0 0 100px rgba(#000, 0.5);
   }
 
-  .bf-item-uploading-bar {
+  .kedao-item-uploading-bar {
     height: 10px;
     background-color: $COLOR_ACTIVE;
     border-radius: 0;
   }
 
-  .bf-item-remove {
+  .kedao-item-remove {
     display: none;
     position: absolute;
     z-index: 2;
@@ -295,7 +295,7 @@
     }
   }
 
-  .bf-item-title {
+  .kedao-item-title {
     display: none;
     box-sizing: border-box;
     position: absolute;
@@ -315,7 +315,7 @@
     white-space: nowrap;
   }
 
-  .bf-image {
+  .kedao-image {
     width: 100%;
     height: 100%;
     background-color: #eee;
@@ -329,19 +329,19 @@
     }
   }
 
-  .bf-video {
+  .kedao-video {
     background-color: #8e44ad;
   }
 
-  .bf-audio {
+  .kedao-audio {
     background-color: #f39c12;
   }
 
-  .bf-embed {
+  .kedao-embed {
     background-color: #f1c40f;
   }
 
-  .bf-icon {
+  .kedao-icon {
     display: block;
     width: 113px;
     height: 113px;
@@ -370,7 +370,7 @@
     }
   }
 
-  .bf-drag-uploader {
+  .kedao-drag-uploader {
     box-sizing: border-box;
     position: absolute;
     z-index: 2;
@@ -395,13 +395,13 @@
     }
   }
 
-  .bf-uploader-buttons {
+  .kedao-uploader-buttons {
     height: 370px;
     margin: auto;
     text-align: center;
   }
 
-  .bf-drag-tip {
+  .kedao-drag-tip {
     display: inline-block;
     margin-top: 150px;
     color: #ccc;
@@ -425,7 +425,7 @@
     }
   }
 
-  .bf-manager-footer {
+  .kedao-manager-footer {
     height: 36px;
     margin: 10px 0;
     padding: 0 15px;
@@ -467,7 +467,7 @@
     }
   }
 
-  .bf-toggle-external-form {
+  .kedao-toggle-external-form {
     color: #666;
     font-size: 12px;
     line-height: 36px;
@@ -490,7 +490,7 @@
     }
   }
 
-  .bf-add-external {
+  .kedao-add-external {
     position: absolute;
     z-index: 3;
     top: 0;
@@ -511,13 +511,13 @@
     }
   }
 
-  .bf-external-form {
+  .kedao-external-form {
     width: 500px;
     max-width: 90%;
     margin: 91px auto 0;
   }
 
-  .bf-external-input {
+  .kedao-external-input {
     display: flex;
     position: relative;
     width: 100%;
@@ -577,7 +577,7 @@
     }
   }
 
-  .bf-switch-external-type {
+  .kedao-switch-external-type {
     overflow: hidden;
     text-align: center;
 
@@ -612,7 +612,7 @@
     }
   }
 
-  .bf-external-tip {
+  .kedao-external-tip {
     display: block;
     margin-top: 15px;
     color: #ccc;
@@ -620,7 +620,7 @@
     text-align: center;
   }
 
-  .bf-bottom-text {
+  .kedao-bottom-text {
     display: flex;
     align-items: center;
   }

@@ -83,37 +83,37 @@ const Modal: FC<ModalProps> = ({
       <div
         role="presentation"
         onMouseDown={handleMouseDown}
-        className={`bf-modal ${className || ''}`}
+        className={`kedao-modal ${className || ''}`}
       >
         <div
           role="presentation"
-          className="bf-modal-mask"
+          className="kedao-modal-mask"
           onClick={handleBlur}
         />
-        <div style={{ width, height }} className="bf-modal-content">
-          <div className="bf-modal-header">
-            <h3 className="bf-modal-caption">{title}</h3>
+        <div style={{ width, height }} className="kedao-modal-content">
+          <div className="kedao-modal-header">
+            <h3 className="kedao-modal-caption">{title}</h3>
             {showClose && (
               <button
                 type="button"
                 onClick={handleClose}
-                className="bf-modal-close-button"
+                className="kedao-modal-close-button"
               >
                 <MdClose {...defaultIconProps} />
               </button>
             )}
           </div>
-          <div className="bf-modal-body">{children}</div>
+          <div className="kedao-modal-body">{children}</div>
           {showFooter
             ? (
-            <div className="bf-modal-footer">
-              <div className="bf-modal-addon-text">{bottomText}</div>
-              <div className="bf-modal-buttons">
+            <div className="kedao-modal-footer">
+              <div className="kedao-modal-addon-text">{bottomText}</div>
+              <div className="kedao-modal-buttons">
                 {showCancel && (
                   <button
                     type="button"
                     onClick={handleCancel}
-                    className="bf-modal-cancel"
+                    className="kedao-modal-cancel"
                   >
                     {cancelText || language.base.cancel}
                   </button>
@@ -123,7 +123,7 @@ const Modal: FC<ModalProps> = ({
                     type="button"
                     onClick={handleConfirm}
                     className={mergeClassNames(
-                      'bf-modal-confirm',
+                      'kedao-modal-confirm',
                       !confirmable && 'disabled'
                     )}
                   >

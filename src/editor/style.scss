@@ -1,7 +1,7 @@
 @use "sass:color";
 @import "../assets/scss/inc.scss";
 
-.bf-content {
+.kedao-content {
   height: 500px;
   padding-bottom: 10px;
   overflow: auto;
@@ -16,7 +16,7 @@
   }
 }
 
-.bf-container {
+.kedao-container {
   position: relative;
   height: 100%;
   padding: 0;
@@ -28,17 +28,17 @@
   }
 
   &.read-only {
-    .bf-controlbar {
+    .kedao-controlbar {
       pointer-events: none;
     }
 
-    .bf-image {
+    .kedao-image {
       img:hover {
         outline: none;
       }
     }
 
-    .bf-hr {
+    .kedao-hr {
       pointer-events: none;
     }
   }
@@ -55,7 +55,7 @@
     background-color: #fff;
     height: 100% !important;
 
-    .bf-content {
+    .kedao-content {
       flex-grow: 1;
       height: auto;
     }
@@ -278,11 +278,11 @@
     display: initial;
   }
 
-  .bf-media {
+  .kedao-media {
     position: relative;
   }
 
-  .bf-image {
+  .kedao-image {
     position: relative;
 
     img {
@@ -298,7 +298,7 @@
     }
   }
 
-  .bf-media-toolbar {
+  .kedao-media-toolbar {
     position: absolute;
     z-index: 3;
     bottom: 15px;
@@ -314,7 +314,7 @@
     user-select: none;
 
     &::before,
-    .bf-media-toolbar-arrow {
+    .kedao-media-toolbar-arrow {
       position: absolute;
       bottom: -10px;
       left: 50%;

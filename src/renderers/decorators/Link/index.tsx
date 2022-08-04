@@ -22,10 +22,10 @@ const Link: FC<LinkProps> = ({ children, entityKey, contentState }) => {
   const { href, target } = contentState.getEntity(entityKey).getData()
 
   return (
-    <span className="bf-link-wrap">
+    <span className="kedao-link-wrap">
       <a
         onClick={(event) => viewLink(event, href)}
-        className="bf-link"
+        className="kedao-link"
         href={href}
         target={target}
       >

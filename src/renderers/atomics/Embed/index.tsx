@@ -25,7 +25,7 @@ const Embed: FC<EmbedProps> = ({
     editor.setValue(removeBlock(editorState, block))
   }
   return (
-    <div className="bf-embed-wrap">
+    <div className="kedao-embed-wrap">
       <PlayerModal
         type="embed"
         onRemove={removeEmbed}
@@ -36,7 +36,7 @@ const Embed: FC<EmbedProps> = ({
         title={language.videoPlayer.embedTitle}
       >
         <div
-          className="bf-embed-player"
+          className="kedao-embed-player"
           dangerouslySetInnerHTML={{ __html: url }}
         />
       </PlayerModal>

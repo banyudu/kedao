@@ -65,9 +65,9 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
       getContainerNode={getContainerNode}
       title={language.controls.fontSize}
       ref={dropDownInstance}
-      className="bf-font-size-dropdown"
+      className="kedao-font-size-dropdown"
     >
-      <ul className="bf-font-sizes">
+      <ul className="kedao-font-sizes">
         {fontSizes.map((item) => {
           return (
             <li

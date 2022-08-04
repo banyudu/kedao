@@ -157,7 +157,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
         ref={dropDownInstance}
         className="link-editor-dropdown"
       >
-        <div className="bf-link-editor">
+        <div className="kedao-link-editor">
           {allowInsertLinkText
             ? (
             <div className="input-group">

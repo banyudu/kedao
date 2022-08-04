@@ -20,8 +20,8 @@ const HorizontalLine: FC<HorizontalLineProps> = ({
   }
 
   return (
-    <div className="bf-hr">
-      <div className="bf-media-toolbar">
+    <div className="kedao-hr">
+      <div className="kedao-media-toolbar">
         <a role="presentation" onClick={removeHorizontalLine}>
           &#xe9ac;
         </a>

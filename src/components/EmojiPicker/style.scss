@@ -1,0 +1,62 @@
+@import "../../assets/scss/inc.scss";
+
+.kedao-emojis-wrap {
+  position: relative;
+  width: 210px;
+  height: 220px;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    left: 0;
+    height: 30px;
+    border-radius: 2px;
+    content: "";
+    pointer-events: none;
+  }
+
+  &::before {
+    top: 0;
+    background-image: linear-gradient(to top, rgba($COLOR_DARK, 0), rgba($COLOR_DARK, 1));
+  }
+
+  &::after {
+    bottom: 0;
+    background-image: linear-gradient(rgba($COLOR_DARK, 0), rgba($COLOR_DARK, 1));
+  }
+}
+
+.kedao-emojis {
+  box-sizing: content-box;
+  width: 200px;
+  height: 195px;
+  list-style: none;
+  margin: 0;
+  padding: 15px 15px 20px;
+  overflow: auto;
+
+  li {
+    display: block;
+    float: left;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    border-radius: 2px;
+    font-family: "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 18px;
+    line-height: 32px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.5);
+    }
+  }
+}

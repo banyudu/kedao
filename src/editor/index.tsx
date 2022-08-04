@@ -62,7 +62,7 @@ import {
   getPropInterceptors
   // useExtension
 } from '../helpers/extension'
-import ControlBar, { ControlBarProps } from '../components/business/ControlBar'
+import ControlBar, { ControlBarProps } from '../components/ControlBar'
 
 import 'draft-js/dist/Draft.css'
 import './style.scss'

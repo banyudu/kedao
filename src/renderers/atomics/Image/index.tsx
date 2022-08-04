@@ -2,7 +2,7 @@ import React, { FC, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { setMediaData, setMediaPosition, removeBlock } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
-import Switch from '../../../components/common/Switch'
+import Switch from '../../../components/Switch'
 import './style.scss'
 import {
   CallbackEditor,

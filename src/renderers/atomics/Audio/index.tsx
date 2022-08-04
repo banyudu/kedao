@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
-import PlayerModal from '../../../components/business/PlayerModal'
+import PlayerModal from '../../../components/PlayerModal'
 import { CallbackEditor, EditorState, Language } from '../../../types'
 import './style.scss'
 

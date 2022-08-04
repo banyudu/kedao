@@ -1,7 +1,7 @@
 import './styles.scss'
 import React from 'react'
 import { SketchPicker } from 'react-color'
-import Button from '../../components/common/Button'
+import Button from '../../components/Button'
 
 const getColorPicker = (superProps) =>
   function ColorPicker ({ onChange, color, presetColors, ...props }) {

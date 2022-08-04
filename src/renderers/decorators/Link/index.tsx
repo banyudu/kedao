@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import '../../../components/business/LinkEditor/style.scss'
+import '../../../components/LinkEditor/style.scss'
 import { ContentState } from 'draft-js'
 
 const viewLink = (event, link) => {

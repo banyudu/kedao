@@ -1,6 +1,6 @@
 @import "../../../assets/scss/inc.scss";
 
-.kedao-content .kedao-hr {
+.kedao-hr {
   position: relative;
   box-sizing: content-box;
   height: 15px;
@@ -19,12 +19,12 @@
       background-color: rgba(#000, 0.3);
     }
 
-    .kedao-media-toolbar {
+    .hr-toolbar {
       display: block;
     }
   }
 
-  .kedao-media-toolbar {
+  .hr-toolbar {
     display: none;
   }
 }

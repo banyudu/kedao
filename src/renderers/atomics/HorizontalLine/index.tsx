@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
 import { EditorState } from 'draft-js'
 import { CallbackEditor } from '../../../types'
+import MediaToolbar from '../../../components/MediaToolbar'
 import './style.scss'
 
 interface HorizontalLineProps {
@@ -21,11 +22,11 @@ const HorizontalLine: FC<HorizontalLineProps> = ({
 
   return (
     <div className="kedao-hr">
-      <div className="kedao-media-toolbar">
+      <MediaToolbar className="hr-toolbar">
         <a role="presentation" onClick={removeHorizontalLine}>
           &#xe9ac;
         </a>
-      </div>
+      </MediaToolbar>
     </div>
   )
 }

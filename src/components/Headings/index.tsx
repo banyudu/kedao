@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { getHeadings } from '../../configs/maps'
 import { CommonPickerProps } from '../../types'
 import DropDown from '../DropDown'
+import Menu from '../Menu'
+import MenuItem from '../MenuItem'
 import './style.scss'
 
 export interface HeadingsPickerProps
@@ -41,24 +43,24 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
       ref={dropDownInstance}
       className="headings-dropdown"
     >
-      <ul className="menu">
+      <Menu className="headings-menu">
         {innerHeadings.map((item) => {
           const isActive = current === item.command
           return (
-            <li
+            <MenuItem
               key={uuidv4()}
               role="presentation"
-              className={`menu-item${isActive ? ' active' : ''}`}
+              className={`headings-menu-item${isActive ? ' active' : ''}`}
               onClick={() => {
                 onChange(item.command, item.type)
                 dropDownInstance.current?.hide()
               }}
             >
               {item.text}
-            </li>
+            </MenuItem>
           )
         })}
-      </ul>
+      </Menu>
     </DropDown>
   )
 }

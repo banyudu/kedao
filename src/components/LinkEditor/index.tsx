@@ -193,8 +193,8 @@ const LinkEditor: FC<LinkEditorProps> = ({
               role="presentation"
               className="primary button-remove-link pull-left"
             >
-              <MdClose {...defaultIconProps} />
               <span>{language.linkEditor.removeLink}</span>
+              <MdClose {...defaultIconProps} />
             </a>
             <button
               type="button"

@@ -6,6 +6,8 @@ import {
   selectionHasInlineStyle
 } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
+import Menu from '../Menu'
+import MenuItem from '../MenuItem'
 import './style.scss'
 
 export interface FontFamilyPickerProps
@@ -70,13 +72,15 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
       ref={(instance) => (dropDownInstance = instance)}
       className="font-family-dropdown"
     >
-      <ul className="menu">
+      <Menu>
         {fontFamilies.map((item, index) => {
           return (
-            <li
+            <MenuItem
               key={uuidv4()}
               role="presentation"
-              className={`menu-item ${index === currentIndex ? 'active' : ''}`}
+              className={`font-family-item ${
+                index === currentIndex ? 'active' : ''
+              }`}
               data-name={item.name}
               onClick={(event) => {
                 toggleFontFamily(event)
@@ -84,10 +88,10 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
               }}
             >
               <span style={{ fontFamily: item.family }}>{item.name}</span>
-            </li>
+            </MenuItem>
           )
         })}
-      </ul>
+      </Menu>
     </DropDown>
   )
 }

@@ -10,6 +10,7 @@ import {
   ImageControlItem
 } from '../../../types'
 import { ContentBlock } from 'draft-js'
+import MeidaToolbar from '../../../components/MediaToolbar'
 
 interface ImageProps extends CommonPickerProps {
   editor: CallbackEditor
@@ -468,12 +469,12 @@ const Image: FC<ImageProps> = ({
       >
         {toolbarVisible
           ? (
-          <div
+          <MeidaToolbar
             style={{ marginLeft: toolbarOffset }}
             ref={toolbarElement}
             data-float={float}
             data-align={alignment}
-            className="kedao-media-toolbar"
+            className="image-toolbar"
           >
             {linkEditorVisible
               ? (
@@ -528,9 +529,9 @@ const Image: FC<ImageProps> = ({
             {renderedControlItems}
             <i
               style={{ marginLeft: toolbarOffset * -1 }}
-              className="kedao-media-toolbar-arrow"
+              className="image-toolbar-arrow"
             />
-          </div>
+          </MeidaToolbar>
             )
           : null}
         <div

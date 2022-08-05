@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { useState, useEffect, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { getSelectionBlockData, toggleSelectionAlignment } from '../../utils'
@@ -11,8 +13,9 @@ import {
 } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
 import { CommonPickerProps } from '../../types'
-import '../ControlBar/style.scss'
+import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
+const cls = classNameParser(styles)
 
 const iconMap = {
   left: <MdFormatAlignLeft {...defaultIconProps} />,
@@ -66,7 +69,7 @@ const TextAlign: FC<TextAlignProps> = ({
           key={uuidv4()}
           data-title={textAlignmentTitles[index]}
           data-alignment={item}
-          className={mergeClassNames(item === currentAlignment && 'active')}
+          className={cls(mergeClassNames(item === currentAlignment && 'active'))}
           onClick={setAlignment}
         >
           {iconMap[item] ?? null}

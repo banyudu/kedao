@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, {
   useState,
   useEffect,
@@ -8,10 +10,11 @@ import React, {
 } from 'react'
 import mergeClassNames from 'merge-class-names'
 import ResponsiveHelper from '../../helpers/responsive'
-import './style.scss'
+import styles from './style.module.scss'
 import { MdArrowDropDown } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
 import { useClickOutside, usePrevious, useSyncedRef } from '@react-hookz/web'
+const cls = classNameParser(styles)
 
 export interface DropDownProps {
   disabled?: boolean
@@ -140,18 +143,18 @@ const DropDown = forwardRef<any, DropDownProps>(
 
     return (
       <div
-        className={mergeClassNames(
+        className={cls(mergeClassNames(
           'kedao-dropdown',
           !disabled && active && 'active',
           disabled && 'disabled',
           className
-        )}
+        ))}
       >
         {htmlCaption
           ? (
           <button
             type="button"
-            className="dropdown-handler"
+            className={cls('dropdown-handler')}
             data-title={title}
             aria-label="Button"
             onClick={toggle}
@@ -164,7 +167,7 @@ const DropDown = forwardRef<any, DropDownProps>(
           : (
           <button
             type="button"
-            className="dropdown-handler"
+            className={cls('dropdown-handler')}
             data-title={title}
             onClick={toggle}
             ref={dropDownHandlerElement}
@@ -174,18 +177,18 @@ const DropDown = forwardRef<any, DropDownProps>(
           </button>
             )}
         <div
-          className="dropdown-content"
+          className={cls('dropdown-content')}
           style={{ marginLeft: offset }}
           ref={dropDownContentElement}
         >
           <i
             style={{ marginLeft: offset * -1 }}
-            className={mergeClassNames(
+            className={cls(mergeClassNames(
               'dropdown-arrow',
               arrowActive && 'active'
-            )}
+            ))}
           />
-          <div className="dropdown-content-inner">{children}</div>
+          <div className={cls('dropdown-content-inner')}>{children}</div>
         </div>
       </div>
     )

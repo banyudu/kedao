@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { getHeadings } from '../../configs/maps'
@@ -5,7 +7,8 @@ import { CommonPickerProps } from '../../types'
 import DropDown from '../DropDown'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export interface HeadingsPickerProps
   extends Omit<CommonPickerProps, 'onChange'> {
@@ -41,16 +44,16 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
       title={language.controls.headings}
       arrowActive={currentHeadingIndex === 0}
       ref={dropDownInstance}
-      className="headings-dropdown"
+      className={cls('headings-dropdown')}
     >
-      <Menu className="headings-menu">
+      <Menu className={cls('headings-menu')}>
         {innerHeadings.map((item) => {
           const isActive = current === item.command
           return (
             <MenuItem
               key={uuidv4()}
               role="presentation"
-              className={`headings-menu-item${isActive ? ' active' : ''}`}
+              className={cls(`headings-menu-item${isActive ? ' active' : ''}`)}
               onClick={() => {
                 onChange(item.command, item.type)
                 dropDownInstance.current?.hide()

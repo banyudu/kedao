@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../utils/style'
 import React, { useState, useRef, useEffect } from 'react'
 import { UniqueIndex } from '../utils'
 import {
@@ -12,7 +14,8 @@ import {
   MdRemove
 } from 'react-icons/md'
 import { defaultIconProps } from '../configs/props'
-import './styles.scss'
+import styles from './styles.module.scss'
+const cls = classNameParser(styles)
 
 const defaultAccepts = {
   image: 'image/png,image/jpeg,image/gif,image/webp,image/apng,image/svg',
@@ -112,8 +115,8 @@ const FinderView = ({
 
   const buildItemList = () => {
     return (
-      <ul className="kedao-list">
-        <li className="kedao-add-item">
+      <ul className={cls('kedao-list')}>
+        <li className={cls('kedao-add-item')}>
           <MdAdd size={50} />
           <input
             accept={fileAccept}
@@ -127,9 +130,9 @@ const FinderView = ({
           const progressMarker =
             item.uploading && !hideProgress
               ? (
-              <div className="kedao-item-uploading">
+              <div className={cls('kedao-item-uploading')}>
                 <div
-                  className="kedao-item-uploading-bar"
+                  className={cls('kedao-item-uploading-bar')}
                   style={{ width: item.uploadProgress / 1 + '%' }}
                 ></div>
               </div>
@@ -141,7 +144,7 @@ const FinderView = ({
           switch (item.type) {
             case 'IMAGE':
               previewerComponents = (
-                <div className="finder-image">
+                <div className={cls('finder-image')}>
                   {progressMarker}
                   <img src={item.thumbnail || item.url} />
                 </div>
@@ -149,7 +152,7 @@ const FinderView = ({
               break
             case 'VIDEO':
               previewerComponents = (
-                <div className="kedao-icon kedao-video" title={item.url}>
+                <div className={cls('kedao-icon kedao-video')} title={item.url}>
                   {progressMarker}
                   <MdMovie {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -158,7 +161,7 @@ const FinderView = ({
               break
             case 'AUDIO':
               previewerComponents = (
-                <div className="kedao-icon kedao-audio" title={item.url}>
+                <div className={cls('kedao-icon kedao-audio')} title={item.url}>
                   {progressMarker}
                   <MdAudiotrack {...defaultIconProps} />
                   <span>{item.name || item.url}</span>
@@ -167,7 +170,7 @@ const FinderView = ({
               break
             case 'EMBED':
               previewerComponents = (
-                <div className="kedao-icon kedao-embed" title={item.url}>
+                <div className={cls('kedao-icon kedao-embed')} title={item.url}>
                   {progressMarker}
                   <MdCode {...defaultIconProps} />
                   <span>{item.name || language.embed}</span>
@@ -177,7 +180,7 @@ const FinderView = ({
             default:
               previewerComponents = (
                 <a
-                  className="kedao-icon kedao-file"
+                  className={cls('kedao-icon kedao-file')}
                   title={item.url}
                   href={item.url}
                 >
@@ -199,12 +202,12 @@ const FinderView = ({
               key={index}
               title={item.name}
               data-id={item.id}
-              className={className.join(' ')}
+              className={cls(className.join(' '))}
               onClick={toggleSelectItem}
             >
               {previewerComponents}
               {item.selected && (
-                <div className="kedao-icon-selected">
+                <div className={cls('kedao-icon-selected')}>
                   <MdCheck size={50} color="white" />
                 </div>
               )}
@@ -212,9 +215,9 @@ const FinderView = ({
                 {...defaultIconProps}
                 data-id={item.id}
                 onClick={removeItem}
-                className="kedao-item-remove braft-icon-close"
+                className={cls('kedao-item-remove braft-icon-close')}
               />
-              <span className="kedao-item-title">{item.name}</span>
+              <span className={cls('kedao-item-title')}>{item.name}</span>
             </li>
           )
         })}
@@ -420,21 +423,21 @@ const FinderView = ({
   }
 
   return (
-    <div className="kedao-finder">
+    <div className={cls('kedao-finder')}>
       <div
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDragDrop}
-        className="kedao-uploader"
+        className={cls('kedao-uploader')}
       >
         <div
-          className={
+          className={cls(
             'kedao-drag-uploader ' +
-            (draging || !items.length ? 'active ' : ' ') +
-            (draging ? 'draging' : '')
-          }
+                          (draging || !items.length ? 'active ' : ' ') +
+                          (draging ? 'draging' : '')
+          )}
         >
-          <span className="kedao-drag-tip">
+          <span className={cls('kedao-drag-tip')}>
             <input
               accept={fileAccept}
               onChange={reslovePickedFiles}
@@ -446,15 +449,15 @@ const FinderView = ({
         </div>
         {items.length
           ? (
-          <div className="kedao-list-wrap">
-            <div className="kedao-list-tools">
-              <span onClick={selectAllItems} className="kedao-select-all">
+          <div className={cls('kedao-list-wrap')}>
+            <div className={cls('kedao-list-tools')}>
+              <span onClick={selectAllItems} className={cls('kedao-select-all')}>
                 <MdDone {...defaultIconProps} />
                 {language.selectAll}
               </span>
               <span
                 onClick={deselectAllItems}
-                className="kedao-deselect-all"
+                className={cls('kedao-deselect-all')}
                 {...{ disabled: !confirmable }}
               >
                 <MdClose {...defaultIconProps} />
@@ -462,7 +465,7 @@ const FinderView = ({
               </span>
               <span
                 onClick={removeSelectedItems}
-                className="kedao-remove-selected"
+                className={cls('kedao-remove-selected')}
                 {...{ disabled: !confirmable }}
               >
                 <MdRemove {...defaultIconProps} />
@@ -475,9 +478,9 @@ const FinderView = ({
           : null}
         {showExternalForm && allowExternal
           ? (
-          <div className="kedao-add-external">
-            <div className="kedao-external-form">
-              <div className="kedao-external-input">
+          <div className={cls('kedao-add-external')}>
+            <div className={cls('kedao-external-form')}>
+              <div className={cls('kedao-external-input')}>
                 <div>
                   <input
                     onKeyDown={confirmAddExternal}
@@ -496,7 +499,7 @@ const FinderView = ({
               </div>
               <div
                 data-type={external.type}
-                className="kedao-switch-external-type"
+                className={cls('kedao-switch-external-type')}
               >
                 {externals.image
                   ? (
@@ -543,7 +546,7 @@ const FinderView = ({
                     )
                   : null}
               </div>
-              <span className="kedao-external-tip">
+              <span className={cls('kedao-external-tip')}>
                 {language.externalInputTip}
               </span>
             </div>
@@ -551,23 +554,23 @@ const FinderView = ({
             )
           : null}
       </div>
-      <footer className="kedao-manager-footer">
-        <div className="pull-left">
+      <footer className={cls('kedao-manager-footer')}>
+        <div className={cls('pull-left')}>
           {allowExternal
             ? (
             <span
               onClick={toggleExternalForm}
-              className="kedao-toggle-external-form"
+              className={cls('kedao-toggle-external-form')}
             >
               {showExternalForm
                 ? (
-                <span className="kedao-bottom-text">
+                <span className={cls('kedao-bottom-text')}>
                   <MdAdd {...defaultIconProps} />
                   {language.addLocalFile}
                 </span>
                   )
                 : (
-                <span className="kedao-bottom-text">
+                <span className={cls('kedao-bottom-text')}>
                   <MdAdd {...defaultIconProps} /> {language.addExternalSource}
                 </span>
                   )}
@@ -575,15 +578,15 @@ const FinderView = ({
               )
             : null}
         </div>
-        <div className="pull-right">
+        <div className={cls('pull-right')}>
           <button
             onClick={confirmInsert}
-            className="button button-insert"
+            className={cls('button button-insert')}
             disabled={!confirmable}
           >
             {language.insert}
           </button>
-          <button onClick={cancelInsert} className="button button-cancel">
+          <button onClick={cancelInsert} className={cls('button button-cancel')}>
             {language.cancel}
           </button>
         </div>

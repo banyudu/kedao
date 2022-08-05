@@ -1,9 +1,12 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps, EditorState } from '../../types'
 import { toggleSelectionFontSize, selectionHasInlineStyle } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export interface FontSizePickerProps extends CommonPickerProps {
   defaultCaption: DropDownProps['caption']
@@ -62,15 +65,15 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
       getContainerNode={getContainerNode}
       title={language.controls.fontSize}
       ref={dropDownInstance}
-      className="kedao-font-size-dropdown"
+      className={cls('kedao-font-size-dropdown')}
     >
-      <ul className="kedao-font-sizes">
+      <ul className={cls('kedao-font-sizes')}>
         {fontSizes.map((item) => {
           return (
             <li
               key={uuidv4()}
               role="presentation"
-              className={item === currentFontSize ? 'active' : null}
+              className={cls(item === currentFontSize ? 'active' : null)}
               data-size={item}
               onClick={(event) => {
                 toggleFontSize(event)

@@ -57,24 +57,24 @@
 
     line-height: initial;
 
-    .public-DraftEditorPlaceholder-root {
+    :global(.public-DraftEditorPlaceholder-root) {
       top: 15px;
       left: 15px;
       font-size: 16px;
       pointer-events: none;
     }
 
-    .DraftEditor-editorContainer {
+    :global(.DraftEditor-editorContainer) {
       box-sizing: border-box;
       border: none;
     }
 
-    .DraftEditor-root,
-    .public-DraftEditor-content {
+    :global(.DraftEditor-root),
+    :global(.public-DraftEditor-content) {
       height: 100%;
     }
 
-    .public-DraftEditor-content {
+    :global(.public-DraftEditor-content) {
       box-sizing: border-box;
       padding: 15px;
       word-wrap: break-word;

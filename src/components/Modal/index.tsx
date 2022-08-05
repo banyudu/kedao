@@ -1,10 +1,13 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC, useEffect, useState } from 'react'
 import mergeClassNames from 'merge-class-names'
-import './style.scss'
+import styles from './style.module.scss'
 import { MdClose } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
 import { ModalProps } from '../../types'
 import { Portal } from 'react-portal'
+const cls = classNameParser(styles)
 
 const Modal: FC<ModalProps> = ({
   title,
@@ -83,37 +86,37 @@ const Modal: FC<ModalProps> = ({
       <div
         role="presentation"
         onMouseDown={handleMouseDown}
-        className={`kedao-modal ${className || ''}`}
+        className={cls(`kedao-modal ${className || ''}`)}
       >
         <div
           role="presentation"
-          className="kedao-modal-mask"
+          className={cls('kedao-modal-mask')}
           onClick={handleBlur}
         />
-        <div style={{ width, height }} className="kedao-modal-content">
-          <div className="kedao-modal-header">
-            <h3 className="kedao-modal-caption">{title}</h3>
+        <div style={{ width, height }} className={cls('kedao-modal-content')}>
+          <div className={cls('kedao-modal-header')}>
+            <h3 className={cls('kedao-modal-caption')}>{title}</h3>
             {showClose && (
               <button
                 type="button"
                 onClick={handleClose}
-                className="kedao-modal-close-button"
+                className={cls('kedao-modal-close-button')}
               >
                 <MdClose {...defaultIconProps} />
               </button>
             )}
           </div>
-          <div className="kedao-modal-body">{children}</div>
+          <div className={cls('kedao-modal-body')}>{children}</div>
           {showFooter
             ? (
-            <div className="kedao-modal-footer">
-              <div className="kedao-modal-addon-text">{bottomText}</div>
-              <div className="kedao-modal-buttons">
+            <div className={cls('kedao-modal-footer')}>
+              <div className={cls('kedao-modal-addon-text')}>{bottomText}</div>
+              <div className={cls('kedao-modal-buttons')}>
                 {showCancel && (
                   <button
                     type="button"
                     onClick={handleCancel}
-                    className="kedao-modal-cancel"
+                    className={cls('kedao-modal-cancel')}
                   >
                     {cancelText || language.base.cancel}
                   </button>
@@ -122,10 +125,10 @@ const Modal: FC<ModalProps> = ({
                   <button
                     type="button"
                     onClick={handleConfirm}
-                    className={mergeClassNames(
+                    className={cls(mergeClassNames(
                       'kedao-modal-confirm',
                       !confirmable && 'disabled'
-                    )}
+                    ))}
                   >
                     {confirmText || language.base.confirm}
                   </button>

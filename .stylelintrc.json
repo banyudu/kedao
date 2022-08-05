@@ -5,7 +5,13 @@
     "no-descending-specificity": null,
     "font-family-no-missing-generic-family-keyword": null,
     "selector-class-pattern": null,
-    "scss/dollar-variable-pattern": null
+    "scss/dollar-variable-pattern": null,
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global"]
+      }
+    ]
   },
   "plugins": [
     "stylelint-scss"

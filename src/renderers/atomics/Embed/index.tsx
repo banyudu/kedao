@@ -1,8 +1,11 @@
+
+import { classNameParser } from '../../../utils/style'
 import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
 import PlayerModal from '../../../components/PlayerModal'
-import './style.scss'
+import styles from './style.module.scss'
 import { CallbackEditor, EditorState, Language } from '../../../types'
+const cls = classNameParser(styles)
 
 interface EmbedProps {
   mediaData: any
@@ -25,7 +28,7 @@ const Embed: FC<EmbedProps> = ({
     editor.setValue(removeBlock(editorState, block))
   }
   return (
-    <div className="kedao-embed-wrap">
+    <div className={cls('kedao-embed-wrap')}>
       <PlayerModal
         type="embed"
         onRemove={removeEmbed}
@@ -36,7 +39,7 @@ const Embed: FC<EmbedProps> = ({
         title={language.videoPlayer.embedTitle}
       >
         <div
-          className="kedao-embed-player"
+          className={cls('kedao-embed-player')}
           dangerouslySetInnerHTML={{ __html: url }}
         />
       </PlayerModal>

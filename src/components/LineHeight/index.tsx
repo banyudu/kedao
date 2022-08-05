@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -6,7 +8,8 @@ import {
 } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
 import { CommonPickerProps, EditorState } from '../../types'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export interface LineHeightPickerProps extends CommonPickerProps {
   lineHeights: number[]
@@ -65,15 +68,15 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
       getContainerNode={getContainerNode}
       title={language.controls.lineHeight}
       ref={dropDownInstance}
-      className="kedao-line-height-dropdown"
+      className={cls('kedao-line-height-dropdown')}
     >
-      <ul className="kedao-line-heights">
+      <ul className={cls('kedao-line-heights')}>
         {lineHeights.map((item) => {
           return (
             <li
               key={uuidv4()}
               role="presentation"
-              className={item === currentLineHeight ? 'active' : null}
+              className={cls(item === currentLineHeight ? 'active' : null)}
               data-size={item}
               onClick={(event) => {
                 toggleLineHeight(event)

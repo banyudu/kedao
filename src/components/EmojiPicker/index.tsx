@@ -1,9 +1,12 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps } from '../../types'
 import { insertText } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export interface EmojiPickerProps
   extends CommonPickerProps,
@@ -46,10 +49,10 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
       showArrow={false}
       getContainerNode={getContainerNode}
       title={language.controls.emoji}
-      className="kedao-emoji-dropdown"
+      className={cls('kedao-emoji-dropdown')}
     >
-      <div className="kedao-emojis-wrap">
-        <ul className="kedao-emojis">
+      <div className={cls('kedao-emojis-wrap')}>
+        <ul className={cls('kedao-emojis')}>
           {emojis.map((item) => {
             return (
               <li

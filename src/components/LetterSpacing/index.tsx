@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { useRef, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps, EditorState } from '../../types'
@@ -6,7 +8,8 @@ import {
   selectionHasInlineStyle
 } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export interface LetterSpacingPickerProps extends CommonPickerProps {
   letterSpacings: number[]
@@ -68,15 +71,15 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
       getContainerNode={getContainerNode}
       title={language.controls.letterSpacing}
       ref={dropDownInstance}
-      className="kedao-letter-spacing-dropdown"
+      className={cls('kedao-letter-spacing-dropdown')}
     >
-      <ul className="kedao-letter-spacings">
+      <ul className={cls('kedao-letter-spacings')}>
         {letterSpacings.map((item) => {
           return (
             <li
               key={uuidv4()}
               role="presentation"
-              className={item === currentLetterSpacing ? 'active' : null}
+              className={cls(item === currentLetterSpacing ? 'active' : null)}
               data-size={item}
               onClick={(event) => {
                 toggleLetterSpacing(event)

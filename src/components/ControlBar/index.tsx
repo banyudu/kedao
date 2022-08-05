@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, {
   CSSProperties,
   useImperativeHandle,
@@ -43,8 +45,9 @@ import {
   EditorState,
   ModalProps
 } from '../../types'
-import './style.scss'
+import styles from './style.module.scss'
 import { useDeepCompareMemo } from '../../utils/use-deep-compare-memo'
+const cls = classNameParser(styles)
 
 const isModalControl = (control: ControlItem): control is ModalControlItem => {
   return control.type === 'modal'
@@ -343,7 +346,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
 
     return (
       <div
-        className={`kedao-controlbar ${className || ''}`}
+        className={cls(`kedao-controlbar ${className || ''}`)}
         style={style}
         onMouseDown={preventDefault}
         role="button"
@@ -352,7 +355,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
         {renderedControlList.map(([item, key]) => {
           const itemKey = typeof item === 'string' ? item : item.key
           if (itemKey.toLowerCase() === 'separator') {
-            return <span key={key} className="separator-line" />
+            return <span key={key} className={cls('separator-line')} />
           }
           let controlItem: ControlItem =
             editorControlMap[itemKey.toLowerCase()]
@@ -465,7 +468,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
-                className="media"
+                className={cls('media')}
                 onClick={openFinder}
               >
                 {controlItem.text}
@@ -476,7 +479,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <DropDown
                 key={key}
-                className={`extend-control-item ${controlItem.className || ''}`}
+                className={cls(`extend-control-item ${controlItem.className || ''}`)}
                 caption={controlItem.text}
                 htmlCaption={controlItem.html}
                 showArrow={controlItem.showArrow}
@@ -498,7 +501,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
-                className={`extend-control-item ${controlItem.className || ''}`}
+                className={cls(`extend-control-item ${controlItem.className || ''}`)}
                 dangerouslySetInnerHTML={
                   controlItem.html ? { __html: controlItem.html } : null
                 }
@@ -518,7 +521,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <div
                 key={key}
-                className={`component-wrapper ${controlItem.className || ''}`}
+                className={cls(`component-wrapper ${controlItem.className || ''}`)}
               >
                 {controlItem.component}
               </div>
@@ -531,7 +534,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={key}
                 data-title={controlItem.title}
                 disabled={controlItem.disabled}
-                className={controlItem.className || ''}
+                className={cls(controlItem.className || '')}
                 dangerouslySetInnerHTML={
                   controlItem.html ? { __html: controlItem.html } : null
                 }
@@ -558,10 +561,10 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={key}
                 disabled={disabled}
                 data-title={controlItem.title}
-                className={getControlTypeClassName({
+                className={cls(getControlTypeClassName({
                   type: controlItem.type,
                   command: controlItem.command
-                })}
+                }))}
                 onClick={() =>
                   applyControl(
                     controlItem.command,

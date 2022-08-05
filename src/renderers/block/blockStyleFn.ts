@@ -1,4 +1,6 @@
-import './style.scss'
+import { classNameParser } from '../../utils/style'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export default (customBlockStyleFn) => (block) => {
   const blockAlignment = block.getData() && block.getData().get('textAlign')
@@ -6,9 +8,9 @@ export default (customBlockStyleFn) => (block) => {
   const blockFloat = block.getData() && block.getData().get('float')
 
   const className = [
-    blockAlignment && `kedao-alignment-${blockAlignment}`,
-    blockIndent && `kedao-text-indent-${blockIndent}`,
-    blockFloat && `kedao-float-${blockFloat}`,
+    blockAlignment && cls(`kedao-alignment-${blockAlignment}`),
+    blockIndent && cls(`kedao-text-indent-${blockIndent}`),
+    blockFloat && cls(`kedao-float-${blockFloat}`),
     customBlockStyleFn?.(block)
   ].filter(Boolean).join(' ')
 

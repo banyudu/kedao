@@ -1,7 +1,7 @@
 .kedao-alignment-left {
   text-align: left;
 
-  .public-DraftStyleDefault-ltr {
+  :global(.public-DraftStyleDefault-ltr) {
     text-align: left;
   }
 }
@@ -9,7 +9,7 @@
 .kedao-alignment-right {
   text-align: right;
 
-  .public-DraftStyleDefault-ltr {
+  :global(.public-DraftStyleDefault-ltr) {
     text-align: right;
   }
 }
@@ -17,7 +17,7 @@
 .kedao-alignment-center {
   text-align: center;
 
-  .public-DraftStyleDefault-ltr {
+  :global(.public-DraftStyleDefault-ltr) {
     text-align: center;
   }
 }
@@ -25,7 +25,7 @@
 .kedao-alignment-justify {
   text-align: justify;
 
-  .public-DraftStyleDefault-ltr {
+  :global(.public-DraftStyleDefault-ltr) {
     text-align: justify;
   }
 }

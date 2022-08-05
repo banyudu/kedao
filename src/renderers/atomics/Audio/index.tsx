@@ -1,8 +1,11 @@
+
+import { classNameParser } from '../../../utils/style'
 import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
 import PlayerModal from '../../../components/PlayerModal'
 import { CallbackEditor, EditorState, Language } from '../../../types'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 interface AudioProps {
   mediaData: any
@@ -25,7 +28,7 @@ const Audio: FC<AudioProps> = ({
   }
 
   return (
-    <div className="kedao-audio-wrap">
+    <div className={cls('kedao-audio-wrap')}>
       <PlayerModal
         type="audio"
         onRemove={removeAudio}
@@ -35,7 +38,7 @@ const Audio: FC<AudioProps> = ({
         name={name}
         title={language.audioPlayer.title}
       >
-        <div className="kedao-audio-player">
+        <div className={cls('kedao-audio-player')}>
           <audio controls src={url} />
         </div>
       </PlayerModal>

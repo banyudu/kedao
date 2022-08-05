@@ -1,9 +1,12 @@
+
+import { classNameParser } from '../../../utils/style'
 import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
 import { EditorState } from 'draft-js'
 import { CallbackEditor } from '../../../types'
 import MediaToolbar from '../../../components/MediaToolbar'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 interface HorizontalLineProps {
   editorState: EditorState
@@ -21,8 +24,8 @@ const HorizontalLine: FC<HorizontalLineProps> = ({
   }
 
   return (
-    <div className="kedao-hr">
-      <MediaToolbar className="hr-toolbar">
+    <div className={cls('kedao-hr')}>
+      <MediaToolbar className={cls('hr-toolbar')}>
         <a role="presentation" onClick={removeHorizontalLine}>
           &#xe9ac;
         </a>

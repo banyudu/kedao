@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { useState, useEffect, FC } from 'react'
 import { MdFormatIndentDecrease, MdFormatIndentIncrease } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
@@ -8,8 +10,9 @@ import {
   getSelectionBlockData
 } from '../../utils'
 import ControlGroup from '../ControlGroup'
-import '../ControlBar/style.scss'
+import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
+const cls = classNameParser(styles)
 
 const TextIndent: FC<CommonPickerProps> = ({
   editorState,
@@ -40,9 +43,9 @@ const TextIndent: FC<CommonPickerProps> = ({
         type="button"
         data-title={language.controls.increaseIndent}
         disabled={currentIndent >= 6}
-        className={`button-indent-increase${
-          currentIndent > 0 && currentIndent < 6 ? ' active' : ''
-        }`}
+        className={cls(`button-indent-increase${
+                    currentIndent > 0 && currentIndent < 6 ? ' active' : ''
+                  }`)}
         onClick={increaseIndent}
       >
         <MdFormatIndentIncrease {...defaultIconProps} />
@@ -52,7 +55,7 @@ const TextIndent: FC<CommonPickerProps> = ({
         type="button"
         data-title={language.controls.decreaseIndent}
         disabled={currentIndent <= 0}
-        className="button-indent-decrease"
+        className={cls('button-indent-decrease')}
         onClick={decreaseIndent}
       >
         <MdFormatIndentDecrease {...defaultIconProps} />

@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, {
   CSSProperties,
   useRef,
@@ -11,10 +13,11 @@ import {
 } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
 import BuiltinColorPicker from '../ColorPicker'
-import './style.scss'
+import styles from './style.module.scss'
 import { MdFormatColorText } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
 import { Hooks, EditorState, Language } from '../../types'
+const cls = classNameParser(styles)
 
 export interface TextColorPickerProps
   extends Pick<DropDownProps, 'getContainerNode' | 'autoHide'> {
@@ -115,17 +118,17 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
       // theme={theme}
       getContainerNode={getContainerNode}
       ref={dropDownInstance}
-      className="text-color-dropdown"
+      className={cls('text-color-dropdown')}
     >
-      <div className="kedao-text-color-picker-wrap">
+      <div className={cls('kedao-text-color-picker-wrap')}>
         <div
-          className="kedao-color-switch-buttons"
+          className={cls('kedao-color-switch-buttons')}
           style={enableBackgroundColor ? {} : { display: 'none' }}
         >
           <button
             type="button"
             data-type="color"
-            className={colorType === 'color' ? 'active' : ''}
+            className={cls(colorType === 'color' ? 'active' : '')}
             onClick={switchColorType}
           >
             {language.controls.textColor}
@@ -133,7 +136,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
           <button
             type="button"
             data-type="background-color"
-            className={colorType === 'background-color' ? 'active' : ''}
+            className={cls(colorType === 'background-color' ? 'active' : '')}
             onClick={switchColorType}
           >
             {language.controls.backgroundColor}

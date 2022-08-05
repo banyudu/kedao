@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../utils/style'
 import React, {
   FC,
   useEffect,
@@ -65,7 +67,7 @@ import {
 import ControlBar, { ControlBarProps } from '../components/ControlBar'
 
 import 'draft-js/dist/Draft.css'
-import './style.scss'
+import styles from './style.module.scss'
 import {
   CallbackEditor,
   ControlItem,
@@ -87,6 +89,7 @@ import {
 } from '../convert'
 
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
+const cls = classNameParser(styles)
 
 export const createStateFromContent = (
   content,
@@ -1010,20 +1013,20 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       <div
         style={style}
         ref={containerRef}
-        className={mergeClassNames(
+        className={cls(mergeClassNames(
           'kedao-container',
           className,
           disabled && 'disabled',
           readOnly && 'read-only',
           isFullscreen && 'fullscreen'
-        )}
+        ))}
       >
         <ControlBar
           ref={controlBarInstanceRef}
           editorState={editorState}
           finder={finder}
           getContainerNode={getContainerNode}
-          className={controlBarClassName}
+          className={cls(controlBarClassName)}
           style={controlBarStyle}
           colors={controlBarColors}
           colorPicker={colorPicker}
@@ -1052,12 +1055,12 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
         {componentBelowControlBar}
         <div
           onCompositionStart={handleCompositionStart}
-          className={`kedao-content ${contentClassName}`}
+          className={cls(`kedao-content ${contentClassName}`)}
           onCopy={handleCopyContent}
           style={contentStyle}
         >
           <Editor
-            className="editor-core"
+            className={cls('editor-core')}
             ref={draftInstanceRef}
             editorState={editorState}
             handleKeyCommand={keyCommandHandlers}

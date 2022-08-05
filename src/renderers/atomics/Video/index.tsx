@@ -1,8 +1,11 @@
+
+import { classNameParser } from '../../../utils/style'
 import React, { FC } from 'react'
 import { removeBlock } from '../../../utils'
 import PlayerModal from '../../../components/PlayerModal'
 import { CallbackEditor, EditorState, Language } from '../../../types'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 interface VideoProps {
   mediaData: any
@@ -27,7 +30,7 @@ const Video: FC<VideoProps> = ({
   }
 
   return (
-    <div className="kedao-video-wrap">
+    <div className={cls('kedao-video-wrap')}>
       <PlayerModal
         type="video"
         onRemove={removeVideo}
@@ -37,7 +40,7 @@ const Video: FC<VideoProps> = ({
         name={name}
         title={language.videoPlayer.title}
       >
-        <div className="kedao-video-player">
+        <div className={cls('kedao-video-player')}>
           <video controls poster={poster}>
             <source src={url} />
           </video>

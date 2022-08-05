@@ -1,9 +1,12 @@
+
+import { classNameParser } from '../utils/style'
 /* eslint-disable react/display-name */
 import React, { CSSProperties } from 'react'
 import { ContentState } from 'draft-js'
 import { ConvertOptions } from '../types'
-import './style.scss'
+import styles from './style.module.scss'
 import { namedColors } from '../constants'
+const cls = classNameParser(styles)
 
 /**
  * @deprecated import namedColors from constants instead
@@ -147,7 +150,7 @@ const convertAtomicBlock = (
     if (link) {
       return (
         <div
-          className={'media-wrap image-wrap' + styledClassName}
+          className={cls('media-wrap image-wrap' + styledClassName)}
           style={imageWrapStyle}
         >
           <a
@@ -169,7 +172,7 @@ const convertAtomicBlock = (
     } else {
       return (
         <div
-          className={'media-wrap image-wrap' + styledClassName}
+          className={cls('media-wrap image-wrap' + styledClassName)}
           style={imageWrapStyle}
         >
           <img
@@ -185,13 +188,13 @@ const convertAtomicBlock = (
     }
   } else if (mediaType === 'audio') {
     return (
-      <div className="media-wrap audio-wrap">
+      <div className={cls('media-wrap audio-wrap')}>
         <audio controls {...nodeAttrAsProps} {...meta} src={url} />
       </div>
     )
   } else if (mediaType === 'video') {
     return (
-      <div className="media-wrap video-wrap">
+      <div className={cls('media-wrap video-wrap')}>
         <video
           controls
           {...nodeAttrAsProps}
@@ -204,7 +207,7 @@ const convertAtomicBlock = (
     )
   } else if (mediaType === 'embed') {
     return (
-      <div className="media-wrap embed-wrap">
+      <div className={cls('media-wrap embed-wrap')}>
         <div dangerouslySetInnerHTML={{ __html: url }} />
       </div>
     )

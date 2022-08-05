@@ -1,6 +1,9 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import mergeClassNames from 'merge-class-names'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 interface SwitchProps {
   active: boolean
@@ -12,13 +15,13 @@ interface SwitchProps {
 const Switch: FC<SwitchProps> = ({ active, onClick, className, label }) => {
   return (
     <div
-      className={mergeClassNames(
+      className={cls(mergeClassNames(
         'kedao-switch',
         className
-      )}
+      ))}
     >
       <div
-        className={mergeClassNames('inner-switch', active && 'active')}
+        className={cls(mergeClassNames('inner-switch', active && 'active'))}
         role='presentation'
         onClick={onClick}
       />

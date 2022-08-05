@@ -1,6 +1,8 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC, MouseEventHandler, useState } from 'react'
 import Modal from '../Modal'
-import './style.scss'
+import styles from './style.module.scss'
 import {
   MdClose,
   MdCode,
@@ -10,6 +12,7 @@ import {
 } from 'react-icons/md'
 import { defaultIconProps } from '../../configs/props'
 import { Language } from '../../types'
+const cls = classNameParser(styles)
 
 const iconMap = {
   video: <MdVideocam {...defaultIconProps} />,
@@ -39,23 +42,23 @@ const PlayerModal: FC<PlayerModalProps> = ({
 }) => {
   const [modalVisible, setModalVisible] = useState(false)
   return (
-    <div className={`kedao-player-holder ${type}`}>
-      <div className="icon-badge">
+    <div className={cls(`kedao-player-holder ${type}`)}>
+      <div className={cls('icon-badge')}>
         {iconMap[type] ?? null}
-        <span className="text">{language.media[type]}</span>
+        <span className={cls('text')}>{language.media[type]}</span>
       </div>
-      <button onMouseDown={onRemove} className="button-remove">
+      <button onMouseDown={onRemove} className={cls('button-remove')}>
         <MdClose {...defaultIconProps} />
       </button>
-      <button onMouseDown={() => setModalVisible(true)} className="button-play">
+      <button onMouseDown={() => setModalVisible(true)} className={cls('button-play')}>
         <MdPlayArrow {...defaultIconProps} />
       </button>
-      {name ? <h5 className="kedao-name">{name}</h5> : null}
-      <h6 className="kedao-url">{url}</h6>
+      {name ? <h5 className={cls('kedao-name')}>{name}</h5> : null}
+      <h6 className={cls('kedao-url')}>{url}</h6>
       {poster
         ? (
         <div
-          className="kedao-poster"
+          className={cls('kedao-poster')}
           style={{ backgroundImage: `url(${poster})` }}
         />
           )

@@ -1,9 +1,11 @@
+
+import { classNameParser } from '../../../utils/style'
 import React, { FC, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { setMediaData, setMediaPosition, removeBlock } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/Switch'
-import './style.scss'
+import styles from './style.module.scss'
 import {
   CallbackEditor,
   CommonPickerProps,
@@ -11,6 +13,7 @@ import {
 } from '../../../types'
 import { ContentBlock } from 'draft-js'
 import MeidaToolbar from '../../../components/MediaToolbar'
+const cls = classNameParser(styles)
 
 interface ImageProps extends CommonPickerProps {
   editor: CallbackEditor
@@ -428,7 +431,7 @@ const Image: FC<ImageProps> = ({
       if (imageControlItems[item]) {
         return (
           <a
-            className={item === 'link' && link ? 'active' : ''}
+            className={cls(item === 'link' && link ? 'active' : '')}
             role="presentation"
             key={uuidv4()}
             onClick={() => executeCommand(imageControlItems[item].command)}
@@ -456,7 +459,7 @@ const Image: FC<ImageProps> = ({
   })
 
   return (
-    <div className="kedao-media">
+    <div className={cls('kedao-media')}>
       <div
         style={imageStyles}
         draggable
@@ -465,7 +468,7 @@ const Image: FC<ImageProps> = ({
         onMouseLeave={hideToolbar}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        className="kedao-image"
+        className={cls('kedao-image')}
       >
         {toolbarVisible
           ? (
@@ -474,12 +477,12 @@ const Image: FC<ImageProps> = ({
             ref={toolbarElement}
             data-float={float}
             data-align={alignment}
-            className="image-toolbar"
+            className={cls('image-toolbar')}
           >
             {linkEditorVisible
               ? (
-              <div className="kedao-image-link-editor">
-                <div className="editor-input-group">
+              <div className={cls('kedao-image-link-editor')}>
+                <div className={cls('editor-input-group')}>
                   <input
                     type="text"
                     placeholder={language.linkEditor.inputWithEnterPlaceHolder}
@@ -501,8 +504,8 @@ const Image: FC<ImageProps> = ({
               : null}
             {sizeEditorVisible
               ? (
-              <div className="kedao-image-size-editor">
-                <div className="editor-input-group">
+              <div className={cls('kedao-image-size-editor')}>
+                <div className={cls('editor-input-group')}>
                   <input
                     type="text"
                     placeholder={language.base.width}
@@ -527,7 +530,7 @@ const Image: FC<ImageProps> = ({
             {renderedControlItems}
             <i
               style={{ marginLeft: toolbarOffset * -1 }}
-              className="image-toolbar-arrow"
+              className={cls('image-toolbar-arrow')}
             />
           </MeidaToolbar>
             )
@@ -552,7 +555,7 @@ const Image: FC<ImageProps> = ({
             ? (
             <div
               role="presentation"
-              className="kedao-csize-icon right-bottom"
+              className={cls('kedao-csize-icon right-bottom')}
               onMouseDown={repareChangeSize('rightbottom')}
             />
               )
@@ -561,20 +564,20 @@ const Image: FC<ImageProps> = ({
             ? (
             <div
               role="presentation"
-              className="kedao-csize-icon left-bottom"
+              className={cls('kedao-csize-icon left-bottom')}
               onMouseDown={repareChangeSize('leftbottom')}
             />
               )
             : null}
           <div
-            className={`kedao-pre-csize ${reSizeType.current}`}
+            className={cls(`kedao-pre-csize ${reSizeType.current}`)}
             style={{ width: `${tempWidth}px`, height: `${tempHeight}px` }}
           />
         </div>
       </div>
       {clearFix && (
         <div
-          className="clearfix"
+          className={cls('clearfix')}
           style={{ clear: 'both', height: 0, lineHeight: 0, float: 'none' }}
         />
       )}

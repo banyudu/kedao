@@ -1,6 +1,9 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export interface ColorPickerProps {
   presetColors: string[]
@@ -13,8 +16,8 @@ const ColorPicker: FC<ColorPickerProps> = ({
   color,
   onChange
 }) => (
-  <div className="kedao-colors-wrap">
-    <ul className="kedao-colors">
+  <div className={cls('kedao-colors-wrap')}>
+    <ul className={cls('kedao-colors')}>
       {presetColors.map((item) => {
         const className =
           color && item.toLowerCase() === color.toLowerCase()
@@ -25,7 +28,7 @@ const ColorPicker: FC<ColorPickerProps> = ({
             role="presentation"
             key={uuidv4()}
             title={item}
-            className={className}
+            className={cls(className)}
             style={{ color: item }}
             data-color={item.replace('#', '')}
             onClick={(e) => {

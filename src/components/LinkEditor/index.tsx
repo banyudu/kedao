@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { useState, useEffect, useRef, FC } from 'react'
 import {
   insertText,
@@ -11,12 +13,13 @@ import DropDown from '../DropDown'
 import Button from '../Button'
 import ControlGroup from '../ControlGroup'
 import { MdClose, MdLink, MdLinkOff } from 'react-icons/md'
-import './style.scss'
+import styles from './style.module.scss'
 import { defaultIconProps } from '../../configs/props'
 import { CommonPickerProps } from '../../types'
 import { useAtom } from 'jotai'
 import { linkEditorActiveAtom } from './states'
 import { useResetState } from '../../utils/use-reset-state'
+const cls = classNameParser(styles)
 
 export interface LinkEditorProps extends CommonPickerProps {
   defaultLinkTarget: string
@@ -155,12 +158,12 @@ const LinkEditor: FC<LinkEditorProps> = ({
         getContainerNode={getContainerNode}
         showArrow={false}
         ref={dropDownInstance}
-        className="link-editor-dropdown"
+        className={cls('link-editor-dropdown')}
       >
-        <div className="kedao-link-editor">
+        <div className={cls('kedao-link-editor')}>
           {allowInsertLinkText
             ? (
-            <div className="input-group">
+            <div className={cls('input-group')}>
               <input
                 type="text"
                 value={text}
@@ -173,7 +176,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
             </div>
               )
             : null}
-          <div className="input-group">
+          <div className={cls('input-group')}>
             <input
               type="text"
               value={href}
@@ -188,11 +191,11 @@ const LinkEditor: FC<LinkEditorProps> = ({
             onClick={toggleTarget}
             label={language.linkEditor.openInNewWindow}
           />
-          <div className="buttons">
+          <div className={cls('buttons')}>
             <a
               onClick={handleUnlink}
               role="presentation"
-              className="primary button-remove-link pull-left"
+              className={cls('primary button-remove-link pull-left')}
             >
               <span>{language.linkEditor.removeLink}</span>
               <MdClose {...defaultIconProps} />
@@ -200,14 +203,14 @@ const LinkEditor: FC<LinkEditorProps> = ({
             <button
               type="button"
               onClick={handleConfirm}
-              className="primary pull-right"
+              className={cls('primary pull-right')}
             >
               {language.base.confirm}
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="default pull-right"
+              className={cls('default pull-right')}
             >
               {language.base.cancel}
             </button>

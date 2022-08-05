@@ -1,3 +1,5 @@
+
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps, Language } from '../../types'
@@ -8,7 +10,8 @@ import {
 import DropDown, { DropDownProps } from '../DropDown'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
-import './style.scss'
+import styles from './style.module.scss'
+const cls = classNameParser(styles)
 
 export interface FontFamilyPickerProps
   extends CommonPickerProps,
@@ -70,7 +73,7 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
       arrowActive={currentIndex === 0}
       // eslint-disable-next-line no-return-assign
       ref={(instance) => (dropDownInstance = instance)}
-      className="font-family-dropdown"
+      className={cls('font-family-dropdown')}
     >
       <Menu>
         {fontFamilies.map((item, index) => {
@@ -78,9 +81,9 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
             <MenuItem
               key={uuidv4()}
               role="presentation"
-              className={`font-family-item ${
-                index === currentIndex ? 'active' : ''
-              }`}
+              className={cls(`font-family-item ${
+                              index === currentIndex ? 'active' : ''
+                            }`)}
               data-name={item.name}
               onClick={(event) => {
                 toggleFontFamily(event)

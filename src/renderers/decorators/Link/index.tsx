@@ -1,6 +1,9 @@
+
+import { classNameParser } from '../../../utils/style'
 import React, { FC } from 'react'
-import '../../../components/LinkEditor/style.scss'
+import styles from '../../../components/LinkEditor/style.module.scss'
 import { ContentState } from 'draft-js'
+const cls = classNameParser(styles)
 
 const viewLink = (event, link) => {
   // When pressing the Ctrl / command key, click to open the url in the link text
@@ -22,10 +25,10 @@ const Link: FC<LinkProps> = ({ children, entityKey, contentState }) => {
   const { href, target } = contentState.getEntity(entityKey).getData()
 
   return (
-    <span className="kedao-link-wrap">
+    <span className={cls('kedao-link-wrap')}>
       <a
         onClick={(event) => viewLink(event, href)}
-        className="kedao-link"
+        className={cls('kedao-link')}
         href={href}
         target={target}
       >

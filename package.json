@@ -85,7 +85,6 @@
     "yargs": "^17.3.1"
   },
   "dependencies": {
-    "@draft-js-plugins/mention": "^5.1.1",
     "@react-hookz/web": "^15.0.1",
     "draft-convert": "^2.1.8",
     "draft-js": "^0.11.5",

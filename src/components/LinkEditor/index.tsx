@@ -183,10 +183,11 @@ const LinkEditor: FC<LinkEditorProps> = ({
               onChange={handleInputLink}
             />
           </div>
-          <div className="switch-group">
-            <Switch active={target === '_blank'} onClick={toggleTarget} />
-            <label>{language.linkEditor.openInNewWindow}</label>
-          </div>
+          <Switch
+            active={target === '_blank'}
+            onClick={toggleTarget}
+            label={language.linkEditor.openInNewWindow}
+          />
           <div className="buttons">
             <a
               onClick={handleUnlink}

@@ -491,13 +491,11 @@ const Image: FC<ImageProps> = ({
                     {language.base.confirm}
                   </button>
                 </div>
-                <div className="switch-group">
-                  <Switch
-                    active={linkTarget === '_blank'}
-                    onClick={() => setImageLinkTarget(linkTarget)}
-                  />
-                  <label>{language.linkEditor.openInNewWindow}</label>
-                </div>
+                <Switch
+                  active={linkTarget === '_blank'}
+                  onClick={() => setImageLinkTarget(linkTarget)}
+                  label={language.linkEditor.openInNewWindow}
+                />
               </div>
                 )
               : null}

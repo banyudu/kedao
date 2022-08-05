@@ -141,7 +141,7 @@ const FinderView = ({
           switch (item.type) {
             case 'IMAGE':
               previewerComponents = (
-                <div className="kedao-image">
+                <div className="finder-image">
                   {progressMarker}
                   <img src={item.thumbnail || item.url} />
                 </div>

@@ -1,25 +1,16 @@
+import './style.scss'
+
 export default (customBlockStyleFn) => (block) => {
   const blockAlignment = block.getData() && block.getData().get('textAlign')
   const blockIndent = block.getData() && block.getData().get('textIndent')
   const blockFloat = block.getData() && block.getData().get('float')
 
-  let result = ''
+  const className = [
+    blockAlignment && `kedao-alignment-${blockAlignment}`,
+    blockIndent && `kedao-text-indent-${blockIndent}`,
+    blockFloat && `kedao-float-${blockFloat}`,
+    customBlockStyleFn?.(block)
+  ].filter(Boolean).join(' ')
 
-  if (blockAlignment) {
-    result = `bfa-${blockAlignment}`
-  }
-
-  if (blockIndent && blockIndent !== 0) {
-    result += ` bftd-${blockIndent}`
-  }
-
-  if (blockFloat) {
-    result += ` bff-${blockFloat}`
-  }
-
-  if (customBlockStyleFn) {
-    result += customBlockStyleFn(block) || ''
-  }
-
-  return result
+  return className
 }

@@ -10,7 +10,7 @@ export default (props, blockRenderMap) => {
     },
     'code-block': {
       element: 'code',
-      wrapper: <pre className="kedao-code-block" />
+      wrapper: <pre />
     }
   })
 

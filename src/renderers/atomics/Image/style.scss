@@ -5,6 +5,22 @@
   position: relative;
 }
 
+.kedao-image {
+  position: relative;
+
+  img {
+    display: block;
+    max-width: 100%;
+    font-size: 0;
+    resize: both;
+    outline-offset: 1px;
+
+    &:hover {
+      outline: solid 1px $COLOR_ACTIVE;
+    }
+  }
+}
+
 .kedao-image-size-editor,
 .kedao-image-link-editor {
   padding-bottom: 1px;
@@ -70,23 +86,6 @@
 .kedao-image-link-editor {
   input {
     width: 185px;
-  }
-
-  .switch-group {
-    height: 16px;
-    margin: 10px;
-
-    .kedao-switch {
-      float: left;
-    }
-
-    label {
-      float: left;
-      margin-left: 15px;
-      color: #999;
-      font-size: 12px;
-      line-height: 16px;
-    }
   }
 }
 

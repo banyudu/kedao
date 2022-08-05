@@ -13,3 +13,7 @@ ts-node scripts/ast/convert-to-css-module.ts
 
 # 使用 lint:fix 自动修复格式问题
 npm run lint:fix-js -- --quiet
+
+# 为 draft-js 的 className 添加 :global 装饰
+perl -i -pe 's/(\.[^ ,]*DraftEditor[^ ,]*)/:global($1)/' src/editor/style.module.scss
+perl -i -pe 's/(\.[^ ,]*.DraftStyle[^ ,]*)/:global($1)/' src/renderers/block/style.module.scss

@@ -2,41 +2,49 @@
 import { classNameParser } from '../../../utils/style'
 import React, { FC, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { setMediaData, setMediaPosition, removeBlock } from '../../../utils'
+import { setMediaData, setMediaPosition } from '../../../utils'
 import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/Switch'
 import styles from './style.module.scss'
 import {
-  CallbackEditor,
-  CommonPickerProps,
-  ImageControlItem
+  BlockRenderProps,
+  ImageControlItem,
+  Hooks
 } from '../../../types'
-import { ContentBlock } from 'draft-js'
+import { ContentBlock, EditorState } from 'draft-js'
 import MeidaToolbar from '../../../components/MediaToolbar'
 const cls = classNameParser(styles)
 
-interface ImageProps extends CommonPickerProps {
-  editor: CallbackEditor
+interface ImageProps extends BlockRenderProps {
   imageEqualRatio: boolean
   entityKey: string
-  containerNode: HTMLElement
   block: ContentBlock
-  mediaData: any
   imageResizable: boolean
   imageControls: ImageControlItem[]
+  hooks: Hooks
+  lock: (locked: boolean) => void
+  getContainerNode: () => HTMLElement
+  readOnly: boolean
+  value: EditorState
+  onChange: (state: EditorState) => void
+  refresh: () => void
 }
 
 const Image: FC<ImageProps> = ({
   imageEqualRatio,
-  editor,
   getContainerNode,
-  containerNode,
   block,
+  onRemove,
   hooks,
   entityKey,
   mediaData,
+  readOnly,
+  lock,
   language,
   imageControls,
+  refresh,
+  value,
+  onChange,
   imageResizable
 }) => {
   const [toolbarVisible, setToolbarVisible] = useState(false)
@@ -105,15 +113,15 @@ const Image: FC<ImageProps> = ({
   }
 
   const lockEditor = () => {
-    editor.lockOrUnlockEditor(true)
+    lock(true)
   }
 
   const unlockEditor = () => {
-    editor.lockOrUnlockEditor(false)
+    lock(false)
   }
 
   const calcToolbarOffset = () => {
-    const container = getContainerNode ? getContainerNode() : containerNode
+    const container = getContainerNode()
     const viewRect = container
       ?.querySelector('.kedao-content')
       ?.getBoundingClientRect()
@@ -142,7 +150,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const handleDragStart = () => {
-    if (editor.editorProps.readOnly || editor.editorProps.disabled) {
+    if (readOnly) {
       return false
     }
 
@@ -177,12 +185,12 @@ const Image: FC<ImageProps> = ({
       const [method, param] = command.split('|')
       allCommands[method]?.(param)
     } else if (typeof command === 'function') {
-      command(block, mediaData, editor.getValue())
+      command(block, mediaData, value)
     }
   }
 
   const removeImage = () => {
-    editor.setValue(removeBlock(editor.getValue(), block))
+    onRemove()
     unlockEditor()
   }
 
@@ -219,10 +227,10 @@ const Image: FC<ImageProps> = ({
     }
 
     newLinkTarget = newLinkTarget === '_blank' ? '' : '_blank'
-    editor.setValue(
-      setMediaData(editor.getValue(), entityKey, { newLinkTarget })
+    onChange(
+      setMediaData(value, entityKey, { newLinkTarget })
     )
-    window.setImmediate(editor.forceRender)
+    window.setImmediate(() => refresh())
     return true
   }
 
@@ -239,8 +247,8 @@ const Image: FC<ImageProps> = ({
     }
 
     if (link !== null) {
-      editor.setValue(setMediaData(editor.getValue(), entityKey, { link }))
-      window.setImmediate(editor.forceRender)
+      onChange(setMediaData(value, entityKey, { link }))
+      window.setImmediate(() => refresh())
     }
     return true
   }
@@ -293,8 +301,8 @@ const Image: FC<ImageProps> = ({
       newImageSize = hookReturns
     }
 
-    editor.setValue(setMediaData(editor.getValue(), entityKey, newImageSize))
-    window.setImmediate(editor.forceRender)
+    onChange(setMediaData(value, entityKey, newImageSize))
+    window.setImmediate(() => refresh())
     return true
   }
 
@@ -331,8 +339,8 @@ const Image: FC<ImageProps> = ({
       newImageSize = hookReturns
     }
 
-    editor.setValue(setMediaData(editor.getValue(), entityKey, newImageSize))
-    window.setImmediate(editor.forceRender)
+    onChange(setMediaData(value, entityKey, newImageSize))
+    window.setImmediate(() => refresh())
     return true
   }
 
@@ -348,8 +356,8 @@ const Image: FC<ImageProps> = ({
       newFloat = hookReturns
     }
 
-    editor.setValue(
-      setMediaPosition(editor.getValue(), block, {
+    onChange(
+      setMediaPosition(value, block, {
         float: newFloat
       })
     )
@@ -372,8 +380,8 @@ const Image: FC<ImageProps> = ({
       newAlignment = hookReturns
     }
 
-    editor.setValue(
-      setMediaPosition(editor.getValue(), block, {
+    onChange(
+      setMediaPosition(value, block, {
         alignment: newAlignment
       })
     )
@@ -382,7 +390,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const showToolbar = (event) => {
-    if (editor.editorProps.readOnly || editor.editorProps.disabled) {
+    if (readOnly) {
       return false
     }
 

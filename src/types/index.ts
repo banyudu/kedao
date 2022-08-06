@@ -23,7 +23,6 @@ export interface CallbackEditor {
   setOnChange: (
     onChange: (editorState: EditorState, callback?) => void
   ) => void
-  lockOrUnlockEditor: (lock: boolean) => void
   editorProps: KedaoEditorProps
   editorState: EditorState
   finder: Finder
@@ -370,3 +369,15 @@ export type RenderMap = Immutable.Map<
 string,
 { element: React.ComponentType<any> }
 >
+
+export interface BlockRenderProps {
+  mediaData?: any
+  onRemove: () => void
+  language: Language
+}
+
+interface BlockRenderer {
+  component: (props: BlockRenderProps) => JSX.Element
+  editable: boolean
+}
+export type BlockRendererFn = (block: ContentBlock) => BlockRenderer

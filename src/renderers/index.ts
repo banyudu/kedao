@@ -1,13 +1,6 @@
-import _getBlockRenderMap from './block/blockRenderMap'
-import _getBlockRendererFn from './block/blockRendererFn'
-import _getBlockStyleFn from './block/blockStyleFn'
-import _getCustomStyleMap from './inline/inlineStyleMap'
-import _getCustomStyleFn from './inline/inlineStyleFn'
-import _getDecorators from './decorators'
-
-export const getBlockRenderMap = _getBlockRenderMap
-export const getBlockRendererFn = _getBlockRendererFn
-export const getBlockStyleFn = _getBlockStyleFn
-export const getCustomStyleMap = _getCustomStyleMap
-export const getCustomStyleFn = _getCustomStyleFn
-export const getDecorators = _getDecorators
+export { default as getBlockRenderMap } from './block/blockRenderMap'
+export { default as getBlockRendererFn } from './block/blockRendererFn'
+export { default as getBlockStyleFn } from './block/blockStyleFn'
+export { default as getCustomStyleMap } from './inline/inlineStyleMap'
+export { default as getCustomStyleFn } from './inline/inlineStyleFn'
+export { default as getDecorators } from './decorators'

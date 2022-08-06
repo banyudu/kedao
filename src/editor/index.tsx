@@ -79,7 +79,8 @@ import {
   MediaProps,
   Hooks,
   ImageControlItem,
-  ConvertOptions
+  ConvertOptions,
+  BlockRendererFn
 } from '../types'
 import {
   convertEditorStateToRaw,
@@ -218,7 +219,7 @@ export interface KedaoEditorProps {
   emojis?: string[]
   draftProps?: EditorProps
   blockRenderMap?: Immutable.Map<any, any> | Function
-  blockRendererFn?: Function
+  blockRendererFn?: BlockRendererFn
   customStyleFn?: Function
   customStyleMap?: Function
   blockStyleFn?: Function
@@ -874,7 +875,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       getValue: () => editorState,
       requestFocus,
       editorProps: editorProps,
-      lockOrUnlockEditor: setEditorLocked,
       finder,
       isLiving,
       tempColors,
@@ -954,8 +954,27 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     imageEqualRatio
   }
 
-  const blockRendererFn = getBlockRendererFn(
-    commonProps,
+  const getContainerNode = useCallback(
+    () => containerRef.current,
+    [containerRef.current]
+  )
+
+  const blockRendererFn: BlockRendererFn = getBlockRendererFn(
+    {
+      value: editorState,
+      onChange: setValue,
+      readOnly: editorProps.readOnly || editorProps.disabled,
+      imageControls,
+      imageResizable,
+      language: language as any,
+      imageEqualRatio,
+      hooks,
+      getContainerNode,
+      refresh: () => forceRender(),
+      lock: setEditorLocked,
+      extendAtomics,
+      editorId
+    },
     editorProps.blockRendererFn
   )
   const blockRenderMap = getBlockRenderMap(
@@ -995,10 +1014,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     placeholder = ''
   }
 
-  const getContainerNode = useCallback(
-    () => containerRef.current,
-    [containerRef.current]
-  )
   const controlBarColors = useMemo(
     () => [...colors, ...tempColors],
     [colors, tempColors]

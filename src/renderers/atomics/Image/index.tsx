@@ -20,7 +20,7 @@ interface ImageProps extends BlockRenderProps {
   entityKey: string
   block: ContentBlock
   imageResizable: boolean
-  imageControls: ImageControlItem[]
+  imageControls: readonly ImageControlItem[]
   hooks: Hooks
   lock: (locked: boolean) => void
   getContainerNode: () => HTMLElement

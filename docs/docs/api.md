@@ -31,7 +31,6 @@ sidebar_position: 2
 | textAligns               | 文字排版方向选项列表 | string[]                                                            |        |
 | letterSpacings           | 字符间距列表         | number[]                                                            |        |
 | emojis                   | emoji 列表           | string[]                                                            |        |
-| draftProps               |                      | EditorProps                                                         |        |
 | blockRenderMap           |                      | Immutable.Map \| Function                                           |        |
 | blockRendererFn          |                      | Function                                                            |        |
 | customStyleMap           |                      | Immutable.Map \| Function                                           |        |

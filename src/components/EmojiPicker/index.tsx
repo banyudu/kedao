@@ -12,7 +12,7 @@ export interface EmojiPickerProps
   extends CommonPickerProps,
   Pick<DropDownProps, 'getContainerNode'> {
   defaultCaption: DropDownProps['caption']
-  emojis: string[]
+  emojis: readonly string[]
 }
 
 const EmojiPicker: FC<EmojiPickerProps> = ({

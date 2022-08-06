@@ -2,7 +2,7 @@
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { CommonPickerProps, Language } from '../../types'
+import { CommonPickerProps, FontFamily, Language } from '../../types'
 import {
   toggleSelectionFontFamily,
   selectionHasInlineStyle
@@ -16,7 +16,7 @@ const cls = classNameParser(styles)
 export interface FontFamilyPickerProps
   extends CommonPickerProps,
   Pick<DropDownProps, 'getContainerNode'> {
-  fontFamilies: any[]
+  fontFamilies: readonly FontFamily[]
   defaultCaption: DropDownProps['caption']
   language: Language
 }

@@ -20,7 +20,7 @@ interface GetRenderFnParams extends Omit<BlockRenderProps, 'onRemove'> {
   imageResizable: boolean
   readOnly: boolean
   hooks: Hooks
-  imageControls: ImageControlItem[]
+  imageControls: readonly ImageControlItem[]
   lock: (locked: boolean) => void
   getContainerNode: () => HTMLDivElement
   refresh: () => void
@@ -114,7 +114,7 @@ const myGetRenderFn = (superProps: GetRenderFnParams, customBlockRendererFn: Blo
 
   const blockType = block.getType()
 
-  const customRenderer = customBlockRendererFn?.(block) ?? null
+  const customRenderer = customBlockRendererFn?.(block, { editorState: value }) ?? null
 
   if (customRenderer) {
     return customRenderer

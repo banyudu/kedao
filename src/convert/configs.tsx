@@ -39,29 +39,6 @@ const spreadNodeAttributes = (attributesObject) => {
     .replace(/^\s$/, '')
 }
 
-export const defaultFontFamilies = [
-  {
-    name: 'Araial',
-    family: 'Arial, Helvetica, sans-serif'
-  },
-  {
-    name: 'Georgia',
-    family: 'Georgia, serif'
-  },
-  {
-    name: 'Impact',
-    family: 'Impact, serif'
-  },
-  {
-    name: 'Monospace',
-    family: '"Courier New", Courier, monospace'
-  },
-  {
-    name: 'Tahoma',
-    family: "tahoma, arial, 'Hiragino Sans GB', 宋体, sans-serif"
-  }
-]
-
 export const getHexColor = (color: string): string | null => {
   color = color.replace('color:', '').replace(';', '').replace(' ', '')
 

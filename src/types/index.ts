@@ -12,7 +12,7 @@ export { EditorState, EditorProps }
 
 export interface ConvertOptions {
   editorId?: string
-  fontFamilies?: Array<{ name: string, family: string }>
+  fontFamilies?: readonly FontFamily[]
   styleImportFn?: Function
   styleExportFn?: Function
   entityImportFn?: Function
@@ -115,6 +115,7 @@ export interface MediaProps {
   onCancel: () => void
   onInsert: (medias: any) => void
   onChange: () => void
+  uploadFn?: Function
   accepts: MediaType['accepts']
   externals: {
     audio?: boolean
@@ -354,4 +355,9 @@ interface BlockRenderer {
   component: (props: BlockRenderProps) => JSX.Element
   editable: boolean
 }
-export type BlockRendererFn = (block: ContentBlock) => BlockRenderer
+export type BlockRendererFn = (block: ContentBlock, { editorState: EditorState }) => BlockRenderer
+
+export interface FontFamily {
+  name: string
+  family: string
+}

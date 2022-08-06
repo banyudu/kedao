@@ -1,11 +1,11 @@
 import { convertToHTML, convertFromHTML } from 'draft-convert'
 import {
   getToHTMLConfig,
-  getFromHTMLConfig,
-  defaultFontFamilies
+  getFromHTMLConfig
 } from './configs'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import { ConvertOptions } from '../types'
+import { defaultFontFamilies } from '../constants'
 
 const defaultConvertOptions = {
   fontFamilies: defaultFontFamilies

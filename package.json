@@ -28,7 +28,12 @@
     "postversion": "git push --follow-tags && npm publish",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
-    "test": "npm run build",
+    "test": "run-s test:build",
+    "test:build": "run-s test:build:self test:build:docs test:build:cra test:build:nextjs",
+    "test:build:self": "npm run build",
+    "test:build:docs": "cd docs && npm run build && cd ..",
+    "test:build:cra": "cd examples/with-cra && npm run build && cd ..",
+    "test:build:nextjs": "cd examples/with-nextjs && rm -rf node_modules/kedao/ && pnpm i --force && npm run build && cd ..",
     "version": "standard-version",
     "watch:css": "gulp watch",
     "watch:js": "ttsc -w"

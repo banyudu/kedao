@@ -69,7 +69,6 @@ import ControlBar, { ControlBarProps } from '../components/ControlBar'
 import 'draft-js/dist/Draft.css'
 import styles from './style.module.scss'
 import {
-  CallbackEditor,
   ControlItem,
   BuiltInControlNames,
   DropDownControlItem,
@@ -440,7 +439,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     }
   }, [defaultValue, value])
 
-  let handleChange = (
+  const handleChange = (
     editorState: EditorState,
     callback?: (state: EditorState) => void
   ) => {
@@ -478,7 +477,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const keyCommandHandlers = (command: string, editorState: EditorState) => {
     if (
-      editorProps.handleKeyCommand?.(command, editorState, callbackEditor) ===
+      editorProps.handleKeyCommand?.(command, editorState) ===
       'handled'
     ) {
       return 'handled'
@@ -561,7 +560,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const handleReturn = (event, editorState: EditorState) => {
     if (
-      editorProps.handleReturn?.(event, editorState, callbackEditor) ===
+      editorProps.handleReturn?.(event, editorState) ===
       'handled'
     ) {
       return 'handled'
@@ -622,7 +621,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 
   const handleBeforeInput = (chars, editorState: EditorState) => {
     if (
-      editorProps.handleBeforeInput?.(chars, editorState, callbackEditor) ===
+      editorProps.handleBeforeInput?.(chars, editorState) ===
       'handled'
     ) {
       return 'handled'
@@ -706,8 +705,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     if (
       editorProps.handleDroppedFiles?.(
         selectionState,
-        files,
-        callbackEditor
+        files
       ) === 'handled'
     ) {
       return 'handled'
@@ -717,7 +715,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   }
 
   const handlePastedFiles = (files) => {
-    if (editorProps.handlePastedFiles?.(files, callbackEditor) === 'handled') {
+    if (editorProps.handlePastedFiles?.(files) === 'handled') {
       return 'handled'
     }
 
@@ -760,8 +758,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
       editorProps.handlePastedText?.(
         text,
         html,
-        editorState,
-        callbackEditor
+        editorState
       ) === 'handled'
     ) {
       return 'handled'
@@ -783,7 +780,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
   }
 
   const handleCompositionStart = () => {
-    const { editorState } = callbackEditor
     const selectedBlocks = getSelectedBlocks(editorState)
 
     if (selectedBlocks && selectedBlocks.length > 1) {
@@ -867,82 +863,37 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
     return result
   }, [media])
 
-  const callbackEditor = useMemo<CallbackEditor>(
-    () => ({
-      isFullscreen,
-      editorState,
-      setValue,
-      getValue: () => editorState,
-      requestFocus,
-      editorProps: editorProps,
-      finder,
-      isLiving,
-      tempColors,
-      setTempColors: (tempColors, callback) => {
-        setTempColors(tempColors)
-        callback()
-      },
-      onChange: handleChange,
-      setOnChange: (onChange) => {
-        handleChange = onChange
-      },
-      convertOptions: convertOptions,
-      blur: () => {
-        draftInstanceRef.current?.blur()
-      },
-      readOnly: props.readOnly,
-      forceRender,
-      commands: {
-        undo: () => {
-          setValue(undo(editorState))
-        },
-        redo: () => {
-          setValue(redo(editorState))
-        },
-        removeSelectionInlineStyles: () => {
-          setValue(removeSelectionInlineStyles(editorState))
-        },
-        insertHorizontalLine: () => {
-          setValue(insertHorizontalLine(editorState))
-        },
-        clearEditorContent: () => {
-          setValue(clear(editorState), (editorState: EditorState) => {
-            setValue(toggleSelectionIndent(editorState, 0))
-          })
-        },
-        toggleFullscreen: () => {
-          let newValue = null
-          setIsFullscreen((v) => {
-            newValue = !v
-            return newValue
-          })
-          editorProps.onFullscreen?.(newValue)
-        }
-      }
-    }),
-    [
-      isFullscreen,
-      editorState,
-      setValue,
-      requestFocus,
-      editorProps,
-      setEditorLocked,
-      finder,
-      isLiving,
-      tempColors,
-      handleChange,
-      convertOptions,
-      draftInstanceRef.current,
-      props.readOnly,
-      forceRender,
-      setIsFullscreen
-    ]
-  )
+  const commands = {
+    undo: () => {
+      setValue(undo(editorState))
+    },
+    redo: () => {
+      setValue(redo(editorState))
+    },
+    removeSelectionInlineStyles: () => {
+      setValue(removeSelectionInlineStyles(editorState))
+    },
+    insertHorizontalLine: () => {
+      setValue(insertHorizontalLine(editorState))
+    },
+    clearEditorContent: () => {
+      setValue(clear(editorState), (editorState: EditorState) => {
+        setValue(toggleSelectionIndent(editorState, 0))
+      })
+    },
+    toggleFullscreen: () => {
+      let newValue = null
+      setIsFullscreen((v) => {
+        newValue = !v
+        return newValue
+      })
+      editorProps.onFullscreen?.(newValue)
+    }
+  }
 
   const { unitExportFn } = convertOptions
 
   const commonProps = {
-    editor: callbackEditor,
     editorId,
     hooks,
     editorState,
@@ -1066,7 +1017,7 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
           isFullscreen={isFullscreen}
           onChange={setValue}
           onRequestFocus={requestFocus}
-          commands={callbackEditor.commands}
+          commands={commands}
         />
         {componentBelowControlBar}
         <div
@@ -1107,7 +1058,6 @@ const KedaoEditor: FC<KedaoEditorProps> = (props) => {
 };
 
 (KedaoEditor as any).defaultProps = defaultProps
-// KedaoEditor.use = useExtension
 export default KedaoEditor
 
 export { EditorState }

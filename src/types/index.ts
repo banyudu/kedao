@@ -7,34 +7,8 @@ import {
   CompositeDecorator
 } from 'draft-js'
 import * as React from 'react'
-import { KedaoEditorProps } from '../editor'
 
 export { EditorState, EditorProps }
-
-/**
- * editor 提供给组件的回调函数集合
- */
-export interface CallbackEditor {
-  isFullscreen: boolean
-  setValue: (v: EditorState) => void
-  getValue: () => EditorState
-  requestFocus: () => void
-  onChange: (editorState: EditorState, callback?) => void
-  setOnChange: (
-    onChange: (editorState: EditorState, callback?) => void
-  ) => void
-  editorProps: KedaoEditorProps
-  editorState: EditorState
-  finder: Finder
-  isLiving: boolean
-  tempColors: string[]
-  setTempColors: (colors: string[], callback: () => void) => void
-  convertOptions: ConvertOptions
-  blur: () => void
-  readOnly: boolean
-  forceRender: () => void
-  commands: Record<string, () => void>
-}
 
 export interface ConvertOptions {
   editorId?: string

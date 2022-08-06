@@ -2,19 +2,8 @@
 import { classNameParser } from '../utils/style'
 import React, { useState, useRef, useEffect } from 'react'
 import { UniqueIndex } from '../utils'
-import {
-  MdAdd,
-  MdAudiotrack,
-  MdClose,
-  MdCheck,
-  MdCode,
-  MdDescription,
-  MdDone,
-  MdMovie,
-  MdRemove
-} from 'react-icons/md'
-import { defaultIconProps } from '../configs/props'
 import styles from './styles.module.scss'
+import Icon from '../components/Icon'
 const cls = classNameParser(styles)
 
 const defaultAccepts = {
@@ -117,7 +106,7 @@ const FinderView = ({
     return (
       <ul className={cls('kedao-list')}>
         <li className={cls('kedao-add-item')}>
-          <MdAdd size={50} />
+          <Icon type='add' size={50} />
           <input
             accept={fileAccept}
             onChange={reslovePickedFiles}
@@ -154,7 +143,7 @@ const FinderView = ({
               previewerComponents = (
                 <div className={cls('kedao-icon kedao-video')} title={item.url}>
                   {progressMarker}
-                  <MdMovie {...defaultIconProps} />
+                  <Icon type='movie' />
                   <span>{item.name || item.url}</span>
                 </div>
               )
@@ -163,7 +152,7 @@ const FinderView = ({
               previewerComponents = (
                 <div className={cls('kedao-icon kedao-audio')} title={item.url}>
                   {progressMarker}
-                  <MdAudiotrack {...defaultIconProps} />
+                  <Icon type='audiotrack' />
                   <span>{item.name || item.url}</span>
                 </div>
               )
@@ -172,7 +161,7 @@ const FinderView = ({
               previewerComponents = (
                 <div className={cls('kedao-icon kedao-embed')} title={item.url}>
                   {progressMarker}
-                  <MdCode {...defaultIconProps} />
+                  <Icon type='code' />
                   <span>{item.name || language.embed}</span>
                 </div>
               )
@@ -185,7 +174,7 @@ const FinderView = ({
                   href={item.url}
                 >
                   {progressMarker}
-                  <MdDescription {...defaultIconProps} />
+                  <Icon type='description' />
                   <span>{item.name || item.url}</span>
                 </a>
               )
@@ -208,11 +197,11 @@ const FinderView = ({
               {previewerComponents}
               {item.selected && (
                 <div className={cls('kedao-icon-selected')}>
-                  <MdCheck size={50} color="white" />
+                  <Icon type='check' size={50} color='white' />
                 </div>
               )}
-              <MdClose
-                {...defaultIconProps}
+              <Icon
+                type='audiotrack'
                 data-id={item.id}
                 onClick={removeItem}
                 className={cls('kedao-item-remove braft-icon-close')}
@@ -452,7 +441,7 @@ const FinderView = ({
           <div className={cls('kedao-list-wrap')}>
             <div className={cls('kedao-list-tools')}>
               <span onClick={selectAllItems} className={cls('kedao-select-all')}>
-                <MdDone {...defaultIconProps} />
+                <Icon type='done' />
                 {language.selectAll}
               </span>
               <span
@@ -460,7 +449,7 @@ const FinderView = ({
                 className={cls('kedao-deselect-all')}
                 {...{ disabled: !confirmable }}
               >
-                <MdClose {...defaultIconProps} />
+                <Icon type='close' />
                 {language.deselect}
               </span>
               <span
@@ -468,7 +457,7 @@ const FinderView = ({
                 className={cls('kedao-remove-selected')}
                 {...{ disabled: !confirmable }}
               >
-                <MdRemove {...defaultIconProps} />
+                <Icon type='remove' />
                 {language.removeSelected}
               </span>
             </div>
@@ -565,13 +554,14 @@ const FinderView = ({
               {showExternalForm
                 ? (
                 <span className={cls('kedao-bottom-text')}>
-                  <MdAdd {...defaultIconProps} />
+                  <Icon type='add' />
                   {language.addLocalFile}
                 </span>
                   )
                 : (
                 <span className={cls('kedao-bottom-text')}>
-                  <MdAdd {...defaultIconProps} /> {language.addExternalSource}
+                  <Icon type='add' />
+                  {language.addExternalSource}
                 </span>
                   )}
             </span>

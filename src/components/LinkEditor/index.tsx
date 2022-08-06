@@ -12,13 +12,12 @@ import Switch from '../Switch'
 import DropDown from '../DropDown'
 import Button from '../Button'
 import ControlGroup from '../ControlGroup'
-import { MdClose, MdLink, MdLinkOff } from 'react-icons/md'
 import styles from './style.module.scss'
-import { defaultIconProps } from '../../configs/props'
 import { CommonPickerProps } from '../../types'
 import { useAtom } from 'jotai'
 import { linkEditorActiveAtom } from './states'
 import { useResetState } from '../../utils/use-reset-state'
+import Icon from '../Icon'
 const cls = classNameParser(styles)
 
 export interface LinkEditorProps extends CommonPickerProps {
@@ -137,7 +136,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
     return true
   }
 
-  const caption = <MdLink {...defaultIconProps} />
+  const caption = <Icon type='link' />
 
   return (
     <ControlGroup>
@@ -198,7 +197,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
               className={cls('primary button-remove-link pull-left')}
             >
               <span>{language.linkEditor.removeLink}</span>
-              <MdClose {...defaultIconProps} />
+              <Icon type='close' />
             </a>
             <button
               type="button"
@@ -224,7 +223,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
         onClick={handleUnlink}
         disabled={!textSelected || !href}
       >
-        <MdLinkOff {...defaultIconProps} />
+        <Icon type='link-off' />
       </Button>
     </ControlGroup>
   )

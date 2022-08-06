@@ -3,10 +3,9 @@ import { classNameParser } from '../../utils/style'
 import React, { FC, useEffect, useState } from 'react'
 import mergeClassNames from 'merge-class-names'
 import styles from './style.module.scss'
-import { MdClose } from 'react-icons/md'
-import { defaultIconProps } from '../../configs/props'
 import { ModalProps } from '../../types'
 import { Portal } from 'react-portal'
+import Icon from '../Icon'
 const cls = classNameParser(styles)
 
 const Modal: FC<ModalProps> = ({
@@ -102,7 +101,7 @@ const Modal: FC<ModalProps> = ({
                 onClick={handleClose}
                 className={cls('kedao-modal-close-button')}
               >
-                <MdClose {...defaultIconProps} />
+                <Icon type='close' />
               </button>
             )}
           </div>

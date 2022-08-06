@@ -1,8 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { useState, useEffect, FC } from 'react'
-import { MdFormatIndentDecrease, MdFormatIndentIncrease } from 'react-icons/md'
-import { defaultIconProps } from '../../configs/props'
 import { CommonPickerProps } from '../../types'
 import {
   decreaseSelectionIndent,
@@ -12,6 +10,7 @@ import {
 import ControlGroup from '../ControlGroup'
 import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
+import Icon from '../Icon'
 const cls = classNameParser(styles)
 
 const TextIndent: FC<CommonPickerProps> = ({
@@ -48,7 +47,7 @@ const TextIndent: FC<CommonPickerProps> = ({
                   }`)}
         onClick={increaseIndent}
       >
-        <MdFormatIndentIncrease {...defaultIconProps} />
+        <Icon type='format-indent-increase' />
       </Button>
       <Button
         key={1}
@@ -58,7 +57,7 @@ const TextIndent: FC<CommonPickerProps> = ({
         className={cls('button-indent-decrease')}
         onClick={decreaseIndent}
       >
-        <MdFormatIndentDecrease {...defaultIconProps} />
+        <Icon type='format-indent-decrease' />
       </Button>
     </ControlGroup>
   )

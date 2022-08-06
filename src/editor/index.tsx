@@ -62,7 +62,6 @@ import {
   compositeBlockImportFn,
   compositeBlockExportFn,
   getPropInterceptors
-  // useExtension
 } from '../helpers/extension'
 import ControlBar, { ControlBarProps } from '../components/ControlBar'
 

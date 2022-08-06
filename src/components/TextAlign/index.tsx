@@ -5,23 +5,17 @@ import { v4 as uuidv4 } from 'uuid'
 import { getSelectionBlockData, toggleSelectionAlignment } from '../../utils'
 import mergeClassNames from 'merge-class-names'
 import ControlGroup from '../ControlGroup'
-import {
-  MdFormatAlignCenter,
-  MdFormatAlignJustify,
-  MdFormatAlignLeft,
-  MdFormatAlignRight
-} from 'react-icons/md'
-import { defaultIconProps } from '../../configs/props'
 import { CommonPickerProps } from '../../types'
 import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
+import Icon from '../Icon'
 const cls = classNameParser(styles)
 
 const iconMap = {
-  left: <MdFormatAlignLeft {...defaultIconProps} />,
-  center: <MdFormatAlignCenter {...defaultIconProps} />,
-  right: <MdFormatAlignRight {...defaultIconProps} />,
-  justify: <MdFormatAlignJustify {...defaultIconProps} />
+  left: <Icon type='format-align-left' />,
+  center: <Icon type='format-align-center' />,
+  right: <Icon type='format-align-right' />,
+  justify: <Icon type='format-align-justify' />
 }
 
 export interface TextAlignProps extends CommonPickerProps {

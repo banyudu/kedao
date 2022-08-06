@@ -14,8 +14,7 @@ import {
 import DropDown, { DropDownProps } from '../DropDown'
 import BuiltinColorPicker from '../ColorPicker'
 import styles from './style.module.scss'
-import { MdFormatColorText } from 'react-icons/md'
-import { defaultIconProps } from '../../configs/props'
+import Icon from '../Icon'
 import { Hooks, EditorState, Language } from '../../types'
 const cls = classNameParser(styles)
 
@@ -110,7 +109,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   }, [editorState])
 
   const caption = (
-    <MdFormatColorText {...defaultIconProps} style={captionStyle} />
+    <Icon type='format-color-text' style={captionStyle} />
   )
 
   const ColorPicker = colorPicker || BuiltinColorPicker

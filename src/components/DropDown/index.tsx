@@ -11,9 +11,8 @@ import React, {
 import mergeClassNames from 'merge-class-names'
 import ResponsiveHelper from '../../helpers/responsive'
 import styles from './style.module.scss'
-import { MdArrowDropDown } from 'react-icons/md'
-import { defaultIconProps } from '../../configs/props'
 import { useClickOutside, usePrevious, useSyncedRef } from '@react-hookz/web'
+import Icon from '../Icon'
 const cls = classNameParser(styles)
 
 export interface DropDownProps {
@@ -173,7 +172,7 @@ const DropDown = forwardRef<any, DropDownProps>(
             ref={dropDownHandlerElement}
           >
             <span>{caption}</span>
-            {showArrow ? <MdArrowDropDown {...defaultIconProps} /> : null}
+            {showArrow ? <Icon type='arrow-drop-down' /> : null}
           </button>
             )}
         <div

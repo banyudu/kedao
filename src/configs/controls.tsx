@@ -1,36 +1,6 @@
 import React from 'react'
-import {
-  MdUndo,
-  MdRedo,
-  MdClear,
-  MdFormatBold,
-  MdHorizontalRule,
-  MdFormatItalic,
-  MdFormatUnderlined,
-  MdFormatStrikethrough,
-  MdSuperscript,
-  MdSubscript,
-  MdFormatQuote,
-  MdCode,
-  MdFormatListBulleted,
-  MdFormatListNumbered,
-  MdLibraryMusic,
-  MdInsertEmoticon,
-  MdClearAll,
-  MdFullscreen,
-  MdFullscreenExit,
-  MdFormatAlignLeft,
-  MdFormatAlignRight,
-  MdFormatAlignCenter,
-  MdFormatSize,
-  MdLink,
-  MdRemove
-} from 'react-icons/md'
+import Icon from '../components/Icon'
 import { ControlItem, Language } from '../types'
-
-import { defaultIconProps } from './props'
-
-const iconProps = { ...defaultIconProps }
 
 export default function Controls (
   lang: Language,
@@ -40,70 +10,70 @@ export default function Controls (
     undo: {
       key: 'undo',
       title: lang.controls.undo,
-      text: <MdUndo {...iconProps} />,
+      text: <Icon type='undo' />,
       type: 'editor-method',
       command: 'undo'
     },
     redo: {
       key: 'redo',
       title: lang.controls.redo,
-      text: <MdRedo {...iconProps} />,
+      text: <Icon type='redo' />,
       type: 'editor-method',
       command: 'redo'
     },
     'remove-styles': {
       key: 'remove-styles',
       title: lang.controls.removeStyles,
-      text: <MdClear {...iconProps} />,
+      text: <Icon type='clear' />,
       type: 'editor-method',
       command: 'removeSelectionInlineStyles'
     },
     hr: {
       key: 'hr',
       title: lang.controls.hr,
-      text: <MdHorizontalRule {...iconProps} />,
+      text: <Icon type='horizontal-rule' />,
       type: 'editor-method',
       command: 'insertHorizontalLine'
     },
     bold: {
       key: 'bold',
       title: lang.controls.bold,
-      text: <MdFormatBold {...iconProps} />,
+      text: <Icon type='format-bold' />,
       type: 'inline-style',
       command: 'bold'
     },
     italic: {
       key: 'italic',
       title: lang.controls.italic,
-      text: <MdFormatItalic {...iconProps} />,
+      text: <Icon type='format-italic' />,
       type: 'inline-style',
       command: 'italic'
     },
     underline: {
       key: 'underline',
       title: lang.controls.underline,
-      text: <MdFormatUnderlined {...iconProps} />,
+      text: <Icon type='format-underlined' />,
       type: 'inline-style',
       command: 'underline'
     },
     'strike-through': {
       key: 'strike-through',
       title: lang.controls.strikeThrough,
-      text: <MdFormatStrikethrough {...iconProps} />,
+      text: <Icon type='format-strikethrough' />,
       type: 'inline-style',
       command: 'strikethrough'
     },
     superscript: {
       key: 'superscript',
       title: lang.controls.superScript,
-      text: <MdSuperscript {...iconProps} />,
+      text: <Icon type='superscript' />,
       type: 'inline-style',
       command: 'superscript'
     },
     subscript: {
       key: 'subscript',
       title: lang.controls.subScript,
-      text: <MdSubscript {...iconProps} />,
+      text: <Icon type='subscript' />,
       type: 'inline-style',
       command: 'subscript'
     },
@@ -115,28 +85,28 @@ export default function Controls (
     blockquote: {
       key: 'blockquote',
       title: lang.controls.blockQuote,
-      text: <MdFormatQuote {...iconProps} />,
+      text: <Icon type='format-quote' />,
       type: 'block-type',
       command: 'blockquote'
     },
     code: {
       key: 'code',
       title: lang.controls.code,
-      text: <MdCode {...iconProps} />,
+      text: <Icon type='code' />,
       type: 'block-type',
       command: 'code-block'
     },
     'list-ul': {
       key: 'list-ul',
       title: lang.controls.unorderedList,
-      text: <MdFormatListBulleted {...iconProps} />,
+      text: <Icon type='format-list-bulleted' />,
       type: 'block-type',
       command: 'unordered-list-item'
     },
     'list-ol': {
       key: 'list-ol',
       title: lang.controls.orderedList,
-      text: <MdFormatListNumbered {...iconProps} />,
+      text: <Icon type='format-list-numbered' />,
       type: 'block-type',
       command: 'ordered-list-item'
     },
@@ -183,19 +153,19 @@ export default function Controls (
     media: {
       key: 'media',
       title: lang.controls.media,
-      text: <MdLibraryMusic {...iconProps} />,
+      text: <Icon type='library-music' />,
       type: 'media'
     },
     emoji: {
       key: 'emoji',
       title: lang.controls.emoji,
-      text: <MdInsertEmoticon {...iconProps} />,
+      text: <Icon type='insert-emoticon' />,
       type: 'emoji'
     },
     clear: {
       key: 'clear',
       title: lang.controls.clear,
-      text: <MdClearAll {...iconProps} />,
+      text: <Icon type='clear-all' />,
       type: 'editor-method',
       command: 'clearEditorContent'
     },
@@ -206,10 +176,10 @@ export default function Controls (
         : lang.controls.fullscreen,
       text: isFullscreen
         ? (
-        <MdFullscreenExit {...iconProps} />
+        <Icon type='fullscreen-exit' />
           )
         : (
-        <MdFullscreen {...iconProps} />
+        <Icon type='fullscreen' />
           ),
       type: 'editor-method',
       command: 'toggleFullscreen'
@@ -235,35 +205,35 @@ export default function Controls (
 
 export const imageControlItems = {
   'float-left': {
-    text: <MdFormatAlignLeft {...iconProps} />,
+    text: <Icon type='format-align-left' />,
     command: 'setImageFloat|left'
   },
   'float-right': {
-    text: <MdFormatAlignRight {...iconProps} />,
+    text: <Icon type='format-align-right' />,
     command: 'setImageFloat|right'
   },
   'align-left': {
-    text: <MdFormatAlignLeft {...iconProps} />,
+    text: <Icon type='format-align-left' />,
     command: 'setImageAlignment|left'
   },
   'align-center': {
-    text: <MdFormatAlignCenter {...iconProps} />,
+    text: <Icon type='format-align-center' />,
     command: 'setImageAlignment|center'
   },
   'align-right': {
-    text: <MdFormatAlignRight {...iconProps} />,
+    text: <Icon type='format-align-right' />,
     command: 'setImageAlignment|right'
   },
   size: {
-    text: <MdFormatSize {...iconProps} />,
+    text: <Icon type='format-size' />,
     command: 'toggleSizeEditor'
   },
   link: {
-    text: <MdLink {...iconProps} />,
+    text: <Icon type='link' />,
     command: 'toggleLinkEditor'
   },
   remove: {
-    text: <MdRemove {...iconProps} />,
+    text: <Icon type='remove' />,
     command: 'removeImage'
   }
 }

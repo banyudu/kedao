@@ -7,7 +7,6 @@ import React, {
   useMemo,
   useCallback
 } from 'react'
-import Finder from '../finder'
 import {
   toggleSelectionIndent,
   insertHorizontalLine,
@@ -317,7 +316,7 @@ const filterColors = (colors: readonly string[], colors2: readonly string[]) => 
 }
 
 const KedaoEditor: FC<KedaoEditorProps> = ({
-  language: locale = 'en',
+  language: locale = 'zh',
   controls = defaultControls as any,
   excludeControls = [],
   handlePastedText,
@@ -380,20 +379,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   const [editorLocked, setEditorLocked] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const isControlEnabled = (controlName: BuiltInControlNames) => {
-    if (excludeControls.includes(controlName)) {
-      return false
-    }
-    return (
-      controls.some(item => {
-        return typeof item === 'string'
-          ? item === controlName
-          : item.type === controlName
-      }) ||
-      extendControls.some(item => item.key === controlName)
-    )
-  }
-
   useEffect(() => {
     setLoading(false)
   }, [])
@@ -440,23 +425,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   const containerRef = useRef(null)
-  const isMediaEnabled = isControlEnabled('media')
-
-  const finder = useMemo(() => {
-    if (!isMediaEnabled) {
-      return null
-    }
-    const { uploadFn, validateFn, items }: any = {
-      ...media
-    }
-
-    return new Finder({
-      items,
-      locale,
-      uploader: uploadFn,
-      validator: validateFn
-    })
-  }, [isMediaEnabled])
 
   useEffect(() => {
     setIsLiving(true)
@@ -588,7 +556,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       }
     }
 
-    const nextEditorState = handleKeyCommand(editorState, command)
+    const nextEditorState = handleKeyCommand?.(editorState, command)
 
     if (nextEditorState) {
       setValue(nextEditorState)
@@ -714,26 +682,26 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       ...media
     }
 
+    const upload = (file) => {
+      controlBarInstanceRef?.current.uploadImage(file, image => {
+        if (isLiving) {
+          setValue(insertMedias(editorState, [image]))
+        }
+      })
+    }
+
     if (pasteImage) {
       files.slice(0, imagePasteLimit).forEach(file => {
-        if (file && file.type.indexOf('image') > -1 && finder) {
+        if (file && file.type.indexOf('image') > -1 && controlBarInstanceRef.current) {
           const validateResult = validateFn ? validateFn(file) : true
           if (validateResult instanceof Promise) {
             validateResult
               .then(() => {
-                finder.uploadImage(file, image => {
-                  if (isLiving) {
-                    setValue(insertMedias(editorState, [image]))
-                  }
-                })
+                upload(file)
               })
               .catch(console.error)
           } else if (validateResult) {
-            finder.uploadImage(file, image => {
-              if (isLiving) {
-                setValue(insertMedias(editorState, [image]))
-              }
-            })
+            upload(file)
           }
         }
       })
@@ -971,7 +939,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
         <ControlBar
           ref={controlBarInstanceRef}
           editorState={editorState}
-          finder={finder}
           getContainerNode={getContainerNode}
           className={cls(controlBarClassName)}
           style={controlBarStyle}

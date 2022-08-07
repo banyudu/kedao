@@ -204,7 +204,7 @@ const FinderView = ({
                 type='audiotrack'
                 data-id={item.id}
                 onClick={removeItem}
-                className={cls('kedao-item-remove braft-icon-close')}
+                className={cls('kedao-item-remove')}
               />
               <span className={cls('kedao-item-title')}>{item.name}</span>
             </li>

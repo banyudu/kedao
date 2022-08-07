@@ -74,6 +74,31 @@ const lang: Language = {
     video: 'Wideo',
     audio: 'Audio',
     embed: 'Obiekt osadzony'
+  },
+  finder: {
+    remove: 'Usuń',
+    cancel: 'Anuluj',
+    confirm: 'Potwierdź',
+    insert: 'Wstaw wybrane elementy',
+    width: 'Szerokość',
+    height: 'Wysokość',
+    image: 'Obraz',
+    video: 'Wideo',
+    audio: 'Dźwięk',
+    embed: 'Obiekt',
+    caption: 'Biblioteka mediów',
+    dragTip: 'Kliknij lub przenieś tu pliki',
+    dropTip: 'Upuść aby dodać plik',
+    selectAll: 'Zaznacz wszystko',
+    deselect: 'Odznacz',
+    removeSelected: 'Usuń wybrane',
+    externalInputPlaceHolder: 'Nazwa źródła|Adres URL',
+    externalInputTip:
+      'Oddziel nazwę i adres URL źródła z pomocą "|", Potwierdź Enter-em',
+    addLocalFile: 'Dodaj z komputera',
+    addExternalSource: 'Dodaj z Internetu',
+    unnamedItem: 'Bez nazwy',
+    confirmInsert: 'Dodaj wybrane elementy'
   }
 }
 

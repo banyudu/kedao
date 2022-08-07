@@ -250,8 +250,6 @@ export interface KedaoEditorProps {
   | 'jpn'
   | 'kr'
   | 'pl'
-  | 'fr'
-  | 'vi-vn'
   controls?: readonly ControlItem[] | readonly BuiltInControlItem[]
   excludeControls?: BuiltInControlNames[]
   extendControls?: Array<
@@ -431,7 +429,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 
     return () => {
       setIsLiving(false)
-      controlBarInstanceRef.current?.closeFinder()
     }
   }, [])
 

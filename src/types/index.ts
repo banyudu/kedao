@@ -101,6 +101,30 @@ export interface Language {
     audio: string
     embed: string
   }
+  finder: {
+    remove: string
+    cancel: string
+    confirm: string
+    insert: string
+    width: string
+    height: string
+    image: string
+    video: string
+    audio: string
+    embed: string
+    caption: string
+    dragTip: string
+    dropTip: string
+    selectAll: string
+    deselect: string
+    removeSelected: string
+    externalInputPlaceHolder: string
+    externalInputTip: string
+    addLocalFile: string
+    addExternalSource: string
+    unnamedItem: string
+    confirmInsert: string
+  }
 }
 
 export interface Finder {
@@ -112,8 +136,9 @@ export interface MediaProps {
   onClose?: () => void
   onCancel: () => void
   onInsert: (medias: any) => void
-  onChange: () => void
+  onChange: (files: File[]) => void
   uploadFn?: Function
+  validateFn?: (file: File) => boolean | PromiseLike<any>
   accepts: MediaType['accepts']
   externals: {
     audio?: boolean

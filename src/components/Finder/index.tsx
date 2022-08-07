@@ -1,10 +1,17 @@
-
-import { classNameParser } from '../utils/style'
-import React, { useState, useRef, useEffect } from 'react'
-import { UniqueIndex } from '../utils'
+import React, { forwardRef, useEffect, useState, useRef, useImperativeHandle, useMemo } from 'react'
+import { UniqueIndex, compressImage } from '../../utils'
+import { classNameParser } from '../../utils/style'
 import styles from './styles.module.scss'
-import Icon from '../components/Icon'
+import Icon from '../Icon'
+import { Language, MediaProps } from '../../types'
+
 const cls = classNameParser(styles)
+
+const defaultValidator = () => true
+
+export interface FinderRef {
+  uploadImage: (file, callback) => void
+}
 
 const defaultAccepts = {
   image: 'image/png,image/jpeg,image/gif,image/webp,image/apng,image/svg',
@@ -19,45 +26,250 @@ const defaultExternals = {
   embed: true
 }
 
-const FinderView = ({
+export interface FinderProps extends MediaProps {
+  language: Language
+}
+
+const Finder = forwardRef<FinderRef, FinderProps>(({
+  uploadFn = defaultValidator,
+  validateFn,
   accepts = defaultAccepts,
   externals = defaultExternals,
-  onChange,
-  controller,
   language,
-  hideProgress,
-  onBeforeDeselect,
-  onDeselect,
-  onBeforeSelect,
-  onSelect,
-  onBeforeRemove,
-  onRemove,
-  onFileSelect,
   onCancel,
-  onBeforeInsert,
   onInsert
-}) => {
-  const dragCounter = useRef(0)
-  const initialItems = controller.getItems()
+}, ref) => {
+  useImperativeHandle(ref, () => ({
+    uploadImage
+  }))
 
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    uploadItems()
+  }, [items])
+
+  const getMediaItem = id => {
+    return items.find(item => item.id === id)
+  }
+
+  const getSelectedItems = () => {
+    return items.filter(item => item.selected)
+  }
+
+  const addMediaItem = item => {
+    addItems([item])
+  }
+
+  const addItems = newItems => {
+    setItems([
+      ...items,
+      ...newItems
+    ])
+  }
+
+  const selectMediaItem = id => {
+    const item = getMediaItem(id)
+    if (item && (item.uploading || item.error)) {
+      return
+    }
+    setMediaItemState(id, {
+      selected: true
+    })
+  }
+
+  const selectAllItems = () => {
+    setItems(items => items
+      .filter(item => !item.error && !item.uploading)
+      .map(item => ({ ...item, selected: true }))
+    )
+  }
+
+  const deselectMediaItem = id => {
+    setMediaItemState(id, {
+      selected: false
+    })
+  }
+
+  const deselectAllItems = () => {
+    setItems(items =>
+      items.map(item => ({
+        ...item,
+        selected: false
+      })))
+  }
+
+  const removeMediaItem = id => {
+    setItems(items => items.filter(item => item.id !== id))
+  }
+
+  const removeSelectedItems = () => {
+    setItems(items => items.filter(item => !item.selected))
+  }
+
+  const setMediaItemState = (id, state) => {
+    setItems(items => items.map(item =>
+      item.id === id ? { ...item, ...state } : item
+    ))
+  }
+
+  const uploadItems = (ignoreError = false) => {
+    items.forEach(item => {
+      if (item.uploading || item.url) {
+        return
+      }
+
+      if (!ignoreError && item.error) {
+        return
+      }
+
+      let uploader
+
+      if (item.type === 'IMAGE') {
+        createThumbnail(item)
+        uploader = uploadFn || createInlineImage
+      } else if (!uploadFn) {
+        setMediaItemState(item.id, { error: 1 })
+        return
+      }
+
+      setMediaItemState(item.id, {
+        uploading: true,
+        uploadProgress: 0,
+        error: 0
+      })
+
+      uploader?.({
+        id: item.id,
+        file: item.file,
+        success: res => {
+          handleUploadSuccess(item.id, res)
+        },
+        progress: progress => {
+          setMediaItemState(item.id, {
+            uploading: true,
+            uploadProgress: progress
+          })
+        },
+        error: () => {
+          setMediaItemState(item.id, {
+            uploading: false,
+            error: 2
+          })
+        }
+      })
+    })
+  }
+
+  const createThumbnail = ({ id, file }) => {
+    compressImage(URL.createObjectURL(file), 226, 226)
+      .then((result: any) => {
+        setMediaItemState(id, { thumbnail: result.url })
+      })
+      .catch(console.error)
+  }
+
+  const createInlineImage = param => {
+    compressImage(URL.createObjectURL(param.file), 1280, 800)
+      .then((result: any) => {
+        param.success({ url: result.url })
+      })
+      .catch(error => {
+        param.error(error)
+      })
+  }
+
+  const handleUploadSuccess = (id, data) => {
+    setMediaItemState(id, {
+      ...data,
+      file: null,
+      uploadProgress: 1,
+      uploading: false,
+      selected: false
+    })
+
+    const item = getMediaItem(data.id || id)
+    item.onReady?.(item)
+  }
+
+  const uploadImage = (file, callback: Function) => {
+    const fileId = new Date().getTime() + '_' + UniqueIndex()
+
+    addMediaItem({
+      type: 'IMAGE',
+      id: fileId,
+      file: file,
+      name: fileId,
+      size: file.size,
+      uploadProgress: 0,
+      uploading: false,
+      selected: false,
+      error: 0,
+      onReady: callback
+    })
+  }
+
+  const addResolvedFiles = (param, index, accepts) => {
+    const data: any = {
+      id: new Date().getTime() + '_' + UniqueIndex(),
+      file: param.files[index],
+      name: param.files[index].name,
+      size: param.files[index].size,
+      uploadProgress: 0,
+      uploading: false,
+      selected: false,
+      error: 0,
+      onReady: item => {
+        param.onItemReady?.(item)
+      }
+    }
+
+    if (param.files[index].type.indexOf('image/') === 0 && accepts.image) {
+      data.type = 'IMAGE'
+      addMediaItem(data)
+    } else if (
+      param.files[index].type.indexOf('video/') === 0 &&
+      accepts.video
+    ) {
+      data.type = 'VIDEO'
+      addMediaItem(data)
+    } else if (
+      param.files[index].type.indexOf('audio/') === 0 &&
+      accepts.audio
+    ) {
+      data.type = 'AUDIO'
+      addMediaItem(data)
+    }
+
+    setTimeout(() => {
+      resolveFiles(param, index + 1, accepts).catch(console.error)
+    }, 60)
+  }
+
+  const resolveFiles = async (param, index, accepts) => {
+    if (index < param.files.length) {
+      let validateResult = true
+      if (validateFn) {
+        validateResult = await validateFn(param.files[index])
+      }
+
+      if (validateResult) {
+        addResolvedFiles(param, index, accepts)
+      }
+    } else {
+      param.onAllReady?.()
+    }
+  }
+
+  const dragCounter = useRef(0)
   const [draging, setDraging] = useState(false)
-  // const [error, setError] = useState(false)
-  const [confirmable, setConfirmable] = useState(
-    initialItems.find(({ selected }) => selected)
-  )
+  const confirmable = useMemo(() => {
+    return items.find(({ selected }) => selected)
+  }, [items])
   const [external, setExternal] = useState({ url: '', type: 'IMAGE' })
   const [fileAccept, setFileAccept] = useState('')
   const [showExternalForm, setShowExternalForm] = useState(false)
   const [allowExternal, setAllowExternal] = useState(false)
-  const [items, setItems] = useState(initialItems)
-
-  const changeListenerId = useRef(
-    controller.onChange((items) => {
-      setItems(items)
-      setConfirmable(items.find(({ selected }) => selected))
-      onChange?.(items)
-    })
-  )
 
   useEffect(() => {
     const newAccepts = {
@@ -96,12 +308,6 @@ const FinderView = ({
     )
   }, [accepts, externals])
 
-  useEffect(() => {
-    return () => {
-      controller.offChange(changeListenerId.current)
-    }
-  }, [])
-
   const buildItemList = () => {
     return (
       <ul className={cls('kedao-list')}>
@@ -117,7 +323,7 @@ const FinderView = ({
         {items.map((item, index) => {
           let previewerComponents = null
           const progressMarker =
-            item.uploading && !hideProgress
+            item.uploading
               ? (
               <div className={cls('kedao-item-uploading')}>
                 <div
@@ -162,7 +368,7 @@ const FinderView = ({
                 <div className={cls('kedao-icon kedao-embed')} title={item.url}>
                   {progressMarker}
                   <Icon type='code' />
-                  <span>{item.name || language.embed}</span>
+                  <span>{item.name || language.finder.embed}</span>
                 </div>
               )
               break
@@ -216,78 +422,30 @@ const FinderView = ({
 
   const toggleSelectItem = (event) => {
     const itemId = event.currentTarget.dataset.id
-    const item = controller.getMediaItem(itemId)
+    const item = getMediaItem(itemId)
 
     if (!item) {
       return
     }
 
     if (item.selected) {
-      if (
-        !onBeforeDeselect ||
-        onBeforeDeselect([item], controller.getItems()) !== false
-      ) {
-        controller.deselectMediaItem(itemId)
-        onDeselect?.([item], controller.getItems())
-      }
+      deselectMediaItem(itemId)
     } else {
-      if (
-        !onBeforeSelect ||
-        onBeforeSelect([item], controller.getItems()) !== false
-      ) {
-        controller.selectMediaItem(itemId)
-        onSelect?.([item], controller.getItems())
-      }
+      selectMediaItem(itemId)
     }
   }
 
   const removeItem = (event) => {
     const itemId = event.currentTarget.dataset.id
-    const item = controller.getMediaItem(itemId)
+    const item = getMediaItem(itemId)
 
     if (!item) {
       return
     }
 
-    if (
-      !onBeforeRemove ||
-      onBeforeRemove([item], controller.getItems()) !== false
-    ) {
-      controller.removeMediaItem(itemId)
-      onRemove?.([item], controller.getItems())
-    }
+    removeMediaItem(itemId)
 
     event.stopPropagation()
-  }
-
-  const selectAllItems = () => {
-    const allItems = controller.getItems()
-
-    if (!onBeforeSelect || onBeforeSelect(allItems, allItems) !== false) {
-      controller.selectAllItems()
-      onSelect?.(allItems, allItems)
-    }
-  }
-
-  const deselectAllItems = () => {
-    const allItems = controller.getItems()
-
-    if (!onBeforeDeselect || onBeforeDeselect(allItems, allItems) !== false) {
-      controller.deselectAllItems()
-      onDeselect?.(allItems, allItems)
-    }
-  }
-
-  const removeSelectedItems = () => {
-    const selectedItems = controller.getSelectedItems()
-
-    if (
-      !onBeforeRemove ||
-      onBeforeRemove(selectedItems, controller.getItems()) !== false
-    ) {
-      controller.removeSelectedItems()
-      onRemove?.(selectedItems, controller.getItems())
-    }
   }
 
   const handleDragLeave = (event) => {
@@ -296,11 +454,11 @@ const FinderView = ({
     dragCounter.current === 0 && setDraging(false)
   }
 
-  const handleDragDrop = (event) => {
+  const handleDragDrop = async (event) => {
     event.preventDefault()
     dragCounter.current = 0
     setDraging(false)
-    reslovePickedFiles(event)
+    await reslovePickedFiles(event)
   }
 
   const handleDragEnter = (event) => {
@@ -309,29 +467,20 @@ const FinderView = ({
     setDraging(true)
   }
 
-  const reslovePickedFiles = (event) => {
+  const reslovePickedFiles = async (event) => {
     event.persist()
 
-    let { files } = event.type === 'drop' ? event.dataTransfer : event.target
-
-    if (onFileSelect) {
-      const result = onFileSelect(files)
-      if (result === false) {
-        return
-      } else if (result instanceof FileList || result instanceof Array) {
-        files = result
-      }
-    }
+    const { files } = event.type === 'drop' ? event.dataTransfer : event.target
 
     const newAccepts = {
       ...defaultAccepts,
       ...accepts
     }
 
-    controller.resolveFiles(
+    await resolveFiles(
       {
         files: files,
-        onItemReady: ({ id }) => controller.selectMediaItem(id),
+        onItemReady: ({ id }) => selectMediaItem(id),
         onAllReady: () => {
           event.target.value = null
         }
@@ -362,11 +511,11 @@ const FinderView = ({
     ) {
       let { url, type } = external
       const urlArr = url.split('|')
-      const name = urlArr.length > 1 ? urlArr[0] : language.unnamedItem
+      const name = urlArr.length > 1 ? urlArr[0] : language.finder.unnamedItem
       url = urlArr.length > 1 ? urlArr[1] : urlArr[0]
       const thumbnail = type === 'IMAGE' ? url : null
 
-      controller.addItems([
+      addItems([
         {
           thumbnail,
           url,
@@ -393,22 +542,9 @@ const FinderView = ({
   }
 
   const confirmInsert = () => {
-    const selectedItems = controller.getSelectedItems()
-
-    if (onBeforeInsert) {
-      const filteredItems = onBeforeInsert(selectedItems)
-
-      if (filteredItems && filteredItems instanceof Array) {
-        controller.deselectAllItems()
-        onInsert?.(filteredItems)
-      } else if (filteredItems !== false) {
-        controller.deselectAllItems()
-        onInsert?.(selectedItems)
-      }
-    } else {
-      controller.deselectAllItems()
-      onInsert?.(selectedItems)
-    }
+    const selectedItems = getSelectedItems()
+    deselectAllItems()
+    onInsert?.(selectedItems)
   }
 
   return (
@@ -433,7 +569,7 @@ const FinderView = ({
               multiple
               type="file"
             />
-            {draging ? language.dropTip : language.dragTip}
+            {draging ? language.finder.dropTip : language.finder.dragTip}
           </span>
         </div>
         {items.length
@@ -442,7 +578,7 @@ const FinderView = ({
             <div className={cls('kedao-list-tools')}>
               <span onClick={selectAllItems} className={cls('kedao-select-all')}>
                 <Icon type='done' />
-                {language.selectAll}
+                {language.finder.selectAll}
               </span>
               <span
                 onClick={deselectAllItems}
@@ -450,7 +586,7 @@ const FinderView = ({
                 {...{ disabled: !confirmable }}
               >
                 <Icon type='close' />
-                {language.deselect}
+                {language.finder.deselect}
               </span>
               <span
                 onClick={removeSelectedItems}
@@ -458,7 +594,7 @@ const FinderView = ({
                 {...{ disabled: !confirmable }}
               >
                 <Icon type='remove' />
-                {language.removeSelected}
+                {language.finder.removeSelected}
               </span>
             </div>
             {buildItemList()}
@@ -475,7 +611,7 @@ const FinderView = ({
                     onKeyDown={confirmAddExternal}
                     value={external.url}
                     onChange={inputExternal}
-                    placeholder={language.externalInputPlaceHolder}
+                    placeholder={language.finder.externalInputPlaceHolder}
                   />
                 </div>
                 <button
@@ -483,7 +619,7 @@ const FinderView = ({
                   onClick={confirmAddExternal}
                   disabled={!external.url.trim().length}
                 >
-                  {language.confirm}
+                  {language.finder.confirm}
                 </button>
               </div>
               <div
@@ -497,7 +633,7 @@ const FinderView = ({
                     onClick={switchExternalType}
                     data-type="IMAGE"
                   >
-                    {language.image}
+                    {language.finder.image}
                   </button>
                     )
                   : null}
@@ -508,7 +644,7 @@ const FinderView = ({
                     onClick={switchExternalType}
                     data-type="AUDIO"
                   >
-                    {language.audio}
+                    {language.finder.audio}
                   </button>
                     )
                   : null}
@@ -519,7 +655,7 @@ const FinderView = ({
                     onClick={switchExternalType}
                     data-type="VIDEO"
                   >
-                    {language.video}
+                    {language.finder.video}
                   </button>
                     )
                   : null}
@@ -530,13 +666,13 @@ const FinderView = ({
                     onClick={switchExternalType}
                     data-type="EMBED"
                   >
-                    {language.embed}
+                    {language.finder.embed}
                   </button>
                     )
                   : null}
               </div>
               <span className={cls('kedao-external-tip')}>
-                {language.externalInputTip}
+                {language.finder.externalInputTip}
               </span>
             </div>
           </div>
@@ -555,13 +691,13 @@ const FinderView = ({
                 ? (
                 <span className={cls('kedao-bottom-text')}>
                   <Icon type='add' />
-                  {language.addLocalFile}
+                  {language.finder.addLocalFile}
                 </span>
                   )
                 : (
                 <span className={cls('kedao-bottom-text')}>
                   <Icon type='add' />
-                  {language.addExternalSource}
+                  {language.finder.addExternalSource}
                 </span>
                   )}
             </span>
@@ -574,15 +710,15 @@ const FinderView = ({
             className={cls('button button-insert')}
             disabled={!confirmable}
           >
-            {language.insert}
+            {language.finder.insert}
           </button>
           <button onClick={cancelInsert} className={cls('button button-cancel')}>
-            {language.cancel}
+            {language.finder.cancel}
           </button>
         </div>
       </footer>
     </div>
   )
-}
+})
 
-export default FinderView
+export default Finder

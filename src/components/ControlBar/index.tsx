@@ -1,12 +1,14 @@
 
 import { classNameParser } from '../../utils/style'
-import Finder from '../../finder'
+import Finder from '../Finder'
 import React, {
   CSSProperties,
   useImperativeHandle,
   forwardRef,
   useMemo,
-  useState
+  useState,
+  useRef,
+  useEffect
 } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -35,7 +37,6 @@ import Button from '../Button'
 import Modal from '../Modal'
 import Icon from '../Icon'
 import {
-  BuiltInControlNames,
   MediaProps,
   ControlItem,
   CommonPickerProps,
@@ -373,8 +374,15 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       uploadImage
     }))
 
+    useEffect(() => {
+      return () => {
+        closeFinder()
+      }
+    }, [])
+
     const [mediaLibraryVisible, setMediaLibraryVisible] = useState(false)
     const [extendModal, setExtendModal] = useState<ModalProps | null>(null)
+    const finderRef = useRef(null)
 
     const getControlTypeClassName = (data) => {
       let className = ''
@@ -433,39 +441,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       }
     }
 
-    const isControlEnabled = (controlName: BuiltInControlNames) => {
-      return (
-        controls.some(item => {
-          return typeof item === 'string'
-            ? item === controlName
-            : item.type === controlName
-        }) ||
-        extendControls.some(item => item.key === controlName)
-      )
-    }
-
-    const isMediaEnabled = isControlEnabled('media')
-    const finder = useMemo(() => {
-      if (!isMediaEnabled) {
-        return null
-      }
-      const { uploadFn, validateFn, items }: any = {
-        ...media
-      }
-
-      return new Finder({
-        items,
-        language,
-        uploader: uploadFn,
-        validator: validateFn
-      })
-    }, [isMediaEnabled])
-
-    const MediaLibrary = finder?.ReactComponent
     const openFinder = () => {
-      if (!MediaLibrary) {
-        return
-      }
       setMediaLibraryVisible(true)
     }
 
@@ -482,7 +458,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     }
 
     const uploadImage = (file, callback) => {
-      finder?.uploadImage(file, callback)
+      finderRef.current?.uploadImage(file, callback)
     }
 
     const preventDefault = (event) => {
@@ -782,12 +758,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           onClose={closeFinder}
           visible={mediaLibraryVisible}
         >
-          <MediaLibrary
-            accepts={media.accepts}
+          <Finder
+            ref={finderRef}
+            language={language}
+            {...media}
             onCancel={closeFinder}
             onInsert={insertMedias_}
-            onChange={media.onChange}
-            externals={media.externals}
           />
         </Modal>
         {extendModal && (

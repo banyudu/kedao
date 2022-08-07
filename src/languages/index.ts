@@ -6,9 +6,6 @@ import kr from './kr'
 import tr from './tr'
 import jpn from './jpn'
 import ru from './ru'
-import fr from './fr'
-import ptBr from './pt-br'
-import viVn from './vi-vn'
 
 export default {
   en,
@@ -18,8 +15,5 @@ export default {
   kr,
   tr,
   jpn,
-  ru,
-  fr,
-  'pt-br': ptBr,
-  'vi-vn': viVn
+  ru
 }

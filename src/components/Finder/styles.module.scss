@@ -1,5 +1,5 @@
 @use "sass:color";
-@import "../styles/variables.scss";
+@import "../../styles/variables.scss";
 
 .kedao-finder {
   .kedao-uploader {
@@ -13,10 +13,6 @@
         pointer-events: none;
       }
     }
-
-    // input::input-placeholder {
-    //   color: #ccc;
-    // }
 
     input::placeholder {
       color: #ccc;

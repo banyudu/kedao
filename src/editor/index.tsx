@@ -26,6 +26,7 @@ import {
   toggleSelectionBlockType,
   insertText,
   handleNewLine,
+  handleKeyCommand as defaultHandleKeyCommand,
   clear
 } from '../utils'
 import {
@@ -553,7 +554,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       }
     }
 
-    const nextEditorState = handleKeyCommand?.(editorState, command)
+    const nextEditorState = defaultHandleKeyCommand(editorState, command)
 
     if (nextEditorState) {
       setValue(nextEditorState)

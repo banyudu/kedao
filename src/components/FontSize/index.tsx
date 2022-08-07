@@ -23,7 +23,6 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
   defaultCaption,
   getContainerNode,
   language,
-  hooks,
   editorState,
   onChange,
   onRequestFocus
@@ -42,16 +41,7 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
   })
 
   const toggleFontSize = (event) => {
-    let fontSize = event.currentTarget.dataset.size
-    const hookReturns = hooks('toggle-font-size', fontSize)(fontSize)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (!isNaN(fontSize)) {
-      fontSize = hookReturns
-    }
+    const fontSize = event.currentTarget.dataset.size
 
     onChange(toggleSelectionFontSize(editorState, fontSize))
     onRequestFocus()

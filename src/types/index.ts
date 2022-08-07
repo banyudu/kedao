@@ -103,8 +103,6 @@ export interface Language {
   }
 }
 
-export type Hooks = (name: string, _?) => Function
-
 export interface Finder {
   ReactComponent: React.ComponentType<any>
   uploadImage: (file: File, callback: (url: string) => void) => void
@@ -129,7 +127,6 @@ export interface MediaProps {
 }
 
 export interface CommonPickerProps {
-  hooks: Hooks
   editorState: EditorState
   editorId: string
   language: Language
@@ -349,9 +346,11 @@ export interface BlockRenderProps {
   mediaData?: any
   onRemove: () => void
   language: Language
+  editorState: EditorState
+  contentState: ContentState
 }
 
-interface BlockRenderer {
+export interface BlockRenderer {
   component: (props: BlockRenderProps) => JSX.Element
   editable: boolean
 }

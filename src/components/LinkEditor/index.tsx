@@ -28,7 +28,6 @@ export interface LinkEditorProps extends CommonPickerProps {
 const LinkEditor: FC<LinkEditorProps> = ({
   defaultLinkTarget,
   editorState,
-  hooks,
   language,
   getContainerNode,
   allowInsertLinkText,
@@ -96,32 +95,12 @@ const LinkEditor: FC<LinkEditorProps> = ({
   }
 
   const handleConfirm = () => {
-    const hookReturns = hooks('toggle-link', { href, target })({
-      href,
-      target
-    })
-
     setDropdownActive(false)
     onRequestFocus()
 
-    if (hookReturns === false) {
-      return false
-    }
-
-    let _href = href
-    let _target = target
-    if (hookReturns) {
-      if (typeof hookReturns.href === 'string') {
-        _href = hookReturns.href
-      }
-      if (typeof hookReturns.target === 'string') {
-        _target = hookReturns.target
-      }
-    }
-
     if (textSelected) {
-      if (_href) {
-        onChange(toggleSelectionLink(editorState, _href, _target))
+      if (href) {
+        onChange(toggleSelectionLink(editorState, href, target))
       } else {
         onChange(toggleSelectionLink(editorState, false))
       }

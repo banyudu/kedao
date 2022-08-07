@@ -40,7 +40,6 @@ sidebar_position: 2
 | colorPickerAutoHide      |                      | boolean                                                             | true   |
 | colorPicker              |                      |                                                                     |        |
 | converts                 |                      |                                                                     |        |
-| hooks                    |                      |                                                                     |        |
 | textBackgroundColor      |                      | boolean                                                             |        |
 | allowInsertLinkText      |                      | boolean                                                             | false  |
 | defaultLinkTarget        |                      | string                                                              |        |

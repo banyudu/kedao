@@ -24,7 +24,6 @@ export interface FontFamilyPickerProps
 const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
   fontFamilies,
   editorState,
-  hooks,
   defaultCaption,
   getContainerNode,
   language,
@@ -45,19 +44,7 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
   })
 
   const toggleFontFamily = (event) => {
-    let fontFamilyName = event.currentTarget.dataset.name
-    const hookReturns = hooks('toggle-font-family', fontFamilyName)(
-      fontFamilyName,
-      fontFamilies
-    )
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (typeof hookReturns === 'string') {
-      fontFamilyName = hookReturns
-    }
+    const fontFamilyName = event.currentTarget.dataset.name
 
     onChange(toggleSelectionFontFamily(editorState, fontFamilyName))
     onRequestFocus()

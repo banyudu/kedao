@@ -1,8 +1,6 @@
 import { CharacterMetadata, CompositeDecorator, ContentBlock, ContentState } from 'draft-js'
 import CombineDecorators from 'draft-js-multidecorators'
 import Immutable from 'immutable'
-
-import { getExtensionDecorators } from '../../helpers/extension'
 import Link from './Link'
 
 const KEY_SEPARATOR = '-'
@@ -44,29 +42,13 @@ const createStrategy = (type: string) => (block: ContentBlock, callback: (start:
   }, callback)
 }
 
-export default (editorId: string) => {
-  const extensionDecorators = getExtensionDecorators(editorId)
-
-  const entityDecorators = [
-    ...builtinDecorators,
-    ...extensionDecorators.filter((item) => item.type === 'entity')
-  ]
-
-  const strategyDecorators = extensionDecorators.filter(
-    (item) => item.type === 'strategy'
-  )
-  const classDecorators = extensionDecorators.filter(
-    (item) => item.type === 'class'
-  )
-
+export default () => {
   return new CombineDecorators([
-    // combine decorator classes
-    ...classDecorators.map((item) => item.decorator),
     // combine decorators created with strategy
-    new CompositeDecorator(strategyDecorators.map((item) => item.decorator)),
+    new CompositeDecorator([]),
     // combine decorators for entities
     new CompositeDecorator(
-      entityDecorators.map((item) => ({
+      builtinDecorators.map((item) => ({
         strategy: createStrategy(item.decorator.key),
         component: item.decorator.component
       }))

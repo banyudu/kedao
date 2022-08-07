@@ -27,8 +27,7 @@ const TextAlign: FC<TextAlignProps> = ({
   textAligns,
   onChange,
   onRequestFocus,
-  language,
-  hooks
+  language
 }) => {
   const [currentAlignment, setCurrentAlignment] = useState(undefined)
 
@@ -37,12 +36,7 @@ const TextAlign: FC<TextAlignProps> = ({
   }, [editorState])
 
   const setAlignment = (event) => {
-    let { alignment } = event.currentTarget.dataset
-    const hookReturns = hooks('toggle-text-alignment', alignment)(alignment)
-
-    if (textAligns.includes(hookReturns)) {
-      alignment = hookReturns
-    }
+    const { alignment } = event.currentTarget.dataset
 
     onChange(toggleSelectionAlignment(editorState, alignment))
     onRequestFocus()

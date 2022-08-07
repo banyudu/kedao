@@ -15,12 +15,11 @@ import DropDown, { DropDownProps } from '../DropDown'
 import BuiltinColorPicker from '../ColorPicker'
 import styles from './style.module.scss'
 import Icon from '../Icon'
-import { Hooks, EditorState, Language } from '../../types'
+import { EditorState, Language } from '../../types'
 const cls = classNameParser(styles)
 
 export interface TextColorPickerProps
   extends Pick<DropDownProps, 'getContainerNode' | 'autoHide'> {
-  hooks: Hooks
   editorState: EditorState
   colorPicker: React.ComponentType<any>
   enableBackgroundColor: boolean
@@ -31,7 +30,6 @@ export interface TextColorPickerProps
 }
 
 const TextColorPicker: FC<TextColorPickerProps> = ({
-  hooks,
   editorState,
   colorPicker,
   getContainerNode,
@@ -56,21 +54,10 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
 
   const toggleColor = (color: string, closePicker: boolean) => {
     if (color) {
-      let newColor = color
-      const hookReturns = hooks(`toggle-text-${colorType}`, newColor)(newColor)
-
-      if (hookReturns === false) {
-        return false
-      }
-
-      if (typeof hookReturns === 'string') {
-        newColor = hookReturns
-      }
-
       if (colorType === 'color') {
-        onChange(toggleSelectionColor(editorState, newColor))
+        onChange(toggleSelectionColor(editorState, color))
       } else {
-        onChange(toggleSelectionBackgroundColor(editorState, newColor))
+        onChange(toggleSelectionBackgroundColor(editorState, color))
       }
     }
 

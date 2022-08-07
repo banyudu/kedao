@@ -8,8 +8,7 @@ import Switch from '../../../components/Switch'
 import styles from './style.module.scss'
 import {
   BlockRenderProps,
-  ImageControlItem,
-  Hooks
+  ImageControlItem
 } from '../../../types'
 import { ContentBlock, EditorState } from 'draft-js'
 import MeidaToolbar from '../../../components/MediaToolbar'
@@ -21,7 +20,6 @@ interface ImageProps extends BlockRenderProps {
   block: ContentBlock
   imageResizable: boolean
   imageControls: readonly ImageControlItem[]
-  hooks: Hooks
   lock: (locked: boolean) => void
   getContainerNode: () => HTMLElement
   readOnly: boolean
@@ -35,7 +33,6 @@ const Image: FC<ImageProps> = ({
   getContainerNode,
   block,
   onRemove,
-  hooks,
   entityKey,
   mediaData,
   readOnly,
@@ -215,18 +212,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const setImageLinkTarget = (linkTarget) => {
-    let newLinkTarget
-    const hookReturns = hooks('set-image-link-target', linkTarget)(linkTarget)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (typeof hookReturns === 'string') {
-      newLinkTarget = hookReturns
-    }
-
-    newLinkTarget = newLinkTarget === '_blank' ? '' : '_blank'
+    const newLinkTarget = linkTarget === '_blank' ? '' : '_blank'
     onChange(
       setMediaData(value, entityKey, { newLinkTarget })
     )
@@ -235,16 +221,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const confirmImageLink = () => {
-    let link: string | null = tempLink
-    const hookReturns = hooks('set-image-link', link)(link)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (typeof hookReturns === 'string') {
-      link = hookReturns
-    }
+    const link: string | null = tempLink
 
     if (link !== null) {
       onChange(setMediaData(value, entityKey, { link }))
@@ -282,23 +259,14 @@ const Image: FC<ImageProps> = ({
   const confirmImageSize = () => {
     const width = tempWidth
     const height = tempHeight
-    let newImageSize: any = {}
+
+    const newImageSize: any = {}
 
     if (width !== null) {
       newImageSize.width = width
     }
     if (height !== null) {
       newImageSize.height = height
-    }
-
-    const hookReturns = hooks('set-image-size', newImageSize)(newImageSize)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (hookReturns && (hookReturns.width || hookReturns.height)) {
-      newImageSize = hookReturns
     }
 
     onChange(setMediaData(value, entityKey, newImageSize))
@@ -311,7 +279,6 @@ const Image: FC<ImageProps> = ({
     const height = tempHeight
     let equalWidth
     let equalHeight
-    let newImageSize: any = {}
     // 宽度过大 图片等比缩放
     if (width / height > zoom.current) {
       equalWidth = Math.floor(height * zoom.current)
@@ -322,21 +289,13 @@ const Image: FC<ImageProps> = ({
       setTempHeight(equalHeight)
       equalWidth = width
     }
+
+    const newImageSize: any = {}
     if (equalWidth !== null) {
       newImageSize.width = equalWidth
     }
     if (equalHeight !== null) {
       newImageSize.height = equalHeight
-    }
-
-    const hookReturns = hooks('set-image-size', newImageSize)(newImageSize)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (hookReturns && (hookReturns.width || hookReturns.height)) {
-      newImageSize = hookReturns
     }
 
     onChange(setMediaData(value, entityKey, newImageSize))
@@ -345,45 +304,16 @@ const Image: FC<ImageProps> = ({
   }
 
   const setImageFloat = (float) => {
-    let newFloat = float
-    const hookReturns = hooks('set-image-float', newFloat)(newFloat)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (typeof hookReturns === 'string') {
-      newFloat = hookReturns
-    }
-
     onChange(
-      setMediaPosition(value, block, {
-        float: newFloat
-      })
+      setMediaPosition(value, block, { float })
     )
     unlockEditor()
     return true
   }
 
   const setImageAlignment = (alignment) => {
-    let newAlignment = alignment
-    const hookReturns = hooks(
-      'set-image-alignment',
-      newAlignment
-    )(newAlignment)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (typeof hookReturns === 'string') {
-      newAlignment = hookReturns
-    }
-
     onChange(
-      setMediaPosition(value, block, {
-        alignment: newAlignment
-      })
+      setMediaPosition(value, block, { alignment })
     )
     unlockEditor()
     return true

@@ -1,8 +1,4 @@
-import { getExtensionInlineStyleMap } from '../../helpers/extension'
-
-export default (props, customStyleMap = {}) => {
-  const extensionInlineStyleMap = getExtensionInlineStyleMap(props.editorId)
-
+const getCustomStyleMap = (customStyleMap = {}) => {
   return {
     SUPERSCRIPT: {
       position: 'relative',
@@ -14,7 +10,8 @@ export default (props, customStyleMap = {}) => {
       bottom: '-8px',
       fontSize: '11px'
     },
-    ...extensionInlineStyleMap,
     ...customStyleMap
   }
 }
+
+export default getCustomStyleMap

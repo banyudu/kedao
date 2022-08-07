@@ -1,7 +1,6 @@
 import React from 'react'
 import { Map } from 'immutable'
 import { DefaultDraftBlockRenderMap } from 'draft-js'
-import { getExtensionBlockRenderMaps } from '../../helpers/extension'
 
 export default (props, blockRenderMap) => {
   let customBlockRenderMap = Map({
@@ -15,18 +14,6 @@ export default (props, blockRenderMap) => {
   })
 
   try {
-    const extensionBlockRenderMaps = getExtensionBlockRenderMaps(
-      props.editorId
-    )
-
-    customBlockRenderMap = extensionBlockRenderMaps.reduce((acc, item) => {
-      return acc.merge(
-        typeof item.renderMap === 'function'
-          ? item.renderMap(props)
-          : item.renderMap
-      )
-    }, customBlockRenderMap)
-
     if (blockRenderMap) {
       if (typeof blockRenderMap === 'function') {
         customBlockRenderMap = customBlockRenderMap.merge(

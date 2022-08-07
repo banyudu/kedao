@@ -49,14 +49,7 @@ import {
   getCustomStyleFn,
   getDecorators
 } from '../renderers'
-import {
-  compositeStyleImportFn,
-  compositeStyleExportFn,
-  compositeEntityImportFn,
-  compositeEntityExportFn,
-  compositeBlockImportFn,
-  compositeBlockExportFn
-} from '../helpers/extension'
+
 import ControlBar, { ControlBarProps } from '../components/ControlBar'
 
 import 'draft-js/dist/Draft.css'
@@ -67,7 +60,6 @@ import {
   ButtonControlItem,
   ModalControlItem,
   MediaProps,
-  Hooks,
   ImageControlItem,
   ConvertOptions,
   BlockRendererFn,
@@ -173,18 +165,6 @@ export const createStateFromContent = (
 ) => {
   const customOptions: ConvertOptions = { ...options }
   customOptions.unitExportFn = customOptions.unitExportFn || unitExportFn
-  customOptions.styleImportFn = compositeStyleImportFn(
-    customOptions.styleImportFn,
-    customOptions.editorId
-  )
-  customOptions.entityImportFn = compositeEntityImportFn(
-    customOptions.entityImportFn,
-    customOptions.editorId
-  )
-  customOptions.blockImportFn = compositeBlockImportFn(
-    customOptions.blockImportFn,
-    customOptions.editorId
-  )
 
   let editorState: EditorState = null
 
@@ -199,7 +179,7 @@ export const createStateFromContent = (
   ) {
     editorState = convertRawToEditorState(
       content,
-      getDecorators(customOptions.editorId)
+      getDecorators()
     )
   }
   if (typeof content === 'string') {
@@ -207,7 +187,7 @@ export const createStateFromContent = (
       if (/^(-)?\d+$/.test(content)) {
         editorState = convertHTMLToEditorState(
           content,
-          getDecorators(customOptions.editorId),
+          getDecorators(),
           customOptions,
           'create'
         )
@@ -217,7 +197,7 @@ export const createStateFromContent = (
     } catch (error) {
       editorState = convertHTMLToEditorState(
         content,
-        getDecorators(customOptions.editorId),
+        getDecorators(),
         customOptions,
         'create'
       )
@@ -227,26 +207,13 @@ export const createStateFromContent = (
       Number(content)
         .toLocaleString()
         .replace(/,/g, ''),
-      getDecorators(customOptions.editorId),
+      getDecorators(),
       customOptions,
       'create'
     )
   } else {
-    editorState = EditorState.createEmpty(getDecorators(customOptions.editorId))
+    editorState = EditorState.createEmpty(getDecorators())
   }
-
-  customOptions.styleExportFn = compositeStyleExportFn(
-    customOptions.styleExportFn,
-    customOptions.editorId
-  )
-  customOptions.entityExportFn = compositeEntityExportFn(
-    customOptions.entityExportFn,
-    customOptions.editorId
-  )
-  customOptions.blockExportFn = compositeBlockExportFn(
-    customOptions.blockExportFn,
-    customOptions.editorId
-  )
 
   return editorState
 }
@@ -296,7 +263,6 @@ export interface KedaoEditorProps {
   colorPickerAutoHide?: boolean
   colorPicker?: ControlBarProps['colorPicker']
   converts?: object
-  hooks?: Hooks
   textBackgroundColor?: boolean
   allowInsertLinkText?: boolean
   defaultLinkTarget?: string
@@ -323,10 +289,6 @@ export interface KedaoEditorProps {
   codeTabIndents?: number
   disabled?: boolean
   extendAtomics?: any[]
-}
-
-const buildHooks = hooks => (hookName, defaultReturns = {}) => {
-  return hooks[hookName] || (() => defaultReturns)
 }
 
 const filterColors = (colors: readonly string[], colors2: readonly string[]) => {
@@ -382,7 +344,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   customStyleFn,
   onFullscreen,
   placeholder,
-  hooks,
   readOnly,
   disabled,
   style = {},
@@ -420,7 +381,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     setLoading(false)
   }, [])
 
-  const editorDecoratorsRef = useRef(getDecorators(editorId || id))
+  const editorDecoratorsRef = useRef(getDecorators())
   const controlBarInstanceRef = useRef(null)
   const [isLiving, setIsLiving] = useState(false)
   const valueInitialized = !!(defaultValue || value)
@@ -431,37 +392,11 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       : EditorState.createEmpty(editorDecoratorsRef.current)
 
   const getConvertOptions = (): ConvertOptions => {
-    const realEditorId = editorId || id
     const result: ConvertOptions = {
       unitExportFn,
       ...converts,
       fontFamilies: fontFamilies
     }
-
-    result.styleImportFn = compositeStyleImportFn(
-      result.styleImportFn,
-      realEditorId
-    )
-    result.styleExportFn = compositeStyleExportFn(
-      result.styleExportFn,
-      realEditorId
-    )
-    result.entityImportFn = compositeEntityImportFn(
-      result.entityImportFn,
-      realEditorId
-    )
-    result.entityExportFn = compositeEntityExportFn(
-      result.entityExportFn,
-      realEditorId
-    )
-    result.blockImportFn = compositeBlockImportFn(
-      result.blockImportFn,
-      realEditorId
-    )
-    result.blockExportFn = compositeBlockExportFn(
-      result.blockExportFn,
-      realEditorId
-    )
 
     return result
   }
@@ -880,7 +815,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   }
 
   editorId = editorId || id
-  hooks = buildHooks(hooks)
   controls = controls.filter(item => !excludeControls.includes(item as any))
 
   const language: Language =
@@ -933,7 +867,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 
   const commonProps = {
     editorId,
-    hooks,
     editorState,
     containerNode: containerRef.current,
     imageControls,
@@ -956,7 +889,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       imageResizable,
       language: language,
       imageEqualRatio,
-      hooks,
       getContainerNode,
       refresh: () => forceRender(),
       lock: setEditorLocked,
@@ -967,8 +899,8 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   )
   const blockRenderMap_ = getBlockRenderMap(commonProps, blockRenderMap)
   const blockStyleFn_ = getBlockStyleFn(blockStyleFn)
-  const customStyleMap_ = getCustomStyleMap(commonProps, customStyleMap)
-  const customStyleFn_ = getCustomStyleFn(commonProps, {
+  const customStyleMap_ = getCustomStyleMap(customStyleMap)
+  const customStyleFn_ = getCustomStyleFn({
     fontFamilies,
     unitExportFn,
     customStyleFn: customStyleFn
@@ -1029,7 +961,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
           colors={controlBarColors}
           colorPicker={colorPicker}
           colorPickerAutoHide={colorPickerAutoHide}
-          hooks={hooks}
           editorId={editorId}
           media={controlBarMedia}
           controls={memoControls}

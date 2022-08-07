@@ -28,8 +28,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
   language,
   onChange,
   onRequestFocus,
-  editorState,
-  hooks
+  editorState
 }) => {
   let caption = null
   let currentLineHeight = null
@@ -45,16 +44,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
   })
 
   const toggleLineHeight = (event) => {
-    let lineHeight = event.currentTarget.dataset.size
-    const hookReturns = hooks('toggle-line-height', lineHeight)(lineHeight)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (!isNaN(hookReturns)) {
-      lineHeight = hookReturns
-    }
+    const lineHeight = event.currentTarget.dataset.size
 
     onChange(toggleSelectionLineHeight(editorState, lineHeight))
     onRequestFocus()

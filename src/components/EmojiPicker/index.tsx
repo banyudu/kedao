@@ -20,22 +20,12 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
   getContainerNode,
   language,
   emojis,
-  hooks,
   editorState,
   onChange,
   onRequestFocus
 }) => {
   const insertEmoji = (event) => {
-    let emoji = event.currentTarget.dataset.emoji
-    const hookReturns = hooks('insert-emoji', emoji)(emoji)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (typeof hookReturns === 'string') {
-      emoji = hookReturns
-    }
+    const emoji = event.currentTarget.dataset.emoji
 
     onChange(insertText(editorState, emoji))
     onRequestFocus()

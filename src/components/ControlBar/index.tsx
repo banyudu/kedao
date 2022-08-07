@@ -33,7 +33,6 @@ import TextIndent from '../TextIndent'
 import DropDown from '../DropDown'
 import Button from '../Button'
 import Modal from '../Modal'
-import { getExtensionControls } from '../../helpers/extension'
 import {
   Finder,
   MediaProps,
@@ -65,12 +64,6 @@ const isDropDownControl = (
   return control.type === 'dropdown'
 }
 
-const commandHookMap = {
-  'inline-style': 'toggle-inline-style',
-  'block-type': 'change-block-type',
-  'editor-method': 'exec-editor-command'
-}
-
 const exclusiveInlineStyles = {
   superscript: 'subscript',
   subscript: 'superscript'
@@ -79,14 +72,13 @@ const exclusiveInlineStyles = {
 const mergeControls = (
   commonProps,
   builtControls,
-  extensionControls,
   extendControls
 ) => {
   const customExtendControls = extendControls.map((item) =>
     typeof item === 'function' ? item(commonProps) : item
   )
 
-  if (extensionControls.length === 0 && customExtendControls.length === 0) {
+  if (customExtendControls.length === 0) {
     return builtControls
   }
 
@@ -96,18 +88,9 @@ const mergeControls = (
         customExtendControls.find((subItem) => {
           return subItem.replace === (item.key || item)
         }) ||
-        extensionControls.find((subItem) => {
-          return subItem.replace === (item.key || item)
-        }) ||
         item
       )
     })
-    .concat(extensionControls.length ? 'separator' : '')
-    .concat(
-      extensionControls.filter((item) => {
-        return !item.replace
-      })
-    )
     .concat(
       customExtendControls.filter((item) => {
         return typeof item === 'string' || !item.replace
@@ -155,7 +138,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     {
       language,
       editorState,
-      hooks,
       finder,
       media,
       allowInsertLinkText,
@@ -216,19 +198,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     }
 
     const applyControl = (command: string, type: string, data: any = {}) => {
-      let hookCommand = command
-      const hookReturns = hooks(
-        commandHookMap[type] || type,
-        hookCommand
-      )(hookCommand)
-
-      if (hookReturns === false) {
-        return
-      }
-
-      if (typeof hookReturns === 'string') {
-        hookCommand = hookReturns
-      }
+      const hookCommand = command
 
       if (type === 'inline-style') {
         const exclusiveInlineStyle = exclusiveInlineStyles[hookCommand]
@@ -262,17 +232,11 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
 
     const MediaLibrary = finder?.ReactComponent
     const openFinder = () => {
-      if (!MediaLibrary || hooks('open-kedao-finder')?.() === false) {
+      if (!MediaLibrary) {
         return
       }
       setMediaLibraryVisible(true)
     }
-
-    const bindFinderHook =
-      (hookName) =>
-        (...params) => {
-          return hooks(hookName, params[0])(...params)
-        }
 
     const insertMedias_ = (medias) => {
       onChange(insertMedias(editorState, medias))
@@ -300,7 +264,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       editorState,
       language,
       getContainerNode,
-      hooks,
       onChange: onChange,
       onRequestFocus: onRequestFocus
     }
@@ -309,19 +272,16 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       () => getEditorControlMap(language, isFullscreen),
       [language, isFullscreen]
     )
-    const extensionControls = getExtensionControls(editorId)
     const allControls = useDeepCompareMemo(() => {
       return mergeControls(
         commonProps,
         controls,
-        extensionControls,
         extendControls
       )
     }, [
       mergeControls,
       commonProps,
       controls,
-      extensionControls,
       extendControls
     ])
     const renderedControlList = useDeepCompareMemo(() => {
@@ -593,11 +553,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             onInsert={insertMedias_}
             onChange={media.onChange}
             externals={media.externals}
-            onBeforeSelect={bindFinderHook('select-medias')}
-            onBeforeDeselect={bindFinderHook('deselect-medias')}
-            onBeforeRemove={bindFinderHook('remove-medias')}
-            onBeforeInsert={bindFinderHook('insert-medias')}
-            onFileSelect={bindFinderHook('select-files')}
           />
         </Modal>
         {extendModal && (

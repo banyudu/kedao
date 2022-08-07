@@ -5,12 +5,11 @@ import Video from '../atomics/Video'
 import Audio from '../atomics/Audio'
 import Embed from '../atomics/Embed'
 import HorizontalLine from '../atomics/HorizontalLine'
-import { getExtensionBlockRendererFns } from '../../helpers/extension'
-import { BlockRendererFn, BlockRenderProps, Hooks, ImageControlItem, Language } from '../../types'
+import { BlockRenderer, BlockRendererFn, BlockRenderProps, ImageControlItem, Language } from '../../types'
 import { ContentBlock, EditorState } from 'draft-js'
 import { removeBlock } from '../../utils'
 
-interface GetRenderFnParams extends Omit<BlockRenderProps, 'onRemove'> {
+interface GetRenderFnParams extends Omit<BlockRenderProps, 'onRemove' | 'editorState' | 'contentState'> {
   extendAtomics: any[]
   editorId: string
   language: Language
@@ -19,55 +18,55 @@ interface GetRenderFnParams extends Omit<BlockRenderProps, 'onRemove'> {
   onChange: (state: EditorState) => void
   imageResizable: boolean
   readOnly: boolean
-  hooks: Hooks
   imageControls: readonly ImageControlItem[]
   lock: (locked: boolean) => void
   getContainerNode: () => HTMLDivElement
   refresh: () => void
 }
 
-const myGetRenderFn = (superProps: GetRenderFnParams, customBlockRendererFn: BlockRendererFn) => (block: ContentBlock) => {
-  const {
-    value,
-    onChange,
-    extendAtomics,
-    editorId,
-    language,
-    imageEqualRatio,
-    readOnly,
-    imageResizable,
-    imageControls,
-    lock,
-    getContainerNode,
-    refresh,
-    hooks
-  } = superProps
+const myGetRenderFn = (superProps: GetRenderFnParams, customBlockRendererFn: BlockRendererFn) =>
+  (block: ContentBlock): BlockRenderer => {
+    const {
+      value,
+      onChange,
+      extendAtomics,
+      language,
+      imageEqualRatio,
+      readOnly,
+      imageResizable,
+      imageControls,
+      lock,
+      getContainerNode,
+      refresh
+    } = superProps
 
-  const renderAtomicBlock = ({ contentState }) => {
-    const entityKey = block.getEntityAt(0)
+    const renderAtomicBlock = ({ contentState }) => {
+      const entityKey = block.getEntityAt(0)
 
-    if (!entityKey) {
-      return null
-    }
+      if (!entityKey) {
+        return null
+      }
 
-    const entity = contentState.getEntity(entityKey)
-    const mediaData = entity.getData()
-    const mediaType = entity.getType()
+      const entity = contentState.getEntity(entityKey)
+      const mediaData = entity.getData()
+      const mediaType = entity.getType()
 
-    const handleRemove = () => {
-      onChange?.(removeBlock(value, block))
-    }
+      const handleRemove = () => {
+        onChange?.(removeBlock(value, block))
+      }
 
-    const mediaProps: BlockRenderProps = {
+      const mediaProps: BlockRenderProps = {
       // block: props.block,
-      mediaData,
-      // entityKey,
-      onRemove: handleRemove,
-      language
-    }
+        mediaData,
+        // entityKey,
+        onRemove: handleRemove,
+        language,
+        editorState: value,
+        contentState: value.getCurrentContent()
+      }
 
-    if (mediaType === 'IMAGE') {
-      return (
+      if (mediaType === 'IMAGE') {
+        return (
         <Image
           {...mediaProps}
           imageEqualRatio={imageEqualRatio}
@@ -76,72 +75,57 @@ const myGetRenderFn = (superProps: GetRenderFnParams, customBlockRendererFn: Blo
           block={block}
           imageResizable={imageResizable}
           imageControls={imageControls}
-          hooks={hooks}
           lock={lock}
           getContainerNode={getContainerNode}
           value={value}
           onChange={onChange}
           refresh={refresh}
         />
-      )
-    }
-    if (mediaType === 'AUDIO') {
-      return <Audio {...mediaProps} />
-    }
-    if (mediaType === 'VIDEO') {
-      return <Video {...mediaProps} />
-    }
-    if (mediaType === 'EMBED') {
-      return <Embed {...mediaProps} />
-    }
-    if (mediaType === 'HR') {
-      return <HorizontalLine {...mediaProps} />
+        )
+      }
+      if (mediaType === 'AUDIO') {
+        return <Audio {...mediaProps} />
+      }
+      if (mediaType === 'VIDEO') {
+        return <Video {...mediaProps} />
+      }
+      if (mediaType === 'EMBED') {
+        return <Embed {...mediaProps} />
+      }
+      if (mediaType === 'HR') {
+        return <HorizontalLine {...mediaProps} />
+      }
+
+      if (extendAtomics) {
+        const atomic = extendAtomics.find(item => {
+          return item.type === mediaType
+        })
+
+        if (atomic) {
+          const Component = atomic.component
+          return <Component {...mediaProps} />
+        }
+      }
+
+      return null
     }
 
-    if (extendAtomics) {
-      const atomic = extendAtomics.find(item => {
-        return item.type === mediaType
-      })
+    const blockType = block.getType()
 
-      if (atomic) {
-        const Component = atomic.component
-        return <Component {...mediaProps} />
+    const customRenderer = customBlockRendererFn?.(block, { editorState: value }) ?? null
+
+    if (customRenderer) {
+      return customRenderer
+    }
+
+    if (blockType === 'atomic') {
+      return {
+        component: renderAtomicBlock,
+        editable: false
       }
     }
 
     return null
   }
-
-  const blockType = block.getType()
-
-  const customRenderer = customBlockRendererFn?.(block, { editorState: value }) ?? null
-
-  if (customRenderer) {
-    return customRenderer
-  }
-
-  const extensionRender = getExtensionBlockRendererFns(editorId)?.find(item =>
-    item.blockType === blockType ||
-    (item.blockType instanceof RegExp && item.blockType.test(blockType))
-  )?.rendererFn?.({
-    value,
-    onChange,
-    readOnly,
-    refresh
-  })
-
-  if (extensionRender) {
-    return extensionRender
-  }
-
-  if (blockType === 'atomic') {
-    return {
-      component: renderAtomicBlock,
-      editable: false
-    }
-  }
-
-  return null
-}
 
 export default myGetRenderFn

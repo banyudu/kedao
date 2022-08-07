@@ -23,7 +23,6 @@ export interface LetterSpacingPickerProps extends CommonPickerProps {
 
 const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
   letterSpacings,
-  hooks,
   editorState,
   onChange,
   onRequestFocus,
@@ -45,19 +44,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
   })
 
   const toggleLetterSpacing = (event) => {
-    let letterSpacing = event.currentTarget.dataset.size
-    const hookReturns = hooks(
-      'toggle-letter-spacing',
-      letterSpacing
-    )(letterSpacing)
-
-    if (hookReturns === false) {
-      return false
-    }
-
-    if (!isNaN(hookReturns)) {
-      letterSpacing = hookReturns
-    }
+    const letterSpacing = event.currentTarget.dataset.size
 
     onChange(toggleSelectionLetterSpacing(editorState, letterSpacing))
     onRequestFocus()

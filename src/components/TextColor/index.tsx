@@ -12,16 +12,15 @@ import {
   toggleSelectionColor
 } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
-import BuiltinColorPicker from '../ColorPicker'
+import ColorPicker from '../ColorPicker'
 import styles from './style.module.scss'
 import Icon from '../Icon'
 import { EditorState, Language } from '../../types'
 const cls = classNameParser(styles)
 
 export interface TextColorPickerProps
-  extends Pick<DropDownProps, 'getContainerNode' | 'autoHide'> {
+  extends Pick<DropDownProps, 'getContainerNode'> {
   editorState: EditorState
-  colorPicker: React.ComponentType<any>
   enableBackgroundColor: boolean
   colors: string[]
   language: Language
@@ -31,12 +30,10 @@ export interface TextColorPickerProps
 
 const TextColorPicker: FC<TextColorPickerProps> = ({
   editorState,
-  colorPicker,
   getContainerNode,
   enableBackgroundColor,
   colors,
   language,
-  autoHide,
   onChange,
   onRequestFocus
 }) => {
@@ -99,15 +96,12 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
     <Icon type='format-color-text' style={captionStyle} />
   )
 
-  const ColorPicker = colorPicker || BuiltinColorPicker
-
   return (
     <DropDown
       caption={caption}
       title={language.controls.color}
       showArrow={false}
-      autoHide={autoHide}
-      // theme={theme}
+      autoHide
       getContainerNode={getContainerNode}
       ref={dropDownInstance}
       className={cls('text-color-dropdown')}
@@ -135,9 +129,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
           </button>
         </div>
         <ColorPicker
-          width={200}
           color={currentColor}
-          disableAlpha
           presetColors={colors}
           onChange={toggleColor}
         />

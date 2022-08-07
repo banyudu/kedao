@@ -55,7 +55,7 @@ import {
   getDecorators
 } from '../renderers'
 
-import ControlBar, { ControlBarProps } from '../components/ControlBar'
+import ControlBar from '../components/ControlBar'
 
 import 'draft-js/dist/Draft.css'
 import styles from './style.module.scss'
@@ -137,42 +137,6 @@ const getKeyBindingFn = (customKeyBindingFn) => (event) => {
 
 const unitExportFn = (value, type: string) =>
   type === 'line-height' ? value : `${value}px`
-
-const defaultProps: any = {
-  language: 'en',
-  controls: defaultControls,
-  excludeControls: [],
-  extendControls: [],
-  extendAtomics: [],
-  componentBelowControlBar: null,
-  media: defaultMedia,
-  imageControls: defaultImageControls,
-  imageResizable: true,
-  imageEqualRatio: true,
-  colors: defaultColors,
-  colorPicker: null,
-  colorPickerAutoHide: true,
-  codeTabIndents: 2,
-  headings: defaultHeadings,
-  textAligns: ['left', 'center', 'right', 'justify'],
-  textBackgroundColor: true,
-  allowInsertLinkText: false,
-  defaultLinkTarget: '',
-  letterSpacings: [0, 1, 2, 3, 4, 5, 6],
-  lineHeights: defaultLineHeights,
-  fontSizes: defaultFontSizes,
-  fontFamilies: defaultFontFamilies,
-  converts: { unitExportFn },
-  emojis: defaultEmojis,
-  stripPastedStyles: false,
-  className: '',
-  style: {},
-  controlBarClassName: '',
-  controlBarStyle: {},
-  contentClassName: '',
-  contentStyle: {},
-  fixPlaceholder: false
-}
 
 export const createStateFromContent = (
   content,
@@ -273,8 +237,6 @@ export interface KedaoEditorProps {
   customStyleMap?: Function
   blockStyleFn?: Function
   keyBindingFn?: Function
-  colorPickerAutoHide?: boolean
-  colorPicker?: ControlBarProps['colorPicker']
   converts?: object
   textBackgroundColor?: boolean
   allowInsertLinkText?: boolean
@@ -325,8 +287,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   imageResizable = true,
   imageEqualRatio = true,
   colors = defaultColors,
-  colorPicker = null,
-  colorPickerAutoHide = true,
   codeTabIndents = 2,
   headings = defaultHeadings,
   textAligns = ['left', 'center', 'right', 'justify'],
@@ -674,7 +634,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 
   const handleFiles = files => {
     const { pasteImage, validateFn, imagePasteLimit }: any = {
-      ...defaultProps.media,
+      ...defaultMedia,
       ...media
     }
 
@@ -798,8 +758,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   editorId = editorId || id
   controls = controls.filter(item => !excludeControls.includes(item as any))
 
-  const language: Language =
-    languages[locale] || languages[defaultProps.language]
+  const language: Language = languages[locale] || languages.zh
 
   const controlBarMedia: MediaProps = useMemo(() => {
     const result: MediaProps = {
@@ -939,8 +898,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
           className={cls(controlBarClassName)}
           style={controlBarStyle}
           colors={controlBarColors}
-          colorPicker={colorPicker}
-          colorPickerAutoHide={colorPickerAutoHide}
           editorId={editorId}
           media={controlBarMedia}
           controls={memoControls}

@@ -22,7 +22,7 @@ import {
 } from '../../utils'
 import LinkEditor, { LinkEditorProps } from '../LinkEditor'
 import HeadingPicker, { HeadingsPickerProps } from '../Headings'
-import TextColorPicker, { TextColorPickerProps } from '../TextColor'
+import TextColorPicker from '../TextColor'
 import FontSizePicker, { FontSizePickerProps } from '../FontSize'
 import LineHeightPicker, { LineHeightPickerProps } from '../LineHeight'
 import FontFamilyPicker, { FontFamilyPickerProps } from '../FontFamily'
@@ -304,7 +304,6 @@ const mergeControls = (
 
 export interface ControlBarProps
   extends CommonPickerProps,
-  Pick<TextColorPickerProps, 'colorPicker'>,
   Pick<EmojiPickerProps, 'emojis'>,
   Pick<FontFamilyPickerProps, 'fontFamilies'>,
   Pick<FontSizePickerProps, 'fontSizes'>,
@@ -318,7 +317,6 @@ export interface ControlBarProps
   colors: string[]
   allowInsertLinkText: boolean
   media: MediaProps
-  colorPickerAutoHide: TextColorPickerProps['autoHide']
   controls: readonly ControlItem[]
   editorId: string
   extendControls: ControlItem[]
@@ -345,8 +343,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       media,
       allowInsertLinkText,
       className,
-      colorPicker,
-      colorPickerAutoHide,
       colors,
       controls,
       defaultLinkTarget,
@@ -552,8 +548,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
               <TextColorPicker
                 key={key}
                 colors={colors}
-                colorPicker={colorPicker}
-                autoHide={colorPickerAutoHide}
                 enableBackgroundColor={textBackgroundColor}
                 {...commonProps}
               />

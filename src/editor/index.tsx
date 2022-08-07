@@ -34,13 +34,14 @@ import {
   RichUtils,
   Modifier,
   EditorState,
+  getDefaultKeyBinding,
+  KeyBindingUtil,
   ContentState
 } from 'draft-js'
 import mergeClassNames from 'merge-class-names'
 import { Provider as JotaiProvider } from 'jotai'
 
 import languages from '../languages'
-import getKeyBindingFn from '../configs/keybindings'
 import {
   getBlockRendererFn,
   getBlockRenderMap,
@@ -118,6 +119,22 @@ const defaultMedia: any = {
     image: true,
     embed: true
   }
+}
+
+const getKeyBindingFn = (customKeyBindingFn) => (event) => {
+  if (
+    event.keyCode === 83 &&
+    (KeyBindingUtil.hasCommandModifier(event) ||
+      KeyBindingUtil.isCtrlKeyCommand(event))
+  ) {
+    return 'kedao-save'
+  }
+
+  if (customKeyBindingFn) {
+    return customKeyBindingFn(event) || getDefaultKeyBinding(event)
+  }
+
+  return getDefaultKeyBinding(event)
 }
 
 const unitExportFn = (value, type: string) =>

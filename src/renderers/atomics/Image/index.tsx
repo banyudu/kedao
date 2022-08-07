@@ -3,7 +3,6 @@ import { classNameParser } from '../../../utils/style'
 import React, { FC, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { setMediaData, setMediaPosition } from '../../../utils'
-import { imageControlItems } from '../../../configs/controls'
 import Switch from '../../../components/Switch'
 import styles from './style.module.scss'
 import {
@@ -12,6 +11,8 @@ import {
 } from '../../../types'
 import { ContentBlock, EditorState } from 'draft-js'
 import MeidaToolbar from '../../../components/MediaToolbar'
+import Icon from '../../../components/Icon'
+
 const cls = classNameParser(styles)
 
 interface ImageProps extends BlockRenderProps {
@@ -26,6 +27,41 @@ interface ImageProps extends BlockRenderProps {
   value: EditorState
   onChange: (state: EditorState) => void
   refresh: () => void
+}
+
+const imageControlItems = {
+  'float-left': {
+    text: <Icon type='format-align-left' />,
+    command: 'setImageFloat|left'
+  },
+  'float-right': {
+    text: <Icon type='format-align-right' />,
+    command: 'setImageFloat|right'
+  },
+  'align-left': {
+    text: <Icon type='format-align-left' />,
+    command: 'setImageAlignment|left'
+  },
+  'align-center': {
+    text: <Icon type='format-align-center' />,
+    command: 'setImageAlignment|center'
+  },
+  'align-right': {
+    text: <Icon type='format-align-right' />,
+    command: 'setImageAlignment|right'
+  },
+  size: {
+    text: <Icon type='format-size' />,
+    command: 'toggleSizeEditor'
+  },
+  link: {
+    text: <Icon type='link' />,
+    command: 'toggleLinkEditor'
+  },
+  remove: {
+    text: <Icon type='remove' />,
+    command: 'removeImage'
+  }
 }
 
 const Image: FC<ImageProps> = ({

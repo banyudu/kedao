@@ -9,9 +9,8 @@ import React, {
   useCallback
 } from 'react'
 import mergeClassNames from 'merge-class-names'
-import ResponsiveHelper from '../../helpers/responsive'
 import styles from './style.module.scss'
-import { useClickOutside, usePrevious, useSyncedRef } from '@react-hookz/web'
+import { useClickOutside, usePrevious, useSyncedRef, useWindowSize } from '@react-hookz/web'
 import Icon from '../Icon'
 const cls = classNameParser(styles)
 
@@ -56,36 +55,9 @@ const DropDown = forwardRef<any, DropDownProps>(
         : latestIsActive.current // 兼容受控与非受控
 
     const [offset, setOffset] = useState(0)
-    const responsiveResolveId = useRef(null)
     const dropDownHandlerElement = useRef<HTMLButtonElement>(null)
     const dropDownContentElement = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-      if (document) {
-        responsiveResolveId.current = ResponsiveHelper.resolve(
-          fixDropDownPosition
-        ) as any
-      }
-
-      return () => {
-        if (document) {
-          ResponsiveHelper.unresolve(responsiveResolveId.current)
-        }
-      }
-    }, [])
-
-    useEffect(() => {
-      if (disabled) {
-        hide()
-      }
-    }, [disabled])
-
-    const previousActive = usePrevious(active)
-    useEffect(() => {
-      if (active && active !== previousActive) {
-        fixDropDownPosition()
-      }
-    }, [active])
+    const size = useWindowSize()
 
     const fixDropDownPosition = () => {
       const viewRect = getContainerNode().getBoundingClientRect()
@@ -113,6 +85,21 @@ const DropDown = forwardRef<any, DropDownProps>(
         setOffset(newOffset)
       }
     }
+
+    useEffect(fixDropDownPosition, [size])
+
+    useEffect(() => {
+      if (disabled) {
+        hide()
+      }
+    }, [disabled])
+
+    const previousActive = usePrevious(active)
+    useEffect(() => {
+      if (active && active !== previousActive) {
+        fixDropDownPosition()
+      }
+    }, [active])
 
     const autoHideHandler = useCallback(() => {
       if (autoHide && active) {

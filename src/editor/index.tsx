@@ -27,7 +27,11 @@ import {
   insertText,
   handleNewLine,
   handleKeyCommand as defaultHandleKeyCommand,
-  clear
+  clear,
+  convertEditorStateToRaw,
+  convertRawToEditorState,
+  convertHTMLToEditorState,
+  convertEditorStateToHTML
 } from '../utils'
 import {
   Editor,
@@ -69,12 +73,6 @@ import {
   ControlItem,
   BuiltInControlItem
 } from '../types'
-import {
-  convertEditorStateToRaw,
-  convertRawToEditorState,
-  convertHTMLToEditorState,
-  convertEditorStateToHTML
-} from '../convert'
 
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
 import {

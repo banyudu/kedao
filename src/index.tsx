@@ -3,4 +3,13 @@ import KedaoEditor, { EditorState } from './editor'
 
 export default KedaoEditor
 export { EditorState, getDecorators }
-export * from './convert'
+export {
+  convertRawToHTML,
+  convertHTMLToRaw,
+  convertEditorStateToHTML,
+  convertHTMLToEditorState,
+  convertEditorStateToRaw,
+  convertRawToEditorState,
+  convertFromRaw,
+  convertToRaw
+} from './utils'

@@ -11,18 +11,19 @@ import DropDown, { DropDownProps } from '../DropDown'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import styles from './style.module.scss'
+import { defaultFontFamilies } from '../../constants'
 const cls = classNameParser(styles)
 
 export interface FontFamilyPickerProps
   extends CommonPickerProps,
   Pick<DropDownProps, 'getContainerNode'> {
-  fontFamilies: readonly FontFamily[]
+  fontFamilies?: readonly FontFamily[]
   defaultCaption: DropDownProps['caption']
   language: Language
 }
 
 const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
-  fontFamilies,
+  fontFamilies = defaultFontFamilies,
   editorState,
   defaultCaption,
   getContainerNode,

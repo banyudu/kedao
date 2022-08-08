@@ -6,20 +6,21 @@ import { CommonPickerProps } from '../../types'
 import { insertText } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
 import styles from './style.module.scss'
+import { defaultEmojis } from '../../constants'
 const cls = classNameParser(styles)
 
 export interface EmojiPickerProps
   extends CommonPickerProps,
   Pick<DropDownProps, 'getContainerNode'> {
   defaultCaption: DropDownProps['caption']
-  emojis: readonly string[]
+  emojis?: readonly string[]
 }
 
 const EmojiPicker: FC<EmojiPickerProps> = ({
   defaultCaption,
   getContainerNode,
   language,
-  emojis,
+  emojis = defaultEmojis,
   editorState,
   onChange,
   onRequestFocus

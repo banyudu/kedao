@@ -11,8 +11,10 @@ import DropDown, { DropDownProps } from '../DropDown'
 import styles from './style.module.scss'
 const cls = classNameParser(styles)
 
+const defaultLetterSpacings = [0, 1, 2, 3, 4, 5, 6]
+
 export interface LetterSpacingPickerProps extends CommonPickerProps {
-  letterSpacings: number[]
+  letterSpacings?: number[]
   defaultCaption: DropDownProps['caption']
   onRequestFocus: () => void
   onChange: (
@@ -22,7 +24,7 @@ export interface LetterSpacingPickerProps extends CommonPickerProps {
 }
 
 const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
-  letterSpacings,
+  letterSpacings = defaultLetterSpacings,
   editorState,
   onChange,
   onRequestFocus,

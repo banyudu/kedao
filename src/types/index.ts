@@ -208,7 +208,6 @@ export interface BuiltInControlItem extends BaseControlItem {
 }
 
 interface BaseExtendControlItem extends BaseControlItem {
-  key: string
   className?: string
   html?: string | null
 }

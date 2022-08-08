@@ -7,6 +7,7 @@ import DropDown from '../DropDown'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import styles from './style.module.scss'
+import { defaultHeadings } from '../../constants'
 const cls = classNameParser(styles)
 
 const getHeadings = (lang) => [
@@ -63,14 +64,14 @@ const getHeadings = (lang) => [
 
 export interface HeadingsPickerProps
   extends Omit<CommonPickerProps, 'onChange'> {
-  headings: string[]
+  headings?: string[]
   current: any
   onChange: (command: string, type: string) => void
 }
 
 const HeadingsPicker: FC<HeadingsPickerProps> = ({
   language,
-  headings,
+  headings = defaultHeadings,
   current,
   getContainerNode,
   onChange

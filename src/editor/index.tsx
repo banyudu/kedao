@@ -70,7 +70,6 @@ import {
   ConvertOptions,
   BlockRendererFn,
   Language,
-  FontFamily,
   ControlItem,
   BuiltInControlItem
 } from '../types'
@@ -79,12 +78,8 @@ import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
 import {
   defaultControls,
   defaultColors,
-  defaultEmojis,
   defaultFontFamilies,
-  defaultFontSizes,
-  defaultHeadings,
-  defaultImageControls,
-  defaultLineHeights
+  defaultImageControls
 } from '../constants'
 const cls = classNameParser(styles)
 
@@ -224,14 +219,6 @@ export interface KedaoEditorProps {
   imageControls?: readonly ImageControlItem[]
   imageResizable?: boolean
   imageEqualRatio?: boolean
-  headings?: string[]
-  colors?: readonly string[]
-  fontSizes?: number[]
-  fontFamilies?: readonly FontFamily[]
-  lineHeights?: number[]
-  textAligns?: Array<'left' | 'center' | 'right' | 'justify'>
-  letterSpacings?: number[]
-  emojis?: readonly string[]
   blockRenderMap?: Immutable.Map<any, any> | Function
   blockRendererFn?: BlockRendererFn
   customStyleFn?: Function
@@ -241,7 +228,6 @@ export interface KedaoEditorProps {
   converts?: object
   textBackgroundColor?: boolean
   allowInsertLinkText?: boolean
-  defaultLinkTarget?: string
   stripPastedStyles?: boolean
   fixPlaceholder?: boolean
   className?: string
@@ -287,19 +273,10 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   imageControls = defaultImageControls,
   imageResizable = true,
   imageEqualRatio = true,
-  colors = defaultColors,
   codeTabIndents = 2,
-  headings = defaultHeadings,
-  textAligns = ['left', 'center', 'right', 'justify'],
   textBackgroundColor = true,
   allowInsertLinkText = false,
-  defaultLinkTarget = '',
-  letterSpacings = [0, 1, 2, 3, 4, 5, 6],
-  lineHeights = defaultLineHeights,
-  fontSizes = defaultFontSizes,
-  fontFamilies = defaultFontFamilies,
   converts = { unitExportFn },
-  emojis = defaultEmojis,
   stripPastedStyles = false,
   className = '',
   handleKeyCommand,
@@ -355,7 +332,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     const result: ConvertOptions = {
       unitExportFn,
       ...converts,
-      fontFamilies: fontFamilies
+      fontFamilies: defaultFontFamilies
     }
 
     return result
@@ -364,8 +341,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   const convertOptions = useMemo(getConvertOptions, [
     editorId,
     id,
-    converts,
-    fontFamilies
+    converts
   ])
 
   const [tempColors, setTempColors] = useState(() => {
@@ -375,7 +351,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       const _colors = detectColorsFromDraftState(
         convertEditorStateToRaw(defaultEditorState)
       )
-      result = filterColors(_colors, colors)
+      result = filterColors(_colors, defaultColors)
     }
     return result
   })
@@ -410,7 +386,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
         )
 
         setTempColors(oldColors =>
-          filterColors([...oldColors, ...tempColors], colors)
+          filterColors([...oldColors, ...tempColors], defaultColors)
         )
         setEditorState(nextEditorState)
         onChange?.(nextEditorState)
@@ -731,7 +707,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 
     setTempColors(
       [...tempColors, ...detectedColors]
-        .filter(item => !colors.includes(item))
+        .filter(item => !defaultColors.includes(item))
         .filter((item, index, array) => array.indexOf(item) === index)
     )
     setValue(insertHTML(editorState, convertOptions, html, 'paste'))
@@ -842,7 +818,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   const blockStyleFn_ = getBlockStyleFn(blockStyleFn)
   const customStyleMap_ = getCustomStyleMap(customStyleMap)
   const customStyleFn_ = getCustomStyleFn({
-    fontFamilies,
+    fontFamilies: defaultFontFamilies,
     unitExportFn,
     customStyleFn: customStyleFn
   })
@@ -867,8 +843,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     placeholder = ''
   }
 
-  const controlBarColors = useMemo(() => [...colors, ...tempColors], [
-    colors,
+  const controlBarColors = useMemo(() => [...defaultColors, ...tempColors], [
     tempColors
   ])
   const memoControls = useMemo(() => controls, [controls?.join(',')])
@@ -904,16 +879,8 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
           controls={memoControls}
           language={language as any}
           extendControls={extendControls}
-          headings={headings}
-          fontSizes={fontSizes}
-          fontFamilies={fontFamilies}
-          emojis={emojis}
-          lineHeights={lineHeights}
-          letterSpacings={letterSpacings}
-          textAligns={textAligns}
           textBackgroundColor={textBackgroundColor}
           allowInsertLinkText={allowInsertLinkText}
-          defaultLinkTarget={defaultLinkTarget}
           isFullscreen={isFullscreen}
           onChange={setValue}
           onRequestFocus={requestFocus}

@@ -18,13 +18,15 @@ const iconMap = {
   justify: <Icon type='format-align-justify' />
 }
 
+const defaultTextAligns = ['left', 'center', 'right', 'justify']
+
 export interface TextAlignProps extends CommonPickerProps {
-  textAligns: string[]
+  textAligns?: string[]
 }
 
 const TextAlign: FC<TextAlignProps> = ({
   editorState,
-  textAligns,
+  textAligns = defaultTextAligns,
   onChange,
   onRequestFocus,
   language

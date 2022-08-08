@@ -9,10 +9,11 @@ import {
 import DropDown, { DropDownProps } from '../DropDown'
 import { CommonPickerProps, EditorState } from '../../types'
 import styles from './style.module.scss'
+import { defaultLineHeights } from '../../constants'
 const cls = classNameParser(styles)
 
 export interface LineHeightPickerProps extends CommonPickerProps {
-  lineHeights: number[]
+  lineHeights?: number[]
   defaultCaption: DropDownProps['caption']
   onRequestFocus: () => void
   onChange: (
@@ -22,7 +23,7 @@ export interface LineHeightPickerProps extends CommonPickerProps {
 }
 
 const LineHeightPicker: FC<LineHeightPickerProps> = ({
-  lineHeights,
+  lineHeights = defaultLineHeights,
   defaultCaption,
   getContainerNode,
   language,

@@ -21,12 +21,12 @@ import Icon from '../Icon'
 const cls = classNameParser(styles)
 
 export interface LinkEditorProps extends CommonPickerProps {
-  defaultLinkTarget: string
+  defaultLinkTarget?: string
   allowInsertLinkText: boolean
 }
 
 const LinkEditor: FC<LinkEditorProps> = ({
-  defaultLinkTarget,
+  defaultLinkTarget = '',
   editorState,
   language,
   getContainerNode,

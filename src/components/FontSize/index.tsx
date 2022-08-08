@@ -6,11 +6,12 @@ import { CommonPickerProps, EditorState } from '../../types'
 import { toggleSelectionFontSize, selectionHasInlineStyle } from '../../utils'
 import DropDown, { DropDownProps } from '../DropDown'
 import styles from './style.module.scss'
+import { defaultFontSizes } from '../../constants'
 const cls = classNameParser(styles)
 
 export interface FontSizePickerProps extends CommonPickerProps {
   defaultCaption: DropDownProps['caption']
-  fontSizes: number[]
+  fontSizes?: number[]
   onChange: (
     editorState: EditorState,
     callback?: (state: EditorState) => void
@@ -19,7 +20,7 @@ export interface FontSizePickerProps extends CommonPickerProps {
 }
 
 const FontSizePicker: FC<FontSizePickerProps> = ({
-  fontSizes,
+  fontSizes = defaultFontSizes,
   defaultCaption,
   getContainerNode,
   language,

@@ -20,17 +20,15 @@ import {
   toggleSelectionEntity,
   insertMedias
 } from '../../utils'
-import LinkEditor, { LinkEditorProps } from '../LinkEditor'
-import HeadingPicker, { HeadingsPickerProps } from '../Headings'
+import LinkEditor from '../LinkEditor'
+import HeadingPicker from '../Headings'
 import TextColorPicker from '../TextColor'
-import FontSizePicker, { FontSizePickerProps } from '../FontSize'
-import LineHeightPicker, { LineHeightPickerProps } from '../LineHeight'
-import FontFamilyPicker, { FontFamilyPickerProps } from '../FontFamily'
-import TextAlign, { TextAlignProps } from '../TextAlign'
-import EmojiPicker, { EmojiPickerProps } from '../EmojiPicker'
-import LetterSpacingPicker, {
-  LetterSpacingPickerProps
-} from '../LetterSpacing'
+import FontSizePicker from '../FontSize'
+import LineHeightPicker from '../LineHeight'
+import FontFamilyPicker from '../FontFamily'
+import TextAlign from '../TextAlign'
+import EmojiPicker from '../EmojiPicker'
+import LetterSpacingPicker from '../LetterSpacing'
 import TextIndent from '../TextIndent'
 import DropDown from '../DropDown'
 import Button from '../Button'
@@ -302,16 +300,7 @@ const mergeControls = (
     )
 }
 
-export interface ControlBarProps
-  extends CommonPickerProps,
-  Pick<EmojiPickerProps, 'emojis'>,
-  Pick<FontFamilyPickerProps, 'fontFamilies'>,
-  Pick<FontSizePickerProps, 'fontSizes'>,
-  Pick<HeadingsPickerProps, 'headings'>,
-  Pick<LetterSpacingPickerProps, 'letterSpacings'>,
-  Pick<LineHeightPickerProps, 'lineHeights'>,
-  Pick<TextAlignProps, 'textAligns'>,
-  Pick<LinkEditorProps, 'defaultLinkTarget'> {
+export interface ControlBarProps extends CommonPickerProps {
   className: string
   style: CSSProperties
   colors: string[]
@@ -345,18 +334,10 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       className,
       colors,
       controls,
-      defaultLinkTarget,
       editorId,
-      emojis,
       extendControls,
-      fontFamilies,
-      fontSizes,
       getContainerNode,
-      headings,
-      letterSpacings,
-      lineHeights,
       style,
-      textAligns,
       textBackgroundColor,
       onRequestFocus,
       isFullscreen,
@@ -536,7 +517,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <HeadingPicker
                 key={key}
-                headings={headings}
                 current={currentBlockType}
                 {...commonProps}
                 onChange={(command) => applyControl(command, 'block-type')}
@@ -557,7 +537,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <FontSizePicker
                 key={uuidv4()}
-                fontSizes={fontSizes}
                 defaultCaption={controlItem.title}
                 {...commonProps}
               />
@@ -567,7 +546,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <LineHeightPicker
                 key={uuidv4()}
-                lineHeights={lineHeights}
                 defaultCaption={controlItem.title}
                 {...commonProps}
               />
@@ -577,7 +555,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <LetterSpacingPicker
                 key={uuidv4()}
-                letterSpacings={letterSpacings}
                 defaultCaption={controlItem.title}
                 {...commonProps}
               />
@@ -590,7 +567,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <FontFamilyPicker
                 key={uuidv4()}
-                fontFamilies={fontFamilies}
                 defaultCaption={controlItem.title}
                 {...commonProps}
               />
@@ -600,7 +576,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <EmojiPicker
                 key={uuidv4()}
-                emojis={emojis}
                 defaultCaption={controlItem.text}
                 {...commonProps}
               />
@@ -610,7 +585,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <LinkEditor
                 key={key}
-                defaultLinkTarget={defaultLinkTarget}
                 allowInsertLinkText={allowInsertLinkText}
                 onChange={onChange}
                 onRequestFocus={onRequestFocus}
@@ -620,7 +594,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           }
           if (controlItem.type === 'text-align') {
             return (
-              <TextAlign key={key} textAligns={textAligns} {...commonProps} />
+              <TextAlign key={key} {...commonProps} />
             )
           }
           if (controlItem.type === 'media') {

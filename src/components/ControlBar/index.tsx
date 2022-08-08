@@ -46,7 +46,7 @@ import {
   ModalProps
 } from '../../types'
 import styles from './style.module.scss'
-import { useDeepCompareMemo } from '../../utils/use-deep-compare-memo'
+import { useDeepCompareMemo } from '../../hooks/use-deep-compare-memo'
 const cls = classNameParser(styles)
 
 const isModalControl = (control: ControlItem): control is ModalControlItem => {

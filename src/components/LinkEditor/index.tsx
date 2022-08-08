@@ -16,7 +16,7 @@ import styles from './style.module.scss'
 import { CommonPickerProps } from '../../types'
 import { useAtom } from 'jotai'
 import { linkEditorActiveAtom } from './states'
-import { useResetState } from '../../utils/use-reset-state'
+import { useResetState } from '../../hooks/use-reset-state'
 import Icon from '../Icon'
 const cls = classNameParser(styles)
 

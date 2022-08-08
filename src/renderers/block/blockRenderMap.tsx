@@ -1,9 +1,9 @@
 import React from 'react'
 import { Map } from 'immutable'
-import { DefaultDraftBlockRenderMap } from 'draft-js'
+import { DefaultDraftBlockRenderMap, DraftBlockRenderMap } from 'draft-js'
 
-export default (props, blockRenderMap) => {
-  let customBlockRenderMap = Map({
+export default (blockRenderMap: DraftBlockRenderMap): DraftBlockRenderMap => {
+  let customBlockRenderMap: DraftBlockRenderMap = Map({
     atomic: {
       element: ''
     },
@@ -15,13 +15,7 @@ export default (props, blockRenderMap) => {
 
   try {
     if (blockRenderMap) {
-      if (typeof blockRenderMap === 'function') {
-        customBlockRenderMap = customBlockRenderMap.merge(
-          blockRenderMap(props)
-        )
-      } else {
-        customBlockRenderMap = customBlockRenderMap.merge(blockRenderMap)
-      }
+      customBlockRenderMap = customBlockRenderMap.merge(blockRenderMap)
     }
 
     customBlockRenderMap =

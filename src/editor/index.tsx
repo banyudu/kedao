@@ -41,7 +41,9 @@ import {
   getDefaultKeyBinding,
   KeyBindingUtil,
   ContentState,
-  DraftHandleValue
+  DraftHandleValue,
+  DraftStyleMap,
+  DraftBlockRenderMap
 } from 'draft-js'
 import mergeClassNames from 'merge-class-names'
 import { Provider as JotaiProvider } from 'jotai'
@@ -219,10 +221,10 @@ export interface KedaoEditorProps {
   imageControls?: readonly ImageControlItem[]
   imageResizable?: boolean
   imageEqualRatio?: boolean
-  blockRenderMap?: Immutable.Map<any, any> | Function
+  blockRenderMap?: DraftBlockRenderMap
   blockRendererFn?: BlockRendererFn
   customStyleFn?: Function
-  customStyleMap?: Function
+  customStyleMap?: DraftStyleMap
   blockStyleFn?: Function
   keyBindingFn?: Function
   converts?: object
@@ -782,17 +784,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     }
   }
 
-  const commonProps = {
-    editorId,
-    editorState,
-    containerNode: containerRef.current,
-    imageControls,
-    imageResizable,
-    language,
-    extendAtomics,
-    imageEqualRatio
-  }
-
   const getContainerNode = useCallback(() => containerRef.current, [
     containerRef.current
   ])
@@ -814,7 +805,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     },
     blockRendererFn
   )
-  const blockRenderMap_ = getBlockRenderMap(commonProps, blockRenderMap)
+  const blockRenderMap_ = getBlockRenderMap(blockRenderMap)
   const blockStyleFn_ = getBlockStyleFn(blockStyleFn)
   const customStyleMap_ = getCustomStyleMap(customStyleMap)
   const customStyleFn_ = getCustomStyleFn({

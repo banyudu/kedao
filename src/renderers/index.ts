@@ -1,6 +1,0 @@
-export { default as getBlockRenderMap } from './block/blockRenderMap'
-export { default as getBlockRendererFn } from './block/blockRendererFn'
-export { default as getBlockStyleFn } from './block/blockStyleFn'
-export { default as getCustomStyleMap } from './inline/inlineStyleMap'
-export { default as getCustomStyleFn } from './inline/inlineStyleFn'
-export { default as getDecorators } from './decorators'

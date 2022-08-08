@@ -56,7 +56,7 @@ import {
   getCustomStyleMap,
   getCustomStyleFn,
   getDecorators
-} from '../renderers'
+} from '../utils/renderers'
 
 import ControlBar from '../components/ControlBar'
 

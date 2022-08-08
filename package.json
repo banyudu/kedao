@@ -38,6 +38,7 @@
     "watch:css": "gulp watch",
     "watch:js": "ttsc -w"
   },
+  "sideEffects": false,
   "repository": "https://github.com/banyudu/kedao",
   "keywords": [
     "kedao",

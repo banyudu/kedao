@@ -2,7 +2,7 @@
 import { classNameParser } from '../../utils/style'
 import React, { useRef, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { CommonPickerProps, EditorState, DropDownProps } from '../../types'
+import { LetterSpacingPickerProps } from '../../types'
 import {
   toggleSelectionLetterSpacing,
   selectionHasInlineStyle
@@ -14,16 +14,6 @@ const DropDown = loadable(async () => await import('../DropDown'))
 const cls = classNameParser(styles)
 
 const defaultLetterSpacings = [0, 1, 2, 3, 4, 5, 6]
-
-export interface LetterSpacingPickerProps extends CommonPickerProps {
-  letterSpacings?: number[]
-  defaultCaption: DropDownProps['caption']
-  onRequestFocus: () => void
-  onChange: (
-    editorState: EditorState,
-    callback?: (state: EditorState) => void
-  ) => void
-}
 
 const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
   letterSpacings = defaultLetterSpacings,

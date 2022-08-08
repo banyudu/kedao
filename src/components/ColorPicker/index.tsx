@@ -3,13 +3,9 @@ import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import styles from './style.module.scss'
-const cls = classNameParser(styles)
+import { ColorPickerProps } from '../../types'
 
-export interface ColorPickerProps {
-  presetColors: string[]
-  color: string
-  onChange: (color: string, closePicker: boolean) => void
-}
+const cls = classNameParser(styles)
 
 const ColorPicker: FC<ColorPickerProps> = ({
   presetColors,

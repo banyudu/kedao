@@ -3,7 +3,7 @@ import { UniqueIndex, compressImage } from '../../utils'
 import { classNameParser } from '../../utils/style'
 import styles from './styles.module.scss'
 import Icon from '../Icon'
-import { Language, MediaProps } from '../../types'
+import { FinderProps } from '../../types'
 
 const cls = classNameParser(styles)
 
@@ -24,10 +24,6 @@ const defaultExternals = {
   video: true,
   audio: true,
   embed: true
-}
-
-export interface FinderProps extends MediaProps {
-  language: Language
 }
 
 const Finder = forwardRef<FinderRef, FinderProps>(({

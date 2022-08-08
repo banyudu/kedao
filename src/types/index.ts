@@ -399,3 +399,84 @@ export interface DropDownProps {
   getContainerNode: () => HTMLElement
   children: React.ReactNode
 }
+
+export interface ColorPickerProps {
+  presetColors: string[]
+  color: string
+  onChange: (color: string, closePicker: boolean) => void
+}
+
+export interface EmojiPickerProps
+  extends CommonPickerProps,
+  Pick<DropDownProps, 'getContainerNode'> {
+  defaultCaption: DropDownProps['caption']
+  emojis?: readonly string[]
+}
+
+export interface FinderProps extends MediaProps {
+  language: Language
+}
+
+export interface FontFamilyPickerProps
+  extends CommonPickerProps,
+  Pick<DropDownProps, 'getContainerNode'> {
+  fontFamilies?: readonly FontFamily[]
+  defaultCaption: DropDownProps['caption']
+  language: Language
+}
+
+export interface FontSizePickerProps extends CommonPickerProps {
+  defaultCaption: DropDownProps['caption']
+  fontSizes?: number[]
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
+  onRequestFocus: () => void
+}
+
+export interface HeadingsPickerProps
+  extends Omit<CommonPickerProps, 'onChange'> {
+  headings?: string[]
+  current: any
+  onChange: (command: string, type: string) => void
+}
+
+export interface LetterSpacingPickerProps extends CommonPickerProps {
+  letterSpacings?: number[]
+  defaultCaption: DropDownProps['caption']
+  onRequestFocus: () => void
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
+}
+
+export interface LineHeightPickerProps extends CommonPickerProps {
+  lineHeights?: number[]
+  defaultCaption: DropDownProps['caption']
+  onRequestFocus: () => void
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
+}
+
+export interface LinkEditorProps extends CommonPickerProps {
+  defaultLinkTarget?: string
+  allowInsertLinkText: boolean
+}
+
+export interface TextAlignProps extends CommonPickerProps {
+  textAligns?: string[]
+}
+
+export interface TextColorPickerProps
+  extends Pick<DropDownProps, 'getContainerNode'> {
+  editorState: EditorState
+  enableBackgroundColor: boolean
+  colors: string[]
+  language: Language
+  onChange: (state: EditorState) => void
+  onRequestFocus: () => void
+}

@@ -14,21 +14,11 @@ import {
 import ColorPicker from '../ColorPicker'
 import styles from './style.module.scss'
 import Icon from '../Icon'
-import { EditorState, Language, DropDownProps } from '../../types'
+import { TextColorPickerProps } from '../../types'
 import loadable from '@loadable/component'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
-
-export interface TextColorPickerProps
-  extends Pick<DropDownProps, 'getContainerNode'> {
-  editorState: EditorState
-  enableBackgroundColor: boolean
-  colors: string[]
-  language: Language
-  onChange: (state: EditorState) => void
-  onRequestFocus: () => void
-}
 
 const TextColorPicker: FC<TextColorPickerProps> = ({
   editorState,

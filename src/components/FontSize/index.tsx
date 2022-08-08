@@ -2,7 +2,7 @@
 import { classNameParser } from '../../utils/style'
 import React, { FC, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { CommonPickerProps, EditorState, DropDownProps } from '../../types'
+import { FontSizePickerProps } from '../../types'
 import { toggleSelectionFontSize, selectionHasInlineStyle } from '../../utils'
 import styles from './style.module.scss'
 import { defaultFontSizes } from '../../constants'
@@ -10,16 +10,6 @@ import loadable from '@loadable/component'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
-
-export interface FontSizePickerProps extends CommonPickerProps {
-  defaultCaption: DropDownProps['caption']
-  fontSizes?: number[]
-  onChange: (
-    editorState: EditorState,
-    callback?: (state: EditorState) => void
-  ) => void
-  onRequestFocus: () => void
-}
 
 const FontSizePicker: FC<FontSizePickerProps> = ({
   fontSizes = defaultFontSizes,

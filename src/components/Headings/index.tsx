@@ -2,7 +2,7 @@
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { CommonPickerProps } from '../../types'
+import { HeadingsPickerProps } from '../../types'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import styles from './style.module.scss'
@@ -63,13 +63,6 @@ const getHeadings = (lang) => [
     command: 'unstyled'
   }
 ]
-
-export interface HeadingsPickerProps
-  extends Omit<CommonPickerProps, 'onChange'> {
-  headings?: string[]
-  current: any
-  onChange: (command: string, type: string) => void
-}
 
 const HeadingsPicker: FC<HeadingsPickerProps> = ({
   language,

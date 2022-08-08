@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { getSelectionBlockData, toggleSelectionAlignment } from '../../utils'
 import mergeClassNames from 'merge-class-names'
 import ControlGroup from '../ControlGroup'
-import { CommonPickerProps } from '../../types'
+import { TextAlignProps } from '../../types'
 import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
 import Icon from '../Icon'
@@ -19,10 +19,6 @@ const iconMap = {
 }
 
 const defaultTextAligns = ['left', 'center', 'right', 'justify']
-
-export interface TextAlignProps extends CommonPickerProps {
-  textAligns?: string[]
-}
 
 const TextAlign: FC<TextAlignProps> = ({
   editorState,

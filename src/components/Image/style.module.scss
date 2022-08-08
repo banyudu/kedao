@@ -5,22 +5,6 @@
   position: relative;
 }
 
-.kedao-image {
-  position: relative;
-
-  img {
-    display: block;
-    max-width: 100%;
-    font-size: 0;
-    resize: both;
-    outline-offset: 1px;
-
-    &:hover {
-      outline: solid 1px $COLOR_ACTIVE;
-    }
-  }
-}
-
 .kedao-image-size-editor,
 .kedao-image-link-editor {
   padding-bottom: 1px;
@@ -89,8 +73,20 @@
   }
 }
 
-.kedao-content .kedao-image {
+.kedao-image {
   position: relative;
+
+  img {
+    display: block;
+    max-width: 100%;
+    font-size: 0;
+    resize: both;
+    outline-offset: 1px;
+
+    &:hover {
+      outline: solid 1px $COLOR_ACTIVE;
+    }
+  }
 
   .kedao-csize-icon {
     position: absolute;

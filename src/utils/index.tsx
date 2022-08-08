@@ -992,7 +992,7 @@ const changeBlocksDepth = (
     depth = Math.max(0, Math.min(depth, maxDepth))
     return block.set('depth', depth)
   })
-  blockMap = blockMap.merge(blocks)
+  blockMap = blockMap.merge(...blocks)
   return contentState.merge({
     blockMap,
     selectionBefore: selectionState,

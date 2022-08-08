@@ -1,8 +1,3 @@
-import { getDecorators } from './renderers'
-import KedaoEditor, { EditorState } from './editor'
-
-export default KedaoEditor
-export { EditorState, getDecorators }
 export {
   convertRawToHTML,
   convertHTMLToRaw,
@@ -13,3 +8,5 @@ export {
   convertFromRaw,
   convertToRaw
 } from './utils'
+
+export { default, default as KedaoEditor, EditorState } from './editor'

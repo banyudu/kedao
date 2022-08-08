@@ -252,7 +252,7 @@ const Image: FC<ImageProps> = ({
     onChange(
       setMediaData(value, entityKey, { newLinkTarget })
     )
-    window.setImmediate(() => refresh())
+    refresh()
     return true
   }
 
@@ -261,7 +261,7 @@ const Image: FC<ImageProps> = ({
 
     if (link !== null) {
       onChange(setMediaData(value, entityKey, { link }))
-      window.setImmediate(() => refresh())
+      refresh()
     }
     return true
   }
@@ -306,7 +306,7 @@ const Image: FC<ImageProps> = ({
     }
 
     onChange(setMediaData(value, entityKey, newImageSize))
-    window.setImmediate(() => refresh())
+    refresh()
     return true
   }
 
@@ -335,7 +335,7 @@ const Image: FC<ImageProps> = ({
     }
 
     onChange(setMediaData(value, entityKey, newImageSize))
-    window.setImmediate(() => refresh())
+    refresh()
     return true
   }
 

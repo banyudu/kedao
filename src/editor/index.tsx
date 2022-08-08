@@ -40,12 +40,13 @@ import {
   EditorState,
   getDefaultKeyBinding,
   KeyBindingUtil,
-  ContentState
+  ContentState,
+  DraftHandleValue
 } from 'draft-js'
 import mergeClassNames from 'merge-class-names'
 import { Provider as JotaiProvider } from 'jotai'
 
-import languages from '../languages'
+import languages from '../i18n'
 import {
   getBlockRendererFn,
   getBlockRenderMap,
@@ -717,13 +718,13 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     text: string,
     html: string,
     editorState: EditorState
-  ) => {
+  ): DraftHandleValue => {
     if (handlePastedText?.(text, html, editorState) === 'handled') {
       return 'handled'
     }
 
     if (!html || stripPastedStyles) {
-      return false
+      return 'not-handled'
     }
 
     const detectedColors = detectColorsFromHTMLString(html)
@@ -926,7 +927,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
           style={contentStyle}
         >
           <Editor
-            className={cls('editor-core')}
             ref={draftInstanceRef}
             editorState={editorState}
             handleKeyCommand={keyCommandHandlers}
@@ -940,14 +940,14 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             blockRenderMap={blockRenderMap_}
-            blockRendererFn={blockRendererFn_}
+            blockRendererFn={blockRendererFn_ as any}
             blockStyleFn={blockStyleFn_}
             customStyleMap={customStyleMap_}
             customStyleFn={customStyleFn_}
             keyBindingFn={keyBindingFn_}
             placeholder={placeholder}
             stripPastedStyles={stripPastedStyles}
-            {...mixedProps}
+            readOnly={editorLocked || disabled || readOnly}
           />
         </div>
       </div>

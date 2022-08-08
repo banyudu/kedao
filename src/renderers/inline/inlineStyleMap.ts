@@ -1,4 +1,6 @@
-const getCustomStyleMap = (customStyleMap = {}) => {
+import { DraftStyleMap } from 'draft-js'
+
+const getCustomStyleMap = (customStyleMap = {}): DraftStyleMap => {
   return {
     SUPERSCRIPT: {
       position: 'relative',

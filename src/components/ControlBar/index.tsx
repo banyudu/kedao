@@ -1,6 +1,5 @@
 
 import { classNameParser } from '../../utils/style'
-import Finder from '../Finder'
 import React, {
   CSSProperties,
   useImperativeHandle,
@@ -20,20 +19,9 @@ import {
   toggleSelectionEntity,
   insertMedias
 } from '../../utils'
-import LinkEditor from '../LinkEditor'
-import HeadingPicker from '../Headings'
-import TextColorPicker from '../TextColor'
-import FontSizePicker from '../FontSize'
-import LineHeightPicker from '../LineHeight'
-import FontFamilyPicker from '../FontFamily'
-import TextAlign from '../TextAlign'
-import EmojiPicker from '../EmojiPicker'
-import LetterSpacingPicker from '../LetterSpacing'
-import TextIndent from '../TextIndent'
-import DropDown from '../DropDown'
-import Button from '../Button'
-import Modal from '../Modal'
-import Icon from '../Icon'
+
+import loadable from '@loadable/component'
+
 import {
   MediaProps,
   ControlItem,
@@ -47,7 +35,24 @@ import {
 } from '../../types'
 import styles from './style.module.scss'
 import { useDeepCompareMemo } from '../../hooks/use-deep-compare-memo'
+
 const cls = classNameParser(styles)
+
+const Finder = loadable(async () => await import('../Finder'))
+const LinkEditor = loadable(async () => await import('../LinkEditor'))
+const HeadingPicker = loadable(async () => await import('../Headings'))
+const TextColorPicker = loadable(async () => await import('../TextColor'))
+const FontSizePicker = loadable(async () => await import('../FontSize'))
+const LineHeightPicker = loadable(async () => await import('../LineHeight'))
+const FontFamilyPicker = loadable(async () => await import('../FontFamily'))
+const TextAlign = loadable(async () => await import('../TextAlign'))
+const EmojiPicker = loadable(async () => await import('../EmojiPicker'))
+const LetterSpacingPicker = loadable(async () => await import('../LetterSpacing'))
+const TextIndent = loadable(async () => await import('../TextIndent'))
+const DropDown = loadable(async () => await import('../DropDown'))
+const Button = loadable(async () => await import('../Button'))
+const Modal = loadable(async () => await import('../Modal'))
+const Icon = loadable(async () => await import('../Icon'))
 
 const isModalControl = (control: ControlItem): control is ModalControlItem => {
   return control.type === 'modal'
@@ -718,7 +723,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           }
           return null
         })}
-        <Modal
+        {mediaLibraryVisible && <Modal
           title={language.controls.mediaLibirary}
           language={language}
           width={640}
@@ -733,7 +738,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             onCancel={closeFinder}
             onInsert={insertMedias_}
           />
-        </Modal>
+        </Modal>}
         {extendModal && (
           <Modal key={extendModal.id} {...extendModal} language={language} />
         )}

@@ -2,13 +2,15 @@
 import { classNameParser } from '../../utils/style'
 import React, { useRef, FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { CommonPickerProps, EditorState } from '../../types'
+import { CommonPickerProps, EditorState, DropDownProps } from '../../types'
 import {
   toggleSelectionLetterSpacing,
   selectionHasInlineStyle
 } from '../../utils'
-import DropDown, { DropDownProps } from '../DropDown'
 import styles from './style.module.scss'
+import loadable from '@loadable/component'
+const DropDown = loadable(async () => await import('../DropDown'))
+
 const cls = classNameParser(styles)
 
 const defaultLetterSpacings = [0, 1, 2, 3, 4, 5, 6]

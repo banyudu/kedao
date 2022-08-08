@@ -3,11 +3,13 @@ import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { CommonPickerProps } from '../../types'
-import DropDown from '../DropDown'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import styles from './style.module.scss'
 import { defaultHeadings } from '../../constants'
+import loadable from '@loadable/component'
+const DropDown = loadable(async () => await import('../DropDown'))
+
 const cls = classNameParser(styles)
 
 const getHeadings = (lang) => [

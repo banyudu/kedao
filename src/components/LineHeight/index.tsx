@@ -6,10 +6,12 @@ import {
   toggleSelectionLineHeight,
   selectionHasInlineStyle
 } from '../../utils'
-import DropDown, { DropDownProps } from '../DropDown'
-import { CommonPickerProps, EditorState } from '../../types'
+import { CommonPickerProps, EditorState, DropDownProps } from '../../types'
 import styles from './style.module.scss'
 import { defaultLineHeights } from '../../constants'
+import loadable from '@loadable/component'
+const DropDown = loadable(async () => await import('../DropDown'))
+
 const cls = classNameParser(styles)
 
 export interface LineHeightPickerProps extends CommonPickerProps {

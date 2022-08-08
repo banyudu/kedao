@@ -11,11 +11,13 @@ import {
   toggleSelectionBackgroundColor,
   toggleSelectionColor
 } from '../../utils'
-import DropDown, { DropDownProps } from '../DropDown'
 import ColorPicker from '../ColorPicker'
 import styles from './style.module.scss'
 import Icon from '../Icon'
-import { EditorState, Language } from '../../types'
+import { EditorState, Language, DropDownProps } from '../../types'
+import loadable from '@loadable/component'
+const DropDown = loadable(async () => await import('../DropDown'))
+
 const cls = classNameParser(styles)
 
 export interface TextColorPickerProps

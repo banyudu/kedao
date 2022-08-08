@@ -384,3 +384,18 @@ export interface FontFamily {
   name: string
   family: string
 }
+
+export interface DropDownProps {
+  disabled?: boolean
+  autoHide: boolean
+  caption: React.ReactNode
+  htmlCaption?: string
+  title: string
+  showArrow?: boolean
+  arrowActive?: boolean
+  className?: string
+  isActive?: boolean
+  onActiveChage?: (value: boolean) => void
+  getContainerNode: () => HTMLElement
+  children: React.ReactNode
+}

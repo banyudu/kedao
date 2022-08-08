@@ -12,22 +12,8 @@ import mergeClassNames from 'merge-class-names'
 import styles from './style.module.scss'
 import { useClickOutside, usePrevious, useSyncedRef, useWindowSize } from '@react-hookz/web'
 import Icon from '../Icon'
+import { DropDownProps } from '../../types'
 const cls = classNameParser(styles)
-
-export interface DropDownProps {
-  disabled?: boolean
-  autoHide: boolean
-  caption: React.ReactNode
-  htmlCaption?: string
-  title: string
-  showArrow?: boolean
-  arrowActive?: boolean
-  className?: string
-  isActive?: boolean
-  onActiveChage?: (value: boolean) => void
-  getContainerNode: () => HTMLElement
-  children: React.ReactNode
-}
 
 const DropDown = forwardRef<any, DropDownProps>(
   (

@@ -2,16 +2,19 @@
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { CommonPickerProps, FontFamily, Language } from '../../types'
+import { CommonPickerProps, FontFamily, Language, DropDownProps } from '../../types'
 import {
   toggleSelectionFontFamily,
   selectionHasInlineStyle
 } from '../../utils'
-import DropDown, { DropDownProps } from '../DropDown'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import styles from './style.module.scss'
 import { defaultFontFamilies } from '../../constants'
+
+import loadable from '@loadable/component'
+const DropDown = loadable(async () => await import('../DropDown'))
+
 const cls = classNameParser(styles)
 
 export interface FontFamilyPickerProps

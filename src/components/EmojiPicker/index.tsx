@@ -2,11 +2,13 @@
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { CommonPickerProps } from '../../types'
+import { CommonPickerProps, DropDownProps } from '../../types'
 import { insertText } from '../../utils'
-import DropDown, { DropDownProps } from '../DropDown'
 import styles from './style.module.scss'
 import { defaultEmojis } from '../../constants'
+import loadable from '@loadable/component'
+
+const DropDown = loadable(async () => await import('../DropDown'))
 const cls = classNameParser(styles)
 
 export interface EmojiPickerProps

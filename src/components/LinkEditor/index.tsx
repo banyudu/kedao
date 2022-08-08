@@ -9,7 +9,6 @@ import {
   getSelectionText
 } from '../../utils'
 import Switch from '../Switch'
-import DropDown from '../DropDown'
 import Button from '../Button'
 import ControlGroup from '../ControlGroup'
 import styles from './style.module.scss'
@@ -18,6 +17,9 @@ import { useAtom } from 'jotai'
 import { linkEditorActiveAtom } from './states'
 import { useResetState } from '../../hooks/use-reset-state'
 import Icon from '../Icon'
+import loadable from '@loadable/component'
+const DropDown = loadable(async () => await import('../DropDown'))
+
 const cls = classNameParser(styles)
 
 export interface LinkEditorProps extends CommonPickerProps {

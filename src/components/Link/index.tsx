@@ -1,7 +1,7 @@
 
-import { classNameParser } from '../../../utils/style'
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import styles from '../../../components/LinkEditor/style.module.scss'
+import styles from './style.module.scss'
 import { ContentState } from 'draft-js'
 const cls = classNameParser(styles)
 

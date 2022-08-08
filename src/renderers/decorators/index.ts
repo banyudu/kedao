@@ -1,7 +1,7 @@
 import { CharacterMetadata, CompositeDecorator, ContentBlock, ContentState } from 'draft-js'
 import CombineDecorators from 'draft-js-multidecorators'
 import Immutable from 'immutable'
-import Link from './Link'
+import Link from '../../components/Link'
 
 const KEY_SEPARATOR = '-'
 

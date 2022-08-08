@@ -1,17 +1,17 @@
 
-import { classNameParser } from '../../../utils/style'
+import { classNameParser } from '../../utils/style'
 import React, { FC, useState, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { setMediaData, setMediaPosition } from '../../../utils'
-import Switch from '../../../components/Switch'
+import { setMediaData, setMediaPosition } from '../../utils'
+import Switch from '../../components/Switch'
 import styles from './style.module.scss'
 import {
   BlockRenderProps,
   ImageControlItem
-} from '../../../types'
+} from '../../types'
 import { ContentBlock, EditorState } from 'draft-js'
-import MeidaToolbar from '../../../components/MediaToolbar'
-import Icon from '../../../components/Icon'
+import MeidaToolbar from '../../components/MediaToolbar'
+import Icon from '../../components/Icon'
 
 const cls = classNameParser(styles)
 

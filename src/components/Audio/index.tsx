@@ -1,8 +1,8 @@
 
-import { classNameParser } from '../../../utils/style'
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import PlayerModal from '../../../components/PlayerModal'
-import { BlockRenderProps } from '../../../types'
+import PlayerModal from '../PlayerModal'
+import { BlockRenderProps } from '../../types'
 import styles from './style.module.scss'
 const cls = classNameParser(styles)
 

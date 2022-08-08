@@ -1,9 +1,9 @@
 
-import { classNameParser } from '../../../utils/style'
+import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import PlayerModal from '../../../components/PlayerModal'
+import PlayerModal from '../../components/PlayerModal'
 import styles from './style.module.scss'
-import { BlockRenderProps } from '../../../types'
+import { BlockRenderProps } from '../../types'
 const cls = classNameParser(styles)
 
 const Embed: FC<BlockRenderProps> = ({

@@ -33,7 +33,7 @@
     "test:build:self": "npm run build",
     "test:build:docs": "cd docs && npm run build && cd ..",
     "test:build:cra": "cd examples/with-cra && npm run build && cd ..",
-    "test:build:nextjs": "cd examples/with-nextjs && rm -rf node_modules/kedao/ && pnpm i --force && npm run build && cd ..",
+    "test:build:nextjs": "rm -rf *.tgz && npm pack && cd examples/with-nextjs && pnpm i ../../*.tgz --force && npm run build && cd ..",
     "version": "standard-version",
     "watch:css": "gulp watch",
     "watch:js": "ttsc -w"

@@ -14,10 +14,11 @@ import ControlGroup from '../ControlGroup'
 import styles from './style.module.scss'
 import { LinkEditorProps } from '../../types'
 import { useAtom } from 'jotai'
-import { linkEditorActiveAtom } from './states'
+import { linkEditorActiveAtom } from '../../states'
 import { useResetState } from '../../hooks/use-reset-state'
 import Icon from '../Icon'
 import loadable from '@loadable/component'
+import useLanguage from '../../hooks/use-language'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -25,7 +26,6 @@ const cls = classNameParser(styles)
 const LinkEditor: FC<LinkEditorProps> = ({
   defaultLinkTarget = '',
   editorState,
-  language,
   getContainerNode,
   allowInsertLinkText,
   onChange,
@@ -113,6 +113,8 @@ const LinkEditor: FC<LinkEditorProps> = ({
   }
 
   const caption = <Icon type='link' />
+
+  const language = useLanguage()
 
   return (
     <ControlGroup>

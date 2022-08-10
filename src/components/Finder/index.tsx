@@ -4,6 +4,7 @@ import { classNameParser } from '../../utils/style'
 import styles from './styles.module.scss'
 import Icon from '../Icon'
 import { FinderProps } from '../../types'
+import useLanguage from '../../hooks/use-language'
 
 const cls = classNameParser(styles)
 
@@ -31,7 +32,6 @@ const Finder = forwardRef<FinderRef, FinderProps>(({
   validateFn,
   accepts = defaultAccepts,
   externals = defaultExternals,
-  language,
   onCancel,
   onInsert
 }, ref) => {
@@ -40,6 +40,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(({
   }))
 
   const [items, setItems] = useState([])
+  const language = useLanguage()
 
   useEffect(() => {
     uploadItems()

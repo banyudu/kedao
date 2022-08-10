@@ -7,6 +7,7 @@ import { insertText } from '../../utils'
 import styles from './style.module.scss'
 import { defaultEmojis } from '../../constants'
 import loadable from '@loadable/component'
+import useLanguage from '../../hooks/use-language'
 
 const DropDown = loadable(async () => await import('../DropDown'))
 const cls = classNameParser(styles)
@@ -14,7 +15,6 @@ const cls = classNameParser(styles)
 const EmojiPicker: FC<EmojiPickerProps> = ({
   defaultCaption,
   getContainerNode,
-  language,
   emojis = defaultEmojis,
   editorState,
   onChange,
@@ -28,6 +28,9 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
 
     return true
   }
+
+  const language = useLanguage()
+
   return (
     <DropDown
       caption={defaultCaption}

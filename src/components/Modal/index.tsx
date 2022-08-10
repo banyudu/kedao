@@ -6,6 +6,7 @@ import styles from './style.module.scss'
 import { ModalProps } from '../../types'
 import { Portal } from 'react-portal'
 import Icon from '../Icon'
+import useLanguage from '../../hooks/use-language'
 const cls = classNameParser(styles)
 
 const Modal: FC<ModalProps> = ({
@@ -30,7 +31,6 @@ const Modal: FC<ModalProps> = ({
   closeOnBlur = true,
   bottomText,
   closeOnCancel = true,
-  language,
   visible: outerVisible = true
 }) => {
   const [visible, setVisible] = useState(outerVisible)
@@ -39,6 +39,8 @@ const Modal: FC<ModalProps> = ({
   }, [outerVisible])
 
   useEffect(() => onCreate?.(), [])
+
+  const language = useLanguage()
 
   const handleMouseDown = (event) => {
     const tagName = event.target.tagName.toLowerCase()

@@ -16,6 +16,7 @@ import styles from './style.module.scss'
 import Icon from '../Icon'
 import { TextColorPickerProps } from '../../types'
 import loadable from '@loadable/component'
+import useLanguage from '../../hooks/use-language'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -25,7 +26,6 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   getContainerNode,
   enableBackgroundColor,
   colors,
-  language,
   onChange,
   onRequestFocus
 }) => {
@@ -87,6 +87,8 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   const caption = (
     <Icon type='format-color-text' style={captionStyle} />
   )
+
+  const language = useLanguage()
 
   return (
     <DropDown

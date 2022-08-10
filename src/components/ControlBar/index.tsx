@@ -35,6 +35,7 @@ import {
 } from '../../types'
 import styles from './style.module.scss'
 import { useDeepCompareMemo } from '../../hooks/use-deep-compare-memo'
+import useLanguage from '../../hooks/use-language'
 
 const cls = classNameParser(styles)
 
@@ -332,7 +333,6 @@ interface ControlBarForwardRef {
 const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
   (
     {
-      language,
       editorState,
       media,
       allowInsertLinkText,
@@ -455,11 +455,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     const commonProps = {
       editorId,
       editorState,
-      language,
       getContainerNode,
       onChange: onChange,
       onRequestFocus: onRequestFocus
     }
+
+    const language = useLanguage()
 
     const editorControlMap = useMemo(
       () => getEditorControlMap(language, isFullscreen),

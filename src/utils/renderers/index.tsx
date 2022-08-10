@@ -1,12 +1,26 @@
 import React from 'react'
 import Immutable, { Map } from 'immutable'
-import { DefaultDraftBlockRenderMap, DraftBlockRenderMap, ContentBlock, EditorState, DraftStyleMap, CharacterMetadata, CompositeDecorator, ContentState } from 'draft-js'
+import {
+  DefaultDraftBlockRenderMap,
+  DraftBlockRenderMap,
+  ContentBlock,
+  EditorState,
+  DraftStyleMap,
+  CharacterMetadata,
+  CompositeDecorator,
+  ContentState
+} from 'draft-js'
 import Image from '../../components/Image'
 import Video from '../../components/Video'
 import Audio from '../../components/Audio'
 import Embed from '../../components/Embed'
 import HorizontalLine from '../../components/HorizontalLine'
-import { BlockRenderer, BlockRendererFn, BlockRenderProps, ImageControlItem, Language } from '../../types'
+import {
+  BlockRenderer,
+  BlockRendererFn,
+  BlockRenderProps,
+  ImageControlItem
+} from '../../types'
 import { removeBlock } from '..'
 import CombineDecorators from 'draft-js-multidecorators'
 import Link from '../../components/Link'
@@ -14,7 +28,9 @@ import { classNameParser } from '../style'
 import styles from './style.module.scss'
 const cls = classNameParser(styles)
 
-export const getBlockRenderMap = (blockRenderMap: DraftBlockRenderMap): DraftBlockRenderMap => {
+export const getBlockRenderMap = (
+  blockRenderMap: DraftBlockRenderMap
+): DraftBlockRenderMap => {
   let customBlockRenderMap: DraftBlockRenderMap = Map({
     atomic: {
       element: ''
@@ -30,8 +46,9 @@ export const getBlockRenderMap = (blockRenderMap: DraftBlockRenderMap): DraftBlo
       customBlockRenderMap = customBlockRenderMap.merge(blockRenderMap)
     }
 
-    customBlockRenderMap =
-      DefaultDraftBlockRenderMap.merge(customBlockRenderMap)
+    customBlockRenderMap = DefaultDraftBlockRenderMap.merge(
+      customBlockRenderMap
+    )
   } catch (error) {
     console.warn(error)
   }
@@ -39,10 +56,10 @@ export const getBlockRenderMap = (blockRenderMap: DraftBlockRenderMap): DraftBlo
   return customBlockRenderMap
 }
 
-interface GetRenderFnParams extends Omit<BlockRenderProps, 'onRemove' | 'editorState' | 'contentState'> {
+interface GetRenderFnParams
+  extends Omit<BlockRenderProps, 'onRemove' | 'editorState' | 'contentState'> {
   extendAtomics: any[]
   editorId: string
-  language: Language
   value: EditorState
   imageEqualRatio: boolean
   onChange: (state: EditorState) => void
@@ -54,49 +71,49 @@ interface GetRenderFnParams extends Omit<BlockRenderProps, 'onRemove' | 'editorS
   refresh: () => void
 }
 
-export const getBlockRendererFn = (superProps: GetRenderFnParams, customBlockRendererFn: BlockRendererFn) =>
-  (block: ContentBlock): BlockRenderer => {
-    const {
-      value,
-      onChange,
-      extendAtomics,
-      language,
-      imageEqualRatio,
-      readOnly,
-      imageResizable,
-      imageControls,
-      lock,
-      getContainerNode,
-      refresh
-    } = superProps
+export const getBlockRendererFn = (
+  superProps: GetRenderFnParams,
+  customBlockRendererFn: BlockRendererFn
+) => (block: ContentBlock): BlockRenderer => {
+  const {
+    value,
+    onChange,
+    extendAtomics,
+    imageEqualRatio,
+    readOnly,
+    imageResizable,
+    imageControls,
+    lock,
+    getContainerNode,
+    refresh
+  } = superProps
 
-    const renderAtomicBlock = ({ contentState }) => {
-      const entityKey = block.getEntityAt(0)
+  const renderAtomicBlock = ({ contentState }) => {
+    const entityKey = block.getEntityAt(0)
 
-      if (!entityKey) {
-        return null
-      }
+    if (!entityKey) {
+      return null
+    }
 
-      const entity = contentState.getEntity(entityKey)
-      const mediaData = entity.getData()
-      const mediaType = entity.getType()
+    const entity = contentState.getEntity(entityKey)
+    const mediaData = entity.getData()
+    const mediaType = entity.getType()
 
-      const handleRemove = () => {
-        onChange?.(removeBlock(value, block))
-      }
+    const handleRemove = () => {
+      onChange?.(removeBlock(value, block))
+    }
 
-      const mediaProps: BlockRenderProps = {
+    const mediaProps: BlockRenderProps = {
       // block: props.block,
-        mediaData,
-        // entityKey,
-        onRemove: handleRemove,
-        language,
-        editorState: value,
-        contentState: value.getCurrentContent()
-      }
+      mediaData,
+      // entityKey,
+      onRemove: handleRemove,
+      editorState: value,
+      contentState: value.getCurrentContent()
+    }
 
-      if (mediaType === 'IMAGE') {
-        return (
+    if (mediaType === 'IMAGE') {
+      return (
         <Image
           {...mediaProps}
           imageEqualRatio={imageEqualRatio}
@@ -111,54 +128,55 @@ export const getBlockRendererFn = (superProps: GetRenderFnParams, customBlockRen
           onChange={onChange}
           refresh={refresh}
         />
-        )
-      }
-      if (mediaType === 'AUDIO') {
-        return <Audio {...mediaProps} />
-      }
-      if (mediaType === 'VIDEO') {
-        return <Video {...mediaProps} />
-      }
-      if (mediaType === 'EMBED') {
-        return <Embed {...mediaProps} />
-      }
-      if (mediaType === 'HR') {
-        return <HorizontalLine {...mediaProps} />
-      }
-
-      if (extendAtomics) {
-        const atomic = extendAtomics.find(item => {
-          return item.type === mediaType
-        })
-
-        if (atomic) {
-          const Component = atomic.component
-          return <Component {...mediaProps} />
-        }
-      }
-
-      return null
+      )
+    }
+    if (mediaType === 'AUDIO') {
+      return <Audio {...mediaProps} />
+    }
+    if (mediaType === 'VIDEO') {
+      return <Video {...mediaProps} />
+    }
+    if (mediaType === 'EMBED') {
+      return <Embed {...mediaProps} />
+    }
+    if (mediaType === 'HR') {
+      return <HorizontalLine {...mediaProps} />
     }
 
-    const blockType = block.getType()
+    if (extendAtomics) {
+      const atomic = extendAtomics.find(item => {
+        return item.type === mediaType
+      })
 
-    const customRenderer = customBlockRendererFn?.(block, { editorState: value }) ?? null
-
-    if (customRenderer) {
-      return customRenderer
-    }
-
-    if (blockType === 'atomic') {
-      return {
-        component: renderAtomicBlock,
-        editable: false
+      if (atomic) {
+        const Component = atomic.component
+        return <Component {...mediaProps} />
       }
     }
 
     return null
   }
 
-export const getBlockStyleFn = (customBlockStyleFn) => (block) => {
+  const blockType = block.getType()
+
+  const customRenderer =
+    customBlockRendererFn?.(block, { editorState: value }) ?? null
+
+  if (customRenderer) {
+    return customRenderer
+  }
+
+  if (blockType === 'atomic') {
+    return {
+      component: renderAtomicBlock,
+      editable: false
+    }
+  }
+
+  return null
+}
+
+export const getBlockStyleFn = customBlockStyleFn => block => {
   const blockAlignment = block.getData() && block.getData().get('textAlign')
   const blockIndent = block.getData() && block.getData().get('textIndent')
   const blockFloat = block.getData() && block.getData().get('float')
@@ -168,12 +186,16 @@ export const getBlockStyleFn = (customBlockStyleFn) => (block) => {
     blockIndent && cls(`kedao-text-indent-${blockIndent}`),
     blockFloat && cls(`kedao-float-${blockFloat}`),
     customBlockStyleFn?.(block)
-  ].filter(Boolean).join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return className
 }
 
-export const getCustomStyleMap = (customStyleMap: DraftStyleMap = {}): DraftStyleMap => {
+export const getCustomStyleMap = (
+  customStyleMap: DraftStyleMap = {}
+): DraftStyleMap => {
   return {
     SUPERSCRIPT: {
       position: 'relative',
@@ -189,15 +211,15 @@ export const getCustomStyleMap = (customStyleMap: DraftStyleMap = {}): DraftStyl
   }
 }
 
-const getStyleValue = (style) => style.split('-')[1]
+const getStyleValue = style => style.split('-')[1]
 
-export const getCustomStyleFn = (options) => (styles, block) => {
+export const getCustomStyleFn = options => (styles, block) => {
   let output: any = {}
   const { fontFamilies, unitExportFn, customStyleFn } = options
 
   output = customStyleFn ? customStyleFn(styles, block, output) : {}
 
-  styles.forEach((style) => {
+  styles.forEach(style => {
     if (style.indexOf('COLOR-') === 0) {
       output.color = `#${getStyleValue(style)}`
     } else if (style.indexOf('BGCOLOR-') === 0) {
@@ -230,7 +252,7 @@ export const getCustomStyleFn = (options) => (styles, block) => {
       output.fontFamily =
         (
           fontFamilies.find(
-            (item) => item.name.toUpperCase() === getStyleValue(style)
+            item => item.name.toUpperCase() === getStyleValue(style)
           ) || {}
         ).family || ''
     }
@@ -269,7 +291,11 @@ const builtinDecorators = [
   }
 ]
 
-const createStrategy = (type: string) => (block: ContentBlock, callback: (start: number, end: number) => void, contentState: ContentState) => {
+const createStrategy = (type: string) => (
+  block: ContentBlock,
+  callback: (start: number, end: number) => void,
+  contentState: ContentState
+) => {
   block.findEntityRanges((character: CharacterMetadata) => {
     const entityKey = character.getEntity()
     return (
@@ -284,7 +310,7 @@ export const getDecorators = () => {
     new CompositeDecorator([]),
     // combine decorators for entities
     new CompositeDecorator(
-      builtinDecorators.map((item) => ({
+      builtinDecorators.map(item => ({
         strategy: createStrategy(item.decorator.key),
         component: item.decorator.component
       }))

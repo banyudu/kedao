@@ -4,21 +4,21 @@ import React, { FC } from 'react'
 import PlayerModal from '../../components/PlayerModal'
 import styles from './style.module.scss'
 import { BlockRenderProps } from '../../types'
+import useLanguage from '../../hooks/use-language'
 const cls = classNameParser(styles)
 
 const Embed: FC<BlockRenderProps> = ({
   mediaData,
-  onRemove,
-  language
+  onRemove
 }) => {
   const { name, url, meta } = mediaData
+  const language = useLanguage()
   return (
     <div className={cls('kedao-embed-wrap')}>
       <PlayerModal
         type="embed"
         onRemove={onRemove}
         poster={meta ? meta.poster || '' : ''}
-        language={language}
         url={url}
         name={name}
         title={language.videoPlayer.embedTitle}

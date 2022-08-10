@@ -9,6 +9,7 @@ import { TextAlignProps } from '../../types'
 import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
 import Icon from '../Icon'
+import useLanguage from '../../hooks/use-language'
 const cls = classNameParser(styles)
 
 const iconMap = {
@@ -24,8 +25,7 @@ const TextAlign: FC<TextAlignProps> = ({
   editorState,
   textAligns = defaultTextAligns,
   onChange,
-  onRequestFocus,
-  language
+  onRequestFocus
 }) => {
   const [currentAlignment, setCurrentAlignment] = useState(undefined)
 
@@ -39,6 +39,8 @@ const TextAlign: FC<TextAlignProps> = ({
     onChange(toggleSelectionAlignment(editorState, alignment))
     onRequestFocus()
   }
+
+  const language = useLanguage()
 
   const textAlignmentTitles = [
     language.controls.alignLeft,

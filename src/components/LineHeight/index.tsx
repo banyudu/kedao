@@ -10,6 +10,7 @@ import { LineHeightPickerProps } from '../../types'
 import styles from './style.module.scss'
 import { defaultLineHeights } from '../../constants'
 import loadable from '@loadable/component'
+import useLanguage from '../../hooks/use-language'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -18,7 +19,6 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
   lineHeights = defaultLineHeights,
   defaultCaption,
   getContainerNode,
-  language,
   onChange,
   onRequestFocus,
   editorState
@@ -43,6 +43,8 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
     onRequestFocus()
     return true
   }
+
+  const language = useLanguage()
 
   return (
     <DropDown

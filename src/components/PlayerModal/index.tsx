@@ -3,8 +3,8 @@ import { classNameParser } from '../../utils/style'
 import React, { FC, MouseEventHandler, useState } from 'react'
 import Modal from '../Modal'
 import styles from './style.module.scss'
-import { Language } from '../../types'
 import Icon from '../Icon'
+import useLanguage from '../../hooks/use-language'
 const cls = classNameParser(styles)
 
 const iconMap = {
@@ -16,7 +16,6 @@ const iconMap = {
 interface PlayerModalProps {
   title: string
   type: keyof typeof iconMap
-  language: Language
   name: string
   url: string
   poster: Function
@@ -26,7 +25,6 @@ interface PlayerModalProps {
 const PlayerModal: FC<PlayerModalProps> = ({
   title,
   type,
-  language,
   name,
   url,
   poster,
@@ -34,6 +32,7 @@ const PlayerModal: FC<PlayerModalProps> = ({
   onRemove
 }) => {
   const [modalVisible, setModalVisible] = useState(false)
+  const language = useLanguage()
   return (
     <div className={cls(`kedao-player-holder ${type}`)}>
       <div className={cls('icon-badge')}>
@@ -59,7 +58,6 @@ const PlayerModal: FC<PlayerModalProps> = ({
       <Modal
         visible={modalVisible}
         title={name ? `${title}:${name}` : title}
-        language={language}
         onClose={() => setModalVisible(false)}
         showFooter={false}
       >

@@ -12,6 +12,7 @@ import {
 import { ContentBlock, EditorState } from 'draft-js'
 import MeidaToolbar from '../../components/MediaToolbar'
 import Icon from '../../components/Icon'
+import useLanguage from '../../hooks/use-language'
 
 const cls = classNameParser(styles)
 
@@ -73,7 +74,6 @@ const Image: FC<ImageProps> = ({
   mediaData,
   readOnly,
   lock,
-  language,
   imageControls,
   refresh,
   value,
@@ -431,6 +431,8 @@ const Image: FC<ImageProps> = ({
     }
     return null
   })
+
+  const language = useLanguage()
 
   return (
     <div className={cls('kedao-media')}>

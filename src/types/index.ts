@@ -4,7 +4,9 @@ import {
   ContentState,
   ContentBlock,
   DraftDecorator,
-  CompositeDecorator
+  CompositeDecorator,
+  DraftStyleMap,
+  DraftBlockRenderMap
 } from 'draft-js'
 import * as React from 'react'
 
@@ -154,7 +156,6 @@ export interface MediaProps {
 export interface CommonPickerProps {
   editorState: EditorState
   editorId: string
-  language: Language
   getContainerNode: () => HTMLElement
   onRequestFocus: () => void
   onChange: (
@@ -247,7 +248,6 @@ export interface ModalProps {
   closeOnBlur?: boolean
   bottomText?: React.ReactNode
   closeOnCancel?: boolean
-  language: Language
   visible?: boolean
 }
 
@@ -369,7 +369,6 @@ string,
 export interface BlockRenderProps {
   mediaData?: any
   onRemove: () => void
-  language: Language
   editorState: EditorState
   contentState: ContentState
 }
@@ -414,7 +413,6 @@ export interface EmojiPickerProps
 }
 
 export interface FinderProps extends MediaProps {
-  language: Language
 }
 
 export interface FontFamilyPickerProps
@@ -422,7 +420,6 @@ export interface FontFamilyPickerProps
   Pick<DropDownProps, 'getContainerNode'> {
   fontFamilies?: readonly FontFamily[]
   defaultCaption: DropDownProps['caption']
-  language: Language
 }
 
 export interface FontSizePickerProps extends CommonPickerProps {
@@ -476,7 +473,60 @@ export interface TextColorPickerProps
   editorState: EditorState
   enableBackgroundColor: boolean
   colors: string[]
-  language: Language
   onChange: (state: EditorState) => void
   onRequestFocus: () => void
+}
+
+export type SupportedLangs = 'zh' | 'zh-hant' | 'en' | 'tr' | 'ru' | 'jpn' | 'kr' | 'pl'
+
+export interface KedaoEditorProps {
+  value?: EditorState
+  defaultValue?: EditorState
+  placeholder?: string
+  id?: string
+  editorId?: string
+  readOnly?: boolean
+  language?: SupportedLangs
+  controls?: readonly ControlItem[] | readonly BuiltInControlItem[]
+  excludeControls?: BuiltInControlNames[]
+  extendControls?: Array<
+  DropDownControlItem | ButtonControlItem | ModalControlItem
+  >
+  componentBelowControlBar?: React.ReactNode
+  media?: MediaProps
+  imageControls?: readonly ImageControlItem[]
+  imageResizable?: boolean
+  imageEqualRatio?: boolean
+  blockRenderMap?: DraftBlockRenderMap
+  blockRendererFn?: BlockRendererFn
+  customStyleFn?: Function
+  customStyleMap?: DraftStyleMap
+  blockStyleFn?: Function
+  keyBindingFn?: Function
+  converts?: object
+  textBackgroundColor?: boolean
+  allowInsertLinkText?: boolean
+  stripPastedStyles?: boolean
+  fixPlaceholder?: boolean
+  className?: string
+  style?: React.CSSProperties
+  controlBarClassName?: string
+  controlBarStyle?: React.CSSProperties
+  contentClassName?: string
+  contentStyle?: React.CSSProperties
+  onChange?: (editorState: EditorState) => void
+  onFocus?: Function
+  onBlur?: Function
+  onDelete?: Function
+  onSave?: Function
+  onFullscreen?: Function
+  handlePastedFiles?: Function
+  handleDroppedFiles?: Function
+  handlePastedText?: Function
+  handleBeforeInput?: Function
+  handleReturn?: Function
+  handleKeyCommand?: Function
+  codeTabIndents?: number
+  disabled?: boolean
+  extendAtomics?: any[]
 }

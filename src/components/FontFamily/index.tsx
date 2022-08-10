@@ -13,6 +13,7 @@ import styles from './style.module.scss'
 import { defaultFontFamilies } from '../../constants'
 
 import loadable from '@loadable/component'
+import useLanguage from '../../hooks/use-language'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -22,13 +23,14 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
   editorState,
   defaultCaption,
   getContainerNode,
-  language,
   onChange,
   onRequestFocus
 }) => {
   let caption = null
   let currentIndex = null
   let dropDownInstance = null
+
+  const language = useLanguage()
 
   fontFamilies.find((item, index) => {
     if (selectionHasInlineStyle(editorState, `FONTFAMILY-${item.name}`)) {

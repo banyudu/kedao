@@ -41,14 +41,11 @@ import {
   getDefaultKeyBinding,
   KeyBindingUtil,
   ContentState,
-  DraftHandleValue,
-  DraftStyleMap,
-  DraftBlockRenderMap
+  DraftHandleValue
 } from 'draft-js'
 import mergeClassNames from 'merge-class-names'
-import { Provider as JotaiProvider } from 'jotai'
+import { Provider as JotaiProvider, useAtom } from 'jotai'
 
-import languages from '../i18n'
 import {
   getBlockRendererFn,
   getBlockRenderMap,
@@ -63,17 +60,12 @@ import ControlBar from '../components/ControlBar'
 import 'draft-js/dist/Draft.css'
 import styles from './style.module.scss'
 import {
-  BuiltInControlNames,
-  DropDownControlItem,
-  ButtonControlItem,
-  ModalControlItem,
   MediaProps,
-  ImageControlItem,
   ConvertOptions,
   BlockRendererFn,
-  Language,
-  ControlItem,
-  BuiltInControlItem
+  KedaoEditorProps,
+  SupportedLangs,
+  Language
 } from '../types'
 
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
@@ -83,7 +75,20 @@ import {
   defaultFontFamilies,
   defaultImageControls
 } from '../constants'
+import { langAtom } from '../states'
+
 const cls = classNameParser(styles)
+
+const langLoaders: Record<SupportedLangs, () => Promise<Language>> = {
+  en: async () => (await import('../i18n/en')).default,
+  jpn: async () => (await import('../i18n/jpn')).default,
+  kr: async () => (await import('../i18n/kr')).default,
+  pl: async () => (await import('../i18n/pl')).default,
+  ru: async () => (await import('../i18n/ru')).default,
+  tr: async () => (await import('../i18n/tr')).default,
+  'zh-hant': async () => (await import('../i18n/zh-hant')).default,
+  zh: async () => (await import('../i18n/zh')).default
+}
 
 const defaultMedia: any = {
   pasteImage: true,
@@ -117,7 +122,7 @@ const defaultMedia: any = {
   }
 }
 
-const getKeyBindingFn = (customKeyBindingFn) => (event) => {
+const getKeyBindingFn = customKeyBindingFn => event => {
   if (
     event.keyCode === 83 &&
     (KeyBindingUtil.hasCommandModifier(event) ||
@@ -154,10 +159,7 @@ export const createStateFromContent = (
     content.blocks &&
     content.entityMap
   ) {
-    editorState = convertRawToEditorState(
-      content,
-      getDecorators()
-    )
+    editorState = convertRawToEditorState(content, getDecorators())
   }
   if (typeof content === 'string') {
     try {
@@ -195,67 +197,10 @@ export const createStateFromContent = (
   return editorState
 }
 
-export interface KedaoEditorProps {
-  value?: EditorState
-  defaultValue?: EditorState
-  placeholder?: string
-  id?: string
-  editorId?: string
-  readOnly?: boolean
-  language?:
-  | 'zh'
-  | 'zh-hant'
-  | 'en'
-  | 'tr'
-  | 'ru'
-  | 'jpn'
-  | 'kr'
-  | 'pl'
-  controls?: readonly ControlItem[] | readonly BuiltInControlItem[]
-  excludeControls?: BuiltInControlNames[]
-  extendControls?: Array<
-  DropDownControlItem | ButtonControlItem | ModalControlItem
-  >
-  componentBelowControlBar?: React.ReactNode
-  media?: MediaProps
-  imageControls?: readonly ImageControlItem[]
-  imageResizable?: boolean
-  imageEqualRatio?: boolean
-  blockRenderMap?: DraftBlockRenderMap
-  blockRendererFn?: BlockRendererFn
-  customStyleFn?: Function
-  customStyleMap?: DraftStyleMap
-  blockStyleFn?: Function
-  keyBindingFn?: Function
-  converts?: object
-  textBackgroundColor?: boolean
-  allowInsertLinkText?: boolean
-  stripPastedStyles?: boolean
-  fixPlaceholder?: boolean
-  className?: string
-  style?: React.CSSProperties
-  controlBarClassName?: string
-  controlBarStyle?: React.CSSProperties
-  contentClassName?: string
-  contentStyle?: React.CSSProperties
-  onChange?: (editorState: EditorState) => void
-  onFocus?: Function
-  onBlur?: Function
-  onDelete?: Function
-  onSave?: Function
-  onFullscreen?: Function
-  handlePastedFiles?: Function
-  handleDroppedFiles?: Function
-  handlePastedText?: Function
-  handleBeforeInput?: Function
-  handleReturn?: Function
-  handleKeyCommand?: Function
-  codeTabIndents?: number
-  disabled?: boolean
-  extendAtomics?: any[]
-}
-
-const filterColors = (colors: readonly string[], colors2: readonly string[]) => {
+const filterColors = (
+  colors: readonly string[],
+  colors2: readonly string[]
+) => {
   return colors
     .filter(item => {
       return !colors2.find(color => color.toLowerCase() === item.toLowerCase())
@@ -264,7 +209,6 @@ const filterColors = (colors: readonly string[], colors2: readonly string[]) => 
 }
 
 const KedaoEditor: FC<KedaoEditorProps> = ({
-  language: locale = 'zh',
   controls = defaultControls as any,
   excludeControls = [],
   handlePastedText,
@@ -340,11 +284,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     return result
   }
 
-  const convertOptions = useMemo(getConvertOptions, [
-    editorId,
-    id,
-    converts
-  ])
+  const convertOptions = useMemo(getConvertOptions, [editorId, id, converts])
 
   const [tempColors, setTempColors] = useState(() => {
     let result: string[] = []
@@ -449,8 +389,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
         return typeof ctrl === 'string'
           ? ctrl === 'text-indent'
           : ctrl.type === 'text-indent'
-      }) &&
-      !excludeControls.includes('text-indent')
+      }) && !excludeControls.includes('text-indent')
 
     const cursorStart = editorState.getSelection().getStartOffset()
     const cursorEnd = editorState.getSelection().getEndOffset()
@@ -617,7 +556,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       ...media
     }
 
-    const upload = (file) => {
+    const upload = file => {
       controlBarInstanceRef?.current.uploadImage(file, image => {
         if (isLiving) {
           setValue(insertMedias(editorState, [image]))
@@ -627,7 +566,11 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 
     if (pasteImage) {
       files.slice(0, imagePasteLimit).forEach(file => {
-        if (file && file.type.indexOf('image') > -1 && controlBarInstanceRef.current) {
+        if (
+          file &&
+          file.type.indexOf('image') > -1 &&
+          controlBarInstanceRef.current
+        ) {
           const validateResult = validateFn ? validateFn(file) : true
           if (validateResult instanceof Promise) {
             validateResult
@@ -737,8 +680,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   editorId = editorId || id
   controls = controls.filter(item => !excludeControls.includes(item as any))
 
-  const language: Language = languages[locale] || languages.zh
-
   const controlBarMedia: MediaProps = useMemo(() => {
     const result: MediaProps = {
       ...defaultMedia,
@@ -795,7 +736,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       readOnly: readOnly || disabled,
       imageControls,
       imageResizable,
-      language: language,
       imageEqualRatio,
       getContainerNode,
       refresh: () => forceRender(),
@@ -844,75 +784,99 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   }
 
   return (
-    <JotaiProvider>
+    <div
+      style={style}
+      ref={containerRef}
+      className={cls(
+        mergeClassNames(
+          'kedao-container',
+          className,
+          disabled && 'disabled',
+          readOnly && 'read-only',
+          isFullscreen && 'fullscreen'
+        )
+      )}
+    >
+      <ControlBar
+        ref={controlBarInstanceRef}
+        editorState={editorState}
+        getContainerNode={getContainerNode}
+        className={cls(controlBarClassName)}
+        style={controlBarStyle}
+        colors={controlBarColors}
+        editorId={editorId}
+        media={controlBarMedia}
+        controls={memoControls}
+        extendControls={extendControls}
+        textBackgroundColor={textBackgroundColor}
+        allowInsertLinkText={allowInsertLinkText}
+        isFullscreen={isFullscreen}
+        onChange={setValue}
+        onRequestFocus={requestFocus}
+        commands={commands}
+      />
+      {componentBelowControlBar}
       <div
-        style={style}
-        ref={containerRef}
-        className={cls(
-          mergeClassNames(
-            'kedao-container',
-            className,
-            disabled && 'disabled',
-            readOnly && 'read-only',
-            isFullscreen && 'fullscreen'
-          )
-        )}
+        onCompositionStart={handleCompositionStart}
+        className={cls(`kedao-content ${contentClassName}`)}
+        onCopy={handleCopyContent}
+        style={contentStyle}
       >
-        <ControlBar
-          ref={controlBarInstanceRef}
+        <Editor
+          ref={draftInstanceRef}
           editorState={editorState}
-          getContainerNode={getContainerNode}
-          className={cls(controlBarClassName)}
-          style={controlBarStyle}
-          colors={controlBarColors}
-          editorId={editorId}
-          media={controlBarMedia}
-          controls={memoControls}
-          language={language as any}
-          extendControls={extendControls}
-          textBackgroundColor={textBackgroundColor}
-          allowInsertLinkText={allowInsertLinkText}
-          isFullscreen={isFullscreen}
-          onChange={setValue}
-          onRequestFocus={requestFocus}
-          commands={commands}
+          handleKeyCommand={keyCommandHandlers}
+          handleReturn={handleReturn_}
+          handleBeforeInput={handleBeforeInput_}
+          handleDrop={handleDrop}
+          handleDroppedFiles={handleDroppedFiles_}
+          handlePastedText={handlePastedText_}
+          handlePastedFiles={handlePastedFiles_}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          blockRenderMap={blockRenderMap_}
+          blockRendererFn={blockRendererFn_ as any}
+          blockStyleFn={blockStyleFn_}
+          customStyleMap={customStyleMap_}
+          customStyleFn={customStyleFn_}
+          keyBindingFn={keyBindingFn_}
+          placeholder={placeholder}
+          stripPastedStyles={stripPastedStyles}
+          readOnly={editorLocked || disabled || readOnly}
         />
-        {componentBelowControlBar}
-        <div
-          onCompositionStart={handleCompositionStart}
-          className={cls(`kedao-content ${contentClassName}`)}
-          onCopy={handleCopyContent}
-          style={contentStyle}
-        >
-          <Editor
-            ref={draftInstanceRef}
-            editorState={editorState}
-            handleKeyCommand={keyCommandHandlers}
-            handleReturn={handleReturn_}
-            handleBeforeInput={handleBeforeInput_}
-            handleDrop={handleDrop}
-            handleDroppedFiles={handleDroppedFiles_}
-            handlePastedText={handlePastedText_}
-            handlePastedFiles={handlePastedFiles_}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            blockRenderMap={blockRenderMap_}
-            blockRendererFn={blockRendererFn_ as any}
-            blockStyleFn={blockStyleFn_}
-            customStyleMap={customStyleMap_}
-            customStyleFn={customStyleFn_}
-            keyBindingFn={keyBindingFn_}
-            placeholder={placeholder}
-            stripPastedStyles={stripPastedStyles}
-            readOnly={editorLocked || disabled || readOnly}
-          />
-        </div>
       </div>
+    </div>
+  )
+}
+
+const JotaiWrapper: FC<KedaoEditorProps> = props => {
+  const { language: locale = 'zh' } = props
+  const [, setLanuage] = useAtom(langAtom)
+
+  useEffect(() => {
+    const setupLang = async () => {
+      const loader = langLoaders[locale]
+      if (loader) {
+        try {
+          const language = await loader()
+          setLanuage(language)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }
+
+    setupLang().catch(console.error)
+  }, [locale])
+
+  return (
+    <JotaiProvider>
+      <KedaoEditor {...props} />
     </JotaiProvider>
   )
 }
 
 export { EditorState }
 
-export default KedaoEditor
+export default JotaiWrapper

@@ -7,6 +7,7 @@ import { toggleSelectionFontSize, selectionHasInlineStyle } from '../../utils'
 import styles from './style.module.scss'
 import { defaultFontSizes } from '../../constants'
 import loadable from '@loadable/component'
+import useLanguage from '../../hooks/use-language'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -15,7 +16,6 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
   fontSizes = defaultFontSizes,
   defaultCaption,
   getContainerNode,
-  language,
   editorState,
   onChange,
   onRequestFocus
@@ -40,6 +40,8 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
     onRequestFocus()
     return true
   }
+
+  const language = useLanguage()
 
   return (
     <DropDown

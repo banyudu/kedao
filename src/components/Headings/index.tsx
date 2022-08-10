@@ -8,6 +8,7 @@ import MenuItem from '../MenuItem'
 import styles from './style.module.scss'
 import { defaultHeadings } from '../../constants'
 import loadable from '@loadable/component'
+import useLanguage from '../../hooks/use-language'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -65,13 +66,14 @@ const getHeadings = (lang) => [
 ]
 
 const HeadingsPicker: FC<HeadingsPickerProps> = ({
-  language,
   headings = defaultHeadings,
   current,
   getContainerNode,
   onChange
 }) => {
   const dropDownInstance = React.createRef<any>()
+
+  const language = useLanguage()
 
   const innerHeadings = getHeadings(language).filter((item) =>
     headings.includes(item.key)

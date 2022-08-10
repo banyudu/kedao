@@ -11,11 +11,11 @@ import ControlGroup from '../ControlGroup'
 import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
 import Icon from '../Icon'
+import useLanguage from '../../hooks/use-language'
 const cls = classNameParser(styles)
 
 const TextIndent: FC<CommonPickerProps> = ({
   editorState,
-  language,
   onChange,
   onRequestFocus
 }) => {
@@ -34,6 +34,8 @@ const TextIndent: FC<CommonPickerProps> = ({
     onChange(decreaseSelectionIndent(editorState))
     onRequestFocus()
   }
+
+  const language = useLanguage()
 
   return (
     <ControlGroup>

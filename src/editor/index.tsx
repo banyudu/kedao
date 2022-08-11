@@ -258,11 +258,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 }: KedaoEditorProps) => {
   const draftInstanceRef = useRef(null)
   const [editorLocked, setEditorLocked] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    setLoading(false)
-  }, [])
 
   const editorDecoratorsRef = useRef(getDecorators())
   const controlBarInstanceRef = useRef(null)
@@ -778,10 +773,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     tempColors
   ])
   const memoControls = useMemo(() => controls, [controls?.join(',')])
-
-  if (loading) {
-    return null
-  }
 
   return (
     <div

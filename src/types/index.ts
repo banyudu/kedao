@@ -4,42 +4,17 @@ import {
   ContentState,
   ContentBlock,
   DraftDecorator,
-  CompositeDecorator
+  CompositeDecorator,
+  DraftStyleMap,
+  DraftBlockRenderMap
 } from 'draft-js'
 import * as React from 'react'
-import { KedaoEditorProps } from '../editor'
 
 export { EditorState, EditorProps }
 
-/**
- * editor 提供给组件的回调函数集合
- */
-export interface CallbackEditor {
-  isFullscreen: boolean
-  setValue: (v: EditorState) => void
-  getValue: () => EditorState
-  requestFocus: () => void
-  onChange: (editorState: EditorState, callback?) => void
-  setOnChange: (
-    onChange: (editorState: EditorState, callback?) => void
-  ) => void
-  lockOrUnlockEditor: (lock: boolean) => void
-  editorProps: KedaoEditorProps
-  editorState: EditorState
-  finder: Finder
-  isLiving: boolean
-  tempColors: string[]
-  setTempColors: (colors: string[], callback: () => void) => void
-  convertOptions: ConvertOptions
-  blur: () => void
-  readOnly: boolean
-  forceRender: () => void
-  commands: Record<string, () => void>
-}
-
 export interface ConvertOptions {
   editorId?: string
-  fontFamilies?: Array<{ name: string, family: string }>
+  fontFamilies?: readonly FontFamily[]
   styleImportFn?: Function
   styleExportFn?: Function
   entityImportFn?: Function
@@ -128,9 +103,31 @@ export interface Language {
     audio: string
     embed: string
   }
+  finder: {
+    remove: string
+    cancel: string
+    confirm: string
+    insert: string
+    width: string
+    height: string
+    image: string
+    video: string
+    audio: string
+    embed: string
+    caption: string
+    dragTip: string
+    dropTip: string
+    selectAll: string
+    deselect: string
+    removeSelected: string
+    externalInputPlaceHolder: string
+    externalInputTip: string
+    addLocalFile: string
+    addExternalSource: string
+    unnamedItem: string
+    confirmInsert: string
+  }
 }
-
-export type Hooks = (name: string, _?) => Function
 
 export interface Finder {
   ReactComponent: React.ComponentType<any>
@@ -141,7 +138,9 @@ export interface MediaProps {
   onClose?: () => void
   onCancel: () => void
   onInsert: (medias: any) => void
-  onChange: () => void
+  onChange: (files: File[]) => void
+  uploadFn?: Function
+  validateFn?: (file: File) => boolean | PromiseLike<any>
   accepts: MediaType['accepts']
   externals: {
     audio?: boolean
@@ -155,10 +154,8 @@ export interface MediaProps {
 }
 
 export interface CommonPickerProps {
-  hooks: Hooks
   editorState: EditorState
   editorId: string
-  language: Language
   getContainerNode: () => HTMLElement
   onRequestFocus: () => void
   onChange: (
@@ -212,7 +209,6 @@ export interface BuiltInControlItem extends BaseControlItem {
 }
 
 interface BaseExtendControlItem extends BaseControlItem {
-  key: string
   className?: string
   html?: string | null
 }
@@ -252,7 +248,6 @@ export interface ModalProps {
   closeOnBlur?: boolean
   bottomText?: React.ReactNode
   closeOnCancel?: boolean
-  language: Language
   visible?: boolean
 }
 
@@ -370,3 +365,168 @@ export type RenderMap = Immutable.Map<
 string,
 { element: React.ComponentType<any> }
 >
+
+export interface BlockRenderProps {
+  mediaData?: any
+  onRemove: () => void
+  editorState: EditorState
+  contentState: ContentState
+}
+
+export interface BlockRenderer {
+  component: (props: BlockRenderProps) => JSX.Element
+  editable: boolean
+}
+export type BlockRendererFn = (block: ContentBlock, { editorState: EditorState }) => BlockRenderer
+
+export interface FontFamily {
+  name: string
+  family: string
+}
+
+export interface DropDownProps {
+  disabled?: boolean
+  autoHide: boolean
+  caption: React.ReactNode
+  htmlCaption?: string
+  title: string
+  showArrow?: boolean
+  arrowActive?: boolean
+  className?: string
+  isActive?: boolean
+  onActiveChage?: (value: boolean) => void
+  getContainerNode: () => HTMLElement
+  children: React.ReactNode
+}
+
+export interface ColorPickerProps {
+  presetColors: string[]
+  color: string
+  onChange: (color: string, closePicker: boolean) => void
+}
+
+export interface EmojiPickerProps
+  extends CommonPickerProps,
+  Pick<DropDownProps, 'getContainerNode'> {
+  defaultCaption: DropDownProps['caption']
+  emojis?: readonly string[]
+}
+
+export interface FinderProps extends MediaProps {
+}
+
+export interface FontFamilyPickerProps
+  extends CommonPickerProps,
+  Pick<DropDownProps, 'getContainerNode'> {
+  fontFamilies?: readonly FontFamily[]
+  defaultCaption: DropDownProps['caption']
+}
+
+export interface FontSizePickerProps extends CommonPickerProps {
+  defaultCaption: DropDownProps['caption']
+  fontSizes?: number[]
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
+  onRequestFocus: () => void
+}
+
+export interface HeadingsPickerProps
+  extends Omit<CommonPickerProps, 'onChange'> {
+  headings?: string[]
+  current: any
+  onChange: (command: string, type: string) => void
+}
+
+export interface LetterSpacingPickerProps extends CommonPickerProps {
+  letterSpacings?: number[]
+  defaultCaption: DropDownProps['caption']
+  onRequestFocus: () => void
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
+}
+
+export interface LineHeightPickerProps extends CommonPickerProps {
+  lineHeights?: number[]
+  defaultCaption: DropDownProps['caption']
+  onRequestFocus: () => void
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
+}
+
+export interface LinkEditorProps extends CommonPickerProps {
+  defaultLinkTarget?: string
+  allowInsertLinkText: boolean
+}
+
+export interface TextAlignProps extends CommonPickerProps {
+  textAligns?: string[]
+}
+
+export interface TextColorPickerProps
+  extends Pick<DropDownProps, 'getContainerNode'> {
+  editorState: EditorState
+  enableBackgroundColor: boolean
+  colors: string[]
+  onChange: (state: EditorState) => void
+  onRequestFocus: () => void
+}
+
+export type SupportedLangs = 'zh' | 'zh-hant' | 'en' | 'tr' | 'ru' | 'jpn' | 'kr' | 'pl'
+
+export interface KedaoEditorProps {
+  value?: EditorState
+  defaultValue?: EditorState
+  placeholder?: string
+  id?: string
+  editorId?: string
+  readOnly?: boolean
+  language?: SupportedLangs
+  controls?: readonly ControlItem[] | readonly BuiltInControlItem[]
+  excludeControls?: BuiltInControlNames[]
+  extendControls?: Array<
+  DropDownControlItem | ButtonControlItem | ModalControlItem
+  >
+  componentBelowControlBar?: React.ReactNode
+  media?: MediaProps
+  imageControls?: readonly ImageControlItem[]
+  imageResizable?: boolean
+  imageEqualRatio?: boolean
+  blockRenderMap?: DraftBlockRenderMap
+  blockRendererFn?: BlockRendererFn
+  customStyleFn?: Function
+  customStyleMap?: DraftStyleMap
+  blockStyleFn?: Function
+  keyBindingFn?: Function
+  converts?: object
+  textBackgroundColor?: boolean
+  allowInsertLinkText?: boolean
+  stripPastedStyles?: boolean
+  fixPlaceholder?: boolean
+  className?: string
+  style?: React.CSSProperties
+  controlBarClassName?: string
+  controlBarStyle?: React.CSSProperties
+  contentClassName?: string
+  contentStyle?: React.CSSProperties
+  onChange?: (editorState: EditorState) => void
+  onFocus?: Function
+  onBlur?: Function
+  onDelete?: Function
+  onSave?: Function
+  onFullscreen?: Function
+  handlePastedFiles?: Function
+  handleDroppedFiles?: Function
+  handlePastedText?: Function
+  handleBeforeInput?: Function
+  handleReturn?: Function
+  handleKeyCommand?: Function
+  codeTabIndents?: number
+  disabled?: boolean
+  extendAtomics?: any[]
+}

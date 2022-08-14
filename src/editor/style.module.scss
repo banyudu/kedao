@@ -1,0 +1,119 @@
+@import "../styles/variables.scss";
+
+.kedao-container {
+  position: relative;
+  height: 100%;
+  padding: 0;
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.7;
+    filter: grayscale(70%);
+  }
+
+  &.read-only {
+    .kedao-controlbar {
+      pointer-events: none;
+    }
+
+    .kedao-image {
+      img:hover {
+        outline: none;
+      }
+    }
+
+    .kedao-hr {
+      pointer-events: none;
+    }
+  }
+
+  &.fullscreen {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    z-index: 99999;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    height: 100% !important;
+
+    .kedao-content {
+      flex-grow: 1;
+      height: auto;
+    }
+  }
+
+  .kedao-content {
+    height: 500px;
+    padding-bottom: 10px;
+    overflow: auto;
+    font-size: 16px;
+
+    img {
+      user-select: none;
+    }
+
+    line-height: initial;
+
+    :global(.public-DraftEditorPlaceholder-root) {
+      top: 15px;
+      left: 15px;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    :global(.DraftEditor-editorContainer) {
+      box-sizing: border-box;
+      border: none;
+    }
+
+    :global(.DraftEditor-root),
+    :global(.public-DraftEditor-content) {
+      height: 100%;
+    }
+
+    :global(.public-DraftEditor-content) {
+      box-sizing: border-box;
+      padding: 15px;
+      word-wrap: break-word;
+      word-break: break-all;
+
+      > div {
+        padding-bottom: 20px;
+      }
+
+      blockquote {
+        margin: 0 0 10px;
+        padding: 15px 20px;
+        background-color: #f1f2f3;
+        border-left: solid 5px #ccc;
+        color: #666;
+        font-style: italic;
+      }
+
+      pre {
+        max-width: 100%;
+        max-height: 100%;
+        margin: 10px 0;
+        padding: 15px;
+        overflow: auto;
+        background-color: #f1f2f3;
+        border-radius: 3px;
+        color: #666;
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 16px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+
+        pre {
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+}

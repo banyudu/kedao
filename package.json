@@ -1,13 +1,12 @@
 {
   "name": "kedao",
-  "version": "0.1.30",
+  "version": "1.0.0",
   "description": "Rich Text Editor Based On Draft.js",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "author": "banyudu",
   "files": [
-    "src",
     "lib"
   ],
   "publishConfig": {
@@ -29,11 +28,20 @@
     "postversion": "git push --follow-tags && npm publish",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
-    "test": "npm run build",
+    "test": "run-s build test:unit",
+    "test:ci": "run-s test:build test:unit",
+    "test:build": "run-s test:build:self test:build:docs test:build:cra test:build:nextjs",
+    "test:build:self": "npm run build",
+    "test:build:docs": "cd docs && npm run build && cd ..",
+    "test:build:cra": "cd examples/with-cra && npm run build && cd ..",
+    "test:build:nextjs": "rm -rf *.tgz && npm pack && cd examples/with-nextjs && pnpm i ../../*.tgz --force && npm run build && cd ..",
+    "test:unit": "cd test && npm test && cd ..",
+    "test:coverage": "npm run build && cd test && npm run coverage && cd ..",
     "version": "standard-version",
     "watch:css": "gulp watch",
     "watch:js": "ttsc -w"
   },
+  "sideEffects": false,
   "repository": "https://github.com/banyudu/kedao",
   "keywords": [
     "kedao",
@@ -85,7 +93,7 @@
     "yargs": "^17.3.1"
   },
   "dependencies": {
-    "@draft-js-plugins/mention": "^5.1.1",
+    "@loadable/component": "^5.15.2",
     "@react-hookz/web": "^15.0.1",
     "draft-convert": "^2.1.8",
     "draft-js": "^0.11.5",
@@ -108,8 +116,8 @@
     "react-dom": ">=16.8.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
-    "*.{css,scss}": "stylelint --fix",
-    "*.{js,ts,tsx,jsx,css,md}": "prettier --write"
+    "!(examples/**/*)*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "!(examples/**/*)*.{css,scss}": "stylelint --fix",
+    "!(examples/**/*)*.md": "prettier --write"
   }
 }

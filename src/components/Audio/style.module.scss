@@ -1,0 +1,9 @@
+@import "../../styles/variables.scss";
+
+.kedao-audio-player {
+  audio {
+    width: 480px;
+    max-width: 80vw;
+    margin: 0 10px 10px;
+  }
+}

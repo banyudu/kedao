@@ -45,7 +45,7 @@ Kedao 的技术栈为 React (Hooks) + Typescript，使用 [pnpm](https://pnpm.io
 要开启调试的话，可以通过如下的方式：
 
 1. 执行 `npm run build:watch` 启动调试，会启动 watch 模式实时编译源码到 `lib` 目录。
-1. 进入到 `examples/with-cra` 或其它的 example 目录，或 `docs` 目录，均可以加载到步骤 1 中的产物，开启调试。
+1. 进入到 `examples/with-cra` 目录，执行 `npm start` 开启调试。
 
 ### 分支说明
 

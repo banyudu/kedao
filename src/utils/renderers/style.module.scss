@@ -1,0 +1,91 @@
+.kedao-alignment-left {
+  text-align: left;
+
+  :global(.public-DraftStyleDefault-ltr) {
+    text-align: left;
+  }
+}
+
+.kedao-alignment-right {
+  text-align: right;
+
+  :global(.public-DraftStyleDefault-ltr) {
+    text-align: right;
+  }
+}
+
+.kedao-alignment-center {
+  text-align: center;
+
+  :global(.public-DraftStyleDefault-ltr) {
+    text-align: center;
+  }
+}
+
+.kedao-alignment-justify {
+  text-align: justify;
+
+  :global(.public-DraftStyleDefault-ltr) {
+    text-align: justify;
+  }
+}
+
+.kedao-alignment-left,
+.kedao-alignment-right,
+.kedao-alignment-center,
+.kedao-alignment-justify {
+  & > div {
+    display: inline-block;
+  }
+}
+
+.kedao-float-left,
+.kedao-float-right {
+  &:hover {
+    z-index: 2;
+  }
+}
+
+.kedao-float-left {
+  position: relative;
+  z-index: 1;
+  float: left;
+  margin: 0 10px 0 0;
+}
+
+.kedao-float-right {
+  position: relative;
+  z-index: 1;
+  float: right;
+  margin: 0 0 0 10px;
+}
+
+.kedao-text-indent-1 {
+  text-indent: 2em;
+  display: initial;
+}
+
+.kedao-text-indent-2 {
+  text-indent: 4em;
+  display: initial;
+}
+
+.kedao-text-indent-3 {
+  text-indent: 6em;
+  display: initial;
+}
+
+.kedao-text-indent-4 {
+  text-indent: 8em;
+  display: initial;
+}
+
+.kedao-text-indent-5 {
+  text-indent: 10em;
+  display: initial;
+}
+
+.kedao-text-indent-6 {
+  text-indent: 12em;
+  display: initial;
+}

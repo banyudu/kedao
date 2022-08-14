@@ -1,0 +1,30 @@
+@import "../../styles/variables.scss";
+
+.kedao-hr {
+  position: relative;
+  box-sizing: content-box;
+  height: 15px;
+  padding-top: 15px;
+  text-align: center;
+
+  &::before {
+    display: block;
+    height: 1px;
+    background-color: rgba(#000, 0.1);
+    content: "";
+  }
+
+  &:hover {
+    &::before {
+      background-color: rgba(#000, 0.3);
+    }
+
+    .hr-toolbar {
+      display: block;
+    }
+  }
+
+  .hr-toolbar {
+    display: none;
+  }
+}

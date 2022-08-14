@@ -1,0 +1,42 @@
+@import "../../styles/variables.scss";
+
+.control-item-button {
+  display: flex;
+  float: left;
+  height: 36px;
+  margin: 5px 0 5px 3px;
+  border-radius: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+  min-width: 36px;
+  padding: 0 8px;
+  background-color: transparent;
+  border: none;
+  color: $COLOR_GRAY;
+  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+
+  &.component-wrapper {
+    cursor: default;
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:hover {
+    background-color: rgba(#000, 0.05);
+  }
+
+  &.active {
+    color: $COLOR_ACTIVE;
+  }
+
+  i::before {
+    display: block;
+    height: 36px;
+    font-size: 18px;
+    line-height: 36px;
+  }
+}

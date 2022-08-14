@@ -10,7 +10,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 14
+        node-version: 16
     - name: Cache pnpm modules
       uses: actions/cache@v2
       with:
@@ -35,4 +35,4 @@ jobs:
           ${{ runner.os }}-pnpm-store-
     - name: Install dependencies
       run: npm config set registry https://registry.npmmirror.com && pnpm i -r
-    - run: npm test
+    - run: npm run test:ci

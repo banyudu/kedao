@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.0.2 (2022-08-15)
+
+### Bug Fixes
+
+- language props not working ([a98a21e](https://github.com/banyudu/kedao/commit/a98a21ea90d8a6f40d08b26a61c57bd0948a6b36))
+
 ### 1.0.1 (2022-08-15)
 
 ### 0.1.30 (2022-08-02)

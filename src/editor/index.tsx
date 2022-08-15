@@ -44,7 +44,7 @@ import {
   DraftHandleValue
 } from 'draft-js'
 import mergeClassNames from 'merge-class-names'
-import { Provider as JotaiProvider, useAtom } from 'jotai'
+import { Provider as JotaiProvider, useSetAtom } from 'jotai'
 
 import {
   getBlockRendererFn,
@@ -210,6 +210,7 @@ const filterColors = (
 
 const KedaoEditor: FC<KedaoEditorProps> = ({
   controls = defaultControls as any,
+  language: locale = 'zh',
   excludeControls = [],
   handlePastedText,
   extendControls = [],
@@ -263,6 +264,24 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   const controlBarInstanceRef = useRef(null)
   const [isLiving, setIsLiving] = useState(false)
   const valueInitialized = !!(defaultValue || value)
+
+  const setLanuage = useSetAtom(langAtom)
+
+  useEffect(() => {
+    const setupLang = async () => {
+      const loader = langLoaders[locale]
+      if (loader) {
+        try {
+          const language = await loader()
+          setLanuage(language)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }
+
+    setupLang().catch(console.error)
+  }, [locale])
 
   const defaultEditorState =
     (defaultValue || value) instanceof EditorState
@@ -842,25 +861,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 }
 
 const JotaiWrapper: FC<KedaoEditorProps> = props => {
-  const { language: locale = 'zh' } = props
-  const [, setLanuage] = useAtom(langAtom)
-
-  useEffect(() => {
-    const setupLang = async () => {
-      const loader = langLoaders[locale]
-      if (loader) {
-        try {
-          const language = await loader()
-          setLanuage(language)
-        } catch (error) {
-          console.error(error)
-        }
-      }
-    }
-
-    setupLang().catch(console.error)
-  }, [locale])
-
   return (
     <JotaiProvider>
       <KedaoEditor {...props} />

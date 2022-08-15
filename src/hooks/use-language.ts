@@ -1,8 +1,8 @@
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { langAtom } from '../states'
 
 const useLanguage = () => {
-  const [language] = useAtom(langAtom)
+  const language = useAtomValue(langAtom)
   return language
 }
 

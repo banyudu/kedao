@@ -39,21 +39,52 @@ import useLanguage from '../../hooks/use-language'
 
 const cls = classNameParser(styles)
 
-const Finder = loadable(async () => await import('../Finder'))
-const LinkEditor = loadable(async () => await import('../LinkEditor'))
-const HeadingPicker = loadable(async () => await import('../Headings'))
-const TextColorPicker = loadable(async () => await import('../TextColor'))
-const FontSizePicker = loadable(async () => await import('../FontSize'))
-const LineHeightPicker = loadable(async () => await import('../LineHeight'))
-const FontFamilyPicker = loadable(async () => await import('../FontFamily'))
-const TextAlign = loadable(async () => await import('../TextAlign'))
-const EmojiPicker = loadable(async () => await import('../EmojiPicker'))
-const LetterSpacingPicker = loadable(async () => await import('../LetterSpacing'))
-const TextIndent = loadable(async () => await import('../TextIndent'))
-const DropDown = loadable(async () => await import('../DropDown'))
-const Button = loadable(async () => await import('../Button'))
-const Modal = loadable(async () => await import('../Modal'))
-const Icon = loadable(async () => await import('../Icon'))
+const importFinder = async () => await import('../Finder')
+const importLinkEditor = async () => await import('../LinkEditor')
+const importHeadingPicker = async () => await import('../Headings')
+const importTextColorPicker = async () => await import('../TextColor')
+const importFontSizePicker = async () => await import('../FontSize')
+const importLineHeightPicker = async () => await import('../LineHeight')
+const importFontFamilyPicker = async () => await import('../FontFamily')
+const importTextAlign = async () => await import('../TextAlign')
+const importEmojiPicker = async () => await import('../EmojiPicker')
+const importLetterSpacingPicker = async () => await import('../LetterSpacing')
+const importTextIndent = async () => await import('../TextIndent')
+const importDropDown = async () => await import('../DropDown')
+const importButton = async () => await import('../Button')
+const importModal = async () => await import('../Modal')
+const importIcon = async () => await import('../Icon')
+
+const Finder = loadable(importFinder)
+const LinkEditor = loadable(importLinkEditor)
+const HeadingPicker = loadable(importHeadingPicker)
+const TextColorPicker = loadable(importTextColorPicker)
+const FontSizePicker = loadable(importFontSizePicker)
+const LineHeightPicker = loadable(importLineHeightPicker)
+const FontFamilyPicker = loadable(importFontFamilyPicker)
+const TextAlign = loadable(importTextAlign)
+const EmojiPicker = loadable(importEmojiPicker)
+const LetterSpacingPicker = loadable(importLetterSpacingPicker)
+const TextIndent = loadable(importTextIndent)
+const DropDown = loadable(importDropDown)
+const Button = loadable(importButton)
+const Modal = loadable(importModal)
+const Icon = loadable(importIcon)
+
+const controlLoaderMap = {
+  headings: importHeadingPicker,
+  'text-color': importTextColorPicker,
+  'font-size': importFontSizePicker,
+  'line-height': importLineHeightPicker,
+  'letter-spacing': importLetterSpacingPicker,
+  'text-indent': importTextIndent,
+  'font-family': importFontFamilyPicker,
+  emoji: importEmojiPicker,
+  link: importLinkEditor,
+  'text-align': importTextAlign,
+  dropdown: importDropDown,
+  button: importButton
+}
 
 const isModalControl = (control: ControlItem): control is ModalControlItem => {
   return control.type === 'modal'
@@ -361,6 +392,8 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     const [extendModal, setExtendModal] = useState<ModalProps | null>(null)
     const finderRef = useRef(null)
 
+    const [controlsReady, setControlsReady] = useState(false)
+
     const getControlTypeClassName = (data) => {
       let className = ''
       const { type, command } = data
@@ -497,6 +530,21 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           return [item, uuidv4()] as const
         })
     }, [allControls])
+
+    useEffect(() => {
+      const controlKeys = allControls
+        .map(item => typeof item === 'string' ? item : item?.key)
+        .filter(e => typeof e === 'string')
+      const importFuncs = controlKeys.map(key => controlLoaderMap[key]).filter(Boolean)
+      const loaders = importFuncs.map(e => e?.())
+      Promise.allSettled(loaders).finally(() => {
+        setControlsReady(true)
+      })
+    }, [])
+
+    if (!controlsReady) {
+      return null
+    }
 
     return (
       <div

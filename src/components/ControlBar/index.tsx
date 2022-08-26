@@ -34,7 +34,7 @@ import {
   ModalProps
 } from '../../types'
 import styles from './style.module.scss'
-import { useDeepCompareMemo } from '../../hooks/use-deep-compare-memo'
+// import { useDeepCompareMemo } from '../../hooks/use-deep-compare-memo'
 import useLanguage from '../../hooks/use-language'
 
 const cls = classNameParser(styles)
@@ -278,29 +278,24 @@ const getEditorControlMap = (
 }
 
 const mergeControls = (
-  commonProps,
-  builtControls,
-  extendControls
+  builtInControls,
+  parsedExtendControls
 ) => {
-  const customExtendControls = extendControls.map((item) =>
-    typeof item === 'function' ? item(commonProps) : item
-  )
-
-  if (customExtendControls.length === 0) {
-    return builtControls
+  if (!(parsedExtendControls?.length > 0)) {
+    return builtInControls
   }
 
-  return builtControls
+  return builtInControls
     .map((item) => {
       return (
-        customExtendControls.find((subItem) => {
+        parsedExtendControls.find((subItem) => {
           return subItem.replace === (item.key || item)
         }) ||
         item
       )
     })
     .concat(
-      customExtendControls.filter((item) => {
+      parsedExtendControls.filter((item) => {
         return typeof item === 'string' || !item.replace
       })
     )
@@ -452,13 +447,13 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     }
 
     const currentBlockType = getSelectionBlockType(editorState)
-    const commonProps = {
+    const commonProps = useMemo(() => ({
       editorId,
       editorState,
       getContainerNode,
-      onChange: onChange,
-      onRequestFocus: onRequestFocus
-    }
+      onChange,
+      onRequestFocus
+    }), [editorId, editorState, getContainerNode, onChange, onRequestFocus])
 
     const language = useLanguage()
 
@@ -466,19 +461,24 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       () => getEditorControlMap(language, isFullscreen),
       [language, isFullscreen]
     )
-    const allControls = useDeepCompareMemo(() => {
+
+    const parsedExtendControls = useMemo(() => {
+      return extendControls.map((item: any) =>
+        typeof item === 'function' ? item(commonProps) : item
+      )
+    }, [extendControls, commonProps])
+
+    const allControls = useMemo(() => {
       return mergeControls(
-        commonProps,
         controls,
-        extendControls
+        parsedExtendControls
       )
     }, [
-      mergeControls,
-      commonProps,
       controls,
       extendControls
     ])
-    const renderedControlList = useDeepCompareMemo(() => {
+
+    const renderedControlList = useMemo(() => {
       const keySet = new Set<string>()
       return allControls
         .filter((item) => {
@@ -726,7 +726,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
         })}
         {mediaLibraryVisible && <Modal
           title={language.controls.mediaLibirary}
-          language={language}
           width={640}
           showFooter={false}
           onClose={closeFinder}
@@ -734,14 +733,13 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
         >
           <Finder
             ref={finderRef}
-            language={language}
             {...media}
             onCancel={closeFinder}
             onInsert={insertMedias_}
           />
         </Modal>}
         {extendModal && (
-          <Modal key={extendModal.id} {...extendModal} language={language} />
+          <Modal key={extendModal.id} {...extendModal} />
         )}
       </div>
     )

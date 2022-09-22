@@ -116,4 +116,20 @@
       }
     }
   }
+
+  .kedao-html-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  textarea.kedao-html {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border: none;
+    outline: none;
+  }
 }

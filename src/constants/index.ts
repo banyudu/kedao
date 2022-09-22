@@ -179,7 +179,8 @@ export const defaultControls: readonly BuiltInControlNames[] = [
   'separator',
   'clear',
   'separator',
-  'fullscreen'
+  'fullscreen',
+  'html'
 ] as const
 
 export const defaultImageControls = [

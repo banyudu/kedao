@@ -25,6 +25,7 @@ const TextAlign: FC<TextAlignProps> = ({
   editorState,
   textAligns = defaultTextAligns,
   onChange,
+  disabled,
   onRequestFocus
 }) => {
   const [currentAlignment, setCurrentAlignment] = useState(undefined)
@@ -55,6 +56,7 @@ const TextAlign: FC<TextAlignProps> = ({
         <Button
           type="button"
           key={uuidv4()}
+          disabled={disabled}
           data-title={textAlignmentTitles[index]}
           data-alignment={item}
           className={cls(mergeClassNames(item === currentAlignment && 'active'))}

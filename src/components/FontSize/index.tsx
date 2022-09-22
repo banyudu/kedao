@@ -18,6 +18,7 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
   getContainerNode,
   editorState,
   onChange,
+  disabled,
   onRequestFocus
 }) => {
   let caption = null
@@ -49,6 +50,7 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
       caption={caption || defaultCaption}
       getContainerNode={getContainerNode}
       title={language.controls.fontSize}
+      disabled={disabled}
       ref={dropDownInstance}
       className={cls('kedao-font-size-dropdown')}
     >

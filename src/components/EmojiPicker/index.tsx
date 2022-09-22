@@ -18,6 +18,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
   emojis = defaultEmojis,
   editorState,
   onChange,
+  disabled,
   onRequestFocus
 }) => {
   const insertEmoji = (event) => {
@@ -38,6 +39,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
       showArrow={false}
       getContainerNode={getContainerNode}
       title={language.controls.emoji}
+      disabled={disabled}
       className={cls('kedao-emoji-dropdown')}
     >
       <div className={cls('kedao-emojis-wrap')}>

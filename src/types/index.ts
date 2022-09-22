@@ -162,6 +162,7 @@ export interface CommonPickerProps {
     editorState: EditorState,
     callback?: (state: EditorState) => void
   ) => void
+  disabled?: boolean
 }
 
 export type BuiltInControlNames =
@@ -194,6 +195,7 @@ export type BuiltInControlNames =
   | 'underline'
   | 'undo'
   | 'table'
+  | 'html'
 
 interface BaseControlItem {
   key: string
@@ -377,7 +379,7 @@ export interface BlockRenderer {
   component: (props: BlockRenderProps) => JSX.Element
   editable: boolean
 }
-export type BlockRendererFn = (block: ContentBlock, { editorState: EditorState }) => BlockRenderer
+export type BlockRendererFn = (block: ContentBlock, { editorState }: { editorState: EditorState }) => BlockRenderer
 
 export interface FontFamily {
   name: string
@@ -475,6 +477,7 @@ export interface TextColorPickerProps
   colors: string[]
   onChange: (state: EditorState) => void
   onRequestFocus: () => void
+  disabled?: boolean
 }
 
 export type SupportedLangs = 'zh' | 'zh-hant' | 'en' | 'tr' | 'ru' | 'jpn' | 'kr' | 'pl'
@@ -530,3 +533,5 @@ export interface KedaoEditorProps {
   disabled?: boolean
   extendAtomics?: any[]
 }
+
+export type EditorMode = 'richtext' | 'html'

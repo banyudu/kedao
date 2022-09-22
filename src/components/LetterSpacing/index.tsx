@@ -22,6 +22,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
   onChange,
   onRequestFocus,
   getContainerNode,
+  disabled,
   defaultCaption
 }) => {
   let caption = null
@@ -52,6 +53,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
       autoHide
       caption={caption || defaultCaption}
       getContainerNode={getContainerNode}
+      disabled={disabled}
       title={language.controls.letterSpacing}
       ref={dropDownInstance}
       className={cls('kedao-letter-spacing-dropdown')}

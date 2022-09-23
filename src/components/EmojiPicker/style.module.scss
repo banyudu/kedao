@@ -37,6 +37,8 @@
   margin: 0;
   padding: 15px 15px 20px;
   overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
 
   li {
     display: block;

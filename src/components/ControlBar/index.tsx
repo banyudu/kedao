@@ -31,7 +31,8 @@ import {
   DropDownControlItem,
   EditorState,
   Language,
-  ModalProps
+  ModalProps,
+  EditorMode
 } from '../../types'
 import styles from './style.module.scss'
 // import { useDeepCompareMemo } from '../../hooks/use-deep-compare-memo'
@@ -54,6 +55,7 @@ const DropDown = loadable(async () => await import('../DropDown'))
 const Button = loadable(async () => await import('../Button'))
 const Modal = loadable(async () => await import('../Modal'))
 const Icon = loadable(async () => await import('../Icon'))
+const HTMLButton = loadable(async () => await import('../HTML'))
 
 const isModalControl = (control: ControlItem): control is ModalControlItem => {
   return control.type === 'modal'
@@ -78,7 +80,8 @@ const exclusiveInlineStyles = {
 
 const getEditorControlMap = (
   lang: Language,
-  isFullscreen: boolean
+  isFullscreen: boolean,
+  mode: EditorMode
 ): Record<string, ControlItem> => {
   return {
     undo: {
@@ -258,6 +261,13 @@ const getEditorControlMap = (
       type: 'editor-method',
       command: 'toggleFullscreen'
     },
+    html: {
+      key: 'html',
+      title: 'HTML',
+      text: <HTMLButton mode={mode} />,
+      type: 'editor-method',
+      command: 'toggleHtml'
+    },
     modal: {
       key: 'modal',
       type: 'modal'
@@ -318,6 +328,7 @@ export interface ControlBarProps extends CommonPickerProps {
     callback?: (state: EditorState) => void
   ) => void
   commands: Record<string, () => void>
+  mode: EditorMode
 }
 
 interface ControlBarForwardRef {
@@ -341,6 +352,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       textBackgroundColor,
       onRequestFocus,
       isFullscreen,
+      mode,
       commands,
       onChange
     },
@@ -458,8 +470,8 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     const language = useLanguage()
 
     const editorControlMap = useMemo(
-      () => getEditorControlMap(language, isFullscreen),
-      [language, isFullscreen]
+      () => getEditorControlMap(language, isFullscreen, mode),
+      [language, isFullscreen, mode]
     )
 
     const parsedExtendControls = useMemo(() => {
@@ -498,6 +510,23 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
         })
     }, [allControls])
 
+    const isControlDisabled = (control: ControlItem): boolean => {
+      if (control.disabled) {
+        return true
+      }
+
+      if (mode === 'html' && control.key !== 'html') {
+        return true
+      }
+
+      if (control.command === 'undo') {
+        return editorState.getUndoStack().size === 0
+      } else if (control.command === 'redo') {
+        return editorState.getRedoStack().size === 0
+      }
+      return false
+    }
+
     return (
       <div
         className={cls(`kedao-controlbar ${className || ''}`)}
@@ -519,12 +548,15 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (!controlItem) {
             return null
           }
+          const disabled = isControlDisabled(controlItem)
+          const controlStateProps = { disabled }
           if (controlItem.type === 'headings') {
             return (
               <HeadingPicker
                 key={key}
                 current={currentBlockType}
                 {...commonProps}
+                {...controlStateProps}
                 onChange={(command) => applyControl(command, 'block-type')}
               />
             )
@@ -536,6 +568,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 colors={colors}
                 enableBackgroundColor={textBackgroundColor}
                 {...commonProps}
+                {...controlStateProps}
               />
             )
           }
@@ -545,6 +578,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={uuidv4()}
                 defaultCaption={controlItem.title}
                 {...commonProps}
+                {...controlStateProps}
               />
             )
           }
@@ -554,6 +588,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={uuidv4()}
                 defaultCaption={controlItem.title}
                 {...commonProps}
+                {...controlStateProps}
               />
             )
           }
@@ -563,11 +598,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={uuidv4()}
                 defaultCaption={controlItem.title}
                 {...commonProps}
+                {...controlStateProps}
               />
             )
           }
           if (controlItem.type === 'text-indent') {
-            return <TextIndent key={uuidv4()} {...commonProps} />
+            return <TextIndent key={uuidv4()} {...commonProps} {...controlStateProps} />
           }
           if (controlItem.type === 'font-family') {
             return (
@@ -575,6 +611,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={uuidv4()}
                 defaultCaption={controlItem.title}
                 {...commonProps}
+                {...controlStateProps}
               />
             )
           }
@@ -584,6 +621,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 key={uuidv4()}
                 defaultCaption={controlItem.text}
                 {...commonProps}
+                {...controlStateProps}
               />
             )
           }
@@ -595,12 +633,13 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 onChange={onChange}
                 onRequestFocus={onRequestFocus}
                 {...commonProps}
+                {...controlStateProps}
               />
             )
           }
           if (controlItem.type === 'text-align') {
             return (
-              <TextAlign key={key} {...commonProps} />
+              <TextAlign key={key} {...commonProps} {...controlStateProps} />
             )
           }
           if (controlItem.type === 'media') {
@@ -612,9 +651,9 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 type="button"
                 key={key}
                 data-title={controlItem.title}
-                disabled={controlItem.disabled}
                 className={cls('media')}
                 onClick={openFinder}
+                {...controlStateProps}
               >
                 {controlItem.text}
               </Button>
@@ -631,9 +670,9 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 title={controlItem.title}
                 arrowActive={controlItem.arrowActive}
                 autoHide={controlItem.autoHide}
-                disabled={controlItem.disabled}
                 ref={(controlItem as any).ref}
                 {...commonProps}
+                {...controlStateProps}
               >
                 {controlItem.component}
               </DropDown>
@@ -645,7 +684,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 type="button"
                 key={key}
                 data-title={controlItem.title}
-                disabled={controlItem.disabled}
                 className={cls(`extend-control-item ${controlItem.className || ''}`)}
                 dangerouslySetInnerHTML={
                   controlItem.html ? { __html: controlItem.html } : null
@@ -657,6 +695,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                   }
                   onClick?.(event)
                 }}
+                {...controlStateProps}
               >
                 {!controlItem.html ? controlItem.text : null}
               </Button>
@@ -678,7 +717,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 type="button"
                 key={key}
                 data-title={controlItem.title}
-                disabled={controlItem.disabled}
                 className={cls(controlItem.className || '')}
                 dangerouslySetInnerHTML={
                   controlItem.html ? { __html: controlItem.html } : null
@@ -686,25 +724,17 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 onClick={(event) =>
                   (controlItem as ButtonControlItem).onClick?.(event)
                 }
+                {...controlStateProps}
               >
                 {!controlItem.html ? controlItem.text : null}
               </Button>
             )
           }
           if (controlItem) {
-            let disabled = false
-
-            if (controlItem.command === 'undo') {
-              disabled = editorState.getUndoStack().size === 0
-            } else if (controlItem.command === 'redo') {
-              disabled = editorState.getRedoStack().size === 0
-            }
-
             return (
               <Button
                 type="button"
                 key={key}
-                disabled={disabled}
                 data-title={controlItem.title}
                 className={cls(getControlTypeClassName({
                   type: controlItem.type,
@@ -717,6 +747,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                     (controlItem as any).data
                   )
                 }
+                {...controlStateProps}
               >
                 {controlItem.text}
               </Button>

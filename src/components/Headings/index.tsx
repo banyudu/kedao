@@ -69,6 +69,7 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
   headings = defaultHeadings,
   current,
   getContainerNode,
+  disabled,
   onChange
 }) => {
   const dropDownInstance = React.createRef<any>()
@@ -89,6 +90,7 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
     <DropDown
       caption={caption}
       autoHide
+      disabled={disabled}
       getContainerNode={getContainerNode}
       title={language.controls.headings}
       arrowActive={currentHeadingIndex === 0}

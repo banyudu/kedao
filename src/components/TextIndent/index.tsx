@@ -17,6 +17,7 @@ const cls = classNameParser(styles)
 const TextIndent: FC<CommonPickerProps> = ({
   editorState,
   onChange,
+  disabled,
   onRequestFocus
 }) => {
   const [currentIndent, setCurrentIndent] = useState(0)
@@ -43,7 +44,7 @@ const TextIndent: FC<CommonPickerProps> = ({
         key={0}
         type="button"
         data-title={language.controls.increaseIndent}
-        disabled={currentIndent >= 6}
+        disabled={disabled || currentIndent >= 6}
         className={cls(`button-indent-increase${
                     currentIndent > 0 && currentIndent < 6 ? ' active' : ''
                   }`)}
@@ -55,7 +56,7 @@ const TextIndent: FC<CommonPickerProps> = ({
         key={1}
         type="button"
         data-title={language.controls.decreaseIndent}
-        disabled={currentIndent <= 0}
+        disabled={disabled || currentIndent <= 0}
         className={cls('button-indent-decrease')}
         onClick={decreaseIndent}
       >

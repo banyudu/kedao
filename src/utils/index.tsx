@@ -1737,7 +1737,7 @@ export const convertHTMLToRaw = (HTMLString: string, options?: ConvertOptions, s
   }
 }
 
-export const convertEditorStateToHTML = (editorState: EditorState, options) => {
+export const convertEditorStateToHTML = (editorState: EditorState, options: ConvertOptions = {}) => {
   options = { ...defaultConvertOptions, ...options }
 
   try {

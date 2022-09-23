@@ -27,6 +27,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   enableBackgroundColor,
   colors,
   onChange,
+  disabled,
   onRequestFocus
 }) => {
   const [colorType, setColorType] = useState('color')
@@ -98,6 +99,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
       autoHide
       getContainerNode={getContainerNode}
       ref={dropDownInstance}
+      disabled={disabled}
       className={cls('text-color-dropdown')}
     >
       <div className={cls('kedao-text-color-picker-wrap')}>

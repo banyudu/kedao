@@ -65,7 +65,8 @@ import {
   BlockRendererFn,
   KedaoEditorProps,
   SupportedLangs,
-  Language
+  Language,
+  EditorMode
 } from '../types'
 
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
@@ -266,6 +267,14 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   const valueInitialized = !!(defaultValue || value)
 
   const setLanuage = useSetAtom(langAtom)
+
+  const [mode, setMode] = useState<EditorMode>('richtext')
+  const [html, setHtml] = useState('')
+
+  const toggleHtml = () => {
+    setMode(oldMode => oldMode === 'html' ? 'richtext' : 'html')
+    setHtml(convertEditorStateToHTML(editorState))
+  }
 
   useEffect(() => {
     const setupLang = async () => {
@@ -736,7 +745,8 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
         return newValue
       })
       onFullscreen?.(newValue)
-    }
+    },
+    toggleHtml
   }
 
   const getContainerNode = useCallback(() => containerRef.current, [
@@ -793,6 +803,48 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   ])
   const memoControls = useMemo(() => controls, [controls?.join(',')])
 
+  const renderEditor = () => {
+    if (mode === 'html') {
+      return (
+        <div
+          className={cls('kedao-html-container')}
+        >
+          <textarea
+            value={html}
+            readOnly
+            className={cls('kedao-html')}
+          />
+        </div>
+      )
+    }
+
+    return (
+      <Editor
+        ref={draftInstanceRef}
+        editorState={editorState}
+        handleKeyCommand={keyCommandHandlers}
+        handleReturn={handleReturn_}
+        handleBeforeInput={handleBeforeInput_}
+        handleDrop={handleDrop}
+        handleDroppedFiles={handleDroppedFiles_}
+        handlePastedText={handlePastedText_}
+        handlePastedFiles={handlePastedFiles_}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        blockRenderMap={blockRenderMap_}
+        blockRendererFn={blockRendererFn_ as any}
+        blockStyleFn={blockStyleFn_}
+        customStyleMap={customStyleMap_}
+        customStyleFn={customStyleFn_}
+        keyBindingFn={keyBindingFn_}
+        placeholder={placeholder}
+        stripPastedStyles={stripPastedStyles}
+        readOnly={editorLocked || disabled || readOnly}
+      />
+    )
+  }
+
   return (
     <div
       style={style}
@@ -824,6 +876,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
         onChange={setValue}
         onRequestFocus={requestFocus}
         commands={commands}
+        mode={mode}
       />
       {componentBelowControlBar}
       <div
@@ -832,29 +885,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
         onCopy={handleCopyContent}
         style={contentStyle}
       >
-        <Editor
-          ref={draftInstanceRef}
-          editorState={editorState}
-          handleKeyCommand={keyCommandHandlers}
-          handleReturn={handleReturn_}
-          handleBeforeInput={handleBeforeInput_}
-          handleDrop={handleDrop}
-          handleDroppedFiles={handleDroppedFiles_}
-          handlePastedText={handlePastedText_}
-          handlePastedFiles={handlePastedFiles_}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          blockRenderMap={blockRenderMap_}
-          blockRendererFn={blockRendererFn_ as any}
-          blockStyleFn={blockStyleFn_}
-          customStyleMap={customStyleMap_}
-          customStyleFn={customStyleFn_}
-          keyBindingFn={keyBindingFn_}
-          placeholder={placeholder}
-          stripPastedStyles={stripPastedStyles}
-          readOnly={editorLocked || disabled || readOnly}
-        />
+        {renderEditor()}
       </div>
     </div>
   )

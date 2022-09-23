@@ -21,6 +21,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
   getContainerNode,
   onChange,
   onRequestFocus,
+  disabled,
   editorState
 }) => {
   let caption = null
@@ -52,6 +53,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
       caption={caption || defaultCaption}
       getContainerNode={getContainerNode}
       title={language.controls.lineHeight}
+      disabled={disabled}
       ref={dropDownInstance}
       className={cls('kedao-line-height-dropdown')}
     >

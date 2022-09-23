@@ -28,6 +28,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
   editorState,
   getContainerNode,
   allowInsertLinkText,
+  disabled,
   onChange,
   onRequestFocus
 }) => {
@@ -136,6 +137,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
         showArrow={false}
         ref={dropDownInstance}
         className={cls('link-editor-dropdown')}
+        disabled={disabled}
       >
         <div className={cls('kedao-link-editor')}>
           {allowInsertLinkText
@@ -199,7 +201,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
         type="button"
         data-title={language.controls.unlink}
         onClick={handleUnlink}
-        disabled={!textSelected || !href}
+        disabled={disabled || !textSelected || !href}
       >
         <Icon type='link-off' />
       </Button>

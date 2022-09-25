@@ -123,22 +123,6 @@ const defaultMedia: any = {
   }
 }
 
-const getKeyBindingFn = customKeyBindingFn => event => {
-  if (
-    event.keyCode === 83 &&
-    (KeyBindingUtil.hasCommandModifier(event) ||
-      KeyBindingUtil.isCtrlKeyCommand(event))
-  ) {
-    return 'kedao-save'
-  }
-
-  if (customKeyBindingFn) {
-    return customKeyBindingFn(event) || getDefaultKeyBinding(event)
-  }
-
-  return getDefaultKeyBinding(event)
-}
-
 const unitExportFn = (value, type: string) =>
   type === 'line-height' ? value : `${value}px`
 
@@ -209,13 +193,18 @@ const filterColors = (
     .filter((item, index, array) => array.indexOf(item) === index)
 }
 
+const defaultExtendControls = []
+const defaultExtendAtomics = []
+const defaultExcludeControls = []
+const defaultConverts = { unitExportFn }
+
 const KedaoEditor: FC<KedaoEditorProps> = ({
   controls = defaultControls as any,
   language: locale = 'zh',
-  excludeControls = [],
+  excludeControls = defaultExcludeControls,
   handlePastedText,
-  extendControls = [],
-  extendAtomics = [],
+  extendControls = defaultExtendControls,
+  extendAtomics = defaultExtendAtomics,
   componentBelowControlBar = null,
   media = defaultMedia,
   imageControls = defaultImageControls,
@@ -224,7 +213,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   codeTabIndents = 2,
   textBackgroundColor = true,
   allowInsertLinkText = false,
-  converts = { unitExportFn },
+  converts = defaultConverts,
   stripPastedStyles = false,
   className = '',
   handleKeyCommand,
@@ -245,11 +234,11 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   placeholder,
   readOnly,
   disabled,
-  style = {},
+  style,
   controlBarClassName = '',
-  controlBarStyle = {},
+  controlBarStyle,
   contentClassName = '',
-  contentStyle = {},
+  contentStyle,
   defaultValue,
   value,
   editorId,
@@ -361,7 +350,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     }
   }, [defaultValue, value])
 
-  const handleChange = (
+  const handleChange = useCallback((
     editorState: EditorState,
     callback?: (state: EditorState) => void
   ) => {
@@ -375,7 +364,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     setEditorState(newEditorState)
     onChange?.(newEditorState)
     callback?.(newEditorState)
-  }
+  }, [editorDecoratorsRef.current])
 
   const setValue = useCallback(
     (editorState: EditorState, callback?: (state: EditorState) => void) => {
@@ -397,7 +386,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     )
   }
 
-  const keyCommandHandlers = (command: string, editorState: EditorState) => {
+  const keyCommandHandlers = useCallback((command: string, editorState: EditorState) => {
     if (handleKeyCommand?.(command, editorState) === 'handled') {
       return 'handled'
     }
@@ -461,21 +450,22 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     }
 
     return 'not-handled'
-  }
+  }, [setValue, handleKeyCommand, onSave, onDelete, controls, excludeControls, codeTabIndents])
 
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     onFocus?.(editorState)
-  }
+  }, [onFocus])
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     onBlur?.(editorState)
-  }
+  }, [onBlur])
 
-  const requestFocus = () => {
+  const requestFocus = useCallback(() => {
+    console.debug('force reflow: requestFocus')
     setTimeout(() => draftInstanceRef.current?.focus(), 0)
-  }
+  }, [draftInstanceRef.current])
 
-  const handleReturn_ = (event, editorState: EditorState) => {
+  const handleReturn_ = useCallback((event, editorState: EditorState) => {
     if (handleReturn?.(event, editorState) === 'handled') {
       return 'handled'
     }
@@ -531,17 +521,17 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     }
 
     return 'not-handled'
-  }
+  }, [setValue, handleReturn, handleNewLine])
 
-  const handleBeforeInput_ = (chars, editorState: EditorState) => {
+  const handleBeforeInput_ = useCallback((chars, editorState: EditorState) => {
     if (handleBeforeInput?.(chars, editorState) === 'handled') {
       return 'handled'
     }
 
     return 'not-handled'
-  }
+  }, [])
 
-  const handleDrop = (selectionState, dataTransfer) => {
+  const handleDrop = useCallback((selectionState, dataTransfer) => {
     if (readOnly || disabled) {
       return 'handled'
     }
@@ -571,16 +561,16 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     }
 
     return 'not-handled'
-  }
+  }, [])
 
-  const handleFiles = files => {
+  const handleFiles = useCallback(files => {
     const { pasteImage, validateFn, imagePasteLimit }: any = {
       ...defaultMedia,
       ...media
     }
 
     const upload = file => {
-      controlBarInstanceRef?.current.uploadImage(file, image => {
+      controlBarInstanceRef.current?.uploadImage(file, image => {
         if (isLiving) {
           setValue(insertMedias(editorState, [image]))
         }
@@ -613,23 +603,23 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     }
 
     return 'not-handled'
-  }
+  }, [!!controlBarInstanceRef.current, media, controlBarInstanceRef.current?.uploadImage])
 
-  const handleDroppedFiles_ = (selectionState, files) => {
+  const handleDroppedFiles_ = useCallback((selectionState, files) => {
     if (handleDroppedFiles?.(selectionState, files) === 'handled') {
       return 'handled'
     }
 
     return handleFiles(files)
-  }
+  }, [handleFiles, handleDroppedFiles])
 
-  const handlePastedFiles_ = files => {
+  const handlePastedFiles_ = useCallback(files => {
     if (handlePastedFiles?.(files) === 'handled') {
       return 'handled'
     }
 
     return handleFiles(files)
-  }
+  }, [handleFiles, handlePastedFiles])
 
   const handleCopyContent = event => {
     const blockMap = getFragmentFromSelection(editorState)
@@ -658,7 +648,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     }
   }
 
-  const handlePastedText_ = (
+  const handlePastedText_ = useCallback((
     text: string,
     html: string,
     editorState: EditorState
@@ -680,7 +670,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     )
     setValue(insertHTML(editorState, convertOptions, html, 'paste'))
     return 'handled'
-  }
+  }, [stripPastedStyles, tempColors, setValue])
 
   const handleCompositionStart = () => {
     const selectedBlocks = getSelectedBlocks(editorState)
@@ -720,7 +710,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     return result
   }, [media])
 
-  const commands = {
+  const commands = useMemo(() => ({
     undo: () => {
       setValue(undo(editorState))
     },
@@ -747,7 +737,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       onFullscreen?.(newValue)
     },
     toggleHtml
-  }
+  }), [onFullscreen])
 
   const getContainerNode = useCallback(() => containerRef.current, [
     containerRef.current
@@ -769,16 +759,30 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     },
     blockRendererFn
   )
-  const blockRenderMap_ = getBlockRenderMap(blockRenderMap)
-  const blockStyleFn_ = getBlockStyleFn(blockStyleFn)
-  const customStyleMap_ = getCustomStyleMap(customStyleMap)
-  const customStyleFn_ = getCustomStyleFn({
+  const blockRenderMap_ = useMemo(() => getBlockRenderMap(blockRenderMap), [blockRenderMap])
+  const blockStyleFn_ = useMemo(() => getBlockStyleFn(blockStyleFn), [blockStyleFn])
+  const customStyleMap_ = useMemo(() => getCustomStyleMap(customStyleMap), [customStyleMap])
+  const customStyleFn_ = useMemo(() => getCustomStyleFn({
     fontFamilies: defaultFontFamilies,
     unitExportFn,
     customStyleFn: customStyleFn
-  })
+  }), [customStyleFn])
 
-  const keyBindingFn_ = getKeyBindingFn(keyBindingFn)
+  const keyBindingFn_ = useCallback(event => {
+    if (
+      event.keyCode === 83 &&
+      (KeyBindingUtil.hasCommandModifier(event) ||
+        KeyBindingUtil.isCtrlKeyCommand(event))
+    ) {
+      return 'kedao-save'
+    }
+
+    if (keyBindingFn) {
+      return keyBindingFn(event) || getDefaultKeyBinding(event)
+    }
+
+    return getDefaultKeyBinding(event)
+  }, [keyBindingFn])
 
   const mixedProps: any = {}
 

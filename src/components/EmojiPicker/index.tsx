@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { EmojiPickerProps } from '../../types'
 import { insertText } from '../../utils'
 import styles from './style.module.scss'
@@ -47,7 +46,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
           {emojis.map((item) => {
             return (
               <li
-                key={uuidv4()}
+                key={item}
                 data-emoji={item}
                 onClick={(event) => insertEmoji(event)}
                 role="presentation"

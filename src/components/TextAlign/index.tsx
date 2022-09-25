@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { useState, useEffect, FC } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { getSelectionBlockData, toggleSelectionAlignment } from '../../utils'
 import mergeClassNames from 'merge-class-names'
 import ControlGroup from '../ControlGroup'
@@ -55,7 +54,7 @@ const TextAlign: FC<TextAlignProps> = ({
       {textAligns.map((item, index) => (
         <Button
           type="button"
-          key={uuidv4()}
+          key={item}
           disabled={disabled}
           data-title={textAlignmentTitles[index]}
           data-alignment={item}

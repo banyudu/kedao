@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { FC, useRef } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { FontSizePickerProps } from '../../types'
 import { toggleSelectionFontSize, selectionHasInlineStyle } from '../../utils'
 import styles from './style.module.scss'
@@ -58,7 +57,7 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
         {fontSizes.map((item) => {
           return (
             <li
-              key={uuidv4()}
+              key={item}
               role="presentation"
               className={cls(item === currentFontSize ? 'active' : null)}
               data-size={item}

@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
-import React, { FC, useState, useRef } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import React, { FC, useState, useRef, useEffect } from 'react'
 import { setMediaData, setMediaPosition } from '../../utils'
 import Switch from '../../components/Switch'
 import styles from './style.module.scss'
@@ -133,6 +132,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const repareChangeSize = (type: string) => (e) => {
+    console.debug('force reflow: repareChangeSize')
     reSizeType.current = type
     const imageRect = imageElement.current?.getBoundingClientRect()
     initialTop.current = 0
@@ -154,6 +154,7 @@ const Image: FC<ImageProps> = ({
   }
 
   const calcToolbarOffset = () => {
+    console.debug('force reflow: calcToolbarOffset')
     const container = getContainerNode()
     const viewRect = container
       ?.querySelector('.kedao-content')
@@ -407,7 +408,7 @@ const Image: FC<ImageProps> = ({
           <a
             className={cls(item === 'link' && link ? 'active' : '')}
             role="presentation"
-            key={uuidv4()}
+            key={item}
             onClick={() => executeCommand(imageControlItems[item].command)}
           >
             {imageControlItems[item].text}
@@ -421,7 +422,7 @@ const Image: FC<ImageProps> = ({
           )
         : (
         <a
-          key={uuidv4()}
+          key={item.text}
           role="presentation"
           onClick={() => item.onClick && executeCommand(item.onClick)}
         >
@@ -433,6 +434,10 @@ const Image: FC<ImageProps> = ({
   })
 
   const language = useLanguage()
+
+  useEffect(() => {
+    console.log('Image fresh render')
+  }, [])
 
   return (
     <div className={cls('kedao-media')}>

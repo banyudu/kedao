@@ -7,7 +7,8 @@ import React, {
   useMemo,
   useState,
   useRef,
-  useEffect
+  useEffect,
+  useCallback
 } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -35,7 +36,6 @@ import {
   EditorMode
 } from '../../types'
 import styles from './style.module.scss'
-// import { useDeepCompareMemo } from '../../hooks/use-deep-compare-memo'
 import useLanguage from '../../hooks/use-language'
 
 const cls = classNameParser(styles)
@@ -313,7 +313,7 @@ const mergeControls = (
 
 export interface ControlBarProps extends CommonPickerProps {
   className: string
-  style: CSSProperties
+  style?: CSSProperties
   colors: string[]
   allowInsertLinkText: boolean
   media: MediaProps
@@ -446,9 +446,9 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       setMediaLibraryVisible(false)
     }
 
-    const uploadImage = (file, callback) => {
+    const uploadImage = useCallback((file, callback) => {
       finderRef.current?.uploadImage(file, callback)
-    }
+    }, [finderRef.current?.uploadImage])
 
     const preventDefault = (event) => {
       const tagName = event.target.tagName.toLowerCase()
@@ -575,7 +575,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'font-size') {
             return (
               <FontSizePicker
-                key={uuidv4()}
+                key={key}
                 defaultCaption={controlItem.title}
                 {...commonProps}
                 {...controlStateProps}
@@ -585,7 +585,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'line-height') {
             return (
               <LineHeightPicker
-                key={uuidv4()}
+                key={key}
                 defaultCaption={controlItem.title}
                 {...commonProps}
                 {...controlStateProps}
@@ -595,7 +595,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'letter-spacing') {
             return (
               <LetterSpacingPicker
-                key={uuidv4()}
+                key={key}
                 defaultCaption={controlItem.title}
                 {...commonProps}
                 {...controlStateProps}
@@ -603,12 +603,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             )
           }
           if (controlItem.type === 'text-indent') {
-            return <TextIndent key={uuidv4()} {...commonProps} {...controlStateProps} />
+            return <TextIndent key={key} {...commonProps} {...controlStateProps} />
           }
           if (controlItem.type === 'font-family') {
             return (
               <FontFamilyPicker
-                key={uuidv4()}
+                key={key}
                 defaultCaption={controlItem.title}
                 {...commonProps}
                 {...controlStateProps}
@@ -618,7 +618,7 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           if (controlItem.type === 'emoji') {
             return (
               <EmojiPicker
-                key={uuidv4()}
+                key={key}
                 defaultCaption={controlItem.text}
                 {...commonProps}
                 {...controlStateProps}

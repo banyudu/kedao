@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { useRef, FC } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { LetterSpacingPickerProps } from '../../types'
 import {
   toggleSelectionLetterSpacing,
@@ -62,7 +61,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
         {letterSpacings.map((item) => {
           return (
             <li
-              key={uuidv4()}
+              key={item}
               role="presentation"
               className={cls(item === currentLetterSpacing ? 'active' : null)}
               data-size={item}

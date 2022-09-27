@@ -314,7 +314,6 @@ const mergeControls = (
 export interface ControlBarProps extends CommonPickerProps {
   className: string
   style?: CSSProperties
-  colors: string[]
   allowInsertLinkText: boolean
   media: MediaProps
   controls: readonly ControlItem[]
@@ -343,7 +342,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       media,
       allowInsertLinkText,
       className,
-      colors,
       controls,
       editorId,
       extendControls,
@@ -565,7 +563,6 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <TextColorPicker
                 key={key}
-                colors={colors}
                 enableBackgroundColor={textBackgroundColor}
                 {...commonProps}
                 {...controlStateProps}

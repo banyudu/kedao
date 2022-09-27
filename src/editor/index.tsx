@@ -16,19 +16,16 @@ import {
   increaseSelectionIndent,
   getSelectedBlocks,
   insertMedias,
-  detectColorsFromHTMLString,
   removeBlock,
   getSelectionBlock,
   removeSelectionInlineStyles,
   getSelectionBlockType,
   decreaseSelectionIndent,
-  detectColorsFromDraftState,
   toggleSelectionBlockType,
   insertText,
   handleNewLine,
   handleKeyCommand as defaultHandleKeyCommand,
   clear,
-  convertEditorStateToRaw,
   convertRawToEditorState,
   convertHTMLToEditorState,
   convertEditorStateToHTML
@@ -72,7 +69,6 @@ import {
 import getFragmentFromSelection from 'draft-js/lib/getFragmentFromSelection'
 import {
   defaultControls,
-  defaultColors,
   defaultFontFamilies,
   defaultImageControls
 } from '../constants'
@@ -182,17 +178,6 @@ export const createStateFromContent = (
   return editorState
 }
 
-const filterColors = (
-  colors: readonly string[],
-  colors2: readonly string[]
-) => {
-  return colors
-    .filter(item => {
-      return !colors2.find(color => color.toLowerCase() === item.toLowerCase())
-    })
-    .filter((item, index, array) => array.indexOf(item) === index)
-}
-
 const defaultExtendControls = []
 const defaultExtendAtomics = []
 const defaultExcludeControls = []
@@ -253,17 +238,20 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   const editorDecoratorsRef = useRef(getDecorators())
   const controlBarInstanceRef = useRef(null)
   const [isLiving, setIsLiving] = useState(false)
-  const valueInitialized = !!(defaultValue || value)
 
   const setLanuage = useSetAtom(langAtom)
 
   const [mode, setMode] = useState<EditorMode>('richtext')
   const [html, setHtml] = useState('')
 
-  const toggleHtml = () => {
-    setMode(oldMode => oldMode === 'html' ? 'richtext' : 'html')
-    setHtml(convertEditorStateToHTML(editorState))
-  }
+  const defaultEditorState = useMemo(() =>
+    (defaultValue || value) instanceof EditorState
+      ? defaultValue || value
+      : EditorState.createEmpty(editorDecoratorsRef.current), [])
+
+  const [editorState, setEditorState] = useState(defaultEditorState)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const containerRef = useRef(null)
 
   useEffect(() => {
     const setupLang = async () => {
@@ -281,11 +269,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     setupLang().catch(console.error)
   }, [locale])
 
-  const defaultEditorState =
-    (defaultValue || value) instanceof EditorState
-      ? defaultValue || value
-      : EditorState.createEmpty(editorDecoratorsRef.current)
-
   const getConvertOptions = (): ConvertOptions => {
     const result: ConvertOptions = {
       unitExportFn,
@@ -298,21 +281,11 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
 
   const convertOptions = useMemo(getConvertOptions, [editorId, id, converts])
 
-  const [tempColors, setTempColors] = useState(() => {
-    let result: string[] = []
-
-    if (defaultEditorState instanceof EditorState) {
-      const _colors = detectColorsFromDraftState(
-        convertEditorStateToRaw(defaultEditorState)
-      )
-      result = filterColors(_colors, defaultColors)
+  useEffect(() => {
+    if (isLiving) {
+      setEditorState(value)
     }
-    return result
-  })
-  const [editorState, setEditorState] = useState(defaultEditorState)
-  const [isFullscreen, setIsFullscreen] = useState(false)
-
-  const containerRef = useRef(null)
+  }, [value])
 
   useEffect(() => {
     setIsLiving(true)
@@ -321,34 +294,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       setIsLiving(false)
     }
   }, [])
-
-  useEffect(() => {
-    const editorState = value
-
-    let nextEditorState
-
-    if (!valueInitialized && defaultValue instanceof EditorState) {
-      nextEditorState = defaultValue
-    } else if (editorState instanceof EditorState) {
-      nextEditorState = editorState
-    }
-
-    if (nextEditorState) {
-      if (nextEditorState && nextEditorState !== editorState) {
-        const tempColors = detectColorsFromDraftState(
-          convertEditorStateToRaw(nextEditorState)
-        )
-
-        setTempColors(oldColors =>
-          filterColors([...oldColors, ...tempColors], defaultColors)
-        )
-        setEditorState(nextEditorState)
-        onChange?.(nextEditorState)
-      } else {
-        setEditorState(nextEditorState)
-      }
-    }
-  }, [defaultValue, value])
 
   const handleChange = useCallback((
     editorState: EditorState,
@@ -364,7 +309,7 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     setEditorState(newEditorState)
     onChange?.(newEditorState)
     callback?.(newEditorState)
-  }, [editorDecoratorsRef.current])
+  }, [editorDecoratorsRef.current, onChange])
 
   const setValue = useCallback(
     (editorState: EditorState, callback?: (state: EditorState) => void) => {
@@ -461,7 +406,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
   }, [onBlur])
 
   const requestFocus = useCallback(() => {
-    console.debug('force reflow: requestFocus')
     setTimeout(() => draftInstanceRef.current?.focus(), 0)
   }, [draftInstanceRef.current])
 
@@ -661,16 +605,9 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       return 'not-handled'
     }
 
-    const detectedColors = detectColorsFromHTMLString(html)
-
-    setTempColors(
-      [...tempColors, ...detectedColors]
-        .filter(item => !defaultColors.includes(item))
-        .filter((item, index, array) => array.indexOf(item) === index)
-    )
     setValue(insertHTML(editorState, convertOptions, html, 'paste'))
     return 'handled'
-  }, [stripPastedStyles, tempColors, setValue])
+  }, [stripPastedStyles, setValue])
 
   const handleCompositionStart = () => {
     const selectedBlocks = getSelectedBlocks(editorState)
@@ -736,8 +673,11 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
       })
       onFullscreen?.(newValue)
     },
-    toggleHtml
-  }), [onFullscreen])
+    toggleHtml: () => {
+      setMode(oldMode => oldMode === 'html' ? 'richtext' : 'html')
+      setHtml(convertEditorStateToHTML(editorState))
+    }
+  }), [onFullscreen, editorState])
 
   const getContainerNode = useCallback(() => containerRef.current, [
     containerRef.current
@@ -802,9 +742,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
     placeholder = ''
   }
 
-  const controlBarColors = useMemo(() => [...defaultColors, ...tempColors], [
-    tempColors
-  ])
   const memoControls = useMemo(() => controls, [controls?.join(',')])
 
   const renderEditor = () => {
@@ -869,7 +806,6 @@ const KedaoEditor: FC<KedaoEditorProps> = ({
         getContainerNode={getContainerNode}
         className={cls(controlBarClassName)}
         style={controlBarStyle}
-        colors={controlBarColors}
         editorId={editorId}
         media={controlBarMedia}
         controls={memoControls}

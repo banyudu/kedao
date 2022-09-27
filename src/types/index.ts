@@ -402,7 +402,7 @@ export interface DropDownProps {
 }
 
 export interface ColorPickerProps {
-  presetColors: string[]
+  presetColors: readonly string[]
   color: string
   onChange: (color: string, closePicker: boolean) => void
 }
@@ -474,7 +474,6 @@ export interface TextColorPickerProps
   extends Pick<DropDownProps, 'getContainerNode'> {
   editorState: EditorState
   enableBackgroundColor: boolean
-  colors: string[]
   onChange: (state: EditorState) => void
   onRequestFocus: () => void
   disabled?: boolean

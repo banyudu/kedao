@@ -132,7 +132,6 @@ const Image: FC<ImageProps> = ({
   }
 
   const repareChangeSize = (type: string) => (e) => {
-    console.debug('force reflow: repareChangeSize')
     reSizeType.current = type
     const imageRect = imageElement.current?.getBoundingClientRect()
     initialTop.current = 0
@@ -154,7 +153,6 @@ const Image: FC<ImageProps> = ({
   }
 
   const calcToolbarOffset = () => {
-    console.debug('force reflow: calcToolbarOffset')
     const container = getContainerNode()
     const viewRect = container
       ?.querySelector('.kedao-content')

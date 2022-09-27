@@ -17,6 +17,7 @@ import Icon from '../Icon'
 import { TextColorPickerProps } from '../../types'
 import loadable from '@loadable/component'
 import useLanguage from '../../hooks/use-language'
+import { defaultColors } from '../../constants'
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -25,7 +26,6 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   editorState,
   getContainerNode,
   enableBackgroundColor,
-  colors,
   onChange,
   disabled,
   onRequestFocus
@@ -126,7 +126,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
         </div>
         <ColorPicker
           color={currentColor}
-          presetColors={colors}
+          presetColors={defaultColors}
           onChange={toggleColor}
         />
       </div>

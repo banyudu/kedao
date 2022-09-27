@@ -46,7 +46,6 @@ const DropDown = forwardRef<any, DropDownProps>(
     const size = useWindowSize()
 
     const fixDropDownPosition = () => {
-      console.debug('force reflow: fixDropDownPosition')
       const viewRect = getContainerNode().getBoundingClientRect()
       const handlerRect =
         dropDownHandlerElement.current?.getBoundingClientRect()

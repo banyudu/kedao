@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { HeadingsPickerProps } from '../../types'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
@@ -102,7 +101,7 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
           const isActive = current === item.command
           return (
             <MenuItem
-              key={uuidv4()}
+              key={item.key}
               role="presentation"
               className={cls(`headings-menu-item${isActive ? ' active' : ''}`)}
               onClick={() => {

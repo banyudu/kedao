@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { FontFamilyPickerProps } from '../../types'
 import {
   toggleSelectionFontFamily,
@@ -64,7 +63,7 @@ const FontFamilyPicker: FC<FontFamilyPickerProps> = ({
         {fontFamilies.map((item, index) => {
           return (
             <MenuItem
-              key={uuidv4()}
+              key={item.name}
               role="presentation"
               className={cls(`font-family-item ${
                               index === currentIndex ? 'active' : ''

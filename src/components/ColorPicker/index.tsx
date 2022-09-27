@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import styles from './style.module.scss'
 import { ColorPickerProps } from '../../types'
 
@@ -22,7 +21,7 @@ const ColorPicker: FC<ColorPickerProps> = ({
         return (
           <li
             role="presentation"
-            key={uuidv4()}
+            key={item}
             title={item}
             className={cls(className)}
             style={{ color: item }}

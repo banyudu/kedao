@@ -1,7 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
 import React, { FC } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import {
   toggleSelectionLineHeight,
   selectionHasInlineStyle
@@ -61,7 +60,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
         {lineHeights.map((item) => {
           return (
             <li
-              key={uuidv4()}
+              key={item}
               role="presentation"
               className={cls(item === currentLineHeight ? 'active' : null)}
               data-size={item}

@@ -1,16 +1,12 @@
 
 import { classNameParser } from '../../utils/style'
-import React, { FC } from 'react'
-import {
-  toggleSelectionLineHeight,
-  selectionHasInlineStyle
-} from '../../utils'
+import React, { FC, useRef } from 'react'
 import { LineHeightPickerProps } from '../../types'
 import styles from './style.module.scss'
 import { defaultLineHeights } from '../../constants'
-import loadable from '@loadable/component'
 import useLanguage from '../../hooks/use-language'
-const DropDown = loadable(async () => await import('../DropDown'))
+import useSelectionInlineStyle from '../../hooks/use-selection-line-style'
+import DropDown, { DropDownRef } from '../DropDown'
 
 const cls = classNameParser(styles)
 
@@ -23,23 +19,17 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
   disabled,
   editorState
 }) => {
-  let caption = null
-  let currentLineHeight = null
-  const dropDownInstance = React.createRef<any>()
+  const dropDownRef = useRef<DropDownRef>(null)
 
-  lineHeights.find((item) => {
-    if (selectionHasInlineStyle(editorState, `LINEHEIGHT-${item}`)) {
-      caption = item
-      currentLineHeight = item
-      return true
-    }
-    return false
-  })
+  const {
+    value: currentLineHeight,
+    toggle
+  } = useSelectionInlineStyle(editorState, 'LINEHEIGHT')
 
   const toggleLineHeight = (event) => {
     const lineHeight = event.currentTarget.dataset.size
 
-    onChange(toggleSelectionLineHeight(editorState, lineHeight))
+    onChange(toggle(lineHeight))
     onRequestFocus()
     return true
   }
@@ -49,15 +39,16 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
   return (
     <DropDown
       autoHide
-      caption={caption || defaultCaption}
+      caption={currentLineHeight || defaultCaption}
       getContainerNode={getContainerNode}
       title={language.controls.lineHeight}
       disabled={disabled}
-      ref={dropDownInstance}
+      ref={dropDownRef}
       className={cls('kedao-line-height-dropdown')}
     >
       <ul className={cls('kedao-line-heights')}>
-        {lineHeights.map((item) => {
+        {lineHeights.map((_item) => {
+          const item = String(_item)
           return (
             <li
               key={item}
@@ -66,7 +57,7 @@ const LineHeightPicker: FC<LineHeightPickerProps> = ({
               data-size={item}
               onClick={(event) => {
                 toggleLineHeight(event)
-                dropDownInstance.current?.hide()
+                dropDownRef.current?.hide()
               }}
             >
               {item}

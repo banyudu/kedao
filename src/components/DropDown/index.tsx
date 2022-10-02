@@ -15,7 +15,12 @@ import Icon from '../Icon'
 import { DropDownProps } from '../../types'
 const cls = classNameParser(styles)
 
-const DropDown = forwardRef<any, DropDownProps>(
+export interface DropDownRef {
+  hide: () => void
+  toggle: () => void
+}
+
+const DropDown = forwardRef<DropDownRef, DropDownProps>(
   (
     {
       disabled,

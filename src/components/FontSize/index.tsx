@@ -2,12 +2,11 @@
 import { classNameParser } from '../../utils/style'
 import React, { FC, useRef } from 'react'
 import { FontSizePickerProps } from '../../types'
-import { toggleSelectionFontSize, selectionHasInlineStyle } from '../../utils'
 import styles from './style.module.scss'
 import { defaultFontSizes } from '../../constants'
-import loadable from '@loadable/component'
 import useLanguage from '../../hooks/use-language'
-const DropDown = loadable(async () => await import('../DropDown'))
+import useSelectionInlineStyle from '../../hooks/use-selection-line-style'
+import DropDown, { DropDownRef } from '../DropDown'
 
 const cls = classNameParser(styles)
 
@@ -20,23 +19,17 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
   disabled,
   onRequestFocus
 }) => {
-  let caption = null
-  let currentFontSize = null
-  const dropDownInstance = useRef(null)
+  const dropDownRef = useRef<DropDownRef>(null)
 
-  fontSizes.find((item) => {
-    if (selectionHasInlineStyle(editorState, `FONTSIZE-${item}`)) {
-      caption = item
-      currentFontSize = item
-      return true
-    }
-    return false
-  })
+  const {
+    value: currentFontSize,
+    toggle
+  } = useSelectionInlineStyle(editorState, 'FONTSIZE')
 
   const toggleFontSize = (event) => {
     const fontSize = event.currentTarget.dataset.size
 
-    onChange(toggleSelectionFontSize(editorState, fontSize))
+    onChange(toggle(fontSize))
     onRequestFocus()
     return true
   }
@@ -46,15 +39,16 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
   return (
     <DropDown
       autoHide
-      caption={caption || defaultCaption}
+      caption={currentFontSize || defaultCaption}
       getContainerNode={getContainerNode}
       title={language.controls.fontSize}
       disabled={disabled}
-      ref={dropDownInstance}
+      ref={dropDownRef}
       className={cls('kedao-font-size-dropdown')}
     >
       <ul className={cls('kedao-font-sizes')}>
-        {fontSizes.map((item) => {
+        {fontSizes.map((_item) => {
+          const item = String(_item)
           return (
             <li
               key={item}
@@ -63,7 +57,7 @@ const FontSizePicker: FC<FontSizePickerProps> = ({
               data-size={item}
               onClick={(event) => {
                 toggleFontSize(event)
-                dropDownInstance.current?.hide()
+                dropDownRef.current?.hide()
               }}
             >
               {item}

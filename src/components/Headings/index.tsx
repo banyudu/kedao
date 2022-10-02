@@ -1,14 +1,13 @@
 
 import { classNameParser } from '../../utils/style'
-import React, { FC } from 'react'
+import React, { FC, useRef } from 'react'
 import { HeadingsPickerProps } from '../../types'
 import Menu from '../Menu'
 import MenuItem from '../MenuItem'
 import styles from './style.module.scss'
 import { defaultHeadings } from '../../constants'
-import loadable from '@loadable/component'
 import useLanguage from '../../hooks/use-language'
-const DropDown = loadable(async () => await import('../DropDown'))
+import DropDown, { DropDownRef } from '../DropDown'
 
 const cls = classNameParser(styles)
 
@@ -71,7 +70,7 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
   disabled,
   onChange
 }) => {
-  const dropDownInstance = React.createRef<any>()
+  const dropDownRef = useRef<DropDownRef>(null)
 
   const language = useLanguage()
 
@@ -93,7 +92,7 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
       getContainerNode={getContainerNode}
       title={language.controls.headings}
       arrowActive={currentHeadingIndex === 0}
-      ref={dropDownInstance}
+      ref={dropDownRef}
       className={cls('headings-dropdown')}
     >
       <Menu className={cls('headings-menu')}>
@@ -106,7 +105,7 @@ const HeadingsPicker: FC<HeadingsPickerProps> = ({
               className={cls(`headings-menu-item${isActive ? ' active' : ''}`)}
               onClick={() => {
                 onChange(item.command, item.type)
-                dropDownInstance.current?.hide()
+                dropDownRef.current?.hide()
               }}
             >
               {item.text}

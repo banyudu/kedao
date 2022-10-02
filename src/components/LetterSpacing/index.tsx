@@ -2,14 +2,10 @@
 import { classNameParser } from '../../utils/style'
 import React, { useRef, FC } from 'react'
 import { LetterSpacingPickerProps } from '../../types'
-import {
-  toggleSelectionLetterSpacing,
-  selectionHasInlineStyle
-} from '../../utils'
 import styles from './style.module.scss'
-import loadable from '@loadable/component'
 import useLanguage from '../../hooks/use-language'
-const DropDown = loadable(async () => await import('../DropDown'))
+import useSelectionInlineStyle from '../../hooks/use-selection-line-style'
+import DropDown, { DropDownRef } from '../DropDown'
 
 const cls = classNameParser(styles)
 
@@ -24,23 +20,17 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
   disabled,
   defaultCaption
 }) => {
-  let caption = null
-  let currentLetterSpacing = null
-  const dropDownInstance = useRef(null)
+  const dropDownRef = useRef<DropDownRef>(null)
 
-  letterSpacings.find((item) => {
-    if (selectionHasInlineStyle(editorState, `LETTERSPACING-${item}`)) {
-      caption = item
-      currentLetterSpacing = item
-      return true
-    }
-    return false
-  })
+  const {
+    value: currentLetterSpacing,
+    toggle
+  } = useSelectionInlineStyle(editorState, 'LETTERSPACING')
 
   const toggleLetterSpacing = (event) => {
     const letterSpacing = event.currentTarget.dataset.size
 
-    onChange(toggleSelectionLetterSpacing(editorState, letterSpacing))
+    onChange(toggle(letterSpacing))
     onRequestFocus()
     return true
   }
@@ -50,15 +40,16 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
   return (
     <DropDown
       autoHide
-      caption={caption || defaultCaption}
+      caption={currentLetterSpacing || defaultCaption}
       getContainerNode={getContainerNode}
       disabled={disabled}
       title={language.controls.letterSpacing}
-      ref={dropDownInstance}
+      ref={dropDownRef}
       className={cls('kedao-letter-spacing-dropdown')}
     >
       <ul className={cls('kedao-letter-spacings')}>
-        {letterSpacings.map((item) => {
+        {letterSpacings.map((_item) => {
+          const item = String(_item)
           return (
             <li
               key={item}
@@ -67,7 +58,7 @@ const LetterSpacingPicker: FC<LetterSpacingPickerProps> = ({
               data-size={item}
               onClick={(event) => {
                 toggleLetterSpacing(event)
-                dropDownInstance.current?.hide()
+                dropDownRef.current?.hide()
               }}
             >
               {item}

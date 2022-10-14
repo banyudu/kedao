@@ -11,8 +11,10 @@ import React, {
 import mergeClassNames from 'merge-class-names'
 import styles from './style.module.scss'
 import { useClickOutside, usePrevious, useSyncedRef, useWindowSize } from '@react-hookz/web'
-import Icon from '../Icon'
 import { DropDownProps } from '../../types'
+import ChevronDownIcon from 'tabler-icons-react/dist/icons/chevron-down'
+import { tablerIconProps } from '../../constants'
+
 const cls = classNameParser(styles)
 
 const DropDown = forwardRef<any, DropDownProps>(
@@ -24,7 +26,7 @@ const DropDown = forwardRef<any, DropDownProps>(
       caption,
       htmlCaption,
       title,
-      showArrow,
+      showArrow = true,
       arrowActive,
       isActive,
       onActiveChage,
@@ -145,7 +147,7 @@ const DropDown = forwardRef<any, DropDownProps>(
             ref={dropDownHandlerElement}
           >
             <span>{caption}</span>
-            {showArrow ? <Icon type='arrow-drop-down' /> : null}
+            {showArrow ? <ChevronDownIcon {...tablerIconProps} size={16} /> : null}
           </button>
             )}
         <div

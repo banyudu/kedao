@@ -10,8 +10,10 @@ import {
 import ControlGroup from '../ControlGroup'
 import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
-import Icon from '../Icon'
 import useLanguage from '../../hooks/use-language'
+import IndentDecreaseIcon from 'tabler-icons-react/dist/icons/indent-decrease'
+import IndentIncreaseIcon from 'tabler-icons-react/dist/icons/indent-increase'
+import { tablerIconProps } from '../../constants'
 const cls = classNameParser(styles)
 
 const TextIndent: FC<CommonPickerProps> = ({
@@ -50,7 +52,7 @@ const TextIndent: FC<CommonPickerProps> = ({
                   }`)}
         onClick={increaseIndent}
       >
-        <Icon type='format-indent-increase' />
+        <IndentIncreaseIcon {...tablerIconProps} />
       </Button>
       <Button
         key={1}
@@ -60,7 +62,7 @@ const TextIndent: FC<CommonPickerProps> = ({
         className={cls('button-indent-decrease')}
         onClick={decreaseIndent}
       >
-        <Icon type='format-indent-decrease' />
+        <IndentDecreaseIcon {...tablerIconProps} />
       </Button>
     </ControlGroup>
   )

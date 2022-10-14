@@ -371,3 +371,8 @@ export const defaultFontFamilies: readonly FontFamily[] = [
     family: 'tahoma, arial, "Hiragino Sans GB", 宋体, sans-serif'
   }
 ]
+
+export const tablerIconProps = {
+  strokeWidth: 1.5,
+  size: 24
+}

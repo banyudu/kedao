@@ -10,8 +10,17 @@ import {
 } from '../../types'
 import { ContentBlock, EditorState } from 'draft-js'
 import MeidaToolbar from '../../components/MediaToolbar'
-import Icon from '../../components/Icon'
 import useLanguage from '../../hooks/use-language'
+import { tablerIconProps } from '../../constants'
+
+import AlignCenterIcon from 'tabler-icons-react/dist/icons/align-center'
+import AlignLeftIcon from 'tabler-icons-react/dist/icons/align-left'
+import AlignRightIcon from 'tabler-icons-react/dist/icons/align-right'
+import FloatLeftIcon from 'tabler-icons-react/dist/icons/float-left'
+import FloatRightIcon from 'tabler-icons-react/dist/icons/float-right'
+import LinkIcon from 'tabler-icons-react/dist/icons/link'
+import ResizeIcon from 'tabler-icons-react/dist/icons/resize'
+import TrashIcon from 'tabler-icons-react/dist/icons/trash'
 
 const cls = classNameParser(styles)
 
@@ -31,35 +40,35 @@ interface ImageProps extends BlockRenderProps {
 
 const imageControlItems = {
   'float-left': {
-    text: <Icon type='format-align-left' />,
+    text: <FloatLeftIcon {...tablerIconProps} />,
     command: 'setImageFloat|left'
   },
   'float-right': {
-    text: <Icon type='format-align-right' />,
+    text: <FloatRightIcon {...tablerIconProps} />,
     command: 'setImageFloat|right'
   },
   'align-left': {
-    text: <Icon type='format-align-left' />,
+    text: <AlignLeftIcon {...tablerIconProps} />,
     command: 'setImageAlignment|left'
   },
   'align-center': {
-    text: <Icon type='format-align-center' />,
+    text: <AlignCenterIcon {...tablerIconProps} />,
     command: 'setImageAlignment|center'
   },
   'align-right': {
-    text: <Icon type='format-align-right' />,
+    text: <AlignRightIcon {...tablerIconProps} />,
     command: 'setImageAlignment|right'
   },
   size: {
-    text: <Icon type='format-size' />,
+    text: <ResizeIcon {...tablerIconProps} />,
     command: 'toggleSizeEditor'
   },
   link: {
-    text: <Icon type='link' />,
+    text: <LinkIcon {...tablerIconProps} />,
     command: 'toggleLinkEditor'
   },
   remove: {
-    text: <Icon type='remove' />,
+    text: <TrashIcon {...tablerIconProps} />,
     command: 'removeImage'
   }
 }

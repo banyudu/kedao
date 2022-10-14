@@ -38,7 +38,6 @@ specifiers:
   prism-js: ^1.0.0
   prismjs: ^1.15.0
   react-color: ^2.14.1
-  react-icons: ^4.3.1
   react-portal: ^4.2.2
   react-recipes: ^1.4.0
   rimraf: ^3.0.2
@@ -48,6 +47,7 @@ specifiers:
   stylelint-config-standard: ^24.0.0
   stylelint-config-standard-scss: ^3.0.0
   stylelint-scss: ^4.2.0
+  tabler-icons-react: ^1.55.0
   ts-morph: ^13.0.3
   ts-node: ^10.4.0
   ts-rename-import-plugin: ^1.1.6
@@ -69,10 +69,10 @@ dependencies:
   prism-js: 1.0.0
   prismjs: 1.26.0
   react-color: 2.19.3
-  react-icons: 4.3.1
   react-portal: 4.2.2
   react-recipes: 1.4.0
   rimraf: 3.0.2
+  tabler-icons-react: 1.55.0
   uuid: 8.3.2
 
 devDependencies:
@@ -1548,8 +1548,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      is-text-path: 1.0.1
       JSONStream: 1.3.5
+      is-text-path: 1.0.1
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2
@@ -4639,12 +4639,6 @@ packages:
       tinycolor2: 1.4.2
     dev: false
 
-  /react-icons/4.3.1:
-    resolution: {integrity: sha512-cB10MXLTs3gVuXimblAdI71jrJx8njrJZmNMEMC+sQu5B/BIOmlsAjskdqpn81y8UBVEGuHODd7/ci5DvoSzTQ==}
-    peerDependencies:
-      react: '*'
-    dev: false
-
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -5547,6 +5541,12 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
     dev: true
+
+  /tabler-icons-react/1.55.0:
+    resolution: {integrity: sha512-+5zz2mQ2wl5658tMtK4mxUCFdF7TyPiPqLAvCUHHOeltZWukExE3aftY04HDMcap8skob/UFbzSzVhifCCMeUQ==}
+    peerDependencies:
+      react: '>= 16.8.0'
+    dev: false
 
   /text-extensions/1.9.0:
     resolution: {integrity: sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==}

@@ -3,14 +3,20 @@ import { classNameParser } from '../../utils/style'
 import React, { FC, MouseEventHandler, useState } from 'react'
 import Modal from '../Modal'
 import styles from './style.module.scss'
-import Icon from '../Icon'
 import useLanguage from '../../hooks/use-language'
+import CodeIcon from 'tabler-icons-react/dist/icons/code'
+import MovieIcon from 'tabler-icons-react/dist/icons/movie'
+import MusicIcon from 'tabler-icons-react/dist/icons/music'
+import { tablerIconProps } from '../../constants'
+import PlayerPlayIcon from 'tabler-icons-react/dist/icons/player-play'
+import XIcon from 'tabler-icons-react/dist/icons/x'
+
 const cls = classNameParser(styles)
 
 const iconMap = {
-  video: <Icon type='videocam' />,
-  audio: <Icon type='music-video' />,
-  embed: <Icon type='code' />
+  video: <MovieIcon {...tablerIconProps} />,
+  audio: <MusicIcon {...tablerIconProps} />,
+  embed: <CodeIcon {...tablerIconProps} />
 }
 
 interface PlayerModalProps {
@@ -40,10 +46,10 @@ const PlayerModal: FC<PlayerModalProps> = ({
         <span className={cls('text')}>{language.media[type]}</span>
       </div>
       <button onMouseDown={onRemove} className={cls('button-remove')}>
-        <Icon type='close' />
+        <XIcon {...tablerIconProps} />
       </button>
       <button onMouseDown={() => setModalVisible(true)} className={cls('button-play')}>
-        <Icon type='play-arrow' />
+        <PlayerPlayIcon {...tablerIconProps} />
       </button>
       {name ? <h5 className={cls('kedao-name')}>{name}</h5> : null}
       <h6 className={cls('kedao-url')}>{url}</h6>

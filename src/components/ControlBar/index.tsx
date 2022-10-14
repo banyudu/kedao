@@ -38,6 +38,28 @@ import {
 import styles from './style.module.scss'
 import useLanguage from '../../hooks/use-language'
 
+import { tablerIconProps } from '../../constants'
+
+import SuperscriptIcon from 'tabler-icons-react/dist/icons/superscript'
+import SubscriptIcon from 'tabler-icons-react/dist/icons/subscript'
+import BlockquoteIcon from 'tabler-icons-react/dist/icons/blockquote'
+import MusicIcon from 'tabler-icons-react/dist/icons/music'
+import ArrowBackUpIcon from 'tabler-icons-react/dist/icons/arrow-back-up'
+import ArrowForwardUpIcon from 'tabler-icons-react/dist/icons/arrow-forward-up'
+import EraserIcon from 'tabler-icons-react/dist/icons/eraser'
+import MinusIcon from 'tabler-icons-react/dist/icons/minus'
+import BoldIcon from 'tabler-icons-react/dist/icons/bold'
+import CodeIcon from 'tabler-icons-react/dist/icons/code'
+import ItalicIcon from 'tabler-icons-react/dist/icons/italic'
+import ListIcon from 'tabler-icons-react/dist/icons/list'
+import ListNumbersIcon from 'tabler-icons-react/dist/icons/list-numbers'
+import MaximizeIcon from 'tabler-icons-react/dist/icons/maximize'
+import MaximizeOffIcon from 'tabler-icons-react/dist/icons/maximize-off'
+import MoodEmptyIcon from 'tabler-icons-react/dist/icons/mood-empty'
+import StrikethroughIcon from 'tabler-icons-react/dist/icons/strikethrough'
+import UnderlineIcon from 'tabler-icons-react/dist/icons/underline'
+import TrashIcon from 'tabler-icons-react/dist/icons/trash'
+
 const cls = classNameParser(styles)
 
 const Finder = loadable(async () => await import('../Finder'))
@@ -54,7 +76,6 @@ const TextIndent = loadable(async () => await import('../TextIndent'))
 const DropDown = loadable(async () => await import('../DropDown'))
 const Button = loadable(async () => await import('../Button'))
 const Modal = loadable(async () => await import('../Modal'))
-const Icon = loadable(async () => await import('../Icon'))
 const HTMLButton = loadable(async () => await import('../HTML'))
 
 const isModalControl = (control: ControlItem): control is ModalControlItem => {
@@ -87,70 +108,70 @@ const getEditorControlMap = (
     undo: {
       key: 'undo',
       title: lang.controls.undo,
-      text: <Icon type='undo' />,
+      text: <ArrowBackUpIcon {...tablerIconProps} />,
       type: 'editor-method',
       command: 'undo'
     },
     redo: {
       key: 'redo',
       title: lang.controls.redo,
-      text: <Icon type='redo' />,
+      text: <ArrowForwardUpIcon {...tablerIconProps} />,
       type: 'editor-method',
       command: 'redo'
     },
     'remove-styles': {
       key: 'remove-styles',
       title: lang.controls.removeStyles,
-      text: <Icon type='clear' />,
+      text: <EraserIcon {...tablerIconProps} />,
       type: 'editor-method',
       command: 'removeSelectionInlineStyles'
     },
     hr: {
       key: 'hr',
       title: lang.controls.hr,
-      text: <Icon type='horizontal-rule' />,
+      text: <MinusIcon {...tablerIconProps} />,
       type: 'editor-method',
       command: 'insertHorizontalLine'
     },
     bold: {
       key: 'bold',
       title: lang.controls.bold,
-      text: <Icon type='format-bold' />,
+      text: <BoldIcon {...tablerIconProps} />,
       type: 'inline-style',
       command: 'bold'
     },
     italic: {
       key: 'italic',
       title: lang.controls.italic,
-      text: <Icon type='format-italic' />,
+      text: <ItalicIcon {...tablerIconProps} />,
       type: 'inline-style',
       command: 'italic'
     },
     underline: {
       key: 'underline',
       title: lang.controls.underline,
-      text: <Icon type='format-underlined' />,
+      text: <UnderlineIcon {...tablerIconProps} />,
       type: 'inline-style',
       command: 'underline'
     },
     'strike-through': {
       key: 'strike-through',
       title: lang.controls.strikeThrough,
-      text: <Icon type='format-strikethrough' />,
+      text: <StrikethroughIcon {...tablerIconProps} />,
       type: 'inline-style',
       command: 'strikethrough'
     },
     superscript: {
       key: 'superscript',
       title: lang.controls.superScript,
-      text: <Icon type='superscript' />,
+      text: <SuperscriptIcon strokeWidth={1} size={20} />,
       type: 'inline-style',
       command: 'superscript'
     },
     subscript: {
       key: 'subscript',
       title: lang.controls.subScript,
-      text: <Icon type='subscript' />,
+      text: <SubscriptIcon strokeWidth={1} size={20} />,
       type: 'inline-style',
       command: 'subscript'
     },
@@ -162,28 +183,28 @@ const getEditorControlMap = (
     blockquote: {
       key: 'blockquote',
       title: lang.controls.blockQuote,
-      text: <Icon type='format-quote' />,
+      text: <BlockquoteIcon strokeWidth={1} size={20} />,
       type: 'block-type',
       command: 'blockquote'
     },
     code: {
       key: 'code',
       title: lang.controls.code,
-      text: <Icon type='code' />,
+      text: <CodeIcon {...tablerIconProps} />,
       type: 'block-type',
       command: 'code-block'
     },
     'list-ul': {
       key: 'list-ul',
       title: lang.controls.unorderedList,
-      text: <Icon type='format-list-bulleted' />,
+      text: <ListIcon {...tablerIconProps} />,
       type: 'block-type',
       command: 'unordered-list-item'
     },
     'list-ol': {
       key: 'list-ol',
       title: lang.controls.orderedList,
-      text: <Icon type='format-list-numbered' />,
+      text: <ListNumbersIcon {...tablerIconProps} />,
       type: 'block-type',
       command: 'ordered-list-item'
     },
@@ -230,19 +251,19 @@ const getEditorControlMap = (
     media: {
       key: 'media',
       title: lang.controls.media,
-      text: <Icon type='library-music' />,
+      text: <MusicIcon strokeWidth={1} size={20} />,
       type: 'media'
     },
     emoji: {
       key: 'emoji',
       title: lang.controls.emoji,
-      text: <Icon type='insert-emoticon' />,
+      text: <MoodEmptyIcon {...tablerIconProps} />,
       type: 'emoji'
     },
     clear: {
       key: 'clear',
       title: lang.controls.clear,
-      text: <Icon type='clear-all' />,
+      text: <TrashIcon {...tablerIconProps} />,
       type: 'editor-method',
       command: 'clearEditorContent'
     },
@@ -253,10 +274,10 @@ const getEditorControlMap = (
         : lang.controls.fullscreen,
       text: isFullscreen
         ? (
-        <Icon type='fullscreen-exit' />
+        <MaximizeOffIcon {...tablerIconProps} />
           )
         : (
-        <Icon type='fullscreen' />
+        <MaximizeIcon {...tablerIconProps} />
           ),
       type: 'editor-method',
       command: 'toggleFullscreen'

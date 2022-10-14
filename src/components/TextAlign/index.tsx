@@ -7,15 +7,20 @@ import ControlGroup from '../ControlGroup'
 import { TextAlignProps } from '../../types'
 import styles from '../ControlBar/style.module.scss'
 import Button from '../Button'
-import Icon from '../Icon'
 import useLanguage from '../../hooks/use-language'
+import AlignCenterIcon from 'tabler-icons-react/dist/icons/align-center'
+import AlignLeftIcon from 'tabler-icons-react/dist/icons/align-left'
+import AlignRightIcon from 'tabler-icons-react/dist/icons/align-right'
+import AlignJustifiedIcon from 'tabler-icons-react/dist/icons/align-justified'
+import { tablerIconProps } from '../../constants'
+
 const cls = classNameParser(styles)
 
 const iconMap = {
-  left: <Icon type='format-align-left' />,
-  center: <Icon type='format-align-center' />,
-  right: <Icon type='format-align-right' />,
-  justify: <Icon type='format-align-justify' />
+  left: <AlignLeftIcon {...tablerIconProps} />,
+  center: <AlignCenterIcon {...tablerIconProps} />,
+  right: <AlignRightIcon {...tablerIconProps} />,
+  justify: <AlignJustifiedIcon {...tablerIconProps} />
 }
 
 const defaultTextAligns = ['left', 'center', 'right', 'justify']

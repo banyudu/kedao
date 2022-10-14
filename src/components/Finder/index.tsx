@@ -10,9 +10,17 @@ import React, {
 import { UniqueIndex, compressImage } from '../../utils'
 import { classNameParser } from '../../utils/style'
 import styles from './styles.module.scss'
-import Icon from '../Icon'
 import { FinderProps } from '../../types'
 import useLanguage from '../../hooks/use-language'
+import PlusIcon from 'tabler-icons-react/dist/icons/plus'
+import { tablerIconProps } from '../../constants'
+import CheckIcon from 'tabler-icons-react/dist/icons/check'
+import FileDescriptionIcon from 'tabler-icons-react/dist/icons/file-description'
+import MovieIcon from 'tabler-icons-react/dist/icons/movie'
+import MusicIcon from 'tabler-icons-react/dist/icons/music'
+import TrashIcon from 'tabler-icons-react/dist/icons/trash'
+import XIcon from 'tabler-icons-react/dist/icons/x'
+import CodeIcon from 'tabler-icons-react/dist/icons/code'
 
 const cls = classNameParser(styles)
 
@@ -322,7 +330,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
       return (
         <ul className={cls('kedao-list')}>
           <li className={cls('kedao-add-item')}>
-            <Icon type='add' size={50} />
+            <PlusIcon {...tablerIconProps} />
             <input
               accept={fileAccept}
               onChange={reslovePickedFiles}
@@ -361,7 +369,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                     title={item.url}
                   >
                     {progressMarker}
-                    <Icon type='movie' />
+                    <MovieIcon {...tablerIconProps} />
                     <span>{item.name || item.url}</span>
                   </div>
                 )
@@ -373,7 +381,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                     title={item.url}
                   >
                     {progressMarker}
-                    <Icon type='audiotrack' />
+                    <MusicIcon {...tablerIconProps} />
                     <span>{item.name || item.url}</span>
                   </div>
                 )
@@ -385,7 +393,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                     title={item.url}
                   >
                     {progressMarker}
-                    <Icon type='code' />
+                    <CodeIcon {...tablerIconProps} />
                     <span>{item.name || language.finder.embed}</span>
                   </div>
                 )
@@ -398,7 +406,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                     href={item.url}
                   >
                     {progressMarker}
-                    <Icon type='description' />
+                    <FileDescriptionIcon {...tablerIconProps} />
                     <span>{item.name || item.url}</span>
                   </a>
                 )
@@ -421,11 +429,10 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                 {previewerComponents}
                 {item.selected && (
                   <div className={cls('kedao-icon-selected')}>
-                    <Icon type='check' size={50} color='white' />
+                    <CheckIcon {...tablerIconProps} size={50} color='white' />
                   </div>
                 )}
-                <Icon
-                  type='audiotrack'
+                <XIcon
                   data-id={item.id}
                   onClick={removeItem}
                   className={cls('kedao-item-remove')}
@@ -599,7 +606,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                   onClick={selectAllItems}
                   className={cls('kedao-select-all')}
                 >
-                  <Icon type='done' />
+                  <CheckIcon {...tablerIconProps} />
                   {language.finder.selectAll}
                 </span>
                 <span
@@ -607,7 +614,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                   className={cls('kedao-deselect-all')}
                   {...{ disabled: !confirmable }}
                 >
-                  <Icon type='close' />
+                  <XIcon {...tablerIconProps} />
                   {language.finder.deselect}
                 </span>
                 <span
@@ -615,7 +622,7 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                   className={cls('kedao-remove-selected')}
                   {...{ disabled: !confirmable }}
                 >
-                  <Icon type='remove' />
+                  <TrashIcon {...tablerIconProps} />
                   {language.finder.removeSelected}
                 </span>
               </div>
@@ -712,13 +719,13 @@ const Finder = forwardRef<FinderRef, FinderProps>(
                 {showExternalForm
                   ? (
                   <span className={cls('kedao-bottom-text')}>
-                    <Icon type='add' />
+                    <PlusIcon {...tablerIconProps} />
                     {language.finder.addLocalFile}
                   </span>
                     )
                   : (
                   <span className={cls('kedao-bottom-text')}>
-                    <Icon type='add' />
+                    <PlusIcon {...tablerIconProps} />
                     {language.finder.addExternalSource}
                   </span>
                     )}

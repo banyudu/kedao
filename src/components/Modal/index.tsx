@@ -5,8 +5,9 @@ import mergeClassNames from 'merge-class-names'
 import styles from './style.module.scss'
 import { ModalProps } from '../../types'
 import { Portal } from 'react-portal'
-import Icon from '../Icon'
 import useLanguage from '../../hooks/use-language'
+import XIcon from 'tabler-icons-react/dist/icons/x'
+import { tablerIconProps } from '../../constants'
 const cls = classNameParser(styles)
 
 const Modal: FC<ModalProps> = ({
@@ -103,7 +104,7 @@ const Modal: FC<ModalProps> = ({
                 onClick={handleClose}
                 className={cls('kedao-modal-close-button')}
               >
-                <Icon type='close' />
+                <XIcon {...tablerIconProps} />
               </button>
             )}
           </div>

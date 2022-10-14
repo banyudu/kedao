@@ -13,11 +13,12 @@ import {
 } from '../../utils'
 import ColorPicker from '../ColorPicker'
 import styles from './style.module.scss'
-import Icon from '../Icon'
 import { TextColorPickerProps } from '../../types'
 import loadable from '@loadable/component'
 import useLanguage from '../../hooks/use-language'
-import { defaultColors } from '../../constants'
+import { defaultColors, tablerIconProps } from '../../constants'
+import TextColorIcon from 'tabler-icons-react/dist/icons/text-color'
+
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -86,7 +87,7 @@ const TextColorPicker: FC<TextColorPickerProps> = ({
   }, [editorState])
 
   const caption = (
-    <Icon type='format-color-text' style={captionStyle} />
+    <TextColorIcon {...tablerIconProps} style={captionStyle} />
   )
 
   const language = useLanguage()

@@ -16,9 +16,13 @@ import { LinkEditorProps } from '../../types'
 import { useAtom } from 'jotai'
 import { linkEditorActiveAtom } from '../../states'
 import { useResetState } from '../../hooks/use-reset-state'
-import Icon from '../Icon'
 import loadable from '@loadable/component'
 import useLanguage from '../../hooks/use-language'
+import LinkIcon from 'tabler-icons-react/dist/icons/link'
+import LinkOffIcon from 'tabler-icons-react/dist/icons/link-off'
+import XIcon from 'tabler-icons-react/dist/icons/x'
+import { tablerIconProps } from '../../constants'
+
 const DropDown = loadable(async () => await import('../DropDown'))
 
 const cls = classNameParser(styles)
@@ -113,7 +117,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
     return true
   }
 
-  const caption = <Icon type='link' />
+  const caption = <LinkIcon {...tablerIconProps} />
 
   const language = useLanguage()
 
@@ -177,7 +181,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
               className={cls('primary button-remove-link pull-left')}
             >
               <span>{language.linkEditor.removeLink}</span>
-              <Icon type='close' />
+              <XIcon {...tablerIconProps} />
             </a>
             <button
               type="button"
@@ -203,7 +207,7 @@ const LinkEditor: FC<LinkEditorProps> = ({
         onClick={handleUnlink}
         disabled={disabled || !textSelected || !href}
       >
-        <Icon type='link-off' />
+        <LinkOffIcon {...tablerIconProps} />
       </Button>
     </ControlGroup>
   )

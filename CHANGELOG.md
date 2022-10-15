@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0 (2022-10-15)
+
+### Features
+
+- replace icons ([a4a4c17](https://github.com/banyudu/kedao/commit/a4a4c176780da76f942b7fb21b1c302254db4122))
+
 ### 1.0.7 (2022-09-27)
 
 ### 1.0.6 (2022-09-23)

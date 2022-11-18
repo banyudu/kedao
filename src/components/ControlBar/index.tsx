@@ -1,4 +1,3 @@
-
 import { classNameParser } from '../../utils/style'
 import React, {
   CSSProperties,
@@ -33,7 +32,8 @@ import {
   EditorState,
   Language,
   ModalProps,
-  EditorMode
+  EditorMode,
+  CustomCompontentProps
 } from '../../types'
 import styles from './style.module.scss'
 import useLanguage from '../../hooks/use-language'
@@ -71,7 +71,9 @@ const LineHeightPicker = loadable(async () => await import('../LineHeight'))
 const FontFamilyPicker = loadable(async () => await import('../FontFamily'))
 const TextAlign = loadable(async () => await import('../TextAlign'))
 const EmojiPicker = loadable(async () => await import('../EmojiPicker'))
-const LetterSpacingPicker = loadable(async () => await import('../LetterSpacing'))
+const LetterSpacingPicker = loadable(
+  async () => await import('../LetterSpacing')
+)
 const TextIndent = loadable(async () => await import('../TextIndent'))
 const DropDown = loadable(async () => await import('../DropDown'))
 const Button = loadable(async () => await import('../Button'))
@@ -308,10 +310,7 @@ const getEditorControlMap = (
   }
 }
 
-const mergeControls = (
-  builtInControls,
-  parsedExtendControls
-) => {
+const mergeControls = (builtInControls, parsedExtendControls) => {
   if (!(parsedExtendControls?.length > 0)) {
     return builtInControls
   }
@@ -321,8 +320,7 @@ const mergeControls = (
       return (
         parsedExtendControls.find((subItem) => {
           return subItem.replace === (item.key || item)
-        }) ||
-        item
+        }) || item
       )
     })
     .concat(
@@ -465,9 +463,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
       setMediaLibraryVisible(false)
     }
 
-    const uploadImage = useCallback((file, callback) => {
-      finderRef.current?.uploadImage(file, callback)
-    }, [finderRef.current?.uploadImage])
+    const uploadImage = useCallback(
+      (file, callback) => {
+        finderRef.current?.uploadImage(file, callback)
+      },
+      [finderRef.current?.uploadImage]
+    )
 
     const preventDefault = (event) => {
       const tagName = event.target.tagName.toLowerCase()
@@ -478,13 +479,16 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     }
 
     const currentBlockType = getSelectionBlockType(editorState)
-    const commonProps = useMemo(() => ({
-      editorId,
-      editorState,
-      getContainerNode,
-      onChange,
-      onRequestFocus
-    }), [editorId, editorState, getContainerNode, onChange, onRequestFocus])
+    const commonProps = useMemo(
+      () => ({
+        editorId,
+        editorState,
+        getContainerNode,
+        onChange,
+        onRequestFocus
+      }),
+      [editorId, editorState, getContainerNode, onChange, onRequestFocus]
+    )
 
     const language = useLanguage()
 
@@ -500,14 +504,8 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
     }, [extendControls, commonProps])
 
     const allControls = useMemo(() => {
-      return mergeControls(
-        controls,
-        parsedExtendControls
-      )
-    }, [
-      controls,
-      extendControls
-    ])
+      return mergeControls(controls, parsedExtendControls)
+    }, [controls, extendControls])
 
     const renderedControlList = useMemo(() => {
       const keySet = new Set<string>()
@@ -621,7 +619,9 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             )
           }
           if (controlItem.type === 'text-indent') {
-            return <TextIndent key={key} {...commonProps} {...controlStateProps} />
+            return (
+              <TextIndent key={key} {...commonProps} {...controlStateProps} />
+            )
           }
           if (controlItem.type === 'font-family') {
             return (
@@ -681,7 +681,9 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <DropDown
                 key={key}
-                className={cls(`extend-control-item ${controlItem.className || ''}`)}
+                className={cls(
+                  `extend-control-item ${controlItem.className || ''}`
+                )}
                 caption={controlItem.text}
                 htmlCaption={controlItem.html}
                 showArrow={controlItem.showArrow}
@@ -702,7 +704,9 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 type="button"
                 key={key}
                 data-title={controlItem.title}
-                className={cls(`extend-control-item ${controlItem.className || ''}`)}
+                className={cls(
+                  `extend-control-item ${controlItem.className || ''}`
+                )}
                 dangerouslySetInnerHTML={
                   controlItem.html ? { __html: controlItem.html } : null
                 }
@@ -723,9 +727,16 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
             return (
               <div
                 key={key}
-                className={cls(`component-wrapper ${controlItem.className || ''}`)}
+                className={cls(
+                  `component-wrapper ${controlItem.className || ''}`
+                )}
               >
-                {controlItem.component}
+                {typeof controlItem.component === 'function'
+                  ? React.createElement(
+                    controlItem.component as React.FC<CustomCompontentProps>,
+                    { ...commonProps, ...controlStateProps }
+                  )
+                  : controlItem.component}
               </div>
             )
           }
@@ -754,10 +765,12 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
                 type="button"
                 key={key}
                 data-title={controlItem.title}
-                className={cls(getControlTypeClassName({
-                  type: controlItem.type,
-                  command: controlItem.command
-                }))}
+                className={cls(
+                  getControlTypeClassName({
+                    type: controlItem.type,
+                    command: controlItem.command
+                  })
+                )}
                 onClick={() =>
                   applyControl(
                     controlItem.command,
@@ -773,23 +786,23 @@ const ControlBar = forwardRef<ControlBarForwardRef, ControlBarProps>(
           }
           return null
         })}
-        {mediaLibraryVisible && <Modal
-          title={language.controls.mediaLibirary}
-          width={640}
-          showFooter={false}
-          onClose={closeFinder}
-          visible={mediaLibraryVisible}
-        >
-          <Finder
-            ref={finderRef}
-            {...media}
-            onCancel={closeFinder}
-            onInsert={insertMedias_}
-          />
-        </Modal>}
-        {extendModal && (
-          <Modal key={extendModal.id} {...extendModal} />
+        {mediaLibraryVisible && (
+          <Modal
+            title={language.controls.mediaLibirary}
+            width={640}
+            showFooter={false}
+            onClose={closeFinder}
+            visible={mediaLibraryVisible}
+          >
+            <Finder
+              ref={finderRef}
+              {...media}
+              onCancel={closeFinder}
+              onInsert={insertMedias_}
+            />
+          </Modal>
         )}
+        {extendModal && <Modal key={extendModal.id} {...extendModal} />}
       </div>
     )
   }

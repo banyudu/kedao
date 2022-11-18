@@ -153,6 +153,18 @@ export interface MediaProps {
   video: boolean
 }
 
+export interface CustomCompontentProps {
+  editorState: EditorState
+  editorId: string
+  getContainerNode: () => HTMLElement
+  onRequestFocus: () => void
+  onChange: (
+    editorState: EditorState,
+    callback?: (state: EditorState) => void
+  ) => void
+  disabled?: boolean
+}
+
 export interface CommonPickerProps {
   editorState: EditorState
   editorId: string
@@ -261,7 +273,7 @@ export interface ModalControlItem extends BaseExtendControlItem {
 
 interface ComponentControlItem extends BaseExtendControlItem {
   type: 'component'
-  component?: React.ReactNode
+  component?: React.ReactNode | React.FC<CustomCompontentProps>
 }
 
 interface BlockControlItem extends BaseControlItem {

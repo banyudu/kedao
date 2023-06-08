@@ -15,6 +15,7 @@ module.exports = {
     "react/prop-types": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-implied-eval": "warn",
+    "no-console": ["error", { allow: ["warn", "error"] }],
     eqeqeq: "warn",
     "react/display-name": "off",
   },

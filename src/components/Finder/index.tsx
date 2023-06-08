@@ -4,8 +4,7 @@ import React, {
   useState,
   useRef,
   useImperativeHandle,
-  useMemo,
-  useCallback
+  useMemo
 } from 'react'
 import { UniqueIndex, compressImage } from '../../utils'
 import { classNameParser } from '../../utils/style'
@@ -74,13 +73,13 @@ const Finder = forwardRef<FinderRef, FinderProps>(
       return items.filter(item => item.selected)
     }
 
-    const addItems = useCallback(newItems => {
-      setItems([...items, ...newItems])
-    }, [])
+    const addItems = newItems => {
+      setItems(oldItems => [...oldItems, ...newItems])
+    }
 
-    const addMediaItem = useCallback(item => {
+    const addMediaItem = item => {
       addItems([item])
-    }, [addItems])
+    }
 
     const selectMediaItem = id => {
       const item = getMediaItem(id)

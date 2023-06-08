@@ -25,6 +25,7 @@
     "lint:fix-js": "eslint --fix . --ext .js,.jsx,.ts,.tsx",
     "lint:fix-style": "stylelint --fix src/**/*.{css,scss}",
     "lint:style": "stylelint src/**/*.{css,scss}",
+    "preversion": "npm run lint && npm run build",
     "postversion": "git push --follow-tags && npm publish",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",

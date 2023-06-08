@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 
 // Hook
-function useWhyDidYouUpdate (name, props) {
+function useWhyDidYouUpdate (_name, props) {
   // Get a mutable ref object where we can store props ...
   // ... for comparison next time this hook runs.
   const previousProps = useRef<any>()
@@ -23,9 +23,9 @@ function useWhyDidYouUpdate (name, props) {
         }
       })
       // If changesObj not empty then output to console
-      if (Object.keys(changesObj).length) {
-        console.log('[why-did-you-update]', name, changesObj)
-      }
+      // if (Object.keys(changesObj).length) {
+      //   console.log('[why-did-you-update]', name, changesObj)
+      // }
     }
     // Finally update previousProps with current props for next hook call
     previousProps.current = props

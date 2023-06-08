@@ -1,6 +1,6 @@
 
 import { classNameParser } from '../../utils/style'
-import React, { FC, useState, useRef, useEffect } from 'react'
+import React, { FC, useState, useRef } from 'react'
 import { setMediaData, setMediaPosition } from '../../utils'
 import Switch from '../../components/Switch'
 import styles from './style.module.scss'
@@ -441,10 +441,6 @@ const Image: FC<ImageProps> = ({
   })
 
   const language = useLanguage()
-
-  useEffect(() => {
-    console.log('Image fresh render')
-  }, [])
 
   return (
     <div className={cls('kedao-media')}>

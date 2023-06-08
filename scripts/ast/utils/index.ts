@@ -76,7 +76,6 @@ export function getFunctions (
       checklist.push(node.getExpression())
     }
     if (Node.isMethodDeclaration(node)) {
-      // console.log(node.getBody()?.getText())
       checklist.push(node.getBody())
     }
     for (const item of checklist) {
@@ -180,12 +179,12 @@ export function inspectNode (data: any | any[], withKindName?: boolean): void {
   if (!Array.isArray(data)) {
     data = [data]
   }
-  data.forEach((item: any) => {
-    console.log(item.getText())
-    if (withKindName) {
-      console.log(`    ${item.getKindName() as string}`)
-    }
-  })
+  // data.forEach((item: any) => {
+  //   console.log(item.getText())
+  //   if (withKindName) {
+  //     console.log(`    ${item.getKindName() as string}`)
+  //   }
+  // })
 }
 
 export function getJsxAttributes (file: SourceFile): JsxAttribute[] {

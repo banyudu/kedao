@@ -6,21 +6,20 @@ import Editor, {
   convertEditorStateToRaw,
 } from "kedao";
 import { useLocalStorage } from "react-use";
-import { PictureInPicture } from "tabler-icons-react";
+// import { PictureInPicture } from "tabler-icons-react";
 
-const ImageUpload = (props: any) => {
-  console.log(props);
-  return (
-    <button
-      type="button"
-      className="control-item-button style_control-item-button__JqaQX"
-      data-title="上传图片"
-      disabled={props.disabled}
-    >
-      <PictureInPicture />
-    </button>
-  );
-};
+// const ImageUpload = (props: any) => {
+//   return (
+//     <button
+//       type="button"
+//       className="control-item-button style_control-item-button__JqaQX"
+//       data-title="上传图片"
+//       disabled={props.disabled}
+//     >
+//       <PictureInPicture />
+//     </button>
+//   );
+// };
 
 function App() {
   const [value, setValue] = useLocalStorage(
@@ -42,15 +41,15 @@ function App() {
         language="en"
         value={editorState}
         onChange={handleChange}
-        extendControls={
-          [
-            {
-              type: "component",
-              key: "uploader",
-              component: ImageUpload,
-            },
-          ] as any
-        }
+        // extendControls={
+        //   [
+        //     {
+        //       type: "component",
+        //       key: "uploader",
+        //       component: ImageUpload,
+        //     },
+        //   ] as any
+        // }
       />
     </div>
   );

@@ -4,3 +4,4 @@ dist
 build
 lib
 **/*.js
+test

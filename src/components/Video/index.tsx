@@ -11,8 +11,8 @@ const Video: FC<BlockRenderProps> = ({
   mediaData,
   onRemove
 }) => {
-  const { url, name, meta } = mediaData
-  const { poster = '' } = meta
+  const { url, name, meta } = mediaData ?? {}
+  const { poster = '' } = meta ?? {}
 
   const language = useLanguage()
 

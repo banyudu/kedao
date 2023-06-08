@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.2 (2023-06-08)
+
+### Bug Fixes
+
+- [#45](https://github.com/banyudu/kedao/issues/45) add remote video poster error ([04036a4](https://github.com/banyudu/kedao/commit/04036a425ca40315da9c55f47554a809e97ec070))
+
 ### 1.1.1 (2022-11-18)
 
 ## 1.1.0 (2022-10-15)
